@@ -1,0 +1,16 @@
+{
+  "name": "case_management",
+  "version": "1.0.0",
+  "description": "A reporting dashboard for the OSF Case Management project built by OpenUp.",
+  "main": "assets/js/index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "parcel watch assets/scss/case_management.scss assets/js/case_management.js --out-dir assets/bundles",
+    "build": "parcel build assets/scss/case_management.scss assets/js/case_management.js --out-dir assets/bundles --no-content-hash"
+  },
+  "dependencies": {
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.25.1-test.1"
+  }
+}

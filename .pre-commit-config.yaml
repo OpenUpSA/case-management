@@ -1,0 +1,21 @@
+exclude: 'docs|node_modules|migrations|.git|.tox'
+default_stages: [commit]
+fail_fast: true
+
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: master
+    hooks:
+      - id: trailing-whitespace
+        files: (^|/)a/.+\.(py|html|sh|css|js)$
+
+-   repo: https://github.com/timothycrosley/isort
+    rev: 4.3.21
+    hooks:
+    - id: isort
+
+-   repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+    - id: black
+      language_version: python3.7

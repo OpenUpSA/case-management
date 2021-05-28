@@ -1,0 +1,42 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    {% if TAG_MANAGER_ENABLED %}
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','{{ TAG_MANAGER_CONTAINER_ID }}');</script>
+    <!-- End Google Tag Manager -->
+    {% endif %} 
+
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}case_management{% endblock %}</title>
+    {% block meta %}
+    <meta property="description" content="{% block description %}A reporting dashboard for the OSF Case Management project built by OpenUp.{% endblock %}" />
+    <meta name="twitter:title" content="{% block twitter_title %}case_management{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}A reporting dashboard for the OSF Case Management project built by OpenUp.{% endblock %}">
+    <meta name="twitter:card" content="summary">
+    <meta property="og:title" content="{% block og_title %}case_management{% endblock %}" />
+    <meta property="og:description" content="{% block og_description %}A reporting dashboard for the OSF Case Management project built by OpenUp.{% endblock %}" />
+    {% endblock %}
+
+    <link rel="stylesheet" href="{% static "scss/case_management.css" %}">
+  </head>
+  <body>
+    {% if TAG_MANAGER_ENABLED %} 
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ TAG_MANAGER_CONTAINER_ID }}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    {% endif %} 
+
+    {% block content %}{% endblock %}
+
+    <script src="{% static "js/case_management.js" %}" async></script>
+  </body>
+</html>

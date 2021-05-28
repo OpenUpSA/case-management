@@ -1,0 +1,23 @@
+languae: python
+python:
+  - "3.7"
+
+install:
+  - pip install pipenv
+  - pipenv install --dev
+  # Allow the container user to write to this directory
+  - chmod -R 777 .
+  - docker-compose run --rm web yarn
+
+script:
+  - docker-compose run --rm web yarn build
+  - docker-compose run --rm web python manage.py collectstatic --no-input
+  - docker-compose run --rm web bin/wait-for-postgres.sh coverage run --source=case_management manage.py test
+
+
+after_script:
+  # Log DB output in case issues occurred where this can help us debug quicly
+  - docker-compose logs db
+
+  # Upload code coverage data to codecov.io
+  - "docker-compose run --rm `bash <(curl -s https://codecov.io/env)` web codecov"

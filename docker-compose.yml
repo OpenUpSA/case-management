@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+
+  web:
+    build:
+      context: .
+      args:
+        USER_ID: ${USER_ID:-1001}
+        GROUP_ID: ${GROUP_ID:-1001}
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: ./manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://case_management:devpassword@db/case_management
+      - DJANGO_DEBUG=True
+      - NODE_ENV=development
+      - DJANGO_DEBUG_TOOLBAR
+      - DJANGO_SECRET_KEY=not-secret-in-dev
+      - DJANGO_WHITENOISE_AUTOREFRESH=True
+      - TAG_MANAGER_ENABLED=False
+
+  db:
+    image: postgres:11.6
+    environment:
+      - POSTGRES_USER=case_management
+      - POSTGRES_PASSWORD=devpassword
+      - POSTGRES_DB=case_management
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
