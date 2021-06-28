@@ -11,4 +11,5 @@ urlpatterns = [
     path('api/v1/login', views.login, name="login"),
     path('api/v1/case-offices', views.case_offices, name="case_offices"),
     path('api/v1/case-types', views.case_types, name="case_types"),
+    path('api/v1/clients', views.clients, name="clients"),
 ]

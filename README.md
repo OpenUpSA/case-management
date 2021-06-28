@@ -74,6 +74,7 @@ In one shell, run the frontend asset builder
 In another shell, initialise and run the django app
 
     docker-compose run --rm web bin/wait-for-postgres.sh
+    docker-compose run --rm web python manage.py makemigrations
     docker-compose run --rm web python manage.py migrate
     docker-compose run --rm web python manage.py createsuperuser
     docker-compose up
