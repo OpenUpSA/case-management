@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CaseOffice, CaseType, Client
+from .models import Case, CaseOffice, CaseType, Client
 
 class CaseOfficeAdmin(admin.ModelAdmin):
     model = CaseOffice
@@ -17,7 +17,13 @@ class ClientAdmin(admin.ModelAdmin):
     list_display = ['name']
     list_filter = ['name']
 
+class CaseAdmin(admin.ModelAdmin):
+    model = Case
+    list_display = ['case_number']
+    list_filter = ['case_number']
+
 
 admin.site.register(CaseType, CaseTypeAdmin)
 admin.site.register(CaseOffice, CaseOfficeAdmin)
 admin.site.register(Client, ClientAdmin)
+admin.site.register(Case, CaseAdmin)

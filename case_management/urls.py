@@ -12,4 +12,5 @@ urlpatterns = [
     path('api/v1/case-offices', views.case_offices, name="case_offices"),
     path('api/v1/case-types', views.case_types, name="case_types"),
     path('api/v1/clients', views.clients, name="clients"),
+    path('api/v1/cases', views.cases, name="cases"),
 ]

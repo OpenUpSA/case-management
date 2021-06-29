@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CaseOffice, CaseType, Client
+from .models import CaseOffice, CaseType, Client, Case
 
 
 class CaseOfficeSerializer(serializers.ModelSerializer):
@@ -17,3 +17,10 @@ class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = '__all__'
+        depth = 2
+
+class CaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Case
+        fields = '__all__'
+        depth = 1

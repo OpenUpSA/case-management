@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from .enums import OfficialIdentifiers
@@ -27,6 +28,20 @@ class Client(models.Model):
         choices=OfficialIdentifiers.choices)
     contact_number = PhoneNumberField()
     contact_email = models.EmailField(max_length=254)
+    cases = models.ManyToManyField('Case', blank=True)
 
     def __str__(self):
         return self.preferred_name
+
+
+class Case(models.Model):
+    case_number = models.CharField(max_length=32, null=False, blank=False)
+    clients = models.ManyToManyField(
+        'Client', through=Client.cases.through, blank=True)
+
+    users = models.ManyToManyField(User)
+    case_types = models.ManyToManyField(CaseType)
+    case_offices = models.ManyToManyField(CaseOffice)
+
+    def __str__(self):
+        return self.case_number
