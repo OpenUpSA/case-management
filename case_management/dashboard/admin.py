@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Report
+from case_management.dashboard.models import Report
 
 class ReportAdmin(admin.ModelAdmin):
     model = Report

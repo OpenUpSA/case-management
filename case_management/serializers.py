@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CaseOffice, CaseType, Client, Case
+from case_management.models import CaseOffice, CaseType, Client, Case
 
 
 class CaseOfficeSerializer(serializers.ModelSerializer):

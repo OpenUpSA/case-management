@@ -2,11 +2,30 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-from .enums import OfficialIdentifiers
+from case_management.enums import OfficialIdentifiers
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
+from case_management.managers import UserManager
+
+
+class User(AbstractUser):
+    id = models.AutoField(primary_key=True)
+    username = None
+    email = models.EmailField(
+        verbose_name='email address',
+        max_length=255,
+        unique=True,
+    )
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
+
+    def __str__(self):
+        return self.email
 
 
 class CaseOffice(models.Model):
@@ -48,7 +67,7 @@ class Case(models.Model):
     clients = models.ManyToManyField(
         'Client', through=Client.cases.through, blank=True)
 
-    users = models.ManyToManyField(User)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     case_types = models.ManyToManyField(CaseType)
     case_offices = models.ManyToManyField(CaseOffice)
 
@@ -60,3 +79,4 @@ class Case(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+

@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from .serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, CaseSerializer
-from .models import CaseOffice, CaseType, Client, Case
+from case_management.models import CaseOffice, CaseType, Client, Case
 
 
 class Index(generic.TemplateView):
