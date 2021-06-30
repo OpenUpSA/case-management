@@ -10,11 +10,6 @@ class Index(generic.TemplateView):
     template_name = "index.html"
 
 
-@api_view(['POST', 'GET'])
-def login(_request):
-    return Response(True)
-
-
 @api_view(['GET'])
 def case_offices(_request):
     data = CaseOffice.objects.order_by("name")
