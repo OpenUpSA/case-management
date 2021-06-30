@@ -2,8 +2,8 @@ from django.views import generic
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, CaseSerializer
-from case_management.models import CaseOffice, CaseType, Client, Case
+from case_management.serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, CaseSerializer, MeetingSerializer
+from case_management.models import CaseOffice, CaseType, Client, Case, Meeting
 
 
 class Index(generic.TemplateView):
@@ -38,5 +38,12 @@ def clients(_request):
 def cases(_request):
     data = Case.objects
     serializer = CaseSerializer(data, many=True)
+
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def meetings(_request):
+    data = Meeting.objects
+    serializer = MeetingSerializer(data, many=True)
 
     return Response(serializer.data)

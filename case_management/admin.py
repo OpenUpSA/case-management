@@ -1,7 +1,7 @@
 from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
 
-from case_management.models import Case, CaseOffice, CaseType, Client, User
+from case_management.models import Case, CaseOffice, CaseType, Client, User, Meeting
 from case_management.forms import UserCreationForm, UserChangeForm
 
 
@@ -48,9 +48,15 @@ class CaseAdmin(admin.ModelAdmin):
     list_display = ['case_number']
     list_filter = ['case_number']
 
+class MeetingAdmin(admin.ModelAdmin):
+    model = Meeting
+    list_display = ['location', 'case']
+    list_filter = ['location', 'case']
+
 
 admin.site.register(CaseType, CaseTypeAdmin)
 admin.site.register(CaseOffice, CaseOfficeAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Case, CaseAdmin)
 admin.site.register(User, UserAdmin)
+admin.site.register(Meeting, MeetingAdmin)

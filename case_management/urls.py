@@ -15,5 +15,6 @@ urlpatterns = [
     path('api/v1/case-types', views.case_types, name="case_types"),
     path('api/v1/clients', views.clients, name="clients"),
     path('api/v1/cases', views.cases, name="cases"),
+    path('api/v1/meetings', views.meetings, name="meetings"),
     path('api/v1/authenticate', authviews.obtain_auth_token),
 ]
