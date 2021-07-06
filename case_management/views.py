@@ -1,49 +1,37 @@
+from rest_framework import status, viewsets
+
 from django.views import generic
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from case_management.serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, CaseSerializer, MeetingSerializer
-from case_management.models import CaseOffice, CaseType, Client, Case, Meeting
+from case_management.serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, LegalCaseSerializer, MeetingSerializer
+from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting
 
 
 class Index(generic.TemplateView):
     template_name = "index.html"
 
 
-@api_view(['GET'])
-def case_offices(_request):
-    data = CaseOffice.objects.order_by("name")
-    serializer = CaseOfficeSerializer(data, many=True)
-
-    return Response(serializer.data)
+class CaseOfficeViewSet(viewsets.ModelViewSet):
+    queryset = CaseOffice.objects.all()
+    serializer_class = CaseOfficeSerializer
 
 
-@api_view(['GET'])
-def case_types(_request):
-    data = CaseType.objects.order_by("title")
-    serializer = CaseTypeSerializer(data, many=True)
-
-    return Response(serializer.data)
+class CaseTypeViewSet(viewsets.ModelViewSet):
+    queryset = CaseType.objects.all()
+    serializer_class = CaseTypeSerializer
 
 
-@api_view(['GET'])
-def clients(_request):
-    data = Client.objects
-    serializer = ClientSerializer(data, many=True)
-
-    return Response(serializer.data)
+class ClientViewSet(viewsets.ModelViewSet):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
 
 
-@api_view(['GET'])
-def cases(_request):
-    data = Case.objects
-    serializer = CaseSerializer(data, many=True)
+class LegalCaseViewSet(viewsets.ModelViewSet):
+    queryset = LegalCase.objects.all()
+    serializer_class = LegalCaseSerializer
 
-    return Response(serializer.data)
 
-@api_view(['GET'])
-def meetings(_request):
-    data = Meeting.objects
-    serializer = MeetingSerializer(data, many=True)
-
-    return Response(serializer.data)
+class MeetingViewSet(viewsets.ModelViewSet):
+    queryset = Meeting.objects.all()
+    serializer_class = MeetingSerializer

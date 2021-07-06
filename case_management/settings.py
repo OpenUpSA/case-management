@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "rest_framework",
     "phonenumber_field",
-    "rest_framework.authtoken",
+    "rest_framework.authtoken"
 ]
 
 MIDDLEWARE = [

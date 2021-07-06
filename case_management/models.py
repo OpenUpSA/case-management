@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-from case_management.enums import OfficialIdentifiers
+from case_management.enums import OfficialIdentifiers, CaseStates
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -30,7 +30,7 @@ class User(AbstractUser):
 
 class CaseOffice(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=500)
+    name = models.CharField(max_length=500, unique=True)
     description = models.TextField()
 
     def __str__(self):
@@ -39,7 +39,7 @@ class CaseOffice(models.Model):
 
 class CaseType(models.Model):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
 
     def __str__(self):
@@ -51,23 +51,27 @@ class Client(models.Model):
     name = models.CharField(max_length=255, null=False, blank=False)
     preferred_name = models.CharField(max_length=128, null=False, blank=False)
     official_identifier = models.CharField(max_length=64)
-    official_identifier_type = models.IntegerField(
-        choices=OfficialIdentifiers.choices)
+    official_identifier_type = models.CharField(max_length=20,
+                                                choices=OfficialIdentifiers.choices)
     contact_number = PhoneNumberField()
     contact_email = models.EmailField(max_length=254)
-    cases = models.ManyToManyField('Case', blank=True)
+
+    class Meta:
+        unique_together = [['official_identifier', 'official_identifier_type']]
 
     def __str__(self):
         return self.preferred_name
 
 
-class Case(models.Model):
+class LegalCase(models.Model):
     id = models.AutoField(primary_key=True)
-    case_number = models.CharField(max_length=32, null=False, blank=False)
-    clients = models.ManyToManyField(
-        'Client', through=Client.cases.through, blank=True)
-
+    case_number = models.CharField(
+        max_length=32, null=False, blank=False, unique=True)
+    state = models.CharField(max_length=10,
+                             choices=CaseStates.choices)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    client = models.ForeignKey(
+        Client, related_name='legal_cases', on_delete=models.CASCADE)
     case_types = models.ManyToManyField(CaseType)
     case_offices = models.ManyToManyField(CaseOffice)
 
@@ -77,13 +81,14 @@ class Case(models.Model):
 
 class Meeting(models.Model):
     id = models.AutoField(primary_key=True)
-    case = models.OneToOneField(Case, on_delete=models.CASCADE)
+    legal_case = models.ForeignKey(
+        LegalCase, related_name='meetings', on_delete=models.CASCADE)
     location = models.CharField(max_length=255, null=False, blank=False)
     meeting_date = models.DateTimeField(null=False, blank=False)
     notes = models.TextField(null=False, blank=False)
 
     def __str__(self):
-        return f'{self.case.case_number} - {self.id}'
+        return f'{self.legal_case.case_number} - {self.id}'
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

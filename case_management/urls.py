@@ -1,20 +1,25 @@
+
 from django.contrib import admin
 from django.urls import include, path
-
+from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views as authviews
-from . import views
+from rest_framework import routers
 
+from . import views
+from case_management.views import MeetingViewSet, LegalCaseViewSet, CaseOfficeViewSet, CaseTypeViewSet, ClientViewSet
+
+router = DefaultRouter()
+router.register(r'api/v1/meetings', MeetingViewSet)
+router.register(r'api/v1/legal-cases', LegalCaseViewSet)
+router.register(r'api/v1/clients', ClientViewSet)
+router.register(r'api/v1/case-offices', CaseOfficeViewSet)
+router.register(r'api/v1/case-types', CaseTypeViewSet)
 
 urlpatterns = [
     path("", views.Index.as_view(), name="index"),
-    
+
     path("dashboard", include("case_management.dashboard.urls"),),
     path("admin/", admin.site.urls),
-
-    path('api/v1/case-offices', views.case_offices, name="case_offices"),
-    path('api/v1/case-types', views.case_types, name="case_types"),
-    path('api/v1/clients', views.clients, name="clients"),
-    path('api/v1/cases', views.cases, name="cases"),
-    path('api/v1/meetings', views.meetings, name="meetings"),
     path('api/v1/authenticate', authviews.obtain_auth_token),
+    path(r'', include(router.urls)),
 ]

@@ -30,15 +30,15 @@ RUN set -ex; \
 
 COPY . /app
 
-ARG USER_ID=1001
-ARG GROUP_ID=1001
+#ARG GROUP_ID=1001
+#ARG USER_ID=1001
 
-RUN set -ex; \
-  addgroup --gid $GROUP_ID --system django; \
-  adduser --system --uid $USER_ID --gid $GROUP_ID django; \
-  chown -R django:django /app
+#RUN set -ex; \
+#  addgroup --gid $GROUP_ID --system django; \
+#  adduser --system --uid $USER_ID --gid $GROUP_ID django; \
+#  chown -R django:django /app
 
-USER django
+#USER django
 
 WORKDIR /app
 
