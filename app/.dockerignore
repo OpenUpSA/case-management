@@ -1,0 +1,6 @@
+.DS_Store
+.git/
+.sass-cache
+__pycache__
+Dockerfile
+node_modules
