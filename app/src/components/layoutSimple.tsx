@@ -1,4 +1,4 @@
-import i18next from "i18next";
+import i18n from "../i18n";
 import { Component, ReactNode } from "react";
 import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -22,7 +22,7 @@ export class LayoutSimple extends Component<Props> {
             alignItems: "center"
           }}
         >
-          <img src={logo} alt={i18next.t("CaseFile Logo")} />
+          <img src={logo} alt={i18n.t("CaseFile Logo")} />
           {this.props.children}
         </Box>
       </Container>

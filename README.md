@@ -109,3 +109,10 @@ Undefined settings result in exceptions at startup to let you know they are not 
 | `DJANGO_SECRET_KEY` | undefined | String | Set this to something secret and unguessable in production. The security of your cookies and other crypto stuff in django depends on it. |
 | `TAG_MANAGER_CONTAINER_ID` | undefined | String | [Google Tag Manager](tagmanager.google.com) Container ID. [Use this to set up Google Analytics.](https://support.google.com/tagmanager/answer/6107124?hl=en). Requried unless `TAG_MANAGER_ENABLED` is set to `False` |
 | `TAG_MANAGER_ENABLED` | `True` | Boolean | Use this to disable the Tag Manager snippets, e.g. in dev or sandbox. |
+
+Database
+---------
+
+Generate a dot visualisaton diagram of the database architecture with;
+    
+    docker-compose run --rm web python manage.py graph_models -a -g -o database_diagram.dot

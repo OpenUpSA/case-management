@@ -1,10 +1,16 @@
 import { Switch, Route, Redirect } from "react-router-dom";
 
-import Login from "./pages/login";
-import ForgotPassword from "./pages/forgot-password";
-import Clients from "./pages/clients";
-import NotFound from "./pages/not-found";
-import ClippedDrawer from "./pages/clippedDrawer";
+import LoginPage from "./pages/login";
+import ForgotPasswordPage from "./pages/forgotPassword";
+
+import ClientsPage from "./pages/clients/list";
+import ClientPage from "./pages/clients/show";
+import LegalCasesPage from "./pages/legalCases/list";
+import LegalCasePage from "./pages/legalCases/show";
+import MeetingsPage from "./pages/meetings/list";
+import MeetingPage from "./pages/meetings/show";
+
+import NotFoundPage from "./pages/notFound";
 
 function Routes() {
   return (
@@ -12,12 +18,17 @@ function Routes() {
       <Route exact path="/">
         <Redirect to="/login" />
       </Route>
-      <Route exact path="/login" component={Login} />
-      <Route exact path="/dirk" component={ClippedDrawer} />
-      <Route exact path="/forgot-password" component={ForgotPassword} />
-      <Route exact path="/clients" component={Clients} />
+      <Route exact path="/login" component={LoginPage} />
+      <Route exact path="/forgot-password" component={ForgotPasswordPage} />
+      <Route exact path="/clients" component={ClientsPage} />
+      <Route exact path="/clients/:id" component={ClientPage} />
+      <Route exact path="/clients/:id/cases" component={LegalCasesPage} />
+      <Route exact path="/cases" component={LegalCasesPage} />
+      <Route exact path="/cases/:id" component={LegalCasePage} />
+      <Route exact path="/meetings" component={MeetingsPage} />
+      <Route exact path="/meetings/:id" component={MeetingPage} />
 
-      <Route component={NotFound} />
+      <Route component={NotFoundPage} />
     </Switch>
   );
 }

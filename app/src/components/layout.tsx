@@ -1,4 +1,3 @@
-import i18next from "i18next";
 import logo from "../logo-small.svg";
 import React, { ReactNode } from "react";
 import { IconButton } from "@material-ui/core";
@@ -11,16 +10,21 @@ import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Container from "@material-ui/core/Container";
 import Divider from "@material-ui/core/Divider";
+import { useHistory } from "react-router-dom";
 
 import ListItem from "@material-ui/core/ListItem";
 
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
+import PeopleIcon from "@material-ui/icons/People";
+import FolderIcon from "@material-ui/icons/Folder";
+import ForumIcon from "@material-ui/icons/Forum";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
+import i18n from "../i18n";
 
 const drawerWidth = 240;
 
@@ -54,6 +58,7 @@ type Props = {
 };
 
 export default function Layout(props: Props) {
+  let history = useHistory();
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -74,7 +79,7 @@ export default function Layout(props: Props) {
         <Container>
           <Toolbar>
             <Box display="flex" flexGrow={1}>
-              <img src={logo} alt={i18next.t("CaseFile Logo")} />
+              <img src={logo} alt={i18n.t("CaseFile Logo")} />
             </Box>
             <IconButton
               edge="end"
@@ -98,29 +103,61 @@ export default function Layout(props: Props) {
         <Toolbar />
         <div className={classes.drawerContainer}>
           <List>
-            {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
+            <ListItem
+              button
+              key="clients"
+              onClick={() => {
+                history.push("/clients");
+              }}
+            >
+              <ListItemIcon>
+                <PeopleIcon />
+              </ListItemIcon>
+              <ListItemText primary={i18n.t("Client list")} />
+            </ListItem>
+            <ListItem
+              button
+              key="cases"
+              onClick={() => {
+                history.push("/cases");
+              }}
+            >
+              <ListItemIcon>
+                <FolderIcon />
+              </ListItemIcon>
+              <ListItemText primary={i18n.t("Case list")} />
+            </ListItem>
+            <ListItem
+              button
+              key="meetings"
+              onClick={() => {
+                history.push("/meetings");
+              }}
+            >
+              <ListItemIcon>
+                <ForumIcon />
+              </ListItemIcon>
+              <ListItemText primary={i18n.t("All meetings")} />
+            </ListItem>
           </List>
           <Divider />
           <List>
-            {["All mail", "Trash", "Spam"].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
+          <ListItem
+              button
+              key="meetings"
+              onClick={() => {
+                history.push("/logout");
+              }}
+            >
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary={i18n.t("Logout")} />
+            </ListItem>
           </List>
         </div>
       </Drawer>
-      <Container>
+      <Container style={{ paddingTop: "100px" }}>
         <div>{props.children}</div>
       </Container>
     </div>

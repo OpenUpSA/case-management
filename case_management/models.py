@@ -30,6 +30,9 @@ class User(AbstractUser):
 
 class CaseOffice(models.Model):
     id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     name = models.CharField(max_length=500, unique=True)
     description = models.TextField()
 
@@ -39,6 +42,9 @@ class CaseOffice(models.Model):
 
 class CaseType(models.Model):
     id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
 
@@ -48,6 +54,9 @@ class CaseType(models.Model):
 
 class Client(models.Model):
     id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     name = models.CharField(max_length=255, null=False, blank=False)
     preferred_name = models.CharField(max_length=128, null=False, blank=False)
     official_identifier = models.CharField(max_length=64)
@@ -65,6 +74,9 @@ class Client(models.Model):
 
 class LegalCase(models.Model):
     id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     case_number = models.CharField(
         max_length=32, null=False, blank=False, unique=True)
     state = models.CharField(max_length=10,
@@ -81,9 +93,13 @@ class LegalCase(models.Model):
 
 class Meeting(models.Model):
     id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     legal_case = models.ForeignKey(
         LegalCase, related_name='meetings', on_delete=models.CASCADE)
     location = models.CharField(max_length=255, null=False, blank=False)
+    meeting_type = models.CharField(max_length=50, null=False, blank=False, default="In person meeting")
     meeting_date = models.DateTimeField(null=False, blank=False)
     notes = models.TextField(null=False, blank=False)
 

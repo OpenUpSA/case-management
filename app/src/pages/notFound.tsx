@@ -1,6 +1,6 @@
 import logo from "../logo.svg";
 
-import i18next from "i18next";
+import i18n from "../i18n";
 
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
@@ -21,15 +21,15 @@ export default function Page() {
           alignItems: "center",
         }}
       >
-        <img src={logo} alt={i18next.t("CaseFile Logo")} />
+        <img src={logo} alt={i18n.t("CaseFile Logo")} />
 
         <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>
-          {i18next.t("Lost")}
+          {i18n.t("Lost")}
         </Typography>
-        <p>{i18next.t("Lost message")}</p>
+        <p>{i18n.t("Lost message")}</p>
         <Link to="/">
           <Button variant="contained" color="primary">
-            {i18next.t("Home")}
+            {i18n.t("Home")}
           </Button>
         </Link>
       </Box>

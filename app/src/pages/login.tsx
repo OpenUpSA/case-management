@@ -1,7 +1,7 @@
 import { Component } from "react";
 
-import LayoutSimple from "../components/layout-simple";
-import i18next from "i18next";
+import LayoutSimple from "../components/layoutSimple";
+import i18n from "../i18n";
 
 import { RouteComponentProps } from "react-router-dom";
 
@@ -21,7 +21,7 @@ class Page extends Component<RouteComponentProps> {
     return (
       <LayoutSimple>
         <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>
-          {i18next.t("Login")}
+          {i18n.t("Login")}
         </Typography>
 
         <Box component="form" onSubmit={this.handleSubmit} style={{ marginTop: 1 }}>
@@ -30,7 +30,7 @@ class Page extends Component<RouteComponentProps> {
             required
             fullWidth
             id="email"
-            label={i18next.t("Email Address")}
+            label={i18n.t("Email Address")}
             name="email"
             autoComplete="email"
             autoFocus
@@ -40,7 +40,7 @@ class Page extends Component<RouteComponentProps> {
             required
             fullWidth
             name="password"
-            label={i18next.t("Password")}
+            label={i18n.t("Password")}
             type="password"
             id="password"
             autoComplete="current-password"
@@ -51,7 +51,7 @@ class Page extends Component<RouteComponentProps> {
             variant="contained"
             style={{ marginTop: 3, marginBottom: 2 }}
           >
-            {i18next.t("Login")}
+            {i18n.t("Login")}
           </Button>
           <div
             style={{
@@ -59,7 +59,7 @@ class Page extends Component<RouteComponentProps> {
             }}
           >
             <Link href="/forgot-password" variant="body2">
-              {i18next.t("Forgot password")}
+              {i18n.t("Forgot password")}
             </Link>
           </div>
         </Box>

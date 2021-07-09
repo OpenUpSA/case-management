@@ -1,8 +1,8 @@
 import { Component } from "react";
 
-import LayoutSimple from "../components/layout-simple";
+import LayoutSimple from "../components/layoutSimple";
 
-import i18next from "i18next";
+import i18n from "../i18n";
 
 import { RouteComponentProps } from "react-router-dom";
 
@@ -22,16 +22,20 @@ class Page extends Component<RouteComponentProps> {
     return (
       <LayoutSimple>
         <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>
-          {i18next.t("Reset password")}
+          {i18n.t("Reset password")}
         </Typography>
 
-        <Box component="form" onSubmit={this.handleSubmit} style={{ marginTop: 1 }}>
+        <Box
+          component="form"
+          onSubmit={this.handleSubmit}
+          style={{ marginTop: 1 }}
+        >
           <TextField
             margin="normal"
             required
             fullWidth
             id="email"
-            label={i18next.t("Email Address")}
+            label={i18n.t("Email Address")}
             name="email"
             autoComplete="email"
             autoFocus
@@ -42,7 +46,7 @@ class Page extends Component<RouteComponentProps> {
             variant="contained"
             style={{ marginTop: 3, marginBottom: 2 }}
           >
-            {i18next.t("Reset password")}
+            {i18n.t("Reset password")}
           </Button>
           <div
             style={{
@@ -50,7 +54,7 @@ class Page extends Component<RouteComponentProps> {
             }}
           >
             <Link href="/login" variant="body2">
-              {i18next.t("Login")}
+              {i18n.t("Login")}
             </Link>
           </div>
         </Box>

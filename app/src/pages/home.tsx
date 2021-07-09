@@ -35,7 +35,9 @@ class Home extends Component<IProps, IState> {
             align="center"
             gutterBottom
           >
-            Welcome to CaseFile. For all your {toSentence(this.state.caseTypes.map(caseType => caseType.title))} needs.
+            Welcome to CaseFile. For all your{" "}
+            {toSentence(this.state.caseTypes.map((caseType) => caseType.title))}{" "}
+            needs.
           </Typography>
         </Container>
         <Link to="/about">
