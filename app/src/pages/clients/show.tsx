@@ -6,10 +6,12 @@ import { Link } from "react-router-dom";
 import Layout from "../../components/layout";
 import { getClient } from "../../api";
 import { IClient } from "../../types";
+import { RedirectIfNotLoggedIn } from "../../auth";
 
 type RouteParams = { id: string };
 
 const Page = () => {
+  RedirectIfNotLoggedIn();
   const params = useParams<RouteParams>();
   const [client, setClient] = React.useState<IClient>();
 

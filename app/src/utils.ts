@@ -16,19 +16,19 @@ export const useStyles = makeStyles({
   tableHeadRow: {
     backgroundColor: "transparent",
     "&>:last-child": {
-      borderRight: "none"
-    }
+      borderRight: "none",
+    },
   },
   tableHeadCell: {
     padding: "6px 10px",
     border: "none",
-    borderRight: "solid 1px rgba(0, 0, 0, 0.05)"
+    borderRight: "solid 1px rgba(0, 0, 0, 0.05)",
   },
   tableBodyRow: {
     "&>:last-child": {
       borderTopRightRadius: "4px",
       borderBottomRightRadius: "4px",
-      borderRight: "none"
+      borderRight: "none",
     },
     "&>:first-child": {
       borderTopLeftRadius: "4px",
@@ -37,7 +37,7 @@ export const useStyles = makeStyles({
     "&:hover td": {
       cursor: "pointer",
       backgroundColor: "rgba(0, 0, 0, 0.09)",
-    }
+    },
   },
   tableBodyCell: {
     backgroundColor: "rgba(0, 0, 0, 0.05)",

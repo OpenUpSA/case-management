@@ -20,10 +20,12 @@ import Layout from "../../components/layout";
 import { getLegalCases, getClient, getCaseTypes } from "../../api";
 import { ILegalCase, IClient, ICaseType } from "../../types";
 import { useStyles } from "../../utils";
+import { RedirectIfNotLoggedIn } from "../../auth";
 
 type RouteParams = { id: string };
 
 const Page = () => {
+  RedirectIfNotLoggedIn();
   const classes = useStyles();
   let history = useHistory();
   const params = useParams<RouteParams>();

@@ -17,7 +17,9 @@ const resources = {
       "New legal case": "New case",
       "New client": "New client",
       "Legal Case": "Case",
-      "Case Number": "Case Number"
+      "Case Number": "Case Number",
+      "Welcome to CaseFile": "Welcome to CaseFile.",
+      "Login error": "Invalid email or password, please try again."
     },
   },
   fr: {

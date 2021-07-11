@@ -21,8 +21,10 @@ import { getLegalCases, getMeetings, getClients } from "../../api";
 import { ILegalCase, IMeeting, IClient } from "../../types";
 import i18n from "../../i18n";
 import { useStyles } from "../../utils";
+import { RedirectIfNotLoggedIn } from "../../auth";
 
 const Page = () => {
+  RedirectIfNotLoggedIn();
   const classes = useStyles();
   let history = useHistory();
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();

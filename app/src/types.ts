@@ -50,3 +50,18 @@ export interface IMeeting {
   meeting_type: string;
   notes: string;
 }
+
+export interface IToken {
+  token: string;
+}
+
+export interface IAuthenticate {
+  username: string;
+  password: string;
+}
+
+export interface IStorage {
+  getItem(key: string): string | null;
+  setItem(key: string, value: string): void;
+  removeItem(key: string): void;
+}

@@ -11,6 +11,7 @@ import List from "@material-ui/core/List";
 import Container from "@material-ui/core/Container";
 import Divider from "@material-ui/core/Divider";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import ListItem from "@material-ui/core/ListItem";
 
@@ -20,11 +21,12 @@ import ListItemText from "@material-ui/core/ListItemText";
 import PeopleIcon from "@material-ui/icons/People";
 import FolderIcon from "@material-ui/icons/Folder";
 import ForumIcon from "@material-ui/icons/Forum";
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import i18n from "../i18n";
+import { Tokens } from "../auth";
 
 const drawerWidth = 240;
 
@@ -67,6 +69,12 @@ export default function Layout(props: Props) {
     setOpen(!open);
   };
 
+  const logout = () => {
+    const tokens = Tokens.getInstance();
+    tokens.clear();
+    history.push("/");
+  };
+
   return (
     <div>
       <CssBaseline />
@@ -79,7 +87,9 @@ export default function Layout(props: Props) {
         <Container>
           <Toolbar>
             <Box display="flex" flexGrow={1}>
-              <img src={logo} alt={i18n.t("CaseFile Logo")} />
+              <Link to="/">
+                <img src={logo} alt={i18n.t("CaseFile Logo")} />
+              </Link>
             </Box>
             <IconButton
               edge="end"
@@ -142,13 +152,7 @@ export default function Layout(props: Props) {
           </List>
           <Divider />
           <List>
-          <ListItem
-              button
-              key="meetings"
-              onClick={() => {
-                history.push("/logout");
-              }}
-            >
+            <ListItem button key="meetings" onClick={logout}>
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>

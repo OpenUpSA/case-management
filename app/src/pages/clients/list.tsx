@@ -19,8 +19,10 @@ import Layout from "../../components/layout";
 import { getClients } from "../../api";
 import { IClient } from "../../types";
 import { useStyles } from "../../utils";
+import { RedirectIfNotLoggedIn } from "../../auth";
 
 const Page = () => {
+  RedirectIfNotLoggedIn();
   const classes = useStyles();
   let history = useHistory();
   const [clients, setClients] = React.useState<IClient[]>();

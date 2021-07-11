@@ -1,39 +1,78 @@
-import { ILegalCase, IClient, ICaseType, ICaseOffice, IMeeting } from "./types";
+import {
+  ILegalCase,
+  IClient,
+  ICaseType,
+  ICaseOffice,
+  IMeeting,
+  IToken,
+  IAuthenticate,
+} from "./types";
 
-export async function http<T>(request: RequestInfo): Promise<T> {
+export async function httpGet<T>(request: RequestInfo): Promise<T> {
   const response = await fetch(request);
   const body = await response.json();
   return body;
 }
 
+async function http<T>(path: string, config: RequestInit): Promise<T> {
+  const request = new Request(path, config);
+  const response = await fetch(request);
+  return response.json().catch(() => ({}));
+}
+
+export async function httpPost<T, U>(
+  path: string,
+  body: T,
+  config?: RequestInit
+): Promise<U> {
+  const init = {
+    method: "post",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+    ...config,
+  };
+  return await http<U>(path, init);
+}
+
 export const getLegalCases = async (id?: number) => {
-  return await http<ILegalCase[]>(`/api/v1/cases/`);
+  return await httpGet<ILegalCase[]>(`/api/v1/cases/`);
 };
 
 export const getLegalCase = async (id: number) => {
-  return await http<ILegalCase>(`/api/v1/cases/${id}/`);
+  return await httpGet<ILegalCase>(`/api/v1/cases/${id}/`);
 };
 
 export const getClients = async () => {
-  return await http<IClient[]>(`/api/v1/clients/`);
+  return await httpGet<IClient[]>(`/api/v1/clients/`);
 };
 
 export const getClient = async (id: number) => {
-  return await http<IClient>(`/api/v1/clients/${id}/`);
+  return await httpGet<IClient>(`/api/v1/clients/${id}/`);
 };
 
 export const getCaseTypes = async () => {
-  return await http<ICaseType[]>(`/api/v1/case-types/`);
+  return await httpGet<ICaseType[]>(`/api/v1/case-types/`);
 };
 
 export const getCaseOffices = async () => {
-  return await http<ICaseOffice[]>(`/api/v1/case-offices/`);
+  return await httpGet<ICaseOffice[]>(`/api/v1/case-offices/`);
 };
 
 export const getMeetings = async () => {
-  return await http<IMeeting[]>(`/api/v1/meetings/`);
+  return await httpGet<IMeeting[]>(`/api/v1/meetings/`);
 };
 
 export const getMeeting = async (id: number) => {
-  return await http<IMeeting>(`/api/v1/meetings/${id}/`);
+  return await httpGet<IMeeting>(`/api/v1/meetings/${id}/`);
+};
+
+export const authenticate = async (username: string, password: string) => {
+  const body = {
+    username: username,
+    password: password,
+  };
+  return await httpPost<IAuthenticate, IToken>("/api/v1/authenticate", body);
 };

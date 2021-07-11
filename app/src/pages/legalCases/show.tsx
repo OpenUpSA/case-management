@@ -7,10 +7,12 @@ import { Link } from "react-router-dom";
 import Layout from "../../components/layout";
 import { getCaseOffices, getCaseTypes, getClient, getLegalCase } from "../../api";
 import { ILegalCase, IClient, ICaseType, ICaseOffice } from "../../types";
+import { RedirectIfNotLoggedIn } from "../../auth";
 
 type RouteParams = { id: string };
 
 const Page = () => {
+  RedirectIfNotLoggedIn();
   const params = useParams<RouteParams>();
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [caseTypes, setCaseTypes] = React.useState<ICaseType[]>();
