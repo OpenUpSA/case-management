@@ -96,6 +96,19 @@ Running tests
 Tests might fail to connect to the databse if the docker-compose `db` service wasn't running and configured yet. Just check the logs for the `db` service and run the tests again.
 
 
+Deploying
+---------
+
+Add the dokku app target as Git remote, then push to deploy:
+
+```shell
+git remote add prod dokku@hetzner1.openup.org.za:osf-case-management-prod
+git push prod master
+```
+
+The dokku app environment is deployed using an [Ansible playbook](https://github.com/OpenUpSA/ansible-config/tree/master/apps/osf-case-management).
+
+
 Settings
 --------
 
