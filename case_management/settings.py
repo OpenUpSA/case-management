@@ -57,8 +57,13 @@ INSTALLED_APPS = [
     "rest_framework",
     "phonenumber_field",
     "rest_framework.authtoken",
+    "django_filters",
     "drf_yasg",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

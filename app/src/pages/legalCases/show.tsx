@@ -45,7 +45,7 @@ const Page = () => {
       const dataLegalCase = await getLegalCase(caseId);
       const dataCaseTypes = await getCaseTypes();
       const dataCaseOffices = await getCaseOffices();
-      const dataMeetings = await getMeetings();
+      const dataMeetings = await getMeetings(caseId);
       setLegalCase(dataLegalCase);
       setCaseTypes(dataCaseTypes);
       setCaseOffices(dataCaseOffices);

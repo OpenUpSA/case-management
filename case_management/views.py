@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 
 from django.views import generic
@@ -30,8 +31,12 @@ class ClientViewSet(viewsets.ModelViewSet):
 class LegalCaseViewSet(viewsets.ModelViewSet):
     queryset = LegalCase.objects.all()
     serializer_class = LegalCaseSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['client']
 
 
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['legal_case']

@@ -36,7 +36,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/v1/authenticate', authviews.obtain_auth_token),
     path(r'', include(router.urls)),
-    re_path(r'^api/v1(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    re_path(r'^api/v1(?P<format>\.json|\.yaml)$',
+            schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('api/ui/', schema_view.with_ui('swagger',
          cache_timeout=0), name='schema-swagger-ui'),
 
