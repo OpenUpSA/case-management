@@ -20,6 +20,21 @@ async function http<T>(path: string, config: RequestInit): Promise<T> {
   return response.json().catch(() => ({}));
 }
 
+export async function httpDelete<T>(
+  path: string,
+  config?: RequestInit
+): Promise<T> {
+  const init = {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    ...config,
+  };
+  return await http<T>(path, init);
+}
+
 export async function httpPost<T, U>(
   path: string,
   body: T,
@@ -27,6 +42,23 @@ export async function httpPost<T, U>(
 ): Promise<U> {
   const init = {
     method: "post",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+    ...config,
+  };
+  return await http<U>(path, init);
+}
+
+export async function httpPatch<T, U>(
+  path: string,
+  body: T,
+  config?: RequestInit
+): Promise<U> {
+  const init = {
+    method: "PATCH",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -67,6 +99,23 @@ export const getMeetings = async () => {
 
 export const getMeeting = async (id: number) => {
   return await httpGet<IMeeting>(`/api/v1/meetings/${id}/`);
+};
+
+export const createMeeting = async (meeting: IMeeting) => {
+  const body = meeting;
+  return await httpPost<IMeeting, IMeeting>("/api/v1/meetings/", body);
+};
+
+export const updateMeeting = async (meeting: IMeeting) => {
+  const body = meeting;
+  return await httpPatch<IMeeting, IMeeting>(
+    `/api/v1/meetings/${meeting.id}/`,
+    body
+  );
+};
+
+export const deleteMeeting = async (id: number) => {
+  return await httpDelete<IMeeting>(`/api/v1/meetings/${id}/`);
 };
 
 export const authenticate = async (username: string, password: string) => {

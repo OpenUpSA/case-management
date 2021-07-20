@@ -6,10 +6,14 @@ import ForgotPasswordPage from "./pages/forgotPassword";
 
 import ClientsPage from "./pages/clients/list";
 import ClientPage from "./pages/clients/show";
+
 import LegalCasesPage from "./pages/legalCases/list";
 import LegalCasePage from "./pages/legalCases/show";
+
 import MeetingsPage from "./pages/meetings/list";
 import MeetingPage from "./pages/meetings/show";
+import MeetingEditPage from "./pages/meetings/edit";
+import MeetingNewPage from "./pages/meetings/new";
 
 import NotFoundPage from "./pages/notFound";
 
@@ -25,8 +29,11 @@ function Routes() {
       <Route exact path="/clients/:id/cases" component={LegalCasesPage} />
       <Route exact path="/cases" component={LegalCasesPage} />
       <Route exact path="/cases/:id" component={LegalCasePage} />
+      
       <Route exact path="/meetings" component={MeetingsPage} />
       <Route exact path="/meetings/:id" component={MeetingPage} />
+      <Route exact path="/meetings/:id/edit" component={MeetingEditPage} />
+      <Route exact path="/cases/:id/meetings/new" component={MeetingNewPage} />
 
       <Route component={NotFoundPage} />
     </Switch>

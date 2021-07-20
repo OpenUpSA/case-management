@@ -41,12 +41,12 @@ export interface ILegalCase {
 }
 
 export interface IMeeting {
-  id: number;
-  created_at: Date;
-  updated_at: Date;
+  id?: number;
+  created_at?: Date;
+  updated_at?: Date;
   legal_case: number;
   location: string;
-  meeting_date: Date;
+  meeting_date: string;
   meeting_type: string;
   notes: string;
 }

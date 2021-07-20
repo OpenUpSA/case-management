@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { format } from "date-fns";
 import { useParams } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
+import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
-import { getClient, getLegalCase, getMeeting, deleteMeeting } from "../../api";
+import { getClient, getLegalCase } from "../../api";
 import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import {
@@ -17,15 +17,17 @@ import {
   Grid,
   ListItemIcon,
 } from "@material-ui/core";
+
 import { useStyles } from "../../utils";
 import ChatIcon from "@material-ui/icons/Chat";
-import DeleteIcon from "@material-ui/icons/Delete";
 import RateReviewIcon from "@material-ui/icons/RateReview";
-import MoreMenu from "../../components/moreMenu";
-
-import MeetingForm from "./form";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import CloseIcon from "@material-ui/icons/Close";
+
+import MeetingForm from "./form";
+
+import { createMeeting } from "../../api";
 
 type RouteParams = { id: string };
 
@@ -36,23 +38,39 @@ const Page = () => {
   const params = useParams<RouteParams>();
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
-  const [meeting, setMeeting] = React.useState<IMeeting>();
+  const [meeting] = React.useState<IMeeting>({
+    location: "",
+    meeting_date: new Date().toISOString().slice(0, 16),
+    meeting_type: "",
+    legal_case: 0,
+    notes: "",
+  });
 
-  const destroyMeeting = () => {
-    if (
-      window.confirm(i18n.t("Are you sure you want to delete this meeting?"))
-    ) {
-      deleteMeeting(parseInt(params.id));
-      history.push(`/cases/${legalCase?.id}`);
+  const newMeeting = async (
+    notes: string,
+    location: string,
+    meetingDate: string,
+    meetingType: string
+  ) => {
+    try {
+      const newMeeting = {
+        legal_case: parseInt(params.id),
+        location: location,
+        meeting_date: meetingDate,
+        meeting_type: meetingType,
+        notes: notes,
+      };
+      const { id } = await createMeeting(newMeeting);
+      history.push(`/meetings/${id}`);
+    } catch (e) {
+      console.log(e);
     }
   };
 
   useEffect(() => {
     async function fetchData() {
-      const meetingId = parseInt(params.id);
-      const dataMeeting = await getMeeting(meetingId);
-      const dataLegalCase = await getLegalCase(dataMeeting.legal_case);
-      setMeeting(dataMeeting);
+      const caseId = parseInt(params.id);
+      const dataLegalCase = await getLegalCase(caseId);
       setLegalCase(dataLegalCase);
       setClient(await getClient(dataLegalCase.client));
     }
@@ -71,45 +89,45 @@ const Page = () => {
         <Link to={`/cases/${legalCase?.id}`} component={Button}>
           {legalCase?.case_number}
         </Link>
-        <div>
-          {meeting ? (
-            <span>
-              {meeting.meeting_type} -{" "}
-              {format(new Date(meeting.meeting_date), "MM/dd/yyyy (h:ma)")}
-            </span>
-          ) : (
-            ""
-          )}
-        </div>
+        <div>{i18n.t("New meeting")}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
-        <form>
+        <form
+          onSubmit={(event: React.SyntheticEvent) => {
+            event.preventDefault();
+            const target = event.target as typeof event.target & {
+              notes: { value: string };
+              location: { value: string };
+              meetingDate: { value: string };
+              meetingType: { value: string };
+            };
+
+            newMeeting(
+              target.notes.value,
+              target.location.value,
+              target.meetingDate.value,
+              target.meetingType.value
+            );
+          }}
+        >
           <Grid container direction="row" spacing={2} alignItems="center">
             <Grid item>
               <ChatIcon color="primary" style={{ display: "flex" }} />
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
-              <Typography variant="h6">
-                {meeting ? (
-                  <strong>
-                    {meeting.meeting_type} -{" "}
-                    {format(
-                      new Date(meeting.meeting_date),
-                      "MM/dd/yyyy (h:ma)"
-                    )}
-                  </strong>
-                ) : (
-                  ""
-                )}
-              </Typography>
+              <Typography variant="h6">{i18n.t("New meeting")}</Typography>
             </Grid>
             <Grid item>
               <MoreMenu>
-                <ListItem onClick={destroyMeeting}>
+                <ListItem
+                  onClick={(e) => {
+                    history.push(`/cases/${legalCase?.id}`);
+                  }}
+                >
                   <ListItemIcon>
-                    <DeleteIcon fontSize="small" />
+                    <CloseIcon fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText>{i18n.t("Delete meeting")}</ListItemText>
+                  <ListItemText>{i18n.t("Cancel changes")}</ListItemText>
                 </ListItem>
               </MoreMenu>
             </Grid>
@@ -118,17 +136,14 @@ const Page = () => {
                 color="primary"
                 variant="contained"
                 startIcon={<RateReviewIcon />}
-                onClick={() => {
-                  history.push(`/meetings/${meeting?.id}/edit`);
-                }}
+                type="submit"
               >
-                {i18n.t("Edit meeting")}
+                {i18n.t("Save meeting")}
               </Button>
             </Grid>
           </Grid>
-
           <hr className={classes.hrInvisible} />
-          {meeting ? <MeetingForm meeting={meeting} /> : null}
+          <MeetingForm meeting={meeting} readOnly={false} />
         </form>
       </Container>
     </Layout>

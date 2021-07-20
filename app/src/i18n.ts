@@ -19,7 +19,8 @@ const resources = {
       "Legal Case": "Case",
       "Case Number": "Case Number",
       "Welcome to CaseFile": "Welcome to CaseFile.",
-      "Login error": "Invalid email or password, please try again."
+      "Login error": "Invalid email or password, please try again.",
+      "© 2021 OpenUp": "© 2021 OpenUp."
     },
   },
   fr: {

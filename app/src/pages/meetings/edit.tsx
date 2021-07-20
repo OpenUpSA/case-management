@@ -4,10 +4,16 @@ import { format } from "date-fns";
 import { useParams } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
+import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
-import { getClient, getLegalCase, getMeeting, deleteMeeting } from "../../api";
+import {
+  getClient,
+  getLegalCase,
+  getMeeting,
+  updateMeeting,
+} from "../../api";
 import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import {
@@ -19,13 +25,12 @@ import {
 } from "@material-ui/core";
 import { useStyles } from "../../utils";
 import ChatIcon from "@material-ui/icons/Chat";
-import DeleteIcon from "@material-ui/icons/Delete";
 import RateReviewIcon from "@material-ui/icons/RateReview";
-import MoreMenu from "../../components/moreMenu";
-
-import MeetingForm from "./form";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import CloseIcon from "@material-ui/icons/Close";
+
+import MeetingForm from "./form";
 
 type RouteParams = { id: string };
 
@@ -38,12 +43,25 @@ const Page = () => {
   const [client, setClient] = React.useState<IClient>();
   const [meeting, setMeeting] = React.useState<IMeeting>();
 
-  const destroyMeeting = () => {
-    if (
-      window.confirm(i18n.t("Are you sure you want to delete this meeting?"))
-    ) {
-      deleteMeeting(parseInt(params.id));
-      history.push(`/cases/${legalCase?.id}`);
+  const saveMeeting = async (
+    notes: string,
+    location: string,
+    meetingDate: string,
+    meetingType: string
+  ) => {
+    try {
+      const updatedMeeting = {
+        id: parseInt(params.id),
+        legal_case: parseInt(params.id),
+        location: location,
+        meeting_date: meetingDate,
+        meeting_type: meetingType,
+        notes: notes,
+      };
+      const { id } = await updateMeeting(updatedMeeting);
+      history.push(`/meetings/${id}`);
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -83,7 +101,24 @@ const Page = () => {
         </div>
       </Breadcrumbs>
       <Container maxWidth="md">
-        <form>
+        <form
+          onSubmit={(event: React.SyntheticEvent) => {
+            event.preventDefault();
+            const target = event.target as typeof event.target & {
+              notes: { value: string };
+              location: { value: string };
+              meetingDate: { value: string };
+              meetingType: { value: string };
+            };
+
+            saveMeeting(
+              target.notes.value,
+              target.location.value,
+              target.meetingDate.value,
+              target.meetingType.value
+            );
+          }}
+        >
           <Grid container direction="row" spacing={2} alignItems="center">
             <Grid item>
               <ChatIcon color="primary" style={{ display: "flex" }} />
@@ -105,11 +140,15 @@ const Page = () => {
             </Grid>
             <Grid item>
               <MoreMenu>
-                <ListItem onClick={destroyMeeting}>
+                <ListItem
+                  onClick={(e) => {
+                    history.push(`/meetings/${meeting?.id}`);
+                  }}
+                >
                   <ListItemIcon>
-                    <DeleteIcon fontSize="small" />
+                    <CloseIcon fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText>{i18n.t("Delete meeting")}</ListItemText>
+                  <ListItemText>{i18n.t("Cancel changes")}</ListItemText>
                 </ListItem>
               </MoreMenu>
             </Grid>
@@ -118,17 +157,14 @@ const Page = () => {
                 color="primary"
                 variant="contained"
                 startIcon={<RateReviewIcon />}
-                onClick={() => {
-                  history.push(`/meetings/${meeting?.id}/edit`);
-                }}
+                type="submit"
               >
-                {i18n.t("Edit meeting")}
+                {i18n.t("Save meeting")}
               </Button>
             </Grid>
           </Grid>
-
           <hr className={classes.hrInvisible} />
-          {meeting ? <MeetingForm meeting={meeting} /> : null}
+          {meeting ? <MeetingForm meeting={meeting} readOnly={false} /> : null}
         </form>
       </Container>
     </Layout>
