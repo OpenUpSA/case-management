@@ -9,6 +9,21 @@ export function toSentence(items: string[]): string {
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    zeroWidthOnMobile: {
+      [theme.breakpoints.down("xs")]: {
+        width: "0",
+        padding: "0!important" as any,
+      }
+    },
+    canBeFab: {
+      [theme.breakpoints.down("xs")]: {
+        margin: "0px",
+        right: "16px",
+        bottom: "20px",
+        position: "fixed",
+        "z-index": "1300",
+      },
+    },
     appBar: {
       "z-index": "100000",
     },
@@ -29,8 +44,14 @@ export const useStyles = makeStyles((theme: Theme) =>
       bottom: "1em",
     },
     breadcrumbs: {
-      marginTop: "66px",
-      marginBottom: "46px",
+      [theme.breakpoints.up("md")]: {
+        marginTop: "66px",
+        marginBottom: "46px",
+      },
+      [theme.breakpoints.down("xs")]: {
+        marginTop: "59px",
+        marginBottom: "26px",
+      },
       paddingTop: "0.75em",
       paddingBottom: "0.75em",
       backgroundColor: "rgba(0, 0, 0, 0.02)",
@@ -98,7 +119,6 @@ export const useStyles = makeStyles((theme: Theme) =>
     hrInvisible: {
       height: "1px",
       border: "none",
-    }
-
+    },
   })
 );

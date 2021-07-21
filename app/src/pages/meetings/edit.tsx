@@ -8,12 +8,7 @@ import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
-import {
-  getClient,
-  getLegalCase,
-  getMeeting,
-  updateMeeting,
-} from "../../api";
+import { getClient, getLegalCase, getMeeting, updateMeeting } from "../../api";
 import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import {
@@ -44,6 +39,7 @@ const Page = () => {
   const [meeting, setMeeting] = React.useState<IMeeting>();
 
   const saveMeeting = async (
+    legalCase: number,
     notes: string,
     location: string,
     meetingDate: string,
@@ -52,7 +48,7 @@ const Page = () => {
     try {
       const updatedMeeting = {
         id: parseInt(params.id),
-        legal_case: parseInt(params.id),
+        legal_case: legalCase,
         location: location,
         meeting_date: meetingDate,
         meeting_type: meetingType,
@@ -89,16 +85,7 @@ const Page = () => {
         <Link to={`/cases/${legalCase?.id}`} component={Button}>
           {legalCase?.case_number}
         </Link>
-        <div>
-          {meeting ? (
-            <span>
-              {meeting.meeting_type} -{" "}
-              {format(new Date(meeting.meeting_date), "MM/dd/yyyy (h:ma)")}
-            </span>
-          ) : (
-            ""
-          )}
-        </div>
+        <div>{meeting?.meeting_type}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
         <form
@@ -112,6 +99,7 @@ const Page = () => {
             };
 
             saveMeeting(
+              meeting?.legal_case || 0,
               target.notes.value,
               target.location.value,
               target.meetingDate.value,
@@ -125,17 +113,7 @@ const Page = () => {
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
               <Typography variant="h6">
-                {meeting ? (
-                  <strong>
-                    {meeting.meeting_type} -{" "}
-                    {format(
-                      new Date(meeting.meeting_date),
-                      "MM/dd/yyyy (h:ma)"
-                    )}
-                  </strong>
-                ) : (
-                  ""
-                )}
+                <strong>{meeting?.meeting_type}</strong>
               </Typography>
             </Grid>
             <Grid item>
@@ -152,8 +130,9 @@ const Page = () => {
                 </ListItem>
               </MoreMenu>
             </Grid>
-            <Grid item>
+            <Grid item className={classes.zeroWidthOnMobile}>
               <Button
+                className={classes.canBeFab}
                 color="primary"
                 variant="contained"
                 startIcon={<RateReviewIcon />}

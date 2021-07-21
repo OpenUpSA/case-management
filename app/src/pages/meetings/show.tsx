@@ -71,16 +71,7 @@ const Page = () => {
         <Link to={`/cases/${legalCase?.id}`} component={Button}>
           {legalCase?.case_number}
         </Link>
-        <div>
-          {meeting ? (
-            <span>
-              {meeting.meeting_type} -{" "}
-              {format(new Date(meeting.meeting_date), "MM/dd/yyyy (h:ma)")}
-            </span>
-          ) : (
-            ""
-          )}
-        </div>
+        <div>{meeting?.meeting_type}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
         <form>
@@ -90,17 +81,7 @@ const Page = () => {
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
               <Typography variant="h6">
-                {meeting ? (
-                  <strong>
-                    {meeting.meeting_type} -{" "}
-                    {format(
-                      new Date(meeting.meeting_date),
-                      "MM/dd/yyyy (h:ma)"
-                    )}
-                  </strong>
-                ) : (
-                  ""
-                )}
+                <strong>{meeting?.meeting_type}</strong>
               </Typography>
             </Grid>
             <Grid item>
@@ -113,8 +94,9 @@ const Page = () => {
                 </ListItem>
               </MoreMenu>
             </Grid>
-            <Grid item>
+            <Grid item className={classes.zeroWidthOnMobile}>
               <Button
+                className={classes.canBeFab}
                 color="primary"
                 variant="contained"
                 startIcon={<RateReviewIcon />}

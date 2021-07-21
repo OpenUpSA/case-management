@@ -72,15 +72,17 @@ const Page = () => {
           </Grid>
           <Grid item style={{ flexGrow: 1 }}>
             <Typography variant="h6">
-              <strong>{client ? client.preferred_name : i18n.t("Case list")}</strong>
+              <strong>
+                {client ? client.preferred_name : i18n.t("Case list")}
+              </strong>
             </Typography>
           </Grid>
           <Grid item>
-            <MoreMenu>              
-            </MoreMenu>
+            <MoreMenu></MoreMenu>
           </Grid>
-          <Grid item>
+          <Grid item className={classes.zeroWidthOnMobile}>
             <Button
+              className={classes.canBeFab}
               color="primary"
               variant="contained"
               startIcon={<CreateNewFolderIcon />}

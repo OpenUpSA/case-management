@@ -79,8 +79,9 @@ const Page = () => {
           <Grid item>
             <MoreMenu></MoreMenu>
           </Grid>
-          <Grid item>
+          <Grid item className={classes.zeroWidthOnMobile}>
             <Button
+              className={classes.canBeFab}
               color="primary"
               variant="contained"
               startIcon={<ChatIcon />}
