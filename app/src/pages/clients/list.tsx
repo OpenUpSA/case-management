@@ -53,8 +53,7 @@ const Page = () => {
             </Typography>
           </Grid>
           <Grid item>
-            <MoreMenu>              
-            </MoreMenu>
+            <MoreMenu></MoreMenu>
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>
             <Button
@@ -100,11 +99,26 @@ const Page = () => {
                     <strong>{client.preferred_name}</strong>
                   </TableCell>
                   <TableCell className={classes.tableBodyCell}>
-                    {`${client.legal_cases.length} ${i18n.t("Legal Cases")}`}
+                    {client.legal_cases ? (
+                      <span>{`${client.legal_cases.length} ${i18n.t(
+                        "Legal Cases"
+                      )}`}</span>
+                    ) : (
+                      ""
+                    )}
                   </TableCell>
                   <Hidden mdDown>
                     <TableCell className={classes.tableBodyCell}>
-                      {format(new Date(client.updated_at), "MM/dd/yyyy (h:ma)")}
+                      {client.updated_at ? (
+                        <span>
+                          {format(
+                            new Date(client.updated_at || new Date().toISOString()),
+                            "MM/dd/yyyy (h:ma)"
+                          )}
+                        </span>
+                      ) : (
+                        ""
+                      )}
                     </TableCell>
                   </Hidden>
                   <TableCell className={classes.tableBodyCell} align="right">

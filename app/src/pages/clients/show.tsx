@@ -14,6 +14,8 @@ import Grid from "@material-ui/core/Grid";
 import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
+import ClientForm from "./form";
+
 type RouteParams = { id: string };
 
 const Page = () => {
@@ -43,6 +45,7 @@ const Page = () => {
         <div>{client?.preferred_name}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
+        {client ? <ClientForm client={client} /> : ""}
         <Grid container direction="row" spacing={2} alignItems="center">
           <Grid item>
             <PersonIcon color="primary" style={{ display: "flex" }} />

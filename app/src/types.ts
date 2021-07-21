@@ -15,16 +15,16 @@ export interface ICaseOffice {
 }
 
 export interface IClient {
-  id: number;
-  created_at: Date;
-  updated_at: Date;
+  id?: number;
+  created_at?: Date;
+  updated_at?: Date;
+  legal_cases?: number[];
   preferred_name: string;
   official_identifier: string;
   official_identifier_type: string;
   contact_number: string;
   contact_email: string;
   name: string;
-  legal_cases: number[];
 }
 
 //Note: Cannot use Case so internally use LegalCase. User interface refers to Case.

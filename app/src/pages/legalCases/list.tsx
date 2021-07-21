@@ -16,6 +16,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
+import Select from "@material-ui/core/Select";
 import { format } from "date-fns";
 
 import Layout from "../../components/layout";
@@ -24,6 +25,10 @@ import { ILegalCase, IClient, ICaseType } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import MoreMenu from "../../components/moreMenu";
+
+import ClientForm from "../clients/form";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
 
 type RouteParams = { id: string };
 
@@ -89,6 +94,18 @@ const Page = () => {
             >
               {i18n.t("New case")}
             </Button>
+          </Grid>
+        </Grid>
+
+        {client ? <ClientForm client={client} /> : ""}
+
+        <hr className={classes.hr} />
+
+        <Grid container direction="row" spacing={2} alignItems="center">
+          <Grid item style={{ flexGrow: 1 }}>
+            <strong>
+              {legalCases?.length} {i18n.t("Cases")}
+            </strong>
           </Grid>
         </Grid>
 

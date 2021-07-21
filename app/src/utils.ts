@@ -120,5 +120,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       height: "1px",
       border: "none",
     },
+    hr: {
+      height: "1px",
+      border: "none",
+      backgroundColor: "rgba(0, 0, 0, 0.1)",
+      margin: "2em 0",
+    }
   })
 );
