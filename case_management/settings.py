@@ -37,7 +37,8 @@ ALLOWED_HOSTS = ["*"]
 # TODO: Replace with actual array of CORS_ALLOWED_ORIGINS even for development
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3321",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://localhost:5000",
 ]
 
 # Application definition
