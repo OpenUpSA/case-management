@@ -114,6 +114,14 @@ export const getClient = async (id: number) => {
   return await httpGet<IClient>(`/clients/${id}/`);
 };
 
+export const updateClient = async (client: IClient) => {
+  return await httpPatch<IClient, IClient>(
+    `/clients/${client.id}/`,
+    client
+  );
+};
+
+
 export const deleteClient = async (id: number) => {
   return await httpDelete<IMeeting>(`/clients/${id}/`);
 };

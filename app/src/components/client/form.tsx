@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core";
+import { Grid, MenuItem, Select } from "@material-ui/core";
 
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -8,6 +8,9 @@ import { useEffect, useState } from "react";
 import i18n from "../../i18n";
 import { IClient } from "../../types";
 import { useStyles } from "../../utils";
+
+//TODO: Get from API
+const OfficialIdentifierTypes = ["National", "Passport"];
 
 type Props = {
   client?: IClient;
@@ -122,28 +125,45 @@ const Component = (props: Props) => {
         </Grid>
         {props.detailedView ? (
           <Grid item xs={12} md={4}>
+            <input
+              type="hidden"
+              id="official_identifier_type"
+              value={client.official_identifier_type}
+            />
             <FormControl fullWidth size="small">
               <InputLabel
                 className={classes.inputLabel}
-                htmlFor="official_identifier_type"
+                htmlFor="official_identifier_type_select"
                 shrink={true}
               >
-                {i18n.t("Identity number type")}:
+                {i18n.t("Case type")}:
               </InputLabel>
-              <Input
-                id="official_identifier_type"
-                disableUnderline={true}
+              <Select
+                id="official_identifier_type_select"
                 disabled={props.readOnly}
-                className={classes.textField}
-                aria-describedby="my-helper-text"
-                value={client.official_identifier_type}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                className={classes.select}
+                disableUnderline
+                onChange={(e: React.ChangeEvent<{ value: any }>) => {
                   setClient((client) => ({
                     ...client,
                     official_identifier_type: e.target.value,
                   }));
                 }}
-              />
+                input={<Input id="select-multiple-chip" />}
+                value={client.official_identifier_type}
+                renderValue={() => {
+                  return OfficialIdentifierTypes.filter(
+                    (officialIdentifierType) =>
+                      client.official_identifier_type === officialIdentifierType
+                  ).join(", ");
+                }}
+              >
+                {OfficialIdentifierTypes?.map((value) => (
+                  <MenuItem key={value} value={value}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Select>
             </FormControl>
           </Grid>
         ) : (

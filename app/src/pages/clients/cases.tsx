@@ -3,7 +3,15 @@ import { useHistory, useParams } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
-import { Breadcrumbs, Container, Button, Grid } from "@material-ui/core";
+import {
+  Breadcrumbs,
+  Container,
+  Button,
+  Grid,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
@@ -73,7 +81,18 @@ const Page = () => {
             </Typography>
           </Grid>
           <Grid item>
-            <MoreMenu></MoreMenu>
+            <MoreMenu>
+              <ListItem
+                onClick={() => {
+                  history.push(`/clients/${clientId}`);
+                }}
+              >
+                <ListItemIcon>
+                  <PersonIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{i18n.t("View client")}</ListItemText>
+              </ListItem>
+            </MoreMenu>
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>
             <Button

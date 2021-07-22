@@ -31,24 +31,24 @@ const Page = () => {
   const history = useHistory();
   const classes = useStyles();
   const params = useParams<RouteParams>();
+  const clientId = parseInt(params.id);
   const [client, setClient] = React.useState<IClient>();
 
   const destroyClient = async () => {
     if (
       window.confirm(i18n.t("Are you sure you want to delete this client?"))
     ) {
-      await deleteClient(parseInt(params.id));
+      await deleteClient(clientId);
       history.push("/clients");
     }
   };
 
   useEffect(() => {
     async function fetchData() {
-      const clientId = parseInt(params.id);
       setClient(await getClient(clientId));
     }
     fetchData();
-  }, [params.id]);
+  }, [clientId]);
 
   return (
     <Layout>
@@ -74,6 +74,16 @@ const Page = () => {
           </Grid>
           <Grid item>
             <MoreMenu>
+            <ListItem
+                onClick={() => {
+                  history.push(`/clients/${clientId}/cases`);
+                }}
+              >
+                <ListItemIcon>
+                  <PersonIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{i18n.t("View client cases")}</ListItemText>
+              </ListItem>
               <ListItem onClick={destroyClient}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />

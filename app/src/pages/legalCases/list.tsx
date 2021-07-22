@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
 import { Breadcrumbs, Container, Button, Grid } from "@material-ui/core";
-import PersonIcon from "@material-ui/icons/Person";
+import FolderIcon from "@material-ui/icons/Folder";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
 import Layout from "../../components/layout";
@@ -44,7 +44,7 @@ const Page = () => {
           alignItems="center"
         >
           <Grid item>
-            <PersonIcon color="primary" style={{ display: "flex" }} />
+            <FolderIcon color="primary" style={{ display: "flex" }} />
           </Grid>
           <Grid item style={{ flexGrow: 1 }}>
             <Typography variant="h6">
