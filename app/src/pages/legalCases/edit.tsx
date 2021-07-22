@@ -7,9 +7,9 @@ import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
-import { getClient } from "../../api";
-import { ILegalCase, IClient } from "../../types";
-import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
+import { getClient, getLegalCase, updateLegalCase } from "../../api";
+import { ILegalCase, IClient} from "../../types";
+import { RedirectIfNotLoggedIn } from "../../auth";
 import {
   Breadcrumbs,
   Container,
@@ -17,18 +17,14 @@ import {
   Grid,
   ListItemIcon,
 } from "@material-ui/core";
-
 import { useStyles } from "../../utils";
 import FolderIcon from "@material-ui/icons/Folder";
-import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
+import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
 
 import LegalCaseForm from "../../components/legalCase/form";
-
-import { createLegalCase } from "../../api";
-import { CreateNewFolder } from "@material-ui/icons";
 
 type RouteParams = { id: string };
 
@@ -37,28 +33,26 @@ const Page = () => {
   const history = useHistory();
   const classes = useStyles();
   const params = useParams<RouteParams>();
-  const [legalCase] = React.useState<ILegalCase>();
+  const legalCaseId = parseInt(params.id);
+  const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
-  const clientId = parseInt(params.id);
-  const userInfo = UserInfo.getInstance();
-  const userId = userInfo.getUserId();
 
-  const newLegalCase = async (
+  const saveLegalCase = async (
     case_number: string,
     state: string,
     case_types: number[],
     case_offices: number[]
   ) => {
     try {
-      const newLegalCase = {
-        client: clientId,
+      const updatedLegalCase = {
+        id: legalCaseId,
+        client: client?.id || 0,
         case_number: case_number,
         state: state,
         case_types: case_types,
         case_offices: case_offices,
-        users: [userId],
       };
-      const { id } = await createLegalCase(newLegalCase);
+      const { id } = await updateLegalCase(updatedLegalCase);
       history.push(`/cases/${id}`);
     } catch (e) {
       console.log(e);
@@ -67,10 +61,12 @@ const Page = () => {
 
   useEffect(() => {
     async function fetchData() {
-      setClient(await getClient(clientId));
+      const dataLegalCase = await getLegalCase(legalCaseId);
+      setLegalCase(dataLegalCase);
+      setClient(await getClient(dataLegalCase.client));
     }
     fetchData();
-  }, [clientId]);
+  }, [params.id]);
 
   return (
     <Layout>
@@ -81,7 +77,7 @@ const Page = () => {
         <Link to={`/clients/${client?.id}/cases`} component={Button}>
           {client?.preferred_name}
         </Link>
-        <div>{i18n.t("New case")}</div>
+        <div>{legalCase?.case_number}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
         <form
@@ -94,7 +90,7 @@ const Page = () => {
               case_offices: { value: string };
             };
 
-            newLegalCase(
+            saveLegalCase(
               target.case_number.value,
               target.state.value,
               target.case_types.value.split(',').map(s => parseInt(s)),
@@ -113,7 +109,9 @@ const Page = () => {
               <FolderIcon color="primary" style={{ display: "flex" }} />
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
-              <Typography variant="h6">{i18n.t("New case")}</Typography>
+              <Typography variant="h6">
+                <strong>{legalCase?.case_number}</strong>
+              </Typography>
             </Grid>
             <Grid item>
               <MoreMenu>
@@ -134,7 +132,7 @@ const Page = () => {
                 className={classes.canBeFab}
                 color="primary"
                 variant="contained"
-                startIcon={<CreateNewFolderIcon />}
+                startIcon={<FolderOpenIcon />}
                 type="submit"
               >
                 {i18n.t("Save case")}

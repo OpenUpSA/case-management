@@ -95,6 +95,13 @@ export const createLegalCase = async (legalCase: ILegalCase) => {
   return await httpPost<ILegalCase, ILegalCase>(`/cases/`, legalCase);
 };
 
+export const updateLegalCase = async (legalCase: ILegalCase) => {
+  return await httpPatch<ILegalCase, ILegalCase>(
+    `/cases/${legalCase.id}/`,
+    legalCase
+  );
+};
+
 export const getClients = async () => {
   return await httpGet<IClient[]>(`/clients/`);
 };

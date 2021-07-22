@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useParams, Link, useHistory } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
-import { Breadcrumbs, Button, Container, Grid } from "@material-ui/core";
+import { Breadcrumbs, Button, Container, Grid, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import ChatIcon from "@material-ui/icons/Chat";
 import MeetingsTable from "../../components/meeting/table";
@@ -13,7 +13,7 @@ import { getClient, getLegalCase, getMeetings } from "../../api";
 import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
-
+import EditIcon from '@material-ui/icons/Edit';
 import LegalCaseForm from "../../components/legalCase/form";
 
 type RouteParams = { id: string };
@@ -67,7 +67,18 @@ const Page = () => {
             </Typography>
           </Grid>
           <Grid item>
-            <MoreMenu></MoreMenu>
+            <MoreMenu>
+              <ListItem
+                onClick={(e) => {
+                  history.push(`/cases/${legalCase?.id}/edit`);
+                }}
+              >
+                <ListItemIcon>
+                  <EditIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{i18n.t("Edit case")}</ListItemText>
+              </ListItem>
+            </MoreMenu>
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>
             <Button

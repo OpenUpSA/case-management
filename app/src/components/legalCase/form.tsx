@@ -133,7 +133,7 @@ const Component = (props: Props) => {
             <Input
               id="created_at"
               disableUnderline={true}
-              disabled={props.readOnly}
+              disabled={true}
               className={classes.textField}
               aria-describedby="my-helper-text"
               value={format(
