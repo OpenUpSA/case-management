@@ -37,11 +37,11 @@ const Page = () => {
   const [client, setClient] = React.useState<IClient>();
   const [meeting, setMeeting] = React.useState<IMeeting>();
 
-  const destroyMeeting = () => {
+  const destroyMeeting = async () => {
     if (
       window.confirm(i18n.t("Are you sure you want to delete this meeting?"))
     ) {
-      deleteMeeting(parseInt(params.id));
+      await deleteMeeting(parseInt(params.id));
       history.push(`/cases/${legalCase?.id}`);
     }
   };

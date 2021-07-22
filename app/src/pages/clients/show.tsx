@@ -33,11 +33,11 @@ const Page = () => {
   const params = useParams<RouteParams>();
   const [client, setClient] = React.useState<IClient>();
 
-  const destroyClient = () => {
+  const destroyClient = async () => {
     if (
       window.confirm(i18n.t("Are you sure you want to delete this client?"))
     ) {
-      deleteClient(parseInt(params.id));
+      await deleteClient(parseInt(params.id));
       history.push("/clients");
     }
   };
