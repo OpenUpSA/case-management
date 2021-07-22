@@ -47,7 +47,7 @@ const Page = () => {
       setMeetings(dataMeetings);
     }
     fetchData();
-  }, [params.id]);
+  }, [caseId]);
 
   return (
     <Layout>

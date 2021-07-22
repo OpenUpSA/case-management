@@ -28,7 +28,6 @@ import CloseIcon from "@material-ui/icons/Close";
 import LegalCaseForm from "../../components/legalCase/form";
 
 import { createLegalCase } from "../../api";
-import { CreateNewFolder } from "@material-ui/icons";
 
 type RouteParams = { id: string };
 

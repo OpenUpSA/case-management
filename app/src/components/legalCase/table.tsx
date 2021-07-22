@@ -23,7 +23,7 @@ type Props = {
 };
 
 const Component = (props: Props) => {
-  let history = useHistory();
+  const history = useHistory();
   const classes = useStyles();
   const [caseTypes, setCaseTypes] = React.useState<ICaseType[]>();
   const [clients, setClients] = React.useState<IClient[]>();

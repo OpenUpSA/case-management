@@ -73,14 +73,14 @@ export const isLoggedIn = () => {
 };
 
 export const RedirectIfLoggedIn = () => {
-  let history = useHistory();
+  const history = useHistory();
   if (isLoggedIn()) {
     history.push("/clients");
   }
 };
 
 export const RedirectIfNotLoggedIn = () => {
-  let history = useHistory();
+  const history = useHistory();
   if (!isLoggedIn()) {
     history.push("/login");
   }

@@ -15,7 +15,7 @@ import { useStyles } from "../utils";
 const Page = () => {
   RedirectIfLoggedIn();
   const classes = useStyles();
-  let history = useHistory();
+  const history = useHistory();
   const [loginError, setLoginError] = React.useState<boolean>();
 
   const validateLogin = async (username: string, password: string) => {

@@ -66,7 +66,7 @@ const Page = () => {
       setClient(await getClient(dataLegalCase.client));
     }
     fetchData();
-  }, [params.id]);
+  }, [legalCaseId]);
 
   return (
     <Layout>

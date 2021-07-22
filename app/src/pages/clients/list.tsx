@@ -27,7 +27,7 @@ import MoreMenu from "../../components/moreMenu";
 const Page = () => {
   RedirectIfNotLoggedIn();
   const classes = useStyles();
-  let history = useHistory();
+  const history = useHistory();
   const [clients, setClients] = React.useState<IClient[]>();
 
   useEffect(() => {

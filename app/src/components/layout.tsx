@@ -32,7 +32,7 @@ type Props = {
 };
 
 const Layout = (props: Props) => {
-  let history = useHistory();
+  const history = useHistory();
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);

@@ -22,7 +22,7 @@ type Props = {
 };
 
 const Component = (props: Props) => {
-  let history = useHistory();
+  const history = useHistory();
   const classes = useStyles();
   const [clients, setClients] = React.useState<IClient[]>();
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
