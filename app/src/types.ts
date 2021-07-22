@@ -51,8 +51,9 @@ export interface IMeeting {
   notes: string;
 }
 
-export interface IToken {
+export interface IUserInfo {
   token: string;
+  user_id: number;
 }
 
 export interface ICredentials {

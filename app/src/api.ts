@@ -4,7 +4,7 @@ import {
   ICaseType,
   ICaseOffice,
   IMeeting,
-  IToken,
+  IUserInfo,
   ICredentials,
 } from "./types";
 
@@ -91,6 +91,10 @@ export const getLegalCase = async (id: number) => {
   return await httpGet<ILegalCase>(`/cases/${id}/`);
 };
 
+export const createLegalCase = async (legalCase: ILegalCase) => {
+  return await httpPost<ILegalCase, ILegalCase>(`/cases/`, legalCase);
+};
+
 export const getClients = async () => {
   return await httpGet<IClient[]>(`/clients/`);
 };
@@ -137,5 +141,5 @@ export const deleteMeeting = async (id: number) => {
 };
 
 export const authenticate = async (credentials: ICredentials) => {
-  return await httpPost<ICredentials, IToken>(`/authenticate`, credentials);
+  return await httpPost<ICredentials, IUserInfo>(`/authenticate`, credentials);
 };

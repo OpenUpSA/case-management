@@ -28,10 +28,11 @@ abstract class Storage<T extends string> {
 
 enum Locals {
   ACCESS_TOKEN = "access_token",
+  USER_ID = "user_id",
 }
 
-export class Tokens extends Storage<Locals> {
-  private static instance?: Tokens;
+export class UserInfo extends Storage<Locals> {
+  private static instance?: UserInfo;
 
   private constructor() {
     super();
@@ -39,7 +40,7 @@ export class Tokens extends Storage<Locals> {
 
   public static getInstance() {
     if (!this.instance) {
-      this.instance = new Tokens();
+      this.instance = new UserInfo();
     }
 
     return this.instance;
@@ -53,14 +54,22 @@ export class Tokens extends Storage<Locals> {
     this.set(Locals.ACCESS_TOKEN, accessToken);
   }
 
+  public getUserId() {
+    return this.get(Locals.USER_ID);
+  }
+
+  public setUserId(userId: string) {
+    this.set(Locals.USER_ID, userId);
+  }
+
   public clear() {
-    this.clearItems([Locals.ACCESS_TOKEN]);
+    this.clearItems([Locals.ACCESS_TOKEN, Locals.USER_ID]);
   }
 }
 
 export const isLoggedIn = () => {
-  const tokens = Tokens.getInstance();
-  return tokens.getAccessToken() !== null;
+  const userInfo = UserInfo.getInstance();
+  return userInfo.getAccessToken() !== null;
 };
 
 export const RedirectIfLoggedIn = () => {

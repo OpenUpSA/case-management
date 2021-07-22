@@ -24,7 +24,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import i18n from "../i18n";
-import { Tokens } from "../auth";
+import { UserInfo } from "../auth";
 import { useStyles } from "../utils";
 
 type Props = {
@@ -42,8 +42,8 @@ const Layout = (props: Props) => {
   };
 
   const logout = () => {
-    const tokens = Tokens.getInstance();
-    tokens.clear();
+    const userInfo = UserInfo.getInstance();
+    userInfo.clear();
     history.push("/");
   };
 

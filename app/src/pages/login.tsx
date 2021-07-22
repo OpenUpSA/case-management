@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 
-import { RedirectIfLoggedIn, Tokens } from "../auth";
+import { RedirectIfLoggedIn, UserInfo } from "../auth";
 import { authenticate } from "../api";
 import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
 import { useStyles } from "../utils";
@@ -24,10 +24,11 @@ const Page = () => {
         username: username,
         password: password,
       };
-      const { token } = await authenticate(credentials);
-      if (token) {
-        const tokens = Tokens.getInstance();
-        tokens.setAccessToken(token);
+      const { token, user_id } = await authenticate(credentials);
+      if (token && user_id) {
+        const userInfo = UserInfo.getInstance();
+        userInfo.setAccessToken(token);
+        userInfo.setUserId(user_id.toString());
         history.push("/clients");
       } else {
         setLoginError(true);
@@ -94,6 +95,7 @@ const Page = () => {
               </InputLabel>
               <Input
                 id="password"
+                type="password"
                 disableUnderline={true}
                 className={classes.textField}
                 aria-describedby="my-helper-text"
