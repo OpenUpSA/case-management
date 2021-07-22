@@ -2,14 +2,13 @@
 from django.contrib import admin
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
-from rest_framework.authtoken import views as authviews
 
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 from . import views
-from case_management.views import MeetingViewSet, LegalCaseViewSet, CaseOfficeViewSet, CaseTypeViewSet, ClientViewSet
+from case_management.views import MeetingViewSet, LegalCaseViewSet, CaseOfficeViewSet, CaseTypeViewSet, ClientViewSet, CustomObtainAuthToken
 
 router = DefaultRouter()
 router.register(r'api/v1/meetings', MeetingViewSet)
@@ -34,7 +33,7 @@ urlpatterns = [
 
     path("dashboard", include("case_management.dashboard.urls"),),
     path("admin/", admin.site.urls),
-    path('api/v1/authenticate', authviews.obtain_auth_token),
+    path('api/v1/authenticate', CustomObtainAuthToken.as_view()),
     path(r'', include(router.urls)),
     re_path(r'^api/v1(?P<format>\.json|\.yaml)$',
             schema_view.without_ui(cache_timeout=0), name='schema-json'),

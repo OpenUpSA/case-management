@@ -1,9 +1,11 @@
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, viewsets
+from rest_framework import viewsets
 
 from django.views import generic
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
 
 from case_management.serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, LegalCaseSerializer, MeetingSerializer
 from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting
@@ -11,6 +13,20 @@ from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meet
 
 class Index(generic.TemplateView):
     template_name = "index.html"
+
+
+class CustomObtainAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+        })
 
 
 class CaseOfficeViewSet(viewsets.ModelViewSet):
