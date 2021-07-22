@@ -1,0 +1,150 @@
+import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Typography from "@material-ui/core/Typography";
+import { Link } from "react-router-dom";
+import MoreMenu from "../../components/moreMenu";
+
+import i18n from "../../i18n";
+import Layout from "../../components/layout";
+import { getClient } from "../../api";
+import { ILegalCase, IClient } from "../../types";
+import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
+import {
+  Breadcrumbs,
+  Container,
+  Button,
+  Grid,
+  ListItemIcon,
+} from "@material-ui/core";
+
+import { useStyles } from "../../utils";
+import ChatIcon from "@material-ui/icons/Chat";
+import RateReviewIcon from "@material-ui/icons/RateReview";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import CloseIcon from "@material-ui/icons/Close";
+
+import LegalCaseForm from "../../components/legalCase/form";
+
+import { createLegalCase } from "../../api";
+
+type RouteParams = { id: string };
+
+const Page = () => {
+  RedirectIfNotLoggedIn();
+  const history = useHistory();
+  const classes = useStyles();
+  const params = useParams<RouteParams>();
+  const [legalCase] = React.useState<ILegalCase>();
+  const [client, setClient] = React.useState<IClient>();
+  const clientId = parseInt(params.id);
+  const userInfo = UserInfo.getInstance();
+  const userId = userInfo.getUserId();
+
+  const newLegalCase = async (
+    case_number: string,
+    state: string,
+    case_types: number[],
+    case_offices: number[]
+  ) => {
+    try {
+      const newLegalCase = {
+        client: clientId,
+        case_number: case_number,
+        state: state,
+        case_types: case_types,
+        case_offices: case_offices,
+        users: [userId],
+      };
+      const { id } = await createLegalCase(newLegalCase);
+      history.push(`/cases/${id}`);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      setClient(await getClient(clientId));
+    }
+    fetchData();
+  }, [clientId]);
+
+  return (
+    <Layout>
+      <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
+        <Link to="/clients" component={Button}>
+          {i18n.t("Client list")}
+        </Link>
+        <Link to={`/clients/${client?.id}/cases`} component={Button}>
+          {client?.preferred_name}
+        </Link>
+        <div>{i18n.t("New case")}</div>
+      </Breadcrumbs>
+      <Container maxWidth="md">
+        <form
+          onSubmit={(event: React.SyntheticEvent) => {
+            event.preventDefault();
+            const target = event.target as typeof event.target & {
+              case_number: { value: string };
+              state: { value: string };
+              case_types: { value: string };
+              case_offices: { value: string };
+            };
+
+            newLegalCase(
+              target.case_number.value,
+              target.state.value,
+              target.case_types.value.split(',').map(s => parseInt(s)),
+              target.case_offices.value.split(',').map(s => parseInt(s))
+            );
+          }}
+        >
+          <Grid
+            className={classes.pageBar}
+            container
+            direction="row"
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item>
+              <ChatIcon color="primary" style={{ display: "flex" }} />
+            </Grid>
+            <Grid item style={{ flexGrow: 1 }}>
+              <Typography variant="h6">{i18n.t("New case")}</Typography>
+            </Grid>
+            <Grid item>
+              <MoreMenu>
+                <ListItem
+                  onClick={(e) => {
+                    history.push(`/cases/${legalCase?.id}`);
+                  }}
+                >
+                  <ListItemIcon>
+                    <CloseIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{i18n.t("Cancel changes")}</ListItemText>
+                </ListItem>
+              </MoreMenu>
+            </Grid>
+            <Grid item className={classes.zeroWidthOnMobile}>
+              <Button
+                className={classes.canBeFab}
+                color="primary"
+                variant="contained"
+                startIcon={<RateReviewIcon />}
+                type="submit"
+              >
+                {i18n.t("Save case")}
+              </Button>
+            </Grid>
+          </Grid>
+          <LegalCaseForm legalCase={legalCase} readOnly={false} />
+        </form>
+      </Container>
+    </Layout>
+  );
+};
+
+export default Page;

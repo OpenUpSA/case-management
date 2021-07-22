@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
@@ -21,14 +21,15 @@ type RouteParams = { id: string };
 
 const Page = () => {
   RedirectIfNotLoggedIn();
+  const history = useHistory();
   const classes = useStyles();
   const params = useParams<RouteParams>();
+  const clientId = parseInt(params.id);
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
   const [client, setClient] = React.useState<IClient>();
 
   useEffect(() => {
     async function fetchData() {
-      const clientId = parseInt(params.id);
       const dataLegalCases = await getLegalCases(clientId);
       setLegalCases(dataLegalCases);
 
@@ -37,7 +38,7 @@ const Page = () => {
       }
     }
     fetchData();
-  }, [params.id]);
+  }, [clientId]);
 
   return (
     <Layout>
@@ -80,6 +81,9 @@ const Page = () => {
               color="primary"
               variant="contained"
               startIcon={<CreateNewFolderIcon />}
+              onClick={() => {
+                history.push(`/clients/${client?.id}/cases/new`);
+              }}
             >
               {i18n.t("New case")}
             </Button>

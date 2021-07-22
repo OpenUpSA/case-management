@@ -129,6 +129,23 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "rgba(0, 0, 0, 0.1)",
       margin: "2em 0",
     },
+    select: {
+      backgroundColor: "rgba(0, 0, 0, 0.035)",
+      border: "solid 1px rgba(0, 0, 0, 0)",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      "&.Mui-disabled": {
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
+        color: "#000000",
+        "&>.MuiSelect-icon": {
+          display: "none",
+        },
+      },
+      "&.Mui-focused": {
+        backgroundColor: "rgba(0, 0, 0, 0.01)",
+        borderColor: "rgba(0, 0, 0, 0.1)",
+      },
+    },
     textField: {
       backgroundColor: "rgba(0, 0, 0, 0.035)",
       border: "solid 1px rgba(0, 0, 0, 0)",
@@ -157,6 +174,6 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     pageBar: {
       marginBottom: "50px",
-    }
+    },
   })
 );

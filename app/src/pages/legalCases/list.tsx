@@ -13,9 +13,11 @@ import { RedirectIfNotLoggedIn } from "../../auth";
 import MoreMenu from "../../components/moreMenu";
 
 import LegalCasesTable from "../../components/legalCase/table";
+import { useHistory } from "react-router-dom";
 
 const Page = () => {
   RedirectIfNotLoggedIn();
+  const history = useHistory();
   const classes = useStyles();
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
 
@@ -58,6 +60,9 @@ const Page = () => {
               color="primary"
               variant="contained"
               startIcon={<CreateNewFolderIcon />}
+              onClick={() => {
+                history.push(`/cases/new`);
+              }}
             >
               {i18n.t("New case")}
             </Button>
