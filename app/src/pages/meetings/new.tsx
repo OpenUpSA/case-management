@@ -143,7 +143,6 @@ const Page = () => {
               </Button>
             </Grid>
           </Grid>
-          <hr className={classes.hrInvisible} />
           <MeetingForm meeting={meeting} readOnly={false} />
         </form>
       </Container>
