@@ -9,11 +9,12 @@ import MeetingsTable from "../../components/meeting/table";
 import MoreMenu from "../../components/moreMenu";
 
 import Layout from "../../components/layout";
-import { getClient, getLegalCase, getMeetings } from "../../api";
+import { deleteLegalCase, getClient, getLegalCase, getMeetings } from "../../api";
 import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from "@material-ui/icons/Delete";
 import LegalCaseForm from "../../components/legalCase/form";
 
 type RouteParams = { id: string };
@@ -26,10 +27,19 @@ const Page = () => {
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
+  const caseId = parseInt(params.id);
+
+  const destroyLegalCase = async () => {
+    if (
+      window.confirm(i18n.t("Are you sure you want to delete this case?"))
+    ) {
+      await deleteLegalCase(caseId);
+      history.push(`/cases/`);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
-      const caseId = parseInt(params.id);
       const dataLegalCase = await getLegalCase(caseId);
       const dataMeetings = await getMeetings(caseId);
       setLegalCase(dataLegalCase);
@@ -78,6 +88,12 @@ const Page = () => {
                 </ListItemIcon>
                 <ListItemText>{i18n.t("Edit case")}</ListItemText>
               </ListItem>
+              <ListItem onClick={destroyLegalCase}>
+                  <ListItemIcon>
+                    <DeleteIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{i18n.t("Delete case")}</ListItemText>
+                </ListItem>
             </MoreMenu>
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>

@@ -102,6 +102,10 @@ export const updateLegalCase = async (legalCase: ILegalCase) => {
   );
 };
 
+export const deleteLegalCase = async (id: number) => {
+  return await httpDelete<IMeeting>(`/cases/${id}/`);
+};
+
 export const getClients = async () => {
   return await httpGet<IClient[]>(`/clients/`);
 };
