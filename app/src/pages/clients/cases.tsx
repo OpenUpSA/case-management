@@ -1,34 +1,20 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import { Breadcrumbs, Container, Button, Grid } from "@material-ui/core";
-import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
 import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
-import Hidden from "@material-ui/core/Hidden";
-
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableRow from "@material-ui/core/TableRow";
-import Select from "@material-ui/core/Select";
-import { format } from "date-fns";
 
 import Layout from "../../components/layout";
-import { getLegalCases, getClient, getCaseTypes } from "../../api";
-import { ILegalCase, IClient, ICaseType } from "../../types";
+import { getLegalCases, getClient } from "../../api";
+import { ILegalCase, IClient } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import MoreMenu from "../../components/moreMenu";
 
 import ClientForm from "../../components/client/form";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
 import LegalCasesTable from "../../components/legalCase/table";
 
 type RouteParams = { id: string };
@@ -36,19 +22,15 @@ type RouteParams = { id: string };
 const Page = () => {
   RedirectIfNotLoggedIn();
   const classes = useStyles();
-  let history = useHistory();
   const params = useParams<RouteParams>();
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
-  const [caseTypes, setCaseTypes] = React.useState<ICaseType[]>();
   const [client, setClient] = React.useState<IClient>();
 
   useEffect(() => {
     async function fetchData() {
       const clientId = parseInt(params.id);
       const dataLegalCases = await getLegalCases(clientId);
-      const dataCaseTypes = await getCaseTypes();
       setLegalCases(dataLegalCases);
-      setCaseTypes(dataCaseTypes);
 
       if (clientId) {
         setClient(await getClient(clientId));

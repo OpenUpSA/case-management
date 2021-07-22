@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { format } from "date-fns";
 import { useParams } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";

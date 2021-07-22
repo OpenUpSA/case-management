@@ -4,15 +4,17 @@ import LayoutSimple from "../components/layoutSimple";
 import i18n from "../i18n";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 
 import { RedirectIfLoggedIn, Tokens } from "../auth";
 import { authenticate } from "../api";
+import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
+import { useStyles } from "../utils";
 
 const Page = () => {
   RedirectIfLoggedIn();
+  const classes = useStyles();
   let history = useHistory();
   const [loginError, setLoginError] = React.useState<boolean>();
 
@@ -56,35 +58,58 @@ const Page = () => {
         }}
         style={{ marginTop: 1 }}
       >
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="email"
-          label={i18n.t("Email Address")}
-          name="email"
-          autoComplete="email"
-          autoFocus
-        />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          name="password"
-          label={i18n.t("Password")}
-          type="password"
-          id="password"
-          autoComplete="current-password"
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          style={{ marginTop: 3, marginBottom: 2 }}
-        >
-          {i18n.t("Login")}
-        </Button>
+        <Grid container direction="row" spacing={2} alignItems="center">
+          <Grid item xs={12}>
+            <FormControl fullWidth size="small">
+              <InputLabel
+                className={classes.inputLabel}
+                htmlFor="email"
+                shrink={true}
+              >
+                {i18n.t("Email address")}:
+              </InputLabel>
+              <Input
+                id="email"
+                disableUnderline={true}
+                className={classes.textField}
+                aria-describedby="my-helper-text"
+                autoComplete="email"
+                autoFocus
+                required
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth size="small">
+              <InputLabel
+                className={classes.inputLabel}
+                htmlFor="password"
+                shrink={true}
+              >
+                {i18n.t("Password")}:
+              </InputLabel>
+              <Input
+                id="password"
+                disableUnderline={true}
+                className={classes.textField}
+                aria-describedby="my-helper-text"
+                autoComplete="password"
+                required
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              style={{ marginTop: 3, marginBottom: 2 }}
+            >
+              {i18n.t("Login")}
+            </Button>
+          </Grid>
+        </Grid>
         <div
           style={{
             textAlign: "center",

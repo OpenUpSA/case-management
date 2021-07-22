@@ -2,7 +2,6 @@ import { Switch, Route } from "react-router-dom";
 
 import HomePage from "./pages/home";
 import LoginPage from "./pages/login";
-import ForgotPasswordPage from "./pages/forgotPassword";
 
 import ClientsPage from "./pages/clients/list";
 import ClientPage from "./pages/clients/show";
@@ -23,7 +22,6 @@ function Routes() {
     <Switch>
       <Route exact path="/" component={HomePage} />
       <Route exact path="/login" component={LoginPage} />
-      <Route exact path="/forgot-password" component={ForgotPasswordPage} />
       
       <Route exact path="/clients" component={ClientsPage} />
       <Route exact path="/clients/:id" component={ClientPage} />

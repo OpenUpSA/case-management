@@ -9,20 +9,8 @@ import MeetingsTable from "../../components/meeting/table";
 import MoreMenu from "../../components/moreMenu";
 
 import Layout from "../../components/layout";
-import {
-  getCaseOffices,
-  getCaseTypes,
-  getClient,
-  getLegalCase,
-  getMeetings,
-} from "../../api";
-import {
-  ILegalCase,
-  IClient,
-  ICaseType,
-  ICaseOffice,
-  IMeeting,
-} from "../../types";
+import { getClient, getLegalCase, getMeetings } from "../../api";
+import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 
@@ -36,8 +24,6 @@ const Page = () => {
   const classes = useStyles();
   const params = useParams<RouteParams>();
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
-  const [caseTypes, setCaseTypes] = React.useState<ICaseType[]>();
-  const [caseOffices, setCaseOffices] = React.useState<ICaseOffice[]>();
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
 
@@ -45,12 +31,8 @@ const Page = () => {
     async function fetchData() {
       const caseId = parseInt(params.id);
       const dataLegalCase = await getLegalCase(caseId);
-      const dataCaseTypes = await getCaseTypes();
-      const dataCaseOffices = await getCaseOffices();
       const dataMeetings = await getMeetings(caseId);
       setLegalCase(dataLegalCase);
-      setCaseTypes(dataCaseTypes);
-      setCaseOffices(dataCaseOffices);
       setClient(await getClient(dataLegalCase.client));
       setMeetings(dataMeetings);
     }
@@ -69,7 +51,13 @@ const Page = () => {
         <div>{legalCase?.case_number}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
-        <Grid className={classes.pageBar} container direction="row" spacing={2} alignItems="center">
+        <Grid
+          className={classes.pageBar}
+          container
+          direction="row"
+          spacing={2}
+          alignItems="center"
+        >
           <Grid item>
             <FolderIcon color="primary" style={{ display: "flex" }} />
           </Grid>
