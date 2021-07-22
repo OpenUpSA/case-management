@@ -29,13 +29,13 @@ export interface IClient {
 
 //Note: Cannot use Case so internally use LegalCase. User interface refers to Case.
 export interface ILegalCase {
-  id: number;
-  created_at: Date;
-  updated_at: Date;
+  id?: number;
+  created_at?: Date;
+  updated_at?: Date;
+  users?: number[];
   case_number: string;
   state: string;
   client: number;
-  users: number[];
   case_types: number[];
   case_offices: number[];
 }

@@ -13,7 +13,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down("xs")]: {
         width: "0",
         padding: "0!important" as any,
-      }
+      },
     },
     canBeFab: {
       [theme.breakpoints.down("xs")]: {
@@ -109,6 +109,9 @@ export const useStyles = makeStyles((theme: Theme) =>
         cursor: "pointer",
         backgroundColor: "rgba(0, 0, 0, 0.09)",
       },
+      "& td:first-child": {
+        fontWeight: "bold",
+      },
     },
     tableBodyCell: {
       backgroundColor: "rgba(0, 0, 0, 0.05)",
@@ -125,6 +128,35 @@ export const useStyles = makeStyles((theme: Theme) =>
       border: "none",
       backgroundColor: "rgba(0, 0, 0, 0.1)",
       margin: "2em 0",
+    },
+    textField: {
+      backgroundColor: "rgba(0, 0, 0, 0.035)",
+      border: "solid 1px rgba(0, 0, 0, 0)",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      "&.Mui-disabled": {
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
+        color: "#000000",
+      },
+      "&.Mui-focused": {
+        backgroundColor: "rgba(0, 0, 0, 0.01)",
+        borderColor: "rgba(0, 0, 0, 0.1)",
+      },
+      "& textarea": {
+        paddingTop: "8px",
+        paddingBottom: "8px",
+      },
+    },
+    inputLabel: {
+      color: "#000",
+      fontWeight: 700,
+      fontSize: "1.2em",
+      "&.Mui-focused": {
+        color: "unset",
+      },
+    },
+    pageBar: {
+      marginBottom: "50px",
     }
   })
 );

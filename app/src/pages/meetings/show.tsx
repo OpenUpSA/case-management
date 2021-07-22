@@ -23,7 +23,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 import MoreMenu from "../../components/moreMenu";
 
-import MeetingForm from "./form";
+import MeetingForm from "../../components/meeting/form";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
@@ -75,7 +75,7 @@ const Page = () => {
       </Breadcrumbs>
       <Container maxWidth="md">
         <form>
-          <Grid container direction="row" spacing={2} alignItems="center">
+          <Grid className={classes.pageBar} container direction="row" spacing={2} alignItems="center">
             <Grid item>
               <ChatIcon color="primary" style={{ display: "flex" }} />
             </Grid>
@@ -110,7 +110,7 @@ const Page = () => {
           </Grid>
 
           <hr className={classes.hrInvisible} />
-          {meeting ? <MeetingForm meeting={meeting} /> : null}
+          <MeetingForm meeting={meeting} />
         </form>
       </Container>
     </Layout>

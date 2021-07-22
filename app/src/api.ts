@@ -70,7 +70,9 @@ export async function httpPatch<T, U>(
 }
 
 export const getLegalCases = async (client?: number) => {
-  return await httpGet<ILegalCase[]>(`/api/v1/cases/${client ? `?client=${client}` : ''}`);
+  return await httpGet<ILegalCase[]>(
+    `/api/v1/cases/${client ? `?client=${client}` : ""}`
+  );
 };
 
 export const getLegalCase = async (id: number) => {
@@ -85,6 +87,10 @@ export const getClient = async (id: number) => {
   return await httpGet<IClient>(`/api/v1/clients/${id}/`);
 };
 
+export const deleteClient = async (id: number) => {
+  return await httpDelete<IMeeting>(`/api/v1/clients/${id}/`);
+};
+
 export const getCaseTypes = async () => {
   return await httpGet<ICaseType[]>(`/api/v1/case-types/`);
 };
@@ -94,7 +100,9 @@ export const getCaseOffices = async () => {
 };
 
 export const getMeetings = async (legal_case?: number) => {
-  return await httpGet<IMeeting[]>(`/api/v1/meetings/${legal_case ? `?legal_case=${legal_case}` : ''}`);
+  return await httpGet<IMeeting[]>(
+    `/api/v1/meetings/${legal_case ? `?legal_case=${legal_case}` : ""}`
+  );
 };
 
 export const getMeeting = async (id: number) => {

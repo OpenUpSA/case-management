@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import { Breadcrumbs, Button, Container, Grid } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import ChatIcon from "@material-ui/icons/Chat";
-import MeetingsList from "../../components/meetings";
+import MeetingsTable from "../../components/meeting/table";
 import MoreMenu from "../../components/moreMenu";
 
 import Layout from "../../components/layout";
@@ -25,6 +25,8 @@ import {
 } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
+
+import LegalCaseForm from "../../components/legalCase/form";
 
 type RouteParams = { id: string };
 
@@ -67,7 +69,7 @@ const Page = () => {
         <div>{legalCase?.case_number}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
-        <Grid container direction="row" spacing={2} alignItems="center">
+        <Grid className={classes.pageBar} container direction="row" spacing={2} alignItems="center">
           <Grid item>
             <FolderIcon color="primary" style={{ display: "flex" }} />
           </Grid>
@@ -94,42 +96,19 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        <Typography component="h1" variant="h5" style={{ flex: 1 }}>
-          <Link to={`/clients/${client?.id}/cases`}>
-            {client?.preferred_name}
-          </Link>
-        </Typography>
-        <p>{`${i18n.t("Case Number")}: ${legalCase?.case_number}`}</p>
-        <p>{`${i18n.t("Case State")}: ${legalCase?.state}`}</p>
-        <p>
-          {legalCase ? (
-            <>
-              {i18n.t("Case Types")}:{" "}
-              {caseTypes
-                ?.filter(
-                  (caseType) => legalCase.case_types.indexOf(caseType.id) > -1
-                )
-                .map((caseType) => caseType.title)
-                .join(", ")}
-            </>
-          ) : null}
-        </p>
-        <p>
-          {legalCase ? (
-            <>
-              {i18n.t("Case Offices")}:{" "}
-              {caseOffices
-                ?.filter(
-                  (caseOffice) =>
-                    legalCase.case_offices.indexOf(caseOffice.id) > -1
-                )
-                .map((caseOffice) => caseOffice.name)
-                .join(", ")}
-            </>
-          ) : null}
-        </p>
+        <LegalCaseForm legalCase={legalCase} />
 
-        {meetings ? <MeetingsList meetings={meetings} /> : null}
+        <hr className={classes.hr} />
+
+        <Grid container direction="row" spacing={2} alignItems="center">
+          <Grid item style={{ flexGrow: 1 }}>
+            <strong>
+              {meetings?.length} {i18n.t("Meetings")}
+            </strong>
+          </Grid>
+        </Grid>
+
+        <MeetingsTable meetings={meetings} standalone={false} />
       </Container>
     </Layout>
   );

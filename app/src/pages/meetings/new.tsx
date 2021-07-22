@@ -25,7 +25,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
 
-import MeetingForm from "./form";
+import MeetingForm from "../../components/meeting/form";
 
 import { createMeeting } from "../../api";
 
@@ -98,19 +98,19 @@ const Page = () => {
             const target = event.target as typeof event.target & {
               notes: { value: string };
               location: { value: string };
-              meetingDate: { value: string };
-              meetingType: { value: string };
+              meeting_date: { value: string };
+              meeting_type: { value: string };
             };
 
             newMeeting(
               target.notes.value,
               target.location.value,
-              target.meetingDate.value,
-              target.meetingType.value
+              target.meeting_date.value,
+              target.meeting_type.value
             );
           }}
         >
-          <Grid container direction="row" spacing={2} alignItems="center">
+          <Grid className={classes.pageBar} container direction="row" spacing={2} alignItems="center">
             <Grid item>
               <ChatIcon color="primary" style={{ display: "flex" }} />
             </Grid>

@@ -43,7 +43,13 @@ const Page = () => {
         <div>{i18n.t("Client list")}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
-        <Grid container direction="row" spacing={2} alignItems="center">
+        <Grid
+          className={classes.pageBar}
+          container
+          direction="row"
+          spacing={2}
+          alignItems="center"
+        >
           <Grid item>
             <PeopleIcon color="primary" style={{ display: "flex" }} />
           </Grid>
@@ -67,6 +73,14 @@ const Page = () => {
           </Grid>
         </Grid>
 
+        <Grid container direction="row" spacing={2} alignItems="center">
+          <Grid item style={{ flexGrow: 1 }}>
+            <strong>
+              {clients ? clients.length : "0"} {i18n.t("Clients")}
+            </strong>
+          </Grid>
+        </Grid>
+
         <TableContainer>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
@@ -86,47 +100,66 @@ const Page = () => {
                 </Hidden>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {clients?.map((client) => (
-                <TableRow
-                  key={client.id}
-                  className={classes.tableBodyRow}
-                  onClick={() => {
-                    history.push(`/clients/${client.id}/cases`);
-                  }}
-                >
-                  <TableCell className={classes.tableBodyCell}>
-                    <strong>{client.preferred_name}</strong>
-                  </TableCell>
-                  <TableCell className={classes.tableBodyCell}>
-                    {client.legal_cases ? (
-                      <span>{`${client.legal_cases.length} ${i18n.t(
-                        "Legal Cases"
-                      )}`}</span>
-                    ) : (
-                      ""
-                    )}
-                  </TableCell>
-                  <Hidden mdDown>
+            {clients ? (
+              <TableBody>
+                {clients?.map((client) => (
+                  <TableRow
+                    key={client.id}
+                    className={classes.tableBodyRow}
+                    onClick={() => {
+                      history.push(`/clients/${client.id}/cases`);
+                    }}
+                  >
                     <TableCell className={classes.tableBodyCell}>
-                      {client.updated_at ? (
-                        <span>
-                          {format(
-                            new Date(client.updated_at || new Date().toISOString()),
-                            "MM/dd/yyyy (h:ma)"
-                          )}
-                        </span>
+                      <strong>{client.preferred_name}</strong>
+                    </TableCell>
+                    <TableCell className={classes.tableBodyCell}>
+                      {client.legal_cases ? (
+                        <span>{`${client.legal_cases.length} ${i18n.t(
+                          "Legal Cases"
+                        )}`}</span>
                       ) : (
                         ""
                       )}
+                    </TableCell>
+                    <Hidden mdDown>
+                      <TableCell className={classes.tableBodyCell}>
+                        {client.updated_at ? (
+                          <span>
+                            {format(
+                              new Date(
+                                client.updated_at || new Date().toISOString()
+                              ),
+                              "MM/dd/yyyy (h:ma)"
+                            )}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </TableCell>
+                    </Hidden>
+                    <TableCell className={classes.tableBodyCell} align="right">
+                      <ArrowRightAltIcon />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            ) : (
+              <TableBody>
+                <TableRow className={classes.tableBodyRow}>
+                  <TableCell className={classes.tableBodyCell}>------ ------</TableCell>
+                  <TableCell className={classes.tableBodyCell}>- -----</TableCell>
+                  <Hidden mdDown>
+                    <TableCell className={classes.tableBodyCell}>
+                      --/--/---- (--:----)
                     </TableCell>
                   </Hidden>
                   <TableCell className={classes.tableBodyCell} align="right">
                     <ArrowRightAltIcon />
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
+              </TableBody>
+            )}
           </Table>
         </TableContainer>
       </Container>

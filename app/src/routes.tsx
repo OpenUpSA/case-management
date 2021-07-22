@@ -6,6 +6,7 @@ import ForgotPasswordPage from "./pages/forgotPassword";
 
 import ClientsPage from "./pages/clients/list";
 import ClientPage from "./pages/clients/show";
+import ClientLegalCasesPage from "./pages/clients/cases";
 
 import LegalCasesPage from "./pages/legalCases/list";
 import LegalCasePage from "./pages/legalCases/show";
@@ -26,7 +27,7 @@ function Routes() {
       
       <Route exact path="/clients" component={ClientsPage} />
       <Route exact path="/clients/:id" component={ClientPage} />
-      <Route exact path="/clients/:id/cases" component={LegalCasesPage} />
+      <Route exact path="/clients/:id/cases" component={ClientLegalCasesPage} />
       <Route exact path="/cases" component={LegalCasesPage} />
       <Route exact path="/cases/:id" component={LegalCasePage} />
       

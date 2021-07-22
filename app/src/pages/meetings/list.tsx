@@ -11,7 +11,7 @@ import { IMeeting } from "../../types";
 import i18n from "../../i18n";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
-import MeetingsList from "../../components/meetings";
+import MeetingsTable from "../../components/meeting/table";
 import MoreMenu from "../../components/moreMenu";
 
 const Page = () => {
@@ -33,7 +33,7 @@ const Page = () => {
         <div>{i18n.t("Meeting list")}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
-        <Grid container direction="row" spacing={2} alignItems="center">
+        <Grid className={classes.pageBar} container direction="row" spacing={2} alignItems="center">
           <Grid item>
             <ForumIcon color="primary" style={{ display: "flex" }} />
           </Grid>
@@ -58,7 +58,7 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        {meetings ? <MeetingsList meetings={meetings} /> : null}
+        <MeetingsTable meetings={meetings} />
       </Container>
     </Layout>
   );
