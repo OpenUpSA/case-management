@@ -55,7 +55,7 @@ export class UserInfo extends Storage<Locals> {
   }
 
   public getUserId() {
-    return this.get(Locals.USER_ID);
+    return parseInt(this.get(Locals.USER_ID) || "0");
   }
 
   public setUserId(userId: string) {
@@ -85,4 +85,3 @@ export const RedirectIfNotLoggedIn = () => {
     history.push("/login");
   }
 };
-
