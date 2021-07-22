@@ -55,7 +55,7 @@ export interface IToken {
   token: string;
 }
 
-export interface IAuthenticate {
+export interface ICredentials {
   username: string;
   password: string;
 }

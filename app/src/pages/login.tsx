@@ -20,7 +20,11 @@ const Page = () => {
 
   const validateLogin = async (username: string, password: string) => {
     try {
-      const { token } = await authenticate(username, password);
+      const credentials = {
+        username: username,
+        password: password,
+      };
+      const { token } = await authenticate(credentials);
       if (token) {
         const tokens = Tokens.getInstance();
         tokens.setAccessToken(token);

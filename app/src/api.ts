@@ -5,19 +5,31 @@ import {
   ICaseOffice,
   IMeeting,
   IToken,
-  IAuthenticate,
+  ICredentials,
 } from "./types";
 
-export async function httpGet<T>(request: RequestInfo): Promise<T> {
-  const response = await fetch(request);
-  const body = await response.json();
-  return body;
-}
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8000/api/v1";
 
 async function http<T>(path: string, config: RequestInit): Promise<T> {
+  path = `${API_BASE_URL}${path}`;
   const request = new Request(path, config);
   const response = await fetch(request);
   return response.json().catch(() => ({}));
+}
+
+export async function httpGet<T>(
+  path: string,
+  config?: RequestInit
+): Promise<T> {
+  const init = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    ...config,
+  };
+  return await http<T>(path, init);
 }
 
 export async function httpDelete<T>(
@@ -41,7 +53,7 @@ export async function httpPost<T, U>(
   config?: RequestInit
 ): Promise<U> {
   const init = {
-    method: "post",
+    method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -71,65 +83,59 @@ export async function httpPatch<T, U>(
 
 export const getLegalCases = async (client?: number) => {
   return await httpGet<ILegalCase[]>(
-    `/api/v1/cases/${client ? `?client=${client}` : ""}`
+    `/cases/${client ? `?client=${client}` : ""}`
   );
 };
 
 export const getLegalCase = async (id: number) => {
-  return await httpGet<ILegalCase>(`/api/v1/cases/${id}/`);
+  return await httpGet<ILegalCase>(`/cases/${id}/`);
 };
 
 export const getClients = async () => {
-  return await httpGet<IClient[]>(`/api/v1/clients/`);
+  return await httpGet<IClient[]>(`/clients/`);
 };
 
 export const getClient = async (id: number) => {
-  return await httpGet<IClient>(`/api/v1/clients/${id}/`);
+  return await httpGet<IClient>(`/clients/${id}/`);
 };
 
 export const deleteClient = async (id: number) => {
-  return await httpDelete<IMeeting>(`/api/v1/clients/${id}/`);
+  return await httpDelete<IMeeting>(`/clients/${id}/`);
 };
 
 export const getCaseTypes = async () => {
-  return await httpGet<ICaseType[]>(`/api/v1/case-types/`);
+  return await httpGet<ICaseType[]>(`/case-types/`);
 };
 
 export const getCaseOffices = async () => {
-  return await httpGet<ICaseOffice[]>(`/api/v1/case-offices/`);
+  return await httpGet<ICaseOffice[]>(`/case-offices/`);
 };
 
 export const getMeetings = async (legal_case?: number) => {
   return await httpGet<IMeeting[]>(
-    `/api/v1/meetings/${legal_case ? `?legal_case=${legal_case}` : ""}`
+    `/meetings/${legal_case ? `?legal_case=${legal_case}` : ""}`
   );
 };
 
 export const getMeeting = async (id: number) => {
-  return await httpGet<IMeeting>(`/api/v1/meetings/${id}/`);
+  return await httpGet<IMeeting>(`/meetings/${id}/`);
 };
 
 export const createMeeting = async (meeting: IMeeting) => {
-  const body = meeting;
-  return await httpPost<IMeeting, IMeeting>("/api/v1/meetings/", body);
+  return await httpPost<IMeeting, IMeeting>(`/meetings/`, meeting);
 };
 
 export const updateMeeting = async (meeting: IMeeting) => {
-  const body = meeting;
   return await httpPatch<IMeeting, IMeeting>(
-    `/api/v1/meetings/${meeting.id}/`,
-    body
+    `/meetings/${meeting.id}/`,
+    meeting
   );
 };
 
 export const deleteMeeting = async (id: number) => {
-  return await httpDelete<IMeeting>(`/api/v1/meetings/${id}/`);
+  return await httpDelete<IMeeting>(`/meetings/${id}/`);
 };
 
-export const authenticate = async (username: string, password: string) => {
-  const body = {
-    username: username,
-    password: password,
-  };
-  return await httpPost<IAuthenticate, IToken>("/api/v1/authenticate", body);
+export const authenticate = async (credentials: ICredentials) => {
+  return await httpPost<ICredentials, IToken>(`/authenticate`, credentials);
 };

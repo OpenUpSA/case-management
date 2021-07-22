@@ -4,7 +4,6 @@
   "author": "Paul Watson <paul@openup.org.za>",
   "version": "0.1.0",
   "license": "MIT",
-  "proxy": "http://localhost:8000",
   "dependencies": {
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
