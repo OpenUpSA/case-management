@@ -33,9 +33,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build & echo '/* /index.html 200' > build/_redirects",
+    "build": "react-scripts build; echo '/* /index.html 200' > build/_redirects",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "netlify deploy --prod -d=./build"
   },
   "eslintConfig": {
     "extends": [
