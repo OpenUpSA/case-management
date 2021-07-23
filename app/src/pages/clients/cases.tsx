@@ -8,9 +8,9 @@ import {
   Container,
   Button,
   Grid,
-  ListItem,
   ListItemIcon,
   ListItemText,
+  MenuItem,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
@@ -82,7 +82,7 @@ const Page = () => {
           </Grid>
           <Grid item>
             <MoreMenu>
-              <ListItem
+              <MenuItem
                 onClick={() => {
                   history.push(`/clients/${clientId}`);
                 }}
@@ -91,7 +91,7 @@ const Page = () => {
                   <PersonIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>{i18n.t("View client")}</ListItemText>
-              </ListItem>
+              </MenuItem>
             </MoreMenu>
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>

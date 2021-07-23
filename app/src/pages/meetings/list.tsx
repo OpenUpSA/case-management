@@ -33,7 +33,13 @@ const Page = () => {
         <div>{i18n.t("Meeting list")}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
-        <Grid className={classes.pageBar} container direction="row" spacing={2} alignItems="center">
+        <Grid
+          className={classes.pageBar}
+          container
+          direction="row"
+          spacing={2}
+          alignItems="center"
+        >
           <Grid item>
             <ForumIcon color="primary" style={{ display: "flex" }} />
           </Grid>
@@ -43,8 +49,7 @@ const Page = () => {
             </Typography>
           </Grid>
           <Grid item>
-            <MoreMenu>              
-            </MoreMenu>
+            <MoreMenu></MoreMenu>
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>
             <Button

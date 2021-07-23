@@ -16,12 +16,12 @@ import {
   Button,
   Grid,
   ListItemIcon,
+  MenuItem,
 } from "@material-ui/core";
 
 import { useStyles } from "../../utils";
 import FolderIcon from "@material-ui/icons/Folder";
-import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
-import ListItem from "@material-ui/core/ListItem";
+import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -96,8 +96,8 @@ const Page = () => {
             newLegalCase(
               target.case_number.value,
               target.state.value,
-              target.case_types.value.split(',').map(s => parseInt(s)),
-              target.case_offices.value.split(',').map(s => parseInt(s))
+              target.case_types.value.split(",").map((s) => parseInt(s)),
+              target.case_offices.value.split(",").map((s) => parseInt(s))
             );
           }}
         >
@@ -116,8 +116,8 @@ const Page = () => {
             </Grid>
             <Grid item>
               <MoreMenu>
-                <ListItem
-                  onClick={(e) => {
+                <MenuItem
+                  onClick={() => {
                     history.push(`/cases/${legalCase?.id}`);
                   }}
                 >
@@ -125,7 +125,7 @@ const Page = () => {
                     <CloseIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>{i18n.t("Cancel changes")}</ListItemText>
-                </ListItem>
+                </MenuItem>
               </MoreMenu>
             </Grid>
             <Grid item className={classes.zeroWidthOnMobile}>

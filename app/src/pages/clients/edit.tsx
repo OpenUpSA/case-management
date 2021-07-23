@@ -16,11 +16,11 @@ import {
   Button,
   Grid,
   ListItemIcon,
+  MenuItem,
 } from "@material-ui/core";
 import { useStyles } from "../../utils";
 import PersonIcon from "@material-ui/icons/Person";
 import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
-import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -105,8 +105,8 @@ const Page = () => {
             </Grid>
             <Grid item>
               <MoreMenu>
-                <ListItem
-                  onClick={(e) => {
+                <MenuItem
+                  onClick={() => {
                     history.push(`/clients/${clientId}`);
                   }}
                 >
@@ -114,7 +114,7 @@ const Page = () => {
                     <CloseIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>{i18n.t("Cancel changes")}</ListItemText>
-                </ListItem>
+                </MenuItem>
               </MoreMenu>
             </Grid>
             <Grid item className={classes.zeroWidthOnMobile}>

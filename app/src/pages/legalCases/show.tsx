@@ -2,18 +2,31 @@ import React, { useEffect } from "react";
 import { useParams, Link, useHistory } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
-import { Breadcrumbs, Button, Container, Grid, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import {
+  Breadcrumbs,
+  Button,
+  Container,
+  Grid,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+} from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import ChatIcon from "@material-ui/icons/Chat";
 import MeetingsTable from "../../components/meeting/table";
 import MoreMenu from "../../components/moreMenu";
 
 import Layout from "../../components/layout";
-import { deleteLegalCase, getClient, getLegalCase, getMeetings } from "../../api";
+import {
+  deleteLegalCase,
+  getClient,
+  getLegalCase,
+  getMeetings,
+} from "../../api";
 import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import LegalCaseForm from "../../components/legalCase/form";
 
@@ -30,9 +43,7 @@ const Page = () => {
   const caseId = parseInt(params.id);
 
   const destroyLegalCase = async () => {
-    if (
-      window.confirm(i18n.t("Are you sure you want to delete this case?"))
-    ) {
+    if (window.confirm(i18n.t("Are you sure you want to delete this case?"))) {
       await deleteLegalCase(caseId);
       history.push(`/cases/`);
     }
@@ -78,8 +89,8 @@ const Page = () => {
           </Grid>
           <Grid item>
             <MoreMenu>
-              <ListItem
-                onClick={(e) => {
+              <MenuItem
+                onClick={() => {
                   history.push(`/cases/${legalCase?.id}/edit`);
                 }}
               >
@@ -87,13 +98,13 @@ const Page = () => {
                   <EditIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>{i18n.t("Edit case")}</ListItemText>
-              </ListItem>
-              <ListItem onClick={destroyLegalCase}>
-                  <ListItemIcon>
-                    <DeleteIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>{i18n.t("Delete case")}</ListItemText>
-                </ListItem>
+              </MenuItem>
+              <MenuItem onClick={destroyLegalCase}>
+                <ListItemIcon>
+                  <DeleteIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{i18n.t("Delete case")}</ListItemText>
+              </MenuItem>
             </MoreMenu>
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>

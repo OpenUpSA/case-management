@@ -16,11 +16,11 @@ import {
   Button,
   Grid,
   ListItemIcon,
+  MenuItem,
 } from "@material-ui/core";
 import { useStyles } from "../../utils";
 import ChatIcon from "@material-ui/icons/Chat";
 import RateReviewIcon from "@material-ui/icons/RateReview";
-import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -102,11 +102,17 @@ const Page = () => {
               target.notes.value,
               target.location.value,
               target.meeting_date.value,
-              target.meeting_type.value,
+              target.meeting_type.value
             );
           }}
         >
-          <Grid className={classes.pageBar} container direction="row" spacing={2} alignItems="center">
+          <Grid
+            className={classes.pageBar}
+            container
+            direction="row"
+            spacing={2}
+            alignItems="center"
+          >
             <Grid item>
               <ChatIcon color="primary" style={{ display: "flex" }} />
             </Grid>
@@ -117,8 +123,8 @@ const Page = () => {
             </Grid>
             <Grid item>
               <MoreMenu>
-                <ListItem
-                  onClick={(e) => {
+                <MenuItem
+                  onClick={() => {
                     history.push(`/meetings/${meeting?.id}`);
                   }}
                 >
@@ -126,7 +132,7 @@ const Page = () => {
                     <CloseIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>{i18n.t("Cancel changes")}</ListItemText>
-                </ListItem>
+                </MenuItem>
               </MoreMenu>
             </Grid>
             <Grid item className={classes.zeroWidthOnMobile}>

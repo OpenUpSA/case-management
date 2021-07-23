@@ -15,6 +15,7 @@ import {
   Button,
   Grid,
   ListItemIcon,
+  MenuItem,
 } from "@material-ui/core";
 import { useStyles } from "../../utils";
 import ChatIcon from "@material-ui/icons/Chat";
@@ -23,7 +24,6 @@ import RateReviewIcon from "@material-ui/icons/RateReview";
 import MoreMenu from "../../components/moreMenu";
 
 import MeetingForm from "../../components/meeting/form";
-import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 type RouteParams = { id: string };
@@ -74,7 +74,13 @@ const Page = () => {
       </Breadcrumbs>
       <Container maxWidth="md">
         <form>
-          <Grid className={classes.pageBar} container direction="row" spacing={2} alignItems="center">
+          <Grid
+            className={classes.pageBar}
+            container
+            direction="row"
+            spacing={2}
+            alignItems="center"
+          >
             <Grid item>
               <ChatIcon color="primary" style={{ display: "flex" }} />
             </Grid>
@@ -85,12 +91,12 @@ const Page = () => {
             </Grid>
             <Grid item>
               <MoreMenu>
-                <ListItem onClick={destroyMeeting}>
+                <MenuItem onClick={destroyMeeting}>
                   <ListItemIcon>
                     <DeleteIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>{i18n.t("Delete meeting")}</ListItemText>
-                </ListItem>
+                </MenuItem>
               </MoreMenu>
             </Grid>
             <Grid item className={classes.zeroWidthOnMobile}>

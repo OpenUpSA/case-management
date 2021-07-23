@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   ListItemIcon,
+  MenuItem,
 } from "@material-ui/core";
 
 import Layout from "../../components/layout";
@@ -21,7 +22,6 @@ import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ClientForm from "../../components/client/form";
 import MoreMenu from "../../components/moreMenu";
-import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 type RouteParams = { id: string };
@@ -63,7 +63,13 @@ const Page = () => {
         <div>{client?.preferred_name}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
-        <Grid className={classes.pageBar} container direction="row" spacing={2} alignItems="center">
+        <Grid
+          className={classes.pageBar}
+          container
+          direction="row"
+          spacing={2}
+          alignItems="center"
+        >
           <Grid item>
             <PersonIcon color="primary" style={{ display: "flex" }} />
           </Grid>
@@ -74,7 +80,7 @@ const Page = () => {
           </Grid>
           <Grid item>
             <MoreMenu>
-            <ListItem
+              <MenuItem
                 onClick={() => {
                   history.push(`/clients/${clientId}/cases`);
                 }}
@@ -83,13 +89,13 @@ const Page = () => {
                   <PersonIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>{i18n.t("View client cases")}</ListItemText>
-              </ListItem>
-              <ListItem onClick={destroyClient}>
+              </MenuItem>
+              <MenuItem onClick={destroyClient}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>{i18n.t("Delete client")}</ListItemText>
-              </ListItem>
+              </MenuItem>
             </MoreMenu>
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>

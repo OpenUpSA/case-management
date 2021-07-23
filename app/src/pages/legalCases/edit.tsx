@@ -8,7 +8,7 @@ import MoreMenu from "../../components/moreMenu";
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
 import { getClient, getLegalCase, updateLegalCase } from "../../api";
-import { ILegalCase, IClient} from "../../types";
+import { ILegalCase, IClient } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import {
   Breadcrumbs,
@@ -16,11 +16,11 @@ import {
   Button,
   Grid,
   ListItemIcon,
+  MenuItem,
 } from "@material-ui/core";
 import { useStyles } from "../../utils";
 import FolderIcon from "@material-ui/icons/Folder";
-import FolderOpenIcon from '@material-ui/icons/FolderOpen';
-import ListItem from "@material-ui/core/ListItem";
+import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -93,8 +93,8 @@ const Page = () => {
             saveLegalCase(
               target.case_number.value,
               target.state.value,
-              target.case_types.value.split(',').map(s => parseInt(s)),
-              target.case_offices.value.split(',').map(s => parseInt(s))
+              target.case_types.value.split(",").map((s) => parseInt(s)),
+              target.case_offices.value.split(",").map((s) => parseInt(s))
             );
           }}
         >
@@ -115,8 +115,8 @@ const Page = () => {
             </Grid>
             <Grid item>
               <MoreMenu>
-                <ListItem
-                  onClick={(e) => {
+                <MenuItem
+                  onClick={() => {
                     history.push(`/cases/${legalCase?.id}`);
                   }}
                 >
@@ -124,7 +124,7 @@ const Page = () => {
                     <CloseIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>{i18n.t("Cancel changes")}</ListItemText>
-                </ListItem>
+                </MenuItem>
               </MoreMenu>
             </Grid>
             <Grid item className={classes.zeroWidthOnMobile}>
