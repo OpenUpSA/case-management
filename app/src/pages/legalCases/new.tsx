@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
 import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
@@ -21,7 +20,7 @@ import {
 
 import { useStyles } from "../../utils";
 import FolderIcon from "@material-ui/icons/Folder";
-import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
+import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -74,12 +73,12 @@ const Page = () => {
   return (
     <Layout>
       <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
-        <Link to="/clients" component={Button}>
+        <Button onClick={() => history.push("/clients")}>
           {i18n.t("Client list")}
-        </Link>
-        <Link to={`/clients/${client?.id}/cases`} component={Button}>
+        </Button>
+        <Button onClick={() => history.push(`/clients/${client?.id}/cases`)}>
           {client?.preferred_name}
-        </Link>
+        </Button>
         <div>{i18n.t("New case")}</div>
       </Breadcrumbs>
       <Container maxWidth="md">

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
 import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
@@ -71,12 +70,12 @@ const Page = () => {
   return (
     <Layout>
       <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
-        <Link to="/clients" component={Button}>
+        <Button onClick={() => history.push("/clients")}>
           {i18n.t("Client list")}
-        </Link>
-        <Link to={`/clients/${client?.id}/cases`} component={Button}>
+        </Button>
+        <Button onClick={() => history.push(`/clients/${client?.id}/cases`)}>
           {client?.preferred_name}
-        </Link>
+        </Button>
         <div>{legalCase?.case_number}</div>
       </Breadcrumbs>
       <Container maxWidth="md">

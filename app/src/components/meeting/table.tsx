@@ -45,9 +45,7 @@ const Component = (props: Props) => {
               <TableCell className={classes.tableHeadCell}>
                 {i18n.t("Client name")}
               </TableCell>
-            ) : (
-              ""
-            )}
+            ) : null}
             <TableCell className={classes.tableHeadCell}>
               {i18n.t("Meeting type")}
             </TableCell>
@@ -80,9 +78,7 @@ const Component = (props: Props) => {
                       )
                       .map((client) => client.preferred_name)}
                   </TableCell>
-                ) : (
-                  ""
-                )}
+                ) : null}
                 <TableCell className={classes.tableBodyCell}>
                   {meeting.meeting_type}
                 </TableCell>

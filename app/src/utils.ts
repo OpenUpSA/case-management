@@ -76,6 +76,12 @@ export const useStyles = makeStyles((theme: Theme) =>
             textTransform: "none",
             color: "black",
           },
+          "& button": {
+            fontSize: "0.75em",
+            backgroundColor: "rgba(0, 0, 0, 0.03)",
+            textTransform: "none",
+            color: "black",
+          },
         },
       },
     },

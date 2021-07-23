@@ -1,7 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
 import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
@@ -44,9 +43,9 @@ const Page = () => {
   return (
     <Layout>
       <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
-        <Link to="/clients" component={Button}>
+        <Button onClick={() => history.push("/clients")}>
           {i18n.t("Client list")}
-        </Link>
+        </Button>
         <div>{i18n.t("New client")}</div>
       </Breadcrumbs>
       <Container maxWidth="md">

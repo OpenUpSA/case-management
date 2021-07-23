@@ -8,7 +8,6 @@ import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Container from "@material-ui/core/Container";
 import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
 
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -52,9 +51,11 @@ const Component = () => {
         <Container maxWidth="md">
           <Toolbar disableGutters={true}>
             <Box display="flex" flexGrow={1}>
-              <Link to="/">
-                <img src={logo} alt={i18n.t("CaseFile Logo")} />
-              </Link>
+              <img
+                src={logo}
+                alt={i18n.t("CaseFile Logo")}
+                onClick={() => history.push("/")}
+              />
             </Box>
             <IconButton
               edge="end"
@@ -90,7 +91,7 @@ const Component = () => {
               }}
             >
               <ListItemIcon>
-                <PeopleIcon style={{color: "black"}} />
+                <PeopleIcon style={{ color: "black" }} />
               </ListItemIcon>
               <ListItemText primary={i18n.t("Client list")} />
             </ListItem>
@@ -102,7 +103,7 @@ const Component = () => {
               }}
             >
               <ListItemIcon>
-                <FolderIcon style={{color: "black"}} />
+                <FolderIcon style={{ color: "black" }} />
               </ListItemIcon>
               <ListItemText primary={i18n.t("Case list")} />
             </ListItem>
@@ -114,7 +115,7 @@ const Component = () => {
               }}
             >
               <ListItemIcon>
-                <ForumIcon style={{color: "black"}} />
+                <ForumIcon style={{ color: "black" }} />
               </ListItemIcon>
               <ListItemText primary={i18n.t("All meetings")} />
             </ListItem>
@@ -122,7 +123,7 @@ const Component = () => {
           <List className={classes.drawerListFooter}>
             <ListItem button key="meetings" onClick={logout}>
               <ListItemIcon>
-                <ExitToAppIcon style={{color: "black"}} />
+                <ExitToAppIcon style={{ color: "black" }} />
               </ListItemIcon>
               <ListItemText primary={i18n.t("Logout")} />
             </ListItem>
@@ -134,6 +135,6 @@ const Component = () => {
       </Drawer>
     </div>
   );
-}
+};
 
 export default Component;

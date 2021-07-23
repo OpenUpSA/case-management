@@ -4,7 +4,6 @@ import LayoutSimple from "../components/layoutSimple";
 import i18n from "../i18n";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
 
 import { RedirectIfLoggedIn, UserInfo } from "../auth";
@@ -116,19 +115,6 @@ const Page = () => {
             </Button>
           </Grid>
         </Grid>
-        <div
-          style={{
-            textAlign: "center",
-          }}
-        >
-          <Link
-            style={{ display: "none" }}
-            href="/forgot-password"
-            variant="body2"
-          >
-            {i18n.t("Forgot password")}
-          </Link>
-        </div>
       </Box>
     </LayoutSimple>
   );

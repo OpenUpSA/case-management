@@ -2,7 +2,6 @@ import i18n from "../../i18n";
 import React, { useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
 import {
   Breadcrumbs,
   Button,
@@ -57,9 +56,9 @@ const Page = () => {
         separator="›"
         aria-label="breadcrumb"
       >
-        <Link to="/clients" component={Button}>
+        <Button onClick={() => history.push("/clients")}>
           {i18n.t("Client list")}
-        </Link>
+        </Button>
         <div>{client?.preferred_name}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
