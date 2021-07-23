@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
-import { Breadcrumbs, Container, Button, Grid } from "@material-ui/core";
+import { Breadcrumbs, Container, Button, Grid, Select, InputLabel, MenuItem, Input, InputAdornment, IconButton } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
@@ -14,6 +14,7 @@ import MoreMenu from "../../components/moreMenu";
 
 import LegalCasesTable from "../../components/legalCase/table";
 import { useHistory } from "react-router-dom";
+import SearchIcon from "@material-ui/icons/Search";
 
 const Page = () => {
   RedirectIfNotLoggedIn();
@@ -74,6 +75,45 @@ const Page = () => {
             <strong>
               {legalCases ? legalCases.length : "0"} {i18n.t("Cases")}
             </strong>
+          </Grid>
+          <Grid item>
+            <InputLabel
+              className={classes.inputLabel}
+              htmlFor="sort_table"
+              shrink={true}
+            >
+              {i18n.t("Sort")}:
+            </InputLabel>
+          </Grid>
+          <Grid item>
+            <Select
+              id="sort_table"
+              className={classes.select}
+              disableUnderline
+              input={<Input />}
+              value="alphabetical"
+            >
+              <MenuItem key="alphabetical" value="alphabetical">
+                {i18n.t("Alphabetical")}
+              </MenuItem>
+            </Select>
+          </Grid>
+          <Grid item md={12}>
+            <Input
+              id="table_search"
+              fullWidth
+              placeholder={i18n.t("Enter a name, case number, phone number...")}
+              startAdornment={
+                <InputAdornment position="start">
+                  <IconButton>
+                    <SearchIcon color="primary" />
+                  </IconButton>
+                </InputAdornment>
+              }
+              disableUnderline={true}
+              className={classes.textField}
+              aria-describedby="my-helper-text"
+            />
           </Grid>
         </Grid>
 

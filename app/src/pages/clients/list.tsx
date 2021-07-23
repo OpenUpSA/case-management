@@ -2,7 +2,17 @@ import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
-import { Button, Container, Grid } from "@material-ui/core";
+import {
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  Input,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
 import Hidden from "@material-ui/core/Hidden";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import PeopleIcon from "@material-ui/icons/People";
@@ -23,6 +33,7 @@ import { IClient } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import MoreMenu from "../../components/moreMenu";
+import SearchIcon from "@material-ui/icons/Search";
 
 const Page = () => {
   RedirectIfNotLoggedIn();
@@ -79,6 +90,45 @@ const Page = () => {
             <strong>
               {clients ? clients.length : "0"} {i18n.t("Clients")}
             </strong>
+          </Grid>
+          <Grid item>
+            <InputLabel
+              className={classes.inputLabel}
+              htmlFor="sort_table"
+              shrink={true}
+            >
+              {i18n.t("Sort")}:
+            </InputLabel>
+          </Grid>
+          <Grid item>
+            <Select
+              id="sort_table"
+              className={classes.select}
+              disableUnderline
+              input={<Input />}
+              value="alphabetical"
+            >
+              <MenuItem key="alphabetical" value="alphabetical">
+                {i18n.t("Alphabetical")}
+              </MenuItem>
+            </Select>
+          </Grid>
+          <Grid item md={12}>
+            <Input
+              id="table_search"
+              fullWidth
+              placeholder={i18n.t("Enter a name, case number, phone number...")}
+              startAdornment={
+                <InputAdornment position="start">
+                  <IconButton>
+                    <SearchIcon color="primary" />
+                  </IconButton>
+                </InputAdornment>
+              }
+              disableUnderline={true}
+              className={classes.textField}
+              aria-describedby="my-helper-text"
+            />
           </Grid>
         </Grid>
 

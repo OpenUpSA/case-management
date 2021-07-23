@@ -10,6 +10,11 @@ import {
   ListItemIcon,
   ListItemText,
   MenuItem,
+  InputLabel,
+  Select,
+  Input,
+  InputAdornment,
+  IconButton,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
@@ -23,6 +28,8 @@ import MoreMenu from "../../components/moreMenu";
 
 import ClientForm from "../../components/client/form";
 import LegalCasesTable from "../../components/legalCase/table";
+import SearchIcon from "@material-ui/icons/Search";
+
 
 type RouteParams = { id: string };
 
@@ -111,6 +118,45 @@ const Page = () => {
             <strong>
               {legalCases ? legalCases.length : "0"} {i18n.t("Cases")}
             </strong>
+          </Grid>
+          <Grid item>
+            <InputLabel
+              className={classes.inputLabel}
+              htmlFor="sort_table"
+              shrink={true}
+            >
+              {i18n.t("Sort")}:
+            </InputLabel>
+          </Grid>
+          <Grid item>
+            <Select
+              id="sort_table"
+              className={classes.select}
+              disableUnderline
+              input={<Input />}
+              value="alphabetical"
+            >
+              <MenuItem key="alphabetical" value="alphabetical">
+                {i18n.t("Alphabetical")}
+              </MenuItem>
+            </Select>
+          </Grid>
+          <Grid item md={12}>
+            <Input
+              id="table_search"
+              fullWidth
+              placeholder={i18n.t("Enter a name, case number, phone number...")}
+              startAdornment={
+                <InputAdornment position="start">
+                  <IconButton>
+                    <SearchIcon color="primary" />
+                  </IconButton>
+                </InputAdornment>
+              }
+              disableUnderline={true}
+              className={classes.textField}
+              aria-describedby="my-helper-text"
+            />
           </Grid>
         </Grid>
 
