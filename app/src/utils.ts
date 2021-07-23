@@ -40,7 +40,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       overflow: "auto",
     },
     drawerListFooter: {
-      position: "fixed",
+      position: "fixed!important" as any,
       bottom: "1em",
     },
     breadcrumbs: {
@@ -97,8 +97,8 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     table: {
       backgroundColor: "transparent",
-      borderCollapse: "separate",
-      borderSpacing: "0 10px",
+      borderCollapse: "separate!important" as any,
+      borderSpacing: "0 10px!important" as any,
     },
     tableHeadRow: {
       backgroundColor: "transparent",
@@ -131,7 +131,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     tableBodyCell: {
       backgroundColor: "rgba(0, 0, 0, 0.05)",
-      padding: "6px 10px",
+      padding: "6px 10px!important" as any,
       border: "none",
       borderRight: "solid 1px rgba(0, 0, 0, 0.05)",
     },
@@ -195,11 +195,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       cursor: "pointer",
     },
     vertButton: {
-      borderRadius: "4px",
+      borderRadius: "4px!important" as any,
       backgroundColor: "rgba(0, 0, 0, 0.05)",
-      padding: "8px 7px 7px 7px",
+      padding: "8px 7px 7px 7px!important" as any,
       "&:hover": {
-        backgroundColor: "rgba(0, 0, 0, 0.1)",
+        backgroundColor: "rgba(0, 0, 0, 0.1)!important" as any,
       },
     },
   })
