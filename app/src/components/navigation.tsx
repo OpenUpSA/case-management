@@ -52,7 +52,7 @@ const Component = () => {
         position="fixed"
         color="secondary"
         elevation={1}
-        className={classes.appBar}
+        className={classes.customAppBar}
       >
         <Container maxWidth="md">
           <Toolbar disableGutters={true}>

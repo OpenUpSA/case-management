@@ -21,11 +21,11 @@ export const useStyles = makeStyles((theme: Theme) =>
         right: "16px",
         bottom: "20px",
         position: "fixed",
-        "z-index": "1300",
+        zIndex: "1300!important" as any,
       },
     },
-    appBar: {
-      "z-index": "100000",
+    customAppBar: {
+      zIndex: "100000!important" as any,
     },
     drawer: {
       flexShrink: 0,
