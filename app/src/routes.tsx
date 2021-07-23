@@ -6,6 +6,7 @@ import LoginPage from "./pages/login";
 import ClientsPage from "./pages/clients/list";
 import ClientPage from "./pages/clients/show";
 import ClientEditPage from "./pages/clients/edit";
+import ClientNewPage from "./pages/clients/new";
 import ClientLegalCasesPage from "./pages/clients/cases";
 
 import LegalCasesPage from "./pages/legalCases/list";
@@ -27,6 +28,7 @@ function Routes() {
       <Route exact path="/login" component={LoginPage} />
       
       <Route exact path="/clients" component={ClientsPage} />
+      <Route exact path="/clients/new" component={ClientNewPage} />
       <Route exact path="/clients/:id" component={ClientPage} />
       <Route exact path="/clients/:id/edit" component={ClientEditPage} />
       <Route exact path="/clients/:id/cases" component={ClientLegalCasesPage} />

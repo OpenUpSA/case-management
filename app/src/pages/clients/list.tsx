@@ -67,6 +67,7 @@ const Page = () => {
               color="primary"
               variant="contained"
               startIcon={<PersonAddIcon />}
+              onClick={() => history.push("/clients/new")}
             >
               {i18n.t("New client")}
             </Button>
@@ -147,8 +148,12 @@ const Page = () => {
             ) : (
               <TableBody>
                 <TableRow className={classes.tableBodyRow}>
-                  <TableCell className={classes.tableBodyCell}>------ ------</TableCell>
-                  <TableCell className={classes.tableBodyCell}>- -----</TableCell>
+                  <TableCell className={classes.tableBodyCell}>
+                    ------ ------
+                  </TableCell>
+                  <TableCell className={classes.tableBodyCell}>
+                    - -----
+                  </TableCell>
                   <Hidden mdDown>
                     <TableCell className={classes.tableBodyCell}>
                       --/--/---- (--:----)

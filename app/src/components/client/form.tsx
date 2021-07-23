@@ -55,6 +55,7 @@ const Component = (props: Props) => {
             </InputLabel>
             <Input
               id="preferred_name"
+              autoFocus
               disableUnderline={true}
               disabled={props.readOnly}
               className={classes.textField}

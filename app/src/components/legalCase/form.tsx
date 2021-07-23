@@ -92,7 +92,7 @@ const Component = (props: Props) => {
               htmlFor="case_state_select"
               shrink={true}
             >
-              {i18n.t("Case type")}:
+              {i18n.t("Status")}:
             </InputLabel>
             <Select
               id="case_state_select"
