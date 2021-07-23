@@ -149,7 +149,7 @@ const Page = () => {
               <TableBody>
                 <TableRow className={classes.tableBodyRow}>
                   <TableCell className={classes.tableBodyCell}>
-                    ------ ------
+                    ░░░░░░ ░░░░░░
                   </TableCell>
                   <TableCell className={classes.tableBodyCell}>
                     - -----

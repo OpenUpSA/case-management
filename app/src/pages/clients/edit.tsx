@@ -62,7 +62,7 @@ const Page = () => {
         <Button onClick={() => history.push("/clients")}>
           {i18n.t("Client list")}
         </Button>
-        <div>{client?.preferred_name}</div>
+        <div>{client ? client.preferred_name : ""}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
         <form
@@ -99,7 +99,7 @@ const Page = () => {
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
               <Typography variant="h6">
-                <strong>{client?.preferred_name}</strong>
+                <strong>{client ? client.preferred_name : ""}</strong>
               </Typography>
             </Grid>
             <Grid item>

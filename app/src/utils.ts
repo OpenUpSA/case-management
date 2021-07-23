@@ -69,6 +69,8 @@ export const useStyles = makeStyles((theme: Theme) =>
             letterSpacing: "0.02857em",
             fontSize: "0.75em",
             color: "black",
+            minWidth: "7em",
+            textAlign: "center"
           },
           "& a": {
             fontSize: "0.75em",
@@ -81,6 +83,8 @@ export const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: "rgba(0, 0, 0, 0.03)",
             textTransform: "none",
             color: "black",
+            minHeight: "2.5em",
+            minWidth: "7em",
           },
         },
       },

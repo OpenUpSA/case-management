@@ -77,7 +77,7 @@ const Page = () => {
           {i18n.t("Client list")}
         </Button>
         <Button onClick={() => history.push(`/clients/${client?.id}/cases`)}>
-          {client?.preferred_name}
+          {client ? client.preferred_name : ""}
         </Button>
         <div>{i18n.t("New case")}</div>
       </Breadcrumbs>

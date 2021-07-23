@@ -27,16 +27,15 @@ import { useStyles } from "../utils";
 const Component = () => {
   const history = useHistory();
   const classes = useStyles();
-
-  const [open, setOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   const toggleDrawer = () => {
-    setOpen(!open);
+    setDrawerOpen(!drawerOpen);
   };
 
   const closeDrawer = () => {
-    if (open) {
-      setOpen(false);
+    if (drawerOpen) {
+      setDrawerOpen(false);
     }
   };
 
@@ -74,7 +73,7 @@ const Component = () => {
               aria-label="menu"
               onClick={toggleDrawer}
             >
-              {open ? <CloseIcon /> : <MenuIcon />}
+              {drawerOpen ? <CloseIcon /> : <MenuIcon />}
             </IconButton>
           </Toolbar>
         </Container>
@@ -84,7 +83,7 @@ const Component = () => {
         ModalProps={{
           onBackdropClick: closeDrawer,
         }}
-        open={open}
+        open={drawerOpen}
         elevation={1}
         className={classes.drawer}
         classes={{
