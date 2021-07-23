@@ -2,12 +2,14 @@ import React, { ReactElement } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import { useStyles } from "../utils";
 
 type Props = {
   children?: ReactElement | ReactElement[];
 };
 
 const Component = (props: Props) => {
+  const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -22,6 +24,7 @@ const Component = (props: Props) => {
   return (
     <div>
       <IconButton
+        className={classes.vertButton}
         aria-label="more"
         aria-controls="long-menu"
         aria-haspopup="true"

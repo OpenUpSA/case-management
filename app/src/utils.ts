@@ -52,15 +52,21 @@ export const useStyles = makeStyles((theme: Theme) =>
         marginTop: "59px",
         marginBottom: "26px",
       },
-      paddingTop: "0.75em",
-      paddingBottom: "0.75em",
+      paddingTop: "0.45em",
+      paddingBottom: "0.55em",
       backgroundColor: "rgba(0, 0, 0, 0.02)",
       "& ol": {
         maxWidth: "960px",
         marginLeft: "auto",
         marginRight: "auto",
-        paddingLeft: "24px",
-        paddingRight: "24px",
+        [theme.breakpoints.up("md")]: {
+          paddingLeft: "24px",
+          paddingRight: "24px",
+        },
+        [theme.breakpoints.down("xs")]: {
+          paddingLeft: "14px",
+          paddingRight: "14px",
+        },
         "& li": {
           "& div": {
             padding: "6px 8px",
@@ -70,7 +76,7 @@ export const useStyles = makeStyles((theme: Theme) =>
             fontSize: "0.75em",
             color: "black",
             minWidth: "7em",
-            textAlign: "center"
+            textAlign: "center",
           },
           "& a": {
             fontSize: "0.75em",
@@ -187,6 +193,14 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     cursorPointer: {
       cursor: "pointer",
-    }
+    },
+    vertButton: {
+      borderRadius: "4px",
+      backgroundColor: "rgba(0, 0, 0, 0.05)",
+      padding: "8px 7px 7px 7px",
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
+      },
+    },
   })
 );
