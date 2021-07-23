@@ -106,6 +106,12 @@ git remote add prod dokku@hetzner1.openup.org.za:osf-case-management-prod
 git push prod master
 ```
 
+Migrations are run automatically on deployment.
+
+Other commands can be run on the production server;
+- `ssh dokku@hetzner1.openup.org.za apps:list`
+- `dokku run osf-case-management-prod python manage.py createsuperuser`
+
 The dokku app environment is deployed using an [Ansible playbook](https://github.com/OpenUpSA/ansible-config/tree/master/apps/osf-case-management).
 
 
