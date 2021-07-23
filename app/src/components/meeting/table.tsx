@@ -54,7 +54,7 @@ const Component = (props: Props) => {
             </TableCell>
           </TableRow>
         </TableHead>
-        {props.meetings ? (
+        {props.meetings && props.meetings.length > 0 ? (
           <TableBody>
             {props.meetings.map((meeting) => (
               <TableRow
@@ -93,15 +93,11 @@ const Component = (props: Props) => {
           </TableBody>
         ) : (
           <TableBody>
-            <TableRow className={classes.tableBodyRow}>
-              <TableCell className={classes.tableBodyCell}>
-                <strong>----</strong>
-              </TableCell>
-              <TableCell className={classes.tableBodyCell}>----</TableCell>
-              <TableCell className={classes.tableBodyCell}>----</TableCell>
-              <TableCell className={classes.tableBodyCell} align="right">
-                <ArrowRightAltIcon />
-              </TableCell>
+            <TableRow className={`${classes.tableBodyRow} ${classes.tableBodyRowEmpty}`}>
+              <TableCell
+                colSpan={4}
+                className={classes.tableBodyCell}
+              ></TableCell>
             </TableRow>
           </TableBody>
         )}

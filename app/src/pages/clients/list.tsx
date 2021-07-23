@@ -151,9 +151,9 @@ const Page = () => {
                 </Hidden>
               </TableRow>
             </TableHead>
-            {clients ? (
+            {clients && clients.length > 0 ? (
               <TableBody>
-                {clients?.map((client) => (
+                {clients.map((client) => (
                   <TableRow
                     key={client.id}
                     className={classes.tableBodyRow}
@@ -197,21 +197,8 @@ const Page = () => {
               </TableBody>
             ) : (
               <TableBody>
-                <TableRow className={classes.tableBodyRow}>
-                  <TableCell className={classes.tableBodyCell}>
-                    ░░░░░░ ░░░░░░
-                  </TableCell>
-                  <TableCell className={classes.tableBodyCell}>
-                    - -----
-                  </TableCell>
-                  <Hidden mdDown>
-                    <TableCell className={classes.tableBodyCell}>
-                      --/--/---- (--:----)
-                    </TableCell>
-                  </Hidden>
-                  <TableCell className={classes.tableBodyCell} align="right">
-                    <ArrowRightAltIcon />
-                  </TableCell>
+                <TableRow className={`${classes.tableBodyRow} ${classes.tableBodyRowEmpty}`}>
+                  <TableCell colSpan={4} className={classes.tableBodyCell}></TableCell>
                 </TableRow>
               </TableBody>
             )}

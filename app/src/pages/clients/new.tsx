@@ -34,7 +34,7 @@ const Page = () => {
   const newClient = async (client: IClient) => {
     try {
       const { id } = await createClient(client);
-      history.push(`/clients/${id}`);
+      history.push(`/clients/${id}/cases`);
     } catch (e) {
       console.log(e);
     }

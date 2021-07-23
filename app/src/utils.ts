@@ -116,6 +116,10 @@ export const useStyles = makeStyles((theme: Theme) =>
         borderTopRightRadius: "4px",
         borderBottomRightRadius: "4px",
         borderRight: "none",
+        padding: "10px 10px 4px 0!important" as any,
+      },
+      "&>:nth-last-child(2)": {
+        borderRight: "none",
       },
       "&>:first-child": {
         borderTopLeftRadius: "4px",
@@ -127,6 +131,15 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       "& td:first-child": {
         fontWeight: "bold",
+      },
+    },
+    tableBodyRowEmpty: {
+      "&>:last-child": {
+        padding: "1.5em!important" as any,
+      },
+      "&:hover td": {
+        cursor: "unset",
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
       },
     },
     tableBodyCell: {
