@@ -181,5 +181,8 @@ export const useStyles = makeStyles((theme: Theme) =>
     pageBar: {
       marginBottom: "50px",
     },
+    cursorPointer: {
+      cursor: "pointer",
+    }
   })
 );

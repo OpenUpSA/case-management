@@ -34,10 +34,17 @@ const Component = () => {
     setOpen(!open);
   };
 
+  const closeDrawer = () => {
+    if (open) {
+      setOpen(false);
+    }
+  };
+
   const logout = () => {
     const userInfo = UserInfo.getInstance();
     userInfo.clear();
     history.push("/");
+    closeDrawer();
   };
 
   return (
@@ -52,9 +59,13 @@ const Component = () => {
           <Toolbar disableGutters={true}>
             <Box display="flex" flexGrow={1}>
               <img
+                className={classes.cursorPointer}
                 src={logo}
                 alt={i18n.t("CaseFile Logo")}
-                onClick={() => history.push("/")}
+                onClick={() => {
+                  history.push("/");
+                  closeDrawer();
+                }}
               />
             </Box>
             <IconButton
@@ -71,7 +82,7 @@ const Component = () => {
       <Drawer
         variant="temporary"
         ModalProps={{
-          onBackdropClick: toggleDrawer,
+          onBackdropClick: closeDrawer,
         }}
         open={open}
         elevation={1}
@@ -88,6 +99,7 @@ const Component = () => {
               key="clients"
               onClick={() => {
                 history.push("/clients");
+                closeDrawer();
               }}
             >
               <ListItemIcon>
@@ -100,6 +112,7 @@ const Component = () => {
               key="cases"
               onClick={() => {
                 history.push("/cases");
+                closeDrawer();
               }}
             >
               <ListItemIcon>
@@ -112,6 +125,7 @@ const Component = () => {
               key="meetings"
               onClick={() => {
                 history.push("/meetings");
+                closeDrawer();
               }}
             >
               <ListItemIcon>
