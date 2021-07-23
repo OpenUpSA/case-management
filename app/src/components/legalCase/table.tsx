@@ -46,9 +46,7 @@ const Component = (props: Props) => {
               <TableCell className={classes.tableHeadCell}>
                 {i18n.t("Client")}
               </TableCell>
-            ) : (
-              ""
-            )}
+            ) : null}
             <TableCell className={classes.tableHeadCell}>
               {i18n.t("Case type")}
             </TableCell>
@@ -80,9 +78,7 @@ const Component = (props: Props) => {
                     ?.filter((client) => client.id === legalCase.client)
                     .map((client) => client.preferred_name)}
                 </TableCell>
-              ) : (
-                ""
-              )}
+              ) : null}
               <TableCell className={classes.tableBodyCell}>
                 {caseTypes
                   ?.filter(
