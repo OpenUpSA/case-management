@@ -160,7 +160,7 @@ const Page = () => {
               </MenuItem>
             </Select>
           </Grid>
-          <Grid item md={12}>
+          <Grid item md={12} style={{ display: "none" }}>
             <Input
               id="table_search"
               fullWidth

@@ -137,7 +137,7 @@ const Component = (props: Props) => {
                 htmlFor="official_identifier_type_select"
                 shrink={true}
               >
-                {i18n.t("Case type")}:
+                {i18n.t("Identity number type")}:
               </InputLabel>
               <Select
                 id="official_identifier_type_select"
