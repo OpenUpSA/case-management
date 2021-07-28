@@ -52,9 +52,6 @@ const Page = () => {
               <strong>{i18n.t("Case list")}</strong>
             </Typography>
           </Grid>
-          <Grid item>
-            <MoreMenu></MoreMenu>
-          </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>
             <Button
               className={classes.canBeFab}
