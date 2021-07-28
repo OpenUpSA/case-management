@@ -7,8 +7,6 @@ import {
   Container,
   Button,
   Grid,
-  ListItemIcon,
-  ListItemText,
   MenuItem,
   InputLabel,
   Select,
@@ -24,7 +22,6 @@ import { getLegalCases, getClient } from "../../api";
 import { ILegalCase, IClient } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
-import MoreMenu from "../../components/moreMenu";
 
 import ClientForm from "../../components/client/form";
 import LegalCasesTable from "../../components/legalCase/table";

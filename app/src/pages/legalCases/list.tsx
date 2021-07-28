@@ -10,7 +10,6 @@ import { getLegalCases } from "../../api";
 import { ILegalCase } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
-import MoreMenu from "../../components/moreMenu";
 
 import LegalCasesTable from "../../components/legalCase/table";
 import { useHistory } from "react-router-dom";

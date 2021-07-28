@@ -32,7 +32,6 @@ import { getClients } from "../../api";
 import { IClient } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
-import MoreMenu from "../../components/moreMenu";
 import SearchIcon from "@material-ui/icons/Search";
 
 const Page = () => {
