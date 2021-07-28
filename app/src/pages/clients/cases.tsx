@@ -81,20 +81,6 @@ const Page = () => {
               </strong>
             </Typography>
           </Grid>
-          <Grid item>
-            <MoreMenu>
-              <MenuItem
-                onClick={() => {
-                  history.push(`/clients/${clientId}`);
-                }}
-              >
-                <ListItemIcon>
-                  <PersonIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{i18n.t("View client")}</ListItemText>
-              </MenuItem>
-            </MoreMenu>
-          </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>
             <Button
               className={classes.canBeFab}
