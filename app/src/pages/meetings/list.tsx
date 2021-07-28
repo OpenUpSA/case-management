@@ -23,7 +23,6 @@ import i18n from "../../i18n";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import MeetingsTable from "../../components/meeting/table";
-import MoreMenu from "../../components/moreMenu";
 import SearchIcon from "@material-ui/icons/Search";
 
 const Page = () => {
