@@ -5,7 +5,21 @@ from case_management.models import LegalCase, CaseOffice, CaseType, Client, User
 from case_management.forms import UserCreationForm, UserChangeForm
 
 
-class UserAdmin(UserAdmin):
+class DefaultAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return True
+
+    def has_change_permission(self, request, obj=None):
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        return True
+
+    def has_module_permission(self, request):
+        return True
+
+
+class UserAdmin(UserAdmin, DefaultAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     model = User
@@ -25,30 +39,31 @@ class UserAdmin(UserAdmin):
     ordering = ('email',)
 
 
-class CaseOfficeAdmin(admin.ModelAdmin):
+class CaseOfficeAdmin(DefaultAdmin):
     model = CaseOffice
     list_display = ['name']
     list_filter = ['name']
 
 
-class CaseTypeAdmin(admin.ModelAdmin):
+class CaseTypeAdmin(DefaultAdmin):
     model = CaseType
     list_display = ['title']
     list_filter = ['title']
 
 
-class ClientAdmin(admin.ModelAdmin):
+class ClientAdmin(DefaultAdmin):
     model = Client
     list_display = ['name']
     list_filter = ['name']
 
 
-class LegalCaseAdmin(admin.ModelAdmin):
+class LegalCaseAdmin(DefaultAdmin):
     model = LegalCase
     list_display = ['case_number']
     list_filter = ['case_number']
 
-class MeetingAdmin(admin.ModelAdmin):
+
+class MeetingAdmin(DefaultAdmin):
     model = Meeting
     list_display = ['location', 'legal_case']
     list_filter = ['location', 'legal_case']
