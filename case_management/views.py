@@ -3,12 +3,25 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 
 from django.views import generic
 
-from case_management.serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, LegalCaseSerializer, MeetingSerializer
-from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting
+from case_management.serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, LegalCaseSerializer, MeetingSerializer, UserSerializer
+from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting, User
+
+
+class UpdateRetrieveViewSet(
+        mixins.UpdateModelMixin,
+        mixins.RetrieveModelMixin,
+        viewsets.GenericViewSet):
+    """
+    A viewset that provides just the `update', and `retrieve` actions.
+
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+    """
+    pass
 
 
 class Index(generic.TemplateView):
@@ -56,3 +69,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
     serializer_class = MeetingSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['legal_case']
+
+
+class UserViewSet(UpdateRetrieveViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
