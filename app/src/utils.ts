@@ -10,6 +10,7 @@ export function toSentence(items: string[]): string {
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     body: {
+      paddingBottom: "10em",
       [theme.breakpoints.down("xs")]: {
         paddingBottom: "4em",
       },
