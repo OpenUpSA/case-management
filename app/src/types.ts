@@ -61,6 +61,14 @@ export interface ICredentials {
   password: string;
 }
 
+export interface IUser {
+  id?: number;
+  name: string;
+  membership_number: string;
+  contact_number: string;
+  email: string;
+}
+
 export interface IStorage {
   getItem(key: string): string | null;
   setItem(key: string, value: string): void;

@@ -13,6 +13,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 
+import SettingsIcon from "@material-ui/icons/Settings";
 import PeopleIcon from "@material-ui/icons/People";
 import FolderIcon from "@material-ui/icons/Folder";
 import ForumIcon from "@material-ui/icons/Forum";
@@ -43,6 +44,12 @@ const Component = () => {
     const userInfo = UserInfo.getInstance();
     userInfo.clear();
     history.push("/");
+    closeDrawer();
+  };
+
+  const accountSettings = () => {
+    const userInfo = UserInfo.getInstance();
+    history.push(`/users/${userInfo.getUserId()}`);
     closeDrawer();
   };
 
@@ -134,7 +141,13 @@ const Component = () => {
             </ListItem>
           </List>
           <List className={classes.drawerListFooter}>
-            <ListItem button key="meetings" onClick={logout}>
+            <ListItem button key="accountSettings" onClick={accountSettings}>
+              <ListItemIcon>
+                <SettingsIcon style={{ color: "black" }} />
+              </ListItemIcon>
+              <ListItemText primary={i18n.t("Account settings")} />
+            </ListItem>
+            <ListItem button key="logout" onClick={logout}>
               <ListItemIcon>
                 <ExitToAppIcon style={{ color: "black" }} />
               </ListItemIcon>

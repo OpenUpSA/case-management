@@ -5,10 +5,12 @@ import {
   ICaseOffice,
   IMeeting,
   IUserInfo,
+  IUser,
   ICredentials,
 } from "./types";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
 
 async function http<T>(path: string, config: RequestInit): Promise<T> {
   path = `${API_BASE_URL}${path}`;
@@ -157,6 +159,14 @@ export const updateMeeting = async (meeting: IMeeting) => {
 
 export const deleteMeeting = async (id: number) => {
   return await httpDelete<IMeeting>(`/meetings/${id}/`);
+};
+
+export const getUser = async (id: number) => {
+  return await httpGet<IUser>(`/users/${id}/`);
+};
+
+export const updateUser = async (user: IUser) => {
+  return await httpPatch<IUser, IUser>(`/users/${user.id}/`, user);
 };
 
 export const authenticate = async (credentials: ICredentials) => {
