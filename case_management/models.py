@@ -21,6 +21,8 @@ class User(AbstractUser):
         unique=True,
     )
     contact_number = PhoneNumberField(null=True)
+    case_office = models.ForeignKey(
+        'CaseOffice', related_name='users', on_delete=models.CASCADE, null=True, blank=True)
 
     username = None
     first_name = None
