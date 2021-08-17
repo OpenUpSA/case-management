@@ -62,6 +62,7 @@ const Page = () => {
               membership_number: { value: string };
               contact_number: { value: string };
               email: { value: string };
+              case_office: { value: string };
             };
 
             saveUser({
@@ -69,6 +70,8 @@ const Page = () => {
               membership_number: target.membership_number.value,
               contact_number: target.contact_number.value,
               email: target.email.value,
+              case_office: parseInt(target.case_office.value),
+
             });
           }}
         >

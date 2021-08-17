@@ -67,6 +67,7 @@ export interface IUser {
   membership_number: string;
   contact_number: string;
   email: string;
+  case_office: number;
 }
 
 export interface IStorage {
