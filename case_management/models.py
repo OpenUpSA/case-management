@@ -12,12 +12,19 @@ from case_management.managers import UserManager
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True)
-    username = None
+    name = models.CharField(max_length=255, null=True, blank=True)
+    membership_number = models.CharField(
+        max_length=20, default='AA/B00/000', null=False, blank=False)
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
         unique=True,
     )
+    contact_number = PhoneNumberField(null=True)
+
+    username = None
+    first_name = None
+    last_name = None
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -26,13 +33,12 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
-    
+
     def has_module_perms(self, app_label):
-       return self.is_superuser
-    
-    
+        return self.is_superuser
+
     def has_perm(self, perm, obj=None):
-       return self.is_superuser
+        return self.is_superuser
 
 
 class CaseOffice(models.Model):
@@ -102,11 +108,12 @@ class Meeting(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     legal_case = models.ForeignKey(
         LegalCase, related_name='meetings', on_delete=models.CASCADE)
     location = models.CharField(max_length=255, null=False, blank=False)
-    meeting_type = models.CharField(max_length=50, null=False, blank=False, default="In person meeting")
+    meeting_type = models.CharField(
+        max_length=50, null=False, blank=False, default="In person meeting")
     meeting_date = models.DateTimeField(null=False, blank=False)
     notes = models.TextField(null=False, blank=False)
 

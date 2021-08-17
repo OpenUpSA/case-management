@@ -38,4 +38,4 @@ class MeetingSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email']
+        fields = ['id', 'name', 'contact_number', 'email', 'membership_number']
