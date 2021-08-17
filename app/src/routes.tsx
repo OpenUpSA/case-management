@@ -19,10 +19,12 @@ import MeetingPage from "./pages/meetings/show";
 import MeetingEditPage from "./pages/meetings/edit";
 import MeetingNewPage from "./pages/meetings/new";
 
+import UserPage from "./pages/users/show";
+import UserEditPage from "./pages/users/edit";
+
 import NotFoundPage from "./pages/notFound";
 
 import Navigation from "./components/navigation";
-
 
 function Routes() {
   return (
@@ -59,6 +61,9 @@ function Routes() {
           path="/cases/:id/meetings/new"
           component={MeetingNewPage}
         />
+
+        <Route exact path="/users/:id" component={UserPage} />
+        <Route exact path="/users/:id/edit" component={UserEditPage} />
 
         <Route component={NotFoundPage} />
       </Switch>
