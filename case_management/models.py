@@ -20,7 +20,7 @@ class User(AbstractUser):
         max_length=255,
         unique=True,
     )
-    contact_number = PhoneNumberField(null=True)
+    contact_number = PhoneNumberField(null=True, blank=True)
     case_office = models.ForeignKey(
         'CaseOffice', related_name='users', on_delete=models.CASCADE, null=True, blank=True)
 
