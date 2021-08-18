@@ -1,24 +1,73 @@
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 
-import Login from "./pages/login";
-import ForgotPassword from "./pages/forgot-password";
-import Clients from "./pages/clients";
-import NotFound from "./pages/not-found";
-import ClippedDrawer from "./pages/clippedDrawer";
+import HomePage from "./pages/home";
+import LoginPage from "./pages/login";
+
+import ClientsPage from "./pages/clients/list";
+import ClientPage from "./pages/clients/show";
+import ClientEditPage from "./pages/clients/edit";
+import ClientNewPage from "./pages/clients/new";
+import ClientLegalCasesPage from "./pages/clients/cases";
+
+import LegalCasesPage from "./pages/legalCases/list";
+import LegalCasePage from "./pages/legalCases/show";
+import LegalEditCasePage from "./pages/legalCases/edit";
+import LegalCaseNewPage from "./pages/legalCases/new";
+
+import MeetingsPage from "./pages/meetings/list";
+import MeetingPage from "./pages/meetings/show";
+import MeetingEditPage from "./pages/meetings/edit";
+import MeetingNewPage from "./pages/meetings/new";
+
+import UserPage from "./pages/users/show";
+import UserEditPage from "./pages/users/edit";
+
+import NotFoundPage from "./pages/notFound";
+
+import Navigation from "./components/navigation";
 
 function Routes() {
   return (
-    <Switch>
-      <Route exact path="/">
-        <Redirect to="/login" />
-      </Route>
-      <Route exact path="/login" component={Login} />
-      <Route exact path="/dirk" component={ClippedDrawer} />
-      <Route exact path="/forgot-password" component={ForgotPassword} />
-      <Route exact path="/clients" component={Clients} />
+    <div>
+      <Navigation />
+      <Switch>
+        <Route exact path="/" component={HomePage} />
+        <Route exact path="/login" component={LoginPage} />
 
-      <Route component={NotFound} />
-    </Switch>
+        <Route exact path="/clients" component={ClientsPage} />
+        <Route exact path="/clients/new" component={ClientNewPage} />
+        <Route exact path="/clients/:id" component={ClientPage} />
+        <Route exact path="/clients/:id/edit" component={ClientEditPage} />
+        <Route
+          exact
+          path="/clients/:id/cases"
+          component={ClientLegalCasesPage}
+        />
+
+        <Route exact path="/cases" component={LegalCasesPage} />
+        <Route exact path="/cases/:id" component={LegalCasePage} />
+        <Route exact path="/cases/:id/edit" component={LegalEditCasePage} />
+        <Route
+          exact
+          path="/clients/:id/cases/new"
+          component={LegalCaseNewPage}
+        />
+
+        <Route exact path="/meetings" component={MeetingsPage} />
+        <Route exact path="/meetings/:id" component={MeetingPage} />
+        <Route exact path="/meetings/:id/edit" component={MeetingEditPage} />
+        <Route
+          exact
+          path="/cases/:id/meetings/new"
+          component={MeetingNewPage}
+        />
+
+        <Route exact path="/users/:id" component={UserPage} />
+        <Route exact path="/users/:id/edit" component={UserEditPage} />
+
+        <Route component={NotFoundPage} />
+      </Switch>
+    </div>
   );
 }
 

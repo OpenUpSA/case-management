@@ -5,6 +5,7 @@ class OfficialIdentifiers(models.TextChoices):
     NATIONAL_ID = 'National', 'National Identity Number'
     PASSPORT_NUMBER = 'Passport', 'Passport Number'
 
+
 class CaseStates(models.TextChoices):
     OPENED = 'Opened', 'Opened'
     IN_PROGRESS = 'InProgress', 'In Progress'

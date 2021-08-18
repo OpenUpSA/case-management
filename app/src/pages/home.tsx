@@ -1,51 +1,26 @@
-import { Component } from "react";
+import LayoutSimple from "../components/layoutSimple";
+import i18n from "../i18n";
 import Button from "@material-ui/core/Button";
-import { Link } from "react-router-dom";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
+import { useHistory } from "react-router-dom";
+import { RedirectIfLoggedIn } from "../auth";
 
-import { http } from "../api";
-import { ICaseType } from "../types";
+const Page = () => {
+  RedirectIfLoggedIn();
+  const history = useHistory();
 
-import { toSentence } from "../utils";
+  return (
+    <LayoutSimple>
+      <p>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => history.push("/login")}
+        >
+          {i18n.t("Login")}
+        </Button>
+      </p>
+    </LayoutSimple>
+  );
+};
 
-interface IProps {}
-
-interface IState {
-  caseTypes: ICaseType[];
-}
-
-class Home extends Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this.state = { caseTypes: [] };
-  }
-
-  async componentDidMount() {
-    const caseTypes = await http<ICaseType[]>("/api/v1/case-types");
-    this.setState({ caseTypes: caseTypes });
-  }
-  render() {
-    return (
-      <>
-        <Container maxWidth="sm">
-          <Typography
-            variant="body2"
-            color="textPrimary"
-            align="center"
-            gutterBottom
-          >
-            Welcome to CaseFile. For all your {toSentence(this.state.caseTypes.map(caseType => caseType.title))} needs.
-          </Typography>
-        </Container>
-        <Link to="/about">
-          <Button variant="contained" color="primary">
-            About
-          </Button>
-        </Link>
-      </>
-    );
-  }
-}
-
-export default Home;
+export default Page;

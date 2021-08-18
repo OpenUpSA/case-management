@@ -1,5 +1,4 @@
 import i18n from "i18next";
-//import { initReactI18next } from "react-i18next";
 
 // the translations
 // (tip move them in a JSON file and import them,
@@ -14,6 +13,14 @@ const resources = {
       "CaseFile Logo": "CaseFile Logo",
       "Lost": "Lost?",
       "Lost message": "We can't find what you are looking for.",
+      "Legal Cases": "Cases",
+      "New legal case": "New case",
+      "New client": "New client",
+      "Legal Case": "Case",
+      "Case Number": "Case Number",
+      "Welcome to CaseFile": "Welcome to CaseFile.",
+      "Login error": "Invalid email or password, please try again.",
+      "© 2021 OpenUp": "© 2021 OpenUp."
     },
   },
   fr: {

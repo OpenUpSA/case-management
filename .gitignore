@@ -255,3 +255,6 @@ dist
 
 
 #app/
+
+app/.netlify
+.env

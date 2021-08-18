@@ -37,7 +37,9 @@ ALLOWED_HOSTS = ["*"]
 # TODO: Replace with actual array of CORS_ALLOWED_ORIGINS even for development
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3321",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://osf-case-management-app.netlify.app",
+    "https://app.casefile.org.za"
 ]
 
 # Application definition
@@ -56,8 +58,14 @@ INSTALLED_APPS = [
     "django_extensions",
     "rest_framework",
     "phonenumber_field",
-    "rest_framework.authtoken"
+    "rest_framework.authtoken",
+    "django_filters",
+    "drf_yasg",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
