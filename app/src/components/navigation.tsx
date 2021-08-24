@@ -125,7 +125,7 @@ const Component = () => {
          >
             <Toolbar />
             <div className={classes.drawerContainer}>
-               <Card>
+               <Card onClick={accountSettings}>
                   <CardActionArea className={classes.root}>
                      <CardMedia
                         className={classes.media}
