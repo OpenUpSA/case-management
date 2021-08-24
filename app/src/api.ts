@@ -10,7 +10,7 @@ import {
 } from "./types";
 
 const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "https://casemanagement.openup.org.za/api/v1";
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
 
 async function http<T>(path: string, config: RequestInit): Promise<T> {
   path = `${API_BASE_URL}${path}`;
