@@ -221,5 +221,22 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0, 0, 0, 0.1)!important" as any,
       },
     },
+    root: {
+      paddingTop: "20px",
+      paddingLeft: "20px",
+      marginTop: "30px",
+      backgroundColor: "#f2f2ff"
+    },
+    media: {
+      height: "100px",
+      width: "100px",
+      borderRadius: "50%",
+    },
+    cardUserName: {
+      fontWeight: 700
+    },
+    userCaseOffice: {
+      textDecoration: "underline",
+    }
   })
 );

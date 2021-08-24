@@ -22,6 +22,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
     "date-fns": "^2.22.1",
+    "dotenv": "^10.0.0",
     "i18next": "^20.3.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
