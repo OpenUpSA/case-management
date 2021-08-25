@@ -52,10 +52,6 @@ const Component = () => {
   const name = userInfo.getName();
   const case_office = Number(userInfo.getCaseOffice());
 
-  console.log({ userId });
-  console.log({ name });
-  console.log({ case_office });
-
   const filteredCaseOffice = caseOffices
     ?.filter((caseOffice) => case_office === caseOffice.id)
     .map((caseOffice) => caseOffice.name)
