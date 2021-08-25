@@ -57,7 +57,7 @@ export class UserInfo extends Storage<Locals> {
    }
 
    public getUserId() {
-      return parseInt(this.get(Locals.USER_ID) || "0");
+      return parseInt(this.get(Locals.USER_ID) || "-1");
    }
 
    public setUserId(userId: string) {
@@ -73,7 +73,7 @@ export class UserInfo extends Storage<Locals> {
    }
 
    public getCaseOffice() {
-      return this.get(Locals.CASE_OFFICE);
+      return parseInt(this.get(Locals.CASE_OFFICE) || "-1");
    }
 
    public setCaseOffice(case_office: string) {
