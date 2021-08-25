@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 
 import { RedirectIfLoggedIn, UserInfo } from "../auth";
-import { authenticate } from "../api";
+import { authenticate, getUser } from "../api";
 import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
 import { useStyles } from "../utils";
 
@@ -24,10 +24,14 @@ const Page = () => {
         password: password,
       };
       const { token, user_id } = await authenticate(credentials);
+      const {name, case_office} = await getUser(user_id);
+          
       if (token && user_id) {
         const userInfo = UserInfo.getInstance();
         userInfo.setAccessToken(token);
         userInfo.setUserId(user_id.toString());
+        userInfo.setName(name);
+        userInfo.setCaseOffice(case_office?.toString());
         history.push("/clients");
       } else {
         setLoginError(true);
@@ -36,7 +40,7 @@ const Page = () => {
       console.log(e);
     }
   };
-
+  
   return (
     <LayoutSimple>
       <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>

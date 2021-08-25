@@ -119,6 +119,7 @@ const Page = () => {
               color="primary"
               variant="contained"
               startIcon={<ChatIcon />}
+              disabled={legalCase ? false : true}
               onClick={() => {
                 history.push(`/cases/${legalCase?.id}/meetings/new`);
               }}

@@ -84,6 +84,7 @@ const Page = () => {
               color="primary"
               variant="contained"
               startIcon={<CreateNewFolderIcon />}
+              disabled={client ? false : true}
               onClick={() => {
                 history.push(`/clients/${client?.id}/cases/new`);
               }}
