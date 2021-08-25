@@ -31,7 +31,7 @@ const Page = () => {
         userInfo.setAccessToken(token);
         userInfo.setUserId(user_id.toString());
         userInfo.setName(name);
-        userInfo.setCaseOffice(case_office?.toString());
+        userInfo.setCaseOffice(case_office);
         history.push("/clients");
       } else {
         setLoginError(true);

@@ -24,7 +24,7 @@ const Component = (props: Props) => {
     membership_number: "",
     contact_number: "",
     email: "",
-    case_office: 0,
+    case_office: null,
   });
 
   useEffect(() => {
@@ -99,6 +99,7 @@ const Component = (props: Props) => {
             />
           </FormControl>
         </Grid>
+        
         <Grid item xs={12} md={6}>
           <FormControl fullWidth size="small">
             <InputLabel
@@ -150,7 +151,11 @@ const Component = (props: Props) => {
           </FormControl>
         </Grid>
         <Grid item xs={12} md={12}>
-          <input type="hidden" id="case_office" value={user.case_office} />
+          <input
+            type="hidden"
+            id="case_office"
+            value={user.case_office || ""}
+          />
           <FormControl fullWidth size="small">
             <InputLabel
               className={classes.inputLabel}
@@ -171,7 +176,7 @@ const Component = (props: Props) => {
                 }));
               }}
               input={<Input id="select-multiple-chip" />}
-              value={user.case_office}
+              value={user.case_office || ""}
               renderValue={() => {
                 return caseOffices
                   ?.filter((caseOffice) => user.case_office === caseOffice.id)

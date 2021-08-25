@@ -75,7 +75,6 @@ const Component = () => {
   };
 
   const accountSettings = () => {
-    const userInfo = UserInfo.getInstance();
     history.push(`/users/${userId}`);
     closeDrawer();
   };

@@ -1,3 +1,5 @@
+export type Nullable<T> = T | null;
+
 export interface ICaseType {
   id: number;
   created_at: Date;
@@ -67,7 +69,7 @@ export interface IUser {
   membership_number: string;
   contact_number: string;
   email: string;
-  case_office: number;
+  case_office: Nullable<number>;
 }
 
 export interface IStorage {

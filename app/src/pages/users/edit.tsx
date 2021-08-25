@@ -6,7 +6,7 @@ import { Breadcrumbs, Button, Container } from "@material-ui/core";
 
 import Layout from "../../components/layout";
 import { getUser, updateUser } from "../../api";
-import { IUser } from "../../types";
+import { IUser, Nullable } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import Grid from "@material-ui/core/Grid";
@@ -23,15 +23,22 @@ const Page = () => {
   const params = useParams<RouteParams>();
   const userId = parseInt(params.id);
   const [user, setUser] = React.useState<IUser>();
+  const [saveError, setSaveError] = React.useState<Nullable<string>>();
 
   const saveUser = async (user: IUser) => {
     try {
+      setSaveError(null);
       const updatedUser = {
         ...user,
         id: userId,
       };
-      const { id } = await updateUser(updatedUser);
-      history.push(`/users/${id}`);
+      const response = await updateUser(updatedUser);
+      if (response.id) {
+        history.push(`/users/${response.id}`);
+      } else {
+        //TODO: Better validation and error messages needed
+        setSaveError(Object.values(response).join('\n'));
+      }
     } catch (e) {
       console.log(e);
     }
@@ -65,13 +72,15 @@ const Page = () => {
               case_office: { value: string };
             };
 
+            //TODO: Better way to handle empty/null case_office selection
+            let case_office = parseInt(target.case_office.value);
+
             saveUser({
               name: target.name.value,
               membership_number: target.membership_number.value,
               contact_number: target.contact_number.value,
               email: target.email.value,
-              case_office: parseInt(target.case_office.value),
-
+              case_office: case_office === 0 ? null : case_office,
             });
           }}
         >
@@ -87,9 +96,7 @@ const Page = () => {
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
               <Typography variant="h6">
-                <strong>
-                  {user ? user.name : ""}
-                </strong>
+                <strong>{user ? user.name : ""}</strong>
               </Typography>
             </Grid>
             <Grid item className={classes.zeroWidthOnMobile}>
@@ -107,6 +114,13 @@ const Page = () => {
               </Button>
             </Grid>
           </Grid>
+          {saveError ? (
+            <p className={classes.formError}>
+              {i18n.t("Error saving account details")}
+              {" "}
+              {saveError}
+            </p>
+          ) : null}
           {user ? <UserForm user={user} readOnly={false} /> : ""}
         </form>
       </Container>

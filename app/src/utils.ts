@@ -1,3 +1,4 @@
+import { red } from "@material-ui/core/colors";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 
 //TODO: Find I18n version of this
@@ -9,6 +10,10 @@ export function toSentence(items: string[]): string {
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    formError: {
+      color: "#990000",
+      textAlign: "center",
+    },
     body: {
       paddingBottom: "10em",
       [theme.breakpoints.down("xs")]: {
@@ -225,7 +230,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       paddingTop: "20px",
       paddingLeft: "20px",
       marginTop: "30px",
-      backgroundColor: "#f2f2ff"
+      backgroundColor: "#f2f2ff",
     },
     media: {
       height: "100px",
@@ -233,10 +238,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       borderRadius: "50%",
     },
     cardUserName: {
-      fontWeight: 700
+      fontWeight: 700,
     },
     userCaseOffice: {
       textDecoration: "underline",
-    }
+    },
   })
 );
