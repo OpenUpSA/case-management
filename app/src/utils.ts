@@ -1,4 +1,3 @@
-import { red } from "@material-ui/core/colors";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 
 //TODO: Find I18n version of this
