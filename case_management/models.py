@@ -14,7 +14,7 @@ class User(AbstractUser):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, null=False, blank=True, default="")
     membership_number = models.CharField(
-        max_length=20, default='AA/B00/000', null=False, blank=False)
+        max_length=20, null=False, blank=True)
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
