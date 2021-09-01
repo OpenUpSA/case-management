@@ -39,10 +39,34 @@ const Page = () => {
   const classes = useStyles();
   const history = useHistory();
   const [clients, setClients] = React.useState<IClient[]>();
+  const [filteredClients, setFilteredClients] = React.useState<IClient[]>();
+  const [filterClientsValue, setFilterClientsValue] = React.useState<string>();
+
+  //TODO: Better filtering
+  const filterClients = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (filterClientsValue) {
+      setFilteredClients(
+        clients?.filter((client) => {
+          return (
+            client.name.toLowerCase().includes(filterClientsValue.toLowerCase()) ||
+            client.official_identifier.toLowerCase().includes(filterClientsValue.toLowerCase()) ||
+            client.preferred_name.toLowerCase().includes(filterClientsValue.toLowerCase()) ||
+            client.contact_number.toLowerCase().includes(filterClientsValue.toLowerCase()) ||
+            client.contact_email.toLowerCase().includes(filterClientsValue.toLowerCase()) ||
+            client.official_identifier_type.toLowerCase().includes(filterClientsValue.toLowerCase())
+          );
+        })
+      );
+    } else {
+      setFilteredClients(clients);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
-      setClients(await getClients());
+      const data = await getClients();
+      setClients(data);
+      setFilteredClients(data);
     }
     fetchData();
   }, []);
@@ -84,7 +108,8 @@ const Page = () => {
         <Grid container direction="row" spacing={2} alignItems="center">
           <Grid item style={{ flexGrow: 1 }}>
             <strong>
-              {clients ? clients.length : "0"} {i18n.t("Clients")}
+              {filteredClients ? filteredClients.length : "0"}{" "}
+              {i18n.t("Clients")}
             </strong>
           </Grid>
           <Grid item>
@@ -109,11 +134,11 @@ const Page = () => {
               </MenuItem>
             </Select>
           </Grid>
-          <Grid item md={12} style={{ display: "none" }}>
+          <Grid item md={12}>
             <Input
               id="table_search"
               fullWidth
-              placeholder={i18n.t("Enter a name, case number, phone number...")}
+              placeholder={i18n.t("Enter a name, email, phone number...")}
               startAdornment={
                 <InputAdornment position="start">
                   <IconButton>
@@ -124,6 +149,9 @@ const Page = () => {
               disableUnderline={true}
               className={classes.textField}
               aria-describedby="my-helper-text"
+              value={filterClientsValue}
+              onChange={(e) => setFilterClientsValue(e.target.value)}
+              onKeyUp={filterClients}
             />
           </Grid>
         </Grid>
@@ -147,9 +175,9 @@ const Page = () => {
                 </Hidden>
               </TableRow>
             </TableHead>
-            {clients && clients.length > 0 ? (
+            {filteredClients && filteredClients.length > 0 ? (
               <TableBody>
-                {clients.map((client) => (
+                {filteredClients.map((client) => (
                   <TableRow
                     key={client.id}
                     className={classes.tableBodyRow}
