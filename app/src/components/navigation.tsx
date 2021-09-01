@@ -144,15 +144,17 @@ const Component = () => {
                 >
                   {name || "No Name"}
                 </Typography>
-                <Typography color="textSecondary">
-                  Case worker at{" "}
-                  <Typography
-                    display="inline"
-                    className={classes.userCaseOffice}
-                  >
-                    {filteredCaseOffice || "None"}
+                {filteredCaseOffice ? (
+                  <Typography color="textSecondary">
+                    Case worker at{" "}
+                    <Typography
+                      display="inline"
+                      className={classes.userCaseOffice}
+                    >
+                      {filteredCaseOffice}
+                    </Typography>
                   </Typography>
-                </Typography>
+                ) : null}
               </CardContent>
             </CardActionArea>
           </Card>

@@ -240,7 +240,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 700,
     },
     userCaseOffice: {
-      textDecoration: "underline",
+      fontWeight: 700,
     },
   })
 );
