@@ -99,7 +99,7 @@ const Component = (props: Props) => {
             />
           </FormControl>
         </Grid>
-        
+
         <Grid item xs={12} md={6}>
           <FormControl fullWidth size="small">
             <InputLabel
@@ -184,6 +184,9 @@ const Component = (props: Props) => {
                   .join(", ");
               }}
             >
+              <MenuItem key={0} value={0}>
+                {i18n.t("No case office")}
+              </MenuItem>
               {caseOffices?.map(({ id, name }) => (
                 <MenuItem key={id} value={id}>
                   {name}

@@ -7,7 +7,7 @@ import { Breadcrumbs, Button, Container } from "@material-ui/core";
 import Layout from "../../components/layout";
 import { getUser, updateUser } from "../../api";
 import { IUser, Nullable } from "../../types";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 import { useStyles } from "../../utils";
 import Grid from "@material-ui/core/Grid";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -34,6 +34,10 @@ const Page = () => {
       };
       const response = await updateUser(updatedUser);
       if (response.id) {
+        const userInfo = UserInfo.getInstance();
+        userInfo.setName(response.name);
+        userInfo.setCaseOffice(response.case_office);
+        userInfo.setEmail(response.email);
         history.push(`/users/${response.id}`);
       } else {
         //TODO: Better validation and error messages needed

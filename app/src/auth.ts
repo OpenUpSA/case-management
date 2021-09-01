@@ -30,7 +30,7 @@ enum Locals {
   USER_ID = "user_id",
   NAME = "name",
   CASE_OFFICE = "case_office",
-  EMAIL = "email"
+  EMAIL = "email",
 }
 
 export class UserInfo extends Storage<Locals> {
@@ -85,9 +85,7 @@ export class UserInfo extends Storage<Locals> {
   }
 
   public setCaseOffice(case_office: Nullable<number>) {
-    if (case_office) {
-      this.set(Locals.CASE_OFFICE, case_office.toString());
-    }
+    this.set(Locals.CASE_OFFICE, case_office?.toString() || "");
   }
 
   public clear() {
