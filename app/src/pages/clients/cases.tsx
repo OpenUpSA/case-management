@@ -13,12 +13,14 @@ import {
   Input,
   InputAdornment,
   IconButton,
+  ListItemIcon,
+  ListItemText,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
 import Layout from "../../components/layout";
-import { getLegalCases, getClient } from "../../api";
+import { getLegalCases, getClient, deleteClient } from "../../api";
 import { ILegalCase, IClient } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
@@ -26,7 +28,8 @@ import { RedirectIfNotLoggedIn } from "../../auth";
 import ClientForm from "../../components/client/form";
 import LegalCasesTable from "../../components/legalCase/table";
 import SearchIcon from "@material-ui/icons/Search";
-
+import MoreMenu from "../../components/moreMenu";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 type RouteParams = { id: string };
 
@@ -38,6 +41,15 @@ const Page = () => {
   const clientId = parseInt(params.id);
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
   const [client, setClient] = React.useState<IClient>();
+
+  const destroyClient = async () => {
+    if (
+      window.confirm(i18n.t("Are you sure you want to delete this client?"))
+    ) {
+      await deleteClient(clientId);
+      history.push("/clients");
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -77,6 +89,26 @@ const Page = () => {
                 {client ? client.preferred_name : i18n.t("Case list")}
               </strong>
             </Typography>
+          </Grid>
+          <Grid item>
+            <MoreMenu>
+              <MenuItem
+                onClick={() => {
+                  history.push(`/clients/${clientId}/edit`);
+                }}
+              >
+                <ListItemIcon>
+                  <PersonIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{i18n.t("Edit client")}</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={destroyClient}>
+                <ListItemIcon>
+                  <DeleteIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{i18n.t("Delete client")}</ListItemText>
+              </MenuItem>
+            </MoreMenu>
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>
             <Button
