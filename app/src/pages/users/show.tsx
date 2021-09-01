@@ -58,7 +58,7 @@ const Page = () => {
           <Grid item style={{ flexGrow: 1 }}>
             <Typography variant="h6">
               <strong>
-                {user ? user.name : ""}
+                {user ? user.name || user.email : ""}
               </strong>
             </Typography>
           </Grid>

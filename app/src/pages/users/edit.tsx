@@ -37,7 +37,7 @@ const Page = () => {
         history.push(`/users/${response.id}`);
       } else {
         //TODO: Better validation and error messages needed
-        setSaveError(Object.values(response).join('\n'));
+        setSaveError(Object.values(response).join("\n"));
       }
     } catch (e) {
       console.log(e);
@@ -96,7 +96,7 @@ const Page = () => {
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
               <Typography variant="h6">
-                <strong>{user ? user.name : ""}</strong>
+                <strong>{user ? user.name || user.email : ""}</strong>
               </Typography>
             </Grid>
             <Grid item className={classes.zeroWidthOnMobile}>
@@ -116,9 +116,7 @@ const Page = () => {
           </Grid>
           {saveError ? (
             <p className={classes.formError}>
-              {i18n.t("Error saving account details")}
-              {" "}
-              {saveError}
+              {i18n.t("Error saving account details")} {saveError}
             </p>
           ) : null}
           {user ? <UserForm user={user} readOnly={false} /> : ""}

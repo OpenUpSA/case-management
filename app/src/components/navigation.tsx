@@ -1,4 +1,5 @@
 import logo from "../logo-small.svg";
+import userDefaultAvatar from "../user-default-avatar.jpeg";
 import React, { useEffect } from "react";
 import { IconButton } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
@@ -50,6 +51,7 @@ const Component = () => {
   const userInfo = UserInfo.getInstance();
   const userId = Number(userInfo.getUserId());
   const name = userInfo.getName();
+  const email = userInfo.getEmail();
   const case_office = Number(userInfo.getCaseOffice());
 
   const filteredCaseOffice = caseOffices
@@ -133,8 +135,8 @@ const Component = () => {
             <CardActionArea className={classes.root}>
               <CardMedia
                 className={classes.media}
-                image="https://www.seekpng.com/png/detail/73-730482_existing-user-default-avatar.png"
-                title="User"
+                image={userDefaultAvatar}
+                title={i18n.t("Default user avatar")}
               />
               <CardContent>
                 <Typography
@@ -142,7 +144,7 @@ const Component = () => {
                   variant="h5"
                   className={classes.cardUserName}
                 >
-                  {name || "No Name"}
+                  {name || email}
                 </Typography>
                 {filteredCaseOffice ? (
                   <Typography color="textSecondary">

@@ -30,6 +30,7 @@ enum Locals {
   USER_ID = "user_id",
   NAME = "name",
   CASE_OFFICE = "case_office",
+  EMAIL = "email"
 }
 
 export class UserInfo extends Storage<Locals> {
@@ -71,6 +72,14 @@ export class UserInfo extends Storage<Locals> {
     this.set(Locals.NAME, name);
   }
 
+  public getEmail() {
+    return this.get(Locals.EMAIL);
+  }
+
+  public setEmail(email: string) {
+    this.set(Locals.EMAIL, email);
+  }
+
   public getCaseOffice() {
     return parseInt(this.get(Locals.CASE_OFFICE) || "-1");
   }
@@ -87,6 +96,7 @@ export class UserInfo extends Storage<Locals> {
       Locals.USER_ID,
       Locals.NAME,
       Locals.CASE_OFFICE,
+      Locals.EMAIL,
     ]);
   }
 }

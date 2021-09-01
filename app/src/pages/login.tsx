@@ -24,7 +24,7 @@ const Page = () => {
         password: password,
       };
       const { token, user_id } = await authenticate(credentials);
-      const {name, case_office} = await getUser(user_id);
+      const {name, case_office, email} = await getUser(user_id);
           
       if (token && user_id) {
         const userInfo = UserInfo.getInstance();
@@ -32,6 +32,7 @@ const Page = () => {
         userInfo.setUserId(user_id.toString());
         userInfo.setName(name);
         userInfo.setCaseOffice(case_office);
+        userInfo.setEmail(email);
         history.push("/clients");
       } else {
         setLoginError(true);
