@@ -12,15 +12,15 @@ from case_management.managers import UserManager
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255, null=True, blank=True)
+    name = models.CharField(max_length=255, null=False, blank=True, default="")
     membership_number = models.CharField(
-        max_length=20, default='AA/B00/000', null=False, blank=False)
+        max_length=20, null=False, blank=True)
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
         unique=True,
     )
-    contact_number = PhoneNumberField(null=True, blank=True)
+    contact_number = PhoneNumberField(null=False, blank=True, default="")
     case_office = models.ForeignKey(
         'CaseOffice', related_name='users', on_delete=models.CASCADE, null=True, blank=True)
 

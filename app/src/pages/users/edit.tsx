@@ -7,7 +7,7 @@ import { Breadcrumbs, Button, Container } from "@material-ui/core";
 import Layout from "../../components/layout";
 import { getUser, updateUser } from "../../api";
 import { IUser, Nullable } from "../../types";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 import { useStyles } from "../../utils";
 import Grid from "@material-ui/core/Grid";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -34,10 +34,14 @@ const Page = () => {
       };
       const response = await updateUser(updatedUser);
       if (response.id) {
+        const userInfo = UserInfo.getInstance();
+        userInfo.setName(response.name);
+        userInfo.setCaseOffice(response.case_office);
+        userInfo.setEmail(response.email);
         history.push(`/users/${response.id}`);
       } else {
         //TODO: Better validation and error messages needed
-        setSaveError(Object.values(response).join('\n'));
+        setSaveError(Object.values(response).join("\n"));
       }
     } catch (e) {
       console.log(e);
@@ -96,7 +100,7 @@ const Page = () => {
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
               <Typography variant="h6">
-                <strong>{user ? user.name : ""}</strong>
+                <strong>{user ? user.name || user.email : ""}</strong>
               </Typography>
             </Grid>
             <Grid item className={classes.zeroWidthOnMobile}>
@@ -116,9 +120,7 @@ const Page = () => {
           </Grid>
           {saveError ? (
             <p className={classes.formError}>
-              {i18n.t("Error saving account details")}
-              {" "}
-              {saveError}
+              {i18n.t("Error saving account details")} {saveError}
             </p>
           ) : null}
           {user ? <UserForm user={user} readOnly={false} /> : ""}

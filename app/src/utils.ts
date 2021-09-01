@@ -1,4 +1,3 @@
-import { red } from "@material-ui/core/colors";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 
 //TODO: Find I18n version of this
@@ -241,7 +240,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 700,
     },
     userCaseOffice: {
-      textDecoration: "underline",
+      fontWeight: 700,
     },
   })
 );
