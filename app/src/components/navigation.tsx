@@ -79,7 +79,7 @@ const Component = () => {
     closeDrawer();
   };
 
-  if (userId === -1 || name === null || case_office === -1) {
+  if (userId === -1) {
     logout();
   }
 
