@@ -1,15 +1,17 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import LayoutSimple from "../components/layoutSimple";
 import i18n from "../i18n";
 import Typography from "@material-ui/core/Typography";
+import logo from "../logo.svg";
+
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
-
-import { RedirectIfLoggedIn, UserInfo } from "../auth";
-import { authenticate, getUser } from "../api";
 import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
-import { useStyles } from "../utils";
+
+import { RedirectIfLoggedIn, UserInfo } from "casemgtauth";
+import { authenticate, getUser } from "casemgtapi";
+import { useStyles } from "casemgtstyleutils";
+import { LayoutSimple } from "casemgtlayoutsimple";
 
 const Page = () => {
   RedirectIfLoggedIn();
@@ -43,7 +45,7 @@ const Page = () => {
   };
   
   return (
-    <LayoutSimple>
+    <LayoutSimple svgImage={logo}>
       <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>
         {i18n.t("Login")}
       </Typography>

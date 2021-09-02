@@ -1,71 +1,132 @@
-import { Component } from "react";
-
-import LayoutSimple from "../components/layout-simple";
-import i18next from "i18next";
-
-import { RouteComponentProps } from "react-router-dom";
-
+import React from "react";
+import { useHistory } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
+import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
 
-class Page extends Component<RouteComponentProps> {
-  private handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    this.props.history.push("/dashboard");
-  };
+import { RedirectIfLoggedIn, UserInfo } from "casemgtauth";
+import { authenticate, getUser } from "casemgtapi";
+import { useStyles } from "casemgtstyleutils";
+import i18n from "../i18n";
+import logo from "../logo.svg";
+import { LayoutSimple } from "casemgtlayoutsimple";
 
-  public render(): any {
+
+
+
+const Page = () => {
+
+    RedirectIfLoggedIn();
+    const classes = useStyles();
+    const history = useHistory();
+    const [loginError, setLoginError] = React.useState<boolean>();
+
+    const validateLogin = async (username: string, password: string) => {
+        try {
+            const credentials = {
+                username: username,
+                password: password,
+            };
+            const { token, user_id } = await authenticate(credentials);
+            const { name } = await getUser(user_id);
+
+            if (token && user_id) {
+                const userInfo = UserInfo.getInstance();
+                userInfo.setAccessToken(token);
+                userInfo.setUserId(user_id.toString());
+                userInfo.setName(name);
+                history.push("/dashboard");
+            } else {
+                setLoginError(true);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     return (
-      <LayoutSimple>
-        <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>
-          {i18next.t("Login")}
-        </Typography>
+        <LayoutSimple svgImage={logo}>
+            <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>
+                {i18n.t("Login")}
+            </Typography>
 
-        <Box component="form" onSubmit={this.handleSubmit} style={{ marginTop: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label={i18next.t("Email Address")}
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label={i18next.t("Password")}
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            style={{ marginTop: 3, marginBottom: 2 }}
-          >
-            {i18next.t("Login")}
-          </Button>
-          <div
-            style={{
-              textAlign: "center",
-            }}
-          >
-            <Link href="/forgot-password" variant="body2">
-              {i18next.t("Forgot password")}
-            </Link>
-          </div>
-        </Box>
-      </LayoutSimple>
+            {loginError ? (
+                <Typography component="p" style={{ color: "#990000", marginTop: 8 }}>
+                    {i18n.t("Login error")}
+                </Typography>
+            ) : null}
+
+            <Box
+                component="form"
+                onSubmit={(event: React.SyntheticEvent) => {
+                    event.preventDefault();
+                    setLoginError(false);
+                    const target = event.target as typeof event.target & {
+                        email: { value: string };
+                        password: { value: string };
+                    };
+                    validateLogin(target.email.value, target.password.value);
+                }}
+                style={{ marginTop: 1 }}
+            >
+
+                <Grid container direction="row" spacing={2} alignItems="center">
+                    <Grid item xs={12}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel
+                                className={classes.inputLabel}
+                                htmlFor="email"
+                                shrink={true}
+                            >
+                                {i18n.t("Email address")}:
+                            </InputLabel>
+                            <Input
+                                id="email"
+                                disableUnderline={true}
+                                className={classes.textField}
+                                aria-describedby="my-helper-text"
+                                autoComplete="email"
+                                autoFocus
+                                required
+                            />
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel
+                                className={classes.inputLabel}
+                                htmlFor="password"
+                                shrink={true}
+                            >
+                                {i18n.t("Password")}:
+                            </InputLabel>
+                            <Input
+                                id="password"
+                                type="password"
+                                disableUnderline={true}
+                                className={classes.textField}
+                                aria-describedby="my-helper-text"
+                                autoComplete="password"
+                                required
+                            />
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            style={{ marginTop: 3, marginBottom: 2 }}
+                        >
+                            {i18n.t("Login")}
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Box>
+        </LayoutSimple>
     );
-  }
-}
+};
 
 export default Page;

@@ -18,10 +18,10 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import { useStyles } from "../../utils";
+import { useStyles } from "casemgtstyleutils";
 import i18n from "../../i18n";
 import { format } from "date-fns";
-import { getLegalCases, getClients } from "../../api";
+import { getLegalCases, getClients } from "casemgtapi";
 import { ILegalCase, IClient, IMeeting } from "../../types";
 
 type Props = {

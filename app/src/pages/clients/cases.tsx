@@ -15,10 +15,10 @@ import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
 import Layout from "../../components/layout";
-import { getLegalCases, getClient, deleteClient } from "../../api";
+import { getLegalCases, getClient, deleteClient } from "casemgtapi";
 import { ILegalCase, IClient } from "../../types";
-import { useStyles } from "../../utils";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { useStyles } from "casemgtstyleutils";
+import { RedirectIfNotLoggedIn } from "casemgtauth";
 
 import ClientForm from "../../components/client/form";
 import LegalCasesTable from "../../components/legalCase/table";

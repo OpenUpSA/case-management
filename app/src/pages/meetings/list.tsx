@@ -11,11 +11,11 @@ import ForumIcon from "@material-ui/icons/Forum";
 import AddCommentIcon from "@material-ui/icons/AddComment";
 
 import Layout from "../../components/layout";
-import { getMeetings } from "../../api";
+import { getMeetings } from "casemgtapi";
 import { IMeeting } from "../../types";
 import i18n from "../../i18n";
-import { useStyles } from "../../utils";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { useStyles } from "casemgtstyleutils";
+import { RedirectIfNotLoggedIn } from "casemgtauth";
 import MeetingsTable from "../../components/meeting/table";
 
 const Page = () => {

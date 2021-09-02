@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import { useStyles } from "../utils";
+import { useStyles } from "casemgtstyleutils";
 
 type Props = {
   children?: ReactElement | ReactElement[];

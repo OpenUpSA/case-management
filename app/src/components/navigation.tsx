@@ -23,10 +23,10 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import i18n from "../i18n";
-import { UserInfo } from "../auth";
-import { useStyles } from "../utils";
+import { UserInfo } from "casemgtauth";
+import { useStyles } from "casemgtstyleutils";
 import { ICaseOffice } from "../types";
-import { getCaseOffices } from "../api";
+import { getCaseOffices } from "casemgtapi";
 
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";

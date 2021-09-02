@@ -18,10 +18,10 @@ import {
   IconButton,
   MenuItem,
 } from "@material-ui/core";
-import { useStyles } from "../../utils";
+import { useStyles } from "casemgtstyleutils";
 import i18n from "../../i18n";
 import { format } from "date-fns";
-import { getCaseTypes, getClients } from "../../api";
+import { getCaseTypes, getClients } from "casemgtapi";
 import { ILegalCase, IClient, ICaseType } from "../../types";
 import SearchIcon from "@material-ui/icons/Search";
 

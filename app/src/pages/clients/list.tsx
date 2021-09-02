@@ -28,10 +28,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 
 import Layout from "../../components/layout";
-import { getClients } from "../../api";
+import { getClients } from "casemgtapi";
 import { IClient } from "../../types";
-import { useStyles } from "../../utils";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { useStyles } from "casemgtstyleutils";
+import { RedirectIfNotLoggedIn } from "casemgtauth";
 import SearchIcon from "@material-ui/icons/Search";
 
 const Page = () => {

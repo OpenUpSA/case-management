@@ -6,9 +6,9 @@ import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
-import { getClient } from "../../api";
+import { getClient, createLegalCase } from "casemgtapi";
 import { ILegalCase, IClient } from "../../types";
-import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
+import { RedirectIfNotLoggedIn, UserInfo } from "casemgtauth";
 import {
   Breadcrumbs,
   Container,
@@ -18,15 +18,13 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
-import { useStyles } from "../../utils";
+import { useStyles } from "casemgtstyleutils";
 import FolderIcon from "@material-ui/icons/Folder";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
 
 import LegalCaseForm from "../../components/legalCase/form";
-
-import { createLegalCase } from "../../api";
 
 type RouteParams = { id: string };
 

@@ -1,6 +1,6 @@
 import { Component } from "react";
 
-import LayoutSimple from "../components/layout-simple";
+import { LayoutSimple } from "casemgtlayoutsimple";
 
 import i18next from "i18next";
 
@@ -11,6 +11,7 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
+import logo from "../logo.svg";
 
 class Page extends Component<RouteComponentProps> {
   private handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -20,7 +21,7 @@ class Page extends Component<RouteComponentProps> {
 
   public render(): any {
     return (
-      <LayoutSimple>
+      <LayoutSimple svgImage={logo}>
         <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>
           {i18next.t("Reset password")}
         </Typography>

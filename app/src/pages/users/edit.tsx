@@ -5,10 +5,10 @@ import Typography from "@material-ui/core/Typography";
 import { Breadcrumbs, Button, Container } from "@material-ui/core";
 
 import Layout from "../../components/layout";
-import { getUser, updateUser } from "../../api";
+import { getUser, updateUser } from "casemgtapi";
 import { IUser, Nullable } from "../../types";
-import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
-import { useStyles } from "../../utils";
+import { RedirectIfNotLoggedIn, UserInfo } from "casemgtauth";
+import { useStyles } from "casemgtstyleutils";
 import Grid from "@material-ui/core/Grid";
 import SettingsIcon from "@material-ui/icons/Settings";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";

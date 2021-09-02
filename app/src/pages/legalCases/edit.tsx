@@ -6,9 +6,9 @@ import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
-import { getClient, getLegalCase, updateLegalCase } from "../../api";
+import { getClient, getLegalCase, updateLegalCase } from "casemgtapi";
 import { ILegalCase, IClient } from "../../types";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { RedirectIfNotLoggedIn } from "casemgtauth";
 import {
   Breadcrumbs,
   Container,
@@ -17,7 +17,7 @@ import {
   ListItemIcon,
   MenuItem,
 } from "@material-ui/core";
-import { useStyles } from "../../utils";
+import { useStyles } from "casemgtstyleutils";
 import FolderIcon from "@material-ui/icons/Folder";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 import ListItemText from "@material-ui/core/ListItemText";

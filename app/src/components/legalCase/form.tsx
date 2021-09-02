@@ -10,8 +10,8 @@ import { useEffect, useState } from "react";
 import i18n from "../../i18n";
 import { ICaseType, ICaseOffice, ILegalCase } from "../../types";
 import { format } from "date-fns";
-import { useStyles } from "../../utils";
-import { getCaseTypes, getCaseOffices } from "../../api";
+import { useStyles } from "casemgtstyleutils";
+import { getCaseTypes, getCaseOffices } from "casemgtapi";
 import React from "react";
 
 //TODO: Get from API

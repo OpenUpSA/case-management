@@ -1,6 +1,6 @@
 import withWidth from "@material-ui/core/withWidth";
 import { ReactNode } from "react";
-import { useStyles } from "../utils";
+import { useStyles } from "casemgtstyleutils";
 
 type Props = {
   children: ReactNode;

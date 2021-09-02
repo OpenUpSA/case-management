@@ -2103,6 +2103,15 @@
     "@types/react" "*"
     "@types/react-router" "*"
 
+"@types/react-router-dom@^5.1.8":
+  version "5.1.8"
+  resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-5.1.8.tgz#bf3e1c8149b3d62eaa206d58599de82df0241192"
+  integrity sha512-03xHyncBzG0PmDmf8pf3rehtjY0NpUj7TIN46FrT5n1ZWHPZvXz32gUyNboJ+xsL8cpg8bQVLcllptcQHvocrw==
+  dependencies:
+    "@types/history" "*"
+    "@types/react" "*"
+    "@types/react-router" "*"
+
 "@types/react-router@*":
   version "5.1.15"
   resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-5.1.15.tgz#c1069e0da4617fd315e381b56b18b89490e14e2a"
@@ -3443,6 +3452,34 @@ case-sensitive-paths-webpack-plugin@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.3.0.tgz#23ac613cc9a856e4f88ff8bb73bbb5e989825cf7"
   integrity sha512-/4YgnZS8y1UXXmC02xD5rRrBEu6T5ub+mQHLNRj0fzTRbgdBYhsNo2V5EqwgqrExjxsjtF/OpAKAMkKsxbD5XQ==
+
+casemgtapi@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/casemgtapi/-/casemgtapi-0.1.0.tgz#f5d375690fefb102fdd733c9e4f95db62a616493"
+  integrity sha512-cvbSSAfa6AopEG02Oiidl0se+GWpB+xxmjFLPHR891YqWo9wsmzQbl0g9VLQQnOz0XP12QPPUSYphv8khdCSgA==
+
+casemgtauth@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/casemgtauth/-/casemgtauth-0.1.0.tgz#6f56f77ee0d3d5b2f19d7c86211027b91d3bfa53"
+  integrity sha512-SlDo1Pbc5Ff9mwV7CWa9VLD3HGsAk+8dS2LVa3NxtMNl78IEQ2pM436lc1aYjFck/bE8UXmHL2OOzQXMWgupUA==
+  dependencies:
+    "@types/react-router-dom" "^5.1.8"
+
+casemgtlayoutsimple@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/casemgtlayoutsimple/-/casemgtlayoutsimple-0.1.0.tgz#dd6b534719455c563710d821792f3199c50793b5"
+  integrity sha512-LC4TZfctOWsSc2kUSVUf4/ZvTmXIGtLeX+oaL1CV6TJs/qgySP9jKJ/PPxMP+hEmOuElkc8iMgtPQlkeG95P9w==
+  dependencies:
+    "@material-ui/core" latest
+    "@material-ui/data-grid" "^4.0.0-alpha.32"
+    "@material-ui/icons" latest
+    "@material-ui/styles" latest
+    i18next "^20.3.2"
+
+casemgtstyleutils@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/casemgtstyleutils/-/casemgtstyleutils-0.1.0.tgz#7ffe261a51df8fbd6b7360136dc6d95fab7b00e5"
+  integrity sha512-Ngdaq2pXmpeSZFs1eTIfEIf2qf1XZJVxuinry/2X/ozAYnHzy3KyMJCAFj6GiEA9eDqEf0VB76fr+J8zSK3Hww==
 
 chalk@2.4.2, chalk@^2.0.0, chalk@^2.4.1, chalk@^2.4.2:
   version "2.4.2"

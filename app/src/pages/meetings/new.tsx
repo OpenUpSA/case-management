@@ -6,9 +6,9 @@ import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
-import { getClient, getLegalCase } from "../../api";
+import { getClient, getLegalCase, createMeeting} from "casemgtapi";
 import { ILegalCase, IClient, IMeeting } from "../../types";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { RedirectIfNotLoggedIn } from "casemgtauth";
 import {
   Breadcrumbs,
   Container,
@@ -18,7 +18,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
-import { useStyles } from "../../utils";
+import { useStyles } from "casemgtstyleutils";
 import ChatIcon from "@material-ui/icons/Chat";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -26,7 +26,6 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import MeetingForm from "../../components/meeting/form";
 
-import { createMeeting } from "../../api";
 
 type RouteParams = { id: string };
 

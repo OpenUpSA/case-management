@@ -7,7 +7,7 @@ import FormControl from "@material-ui/core/FormControl";
 import { useEffect, useState } from "react";
 import i18n from "../../i18n";
 import { IClient } from "../../types";
-import { useStyles } from "../../utils";
+import { useStyles } from "casemgtstyleutils";
 
 //TODO: Get from API
 const OfficialIdentifierTypes = ["National", "Passport"];

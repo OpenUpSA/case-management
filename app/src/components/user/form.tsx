@@ -7,8 +7,9 @@ import FormControl from "@material-ui/core/FormControl";
 import { useEffect, useState } from "react";
 import i18n from "../../i18n";
 import { IUser, ICaseOffice } from "../../types";
-import { useStyles } from "../../utils";
-import { getCaseOffices } from "../../api";
+import { useStyles } from "casemgtstyleutils";
+import { getCaseOffices } from "casemgtapi";
+
 import React from "react";
 
 type Props = {

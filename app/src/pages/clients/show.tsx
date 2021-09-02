@@ -11,10 +11,10 @@ import {
 } from "@material-ui/core";
 
 import Layout from "../../components/layout";
-import { getClient, deleteClient } from "../../api";
+import { getClient, deleteClient } from "casemgtapi";
 import { IClient } from "../../types";
-import { RedirectIfNotLoggedIn } from "../../auth";
-import { useStyles } from "../../utils";
+import { RedirectIfNotLoggedIn } from "casemgtauth";
+import { useStyles } from "casemgtstyleutils";
 import Grid from "@material-ui/core/Grid";
 import PersonIcon from "@material-ui/icons/Person";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";

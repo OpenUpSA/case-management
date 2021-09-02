@@ -6,10 +6,10 @@ import FolderIcon from "@material-ui/icons/Folder";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
 import Layout from "../../components/layout";
-import { getLegalCases } from "../../api";
+import { getLegalCases } from "casemgtapi";
 import { ILegalCase } from "../../types";
-import { useStyles } from "../../utils";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { useStyles } from "casemgtstyleutils";
+import { RedirectIfNotLoggedIn } from "casemgtauth";
 
 import LegalCasesTable from "../../components/legalCase/table";
 import { useHistory } from "react-router-dom";

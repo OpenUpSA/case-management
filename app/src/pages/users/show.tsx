@@ -9,10 +9,10 @@ import {
 } from "@material-ui/core";
 
 import Layout from "../../components/layout";
-import { getUser } from "../../api";
+import { getUser } from "casemgtapi";
 import { IUser } from "../../types";
-import { RedirectIfNotLoggedIn } from "../../auth";
-import { useStyles } from "../../utils";
+import { RedirectIfNotLoggedIn } from "casemgtauth";
+import { useStyles } from "casemgtstyleutils";
 import Grid from "@material-ui/core/Grid";
 import SettingsIcon from "@material-ui/icons/Settings";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";

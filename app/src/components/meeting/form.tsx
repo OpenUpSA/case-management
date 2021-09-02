@@ -2,7 +2,7 @@ import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import i18n from "../../i18n";
 import { IMeeting } from "../../types";
-import { useStyles } from "../../utils";
+import { useStyles } from "casemgtstyleutils";
 
 type Props = {
   meeting?: IMeeting;
