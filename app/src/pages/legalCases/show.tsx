@@ -7,14 +7,9 @@ import {
   Button,
   Container,
   Grid,
-  IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
   ListItemIcon,
   ListItemText,
   MenuItem,
-  Select,
 } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import ChatIcon from "@material-ui/icons/Chat";
@@ -34,7 +29,6 @@ import { useStyles } from "../../utils";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import LegalCaseForm from "../../components/legalCase/form";
-import SearchIcon from "@material-ui/icons/Search";
 
 type RouteParams = { id: string };
 
@@ -46,38 +40,12 @@ const Page = () => {
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
-  const [filteredMeetings, setfilteredMeetings] = React.useState<IMeeting[]>();
-  const [filterMeetingsValue, setfilterMeetingsValue] =
-    React.useState<string>();
   const caseId = parseInt(params.id);
 
   const destroyLegalCase = async () => {
     if (window.confirm(i18n.t("Are you sure you want to delete this case?"))) {
       await deleteLegalCase(caseId);
       history.push(`/cases/`);
-    }
-  };
-
-  //TODO: Better filtering
-  const filterMeetings = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (filterMeetingsValue) {
-      setfilteredMeetings(
-        meetings?.filter((meeting) => {
-          return (
-            meeting.location
-              .toLowerCase()
-              .includes(filterMeetingsValue.toLowerCase()) ||
-            meeting.meeting_type
-              .toLowerCase()
-              .includes(filterMeetingsValue.toLowerCase()) ||
-            meeting.notes
-              .toLowerCase()
-              .includes(filterMeetingsValue.toLowerCase())
-          );
-        })
-      );
-    } else {
-      setfilteredMeetings(meetings);
     }
   };
 
@@ -88,7 +56,6 @@ const Page = () => {
       setLegalCase(dataLegalCase);
       setClient(await getClient(dataLegalCase.client));
       setMeetings(dataMeetings);
-      setfilteredMeetings(dataMeetings);
     }
     fetchData();
   }, [caseId]);
@@ -160,58 +127,7 @@ const Page = () => {
 
         <hr className={classes.hr} />
 
-        <Grid container direction="row" spacing={2} alignItems="center">
-          <Grid item style={{ flexGrow: 1 }}>
-            <strong>
-              {filteredMeetings ? filteredMeetings.length : "0"}{" "}
-              {i18n.t("Meetings")}
-            </strong>
-          </Grid>
-          <Grid item>
-            <InputLabel
-              className={classes.inputLabel}
-              htmlFor="sort_table"
-              shrink={true}
-            >
-              {i18n.t("Sort")}:
-            </InputLabel>
-          </Grid>
-          <Grid item>
-            <Select
-              id="sort_table"
-              className={classes.select}
-              disableUnderline
-              input={<Input />}
-              value="alphabetical"
-            >
-              <MenuItem key="alphabetical" value="alphabetical">
-                {i18n.t("Alphabetical")}
-              </MenuItem>
-            </Select>
-          </Grid>
-          <Grid item md={12}>
-            <Input
-              id="table_search"
-              fullWidth
-              placeholder={i18n.t("Enter a meeting location, type, or note...")}
-              startAdornment={
-                <InputAdornment position="start">
-                  <IconButton>
-                    <SearchIcon color="primary" />
-                  </IconButton>
-                </InputAdornment>
-              }
-              disableUnderline={true}
-              className={classes.textField}
-              aria-describedby="my-helper-text"
-              value={filterMeetingsValue}
-              onChange={(e) => setfilterMeetingsValue(e.target.value)}
-              onKeyUp={filterMeetings}
-            />
-          </Grid>
-        </Grid>
-
-        <MeetingsTable meetings={filteredMeetings} standalone={false} />
+        <MeetingsTable meetings={meetings ? meetings : []} standalone={false} />
       </Container>
     </Layout>
   );

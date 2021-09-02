@@ -5,12 +5,6 @@ import {
   Button,
   Container,
   Grid,
-  IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
 } from "@material-ui/core";
 
 import ForumIcon from "@material-ui/icons/Forum";
@@ -23,7 +17,6 @@ import i18n from "../../i18n";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import MeetingsTable from "../../components/meeting/table";
-import SearchIcon from "@material-ui/icons/Search";
 
 const Page = () => {
   RedirectIfNotLoggedIn();
@@ -71,54 +64,7 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        <Grid container direction="row" spacing={2} alignItems="center">
-          <Grid item style={{ flexGrow: 1 }}>
-            <strong>
-              {meetings ? meetings.length : "0"} {i18n.t("Meetings")}
-            </strong>
-          </Grid>
-          <Grid item>
-            <InputLabel
-              className={classes.inputLabel}
-              htmlFor="sort_table"
-              shrink={true}
-            >
-              {i18n.t("Sort")}:
-            </InputLabel>
-          </Grid>
-          <Grid item>
-            <Select
-              id="sort_table"
-              className={classes.select}
-              disableUnderline
-              input={<Input />}
-              value="alphabetical"
-            >
-              <MenuItem key="alphabetical" value="alphabetical">
-                {i18n.t("Alphabetical")}
-              </MenuItem>
-            </Select>
-          </Grid>
-          <Grid item md={12} style={{ display: "none" }}>
-            <Input
-              id="table_search"
-              fullWidth
-              placeholder={i18n.t("Enter a name, case number, phone number...")}
-              startAdornment={
-                <InputAdornment position="start">
-                  <IconButton>
-                    <SearchIcon color="primary" />
-                  </IconButton>
-                </InputAdornment>
-              }
-              disableUnderline={true}
-              className={classes.textField}
-              aria-describedby="my-helper-text"
-            />
-          </Grid>
-        </Grid>
-
-        <MeetingsTable meetings={meetings} />
+        <MeetingsTable meetings={meetings ? meetings : []} />
       </Container>
     </Layout>
   );
