@@ -8,25 +8,22 @@ import {
   Button,
   Grid,
   MenuItem,
-  InputLabel,
-  Select,
-  Input,
-  InputAdornment,
-  IconButton,
+  ListItemIcon,
+  ListItemText,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
 import Layout from "../../components/layout";
-import { getLegalCases, getClient } from "../../api";
+import { getLegalCases, getClient, deleteClient } from "../../api";
 import { ILegalCase, IClient } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 
 import ClientForm from "../../components/client/form";
 import LegalCasesTable from "../../components/legalCase/table";
-import SearchIcon from "@material-ui/icons/Search";
-
+import MoreMenu from "../../components/moreMenu";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 type RouteParams = { id: string };
 
@@ -38,6 +35,15 @@ const Page = () => {
   const clientId = parseInt(params.id);
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
   const [client, setClient] = React.useState<IClient>();
+
+  const destroyClient = async () => {
+    if (
+      window.confirm(i18n.t("Are you sure you want to delete this client?"))
+    ) {
+      await deleteClient(clientId);
+      history.push("/clients");
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -78,6 +84,26 @@ const Page = () => {
               </strong>
             </Typography>
           </Grid>
+          <Grid item>
+            <MoreMenu>
+              <MenuItem
+                onClick={() => {
+                  history.push(`/clients/${clientId}/edit`);
+                }}
+              >
+                <ListItemIcon>
+                  <PersonIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{i18n.t("Edit client")}</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={destroyClient}>
+                <ListItemIcon>
+                  <DeleteIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{i18n.t("Delete client")}</ListItemText>
+              </MenuItem>
+            </MoreMenu>
+          </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>
             <Button
               className={classes.canBeFab}
@@ -97,54 +123,10 @@ const Page = () => {
         <ClientForm client={client} />
         <hr className={classes.hr} />
 
-        <Grid container direction="row" spacing={2} alignItems="center">
-          <Grid item style={{ flexGrow: 1 }}>
-            <strong>
-              {legalCases ? legalCases.length : "0"} {i18n.t("Cases")}
-            </strong>
-          </Grid>
-          <Grid item>
-            <InputLabel
-              className={classes.inputLabel}
-              htmlFor="sort_table"
-              shrink={true}
-            >
-              {i18n.t("Sort")}:
-            </InputLabel>
-          </Grid>
-          <Grid item>
-            <Select
-              id="sort_table"
-              className={classes.select}
-              disableUnderline
-              input={<Input />}
-              value="alphabetical"
-            >
-              <MenuItem key="alphabetical" value="alphabetical">
-                {i18n.t("Alphabetical")}
-              </MenuItem>
-            </Select>
-          </Grid>
-          <Grid item md={12} style={{ display: "none" }}>
-            <Input
-              id="table_search"
-              fullWidth
-              placeholder={i18n.t("Enter a name, case number, phone number...")}
-              startAdornment={
-                <InputAdornment position="start">
-                  <IconButton>
-                    <SearchIcon color="primary" />
-                  </IconButton>
-                </InputAdornment>
-              }
-              disableUnderline={true}
-              className={classes.textField}
-              aria-describedby="my-helper-text"
-            />
-          </Grid>
-        </Grid>
-
-        <LegalCasesTable legalCases={legalCases} standalone={false} />
+        <LegalCasesTable
+          legalCases={legalCases ? legalCases : []}
+          standalone={false}
+        />
       </Container>
     </Layout>
   );
