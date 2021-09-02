@@ -41,6 +41,10 @@ const Page = () => {
   const clientId = parseInt(params.id);
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
   const [client, setClient] = React.useState<IClient>();
+  const [filteredLegalCases, setFilteredLegalCases] =
+    React.useState<ILegalCase[]>();
+  const [filterLegalCasesValue, setFilterLegalCasesValue] =
+    React.useState<string>();
 
   const destroyClient = async () => {
     if (
@@ -51,10 +55,27 @@ const Page = () => {
     }
   };
 
+  //TODO: Better filtering
+  const filterLegalCases = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (filterLegalCasesValue) {
+      setFilteredLegalCases(
+        legalCases?.filter((legalCase) => {
+          return (
+            legalCase.case_number.toLowerCase().includes(filterLegalCasesValue.toLowerCase()) ||
+            legalCase.state.toLowerCase().includes(filterLegalCasesValue.toLowerCase())
+          );
+        })
+      );
+    } else {
+      setFilteredLegalCases(legalCases);
+    }
+  };
+
   useEffect(() => {
     async function fetchData() {
       const dataLegalCases = await getLegalCases(clientId);
       setLegalCases(dataLegalCases);
+      setFilteredLegalCases(dataLegalCases);
 
       if (clientId) {
         setClient(await getClient(clientId));
@@ -132,7 +153,7 @@ const Page = () => {
         <Grid container direction="row" spacing={2} alignItems="center">
           <Grid item style={{ flexGrow: 1 }}>
             <strong>
-              {legalCases ? legalCases.length : "0"} {i18n.t("Cases")}
+              {filteredLegalCases ? filteredLegalCases.length : "0"} {i18n.t("Cases")}
             </strong>
           </Grid>
           <Grid item>
@@ -157,11 +178,11 @@ const Page = () => {
               </MenuItem>
             </Select>
           </Grid>
-          <Grid item md={12} style={{ display: "none" }}>
+          <Grid item md={12}>
             <Input
               id="table_search"
               fullWidth
-              placeholder={i18n.t("Enter a name, case number, phone number...")}
+              placeholder={i18n.t("Enter a case number, status, or type...")}
               startAdornment={
                 <InputAdornment position="start">
                   <IconButton>
@@ -172,11 +193,14 @@ const Page = () => {
               disableUnderline={true}
               className={classes.textField}
               aria-describedby="my-helper-text"
+              value={filterLegalCasesValue}
+              onChange={(e) => setFilterLegalCasesValue(e.target.value)}
+              onKeyUp={filterLegalCases}
             />
           </Grid>
         </Grid>
 
-        <LegalCasesTable legalCases={legalCases} standalone={false} />
+        <LegalCasesTable legalCases={filteredLegalCases} standalone={false} />
       </Container>
     </Layout>
   );
