@@ -46,12 +46,38 @@ const Page = () => {
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
+  const [filteredMeetings, setfilteredMeetings] = React.useState<IMeeting[]>();
+  const [filterMeetingsValue, setfilterMeetingsValue] =
+    React.useState<string>();
   const caseId = parseInt(params.id);
 
   const destroyLegalCase = async () => {
     if (window.confirm(i18n.t("Are you sure you want to delete this case?"))) {
       await deleteLegalCase(caseId);
       history.push(`/cases/`);
+    }
+  };
+
+  //TODO: Better filtering
+  const filterMeetings = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (filterMeetingsValue) {
+      setfilteredMeetings(
+        meetings?.filter((meeting) => {
+          return (
+            meeting.location
+              .toLowerCase()
+              .includes(filterMeetingsValue.toLowerCase()) ||
+            meeting.meeting_type
+              .toLowerCase()
+              .includes(filterMeetingsValue.toLowerCase()) ||
+            meeting.notes
+              .toLowerCase()
+              .includes(filterMeetingsValue.toLowerCase())
+          );
+        })
+      );
+    } else {
+      setfilteredMeetings(meetings);
     }
   };
 
@@ -62,6 +88,7 @@ const Page = () => {
       setLegalCase(dataLegalCase);
       setClient(await getClient(dataLegalCase.client));
       setMeetings(dataMeetings);
+      setfilteredMeetings(dataMeetings);
     }
     fetchData();
   }, [caseId]);
@@ -136,7 +163,8 @@ const Page = () => {
         <Grid container direction="row" spacing={2} alignItems="center">
           <Grid item style={{ flexGrow: 1 }}>
             <strong>
-              {meetings ? meetings.length : "0"} {i18n.t("Meetings")}
+              {filteredMeetings ? filteredMeetings.length : "0"}{" "}
+              {i18n.t("Meetings")}
             </strong>
           </Grid>
           <Grid item>
@@ -161,11 +189,11 @@ const Page = () => {
               </MenuItem>
             </Select>
           </Grid>
-          <Grid item md={12} style={{ display: "none" }}>
+          <Grid item md={12}>
             <Input
               id="table_search"
               fullWidth
-              placeholder={i18n.t("Enter a name, case number, phone number...")}
+              placeholder={i18n.t("Enter a meeting location, type, or note...")}
               startAdornment={
                 <InputAdornment position="start">
                   <IconButton>
@@ -176,11 +204,14 @@ const Page = () => {
               disableUnderline={true}
               className={classes.textField}
               aria-describedby="my-helper-text"
+              value={filterMeetingsValue}
+              onChange={(e) => setfilterMeetingsValue(e.target.value)}
+              onKeyUp={filterMeetings}
             />
           </Grid>
         </Grid>
 
-        <MeetingsTable meetings={meetings} standalone={false} />
+        <MeetingsTable meetings={filteredMeetings} standalone={false} />
       </Container>
     </Layout>
   );
