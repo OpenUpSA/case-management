@@ -113,7 +113,7 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        <LegalCasesTable legalCases={legalCases} />
+        <LegalCasesTable legalCases={legalCases ? legalCases : []} />
       </Container>
     </Layout>
   );

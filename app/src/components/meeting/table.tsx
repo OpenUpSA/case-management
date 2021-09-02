@@ -38,11 +38,11 @@ const Component = (props: Props) => {
   const [filterMeetingsValue, setfilterMeetingsValue] =
     React.useState<string>();
 
-  //TODO: Better filtering
   const filterKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     filterMeetings();
   };
 
+  //TODO: Better filtering
   const filterMeetings = () => {
     if (filterMeetingsValue) {
       setfilteredMeetings(
@@ -66,14 +66,12 @@ const Component = (props: Props) => {
   };
 
   useEffect(() => {
-    if (props.meetings.length > 0 && typeof filteredMeetings === 'undefined') {
-      console.log("filteringMeetings"); 
+    if (props.meetings.length > 0 && typeof filteredMeetings === "undefined") {
       filterMeetings();
     }
   });
 
   useEffect(() => {
-    console.log("useeffect");
     async function fetchData() {
       const dataClients = await getClients();
       const dataLegalCases = await getLegalCases();
