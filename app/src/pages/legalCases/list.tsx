@@ -1,7 +1,12 @@
 import React, { useEffect } from "react";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
-import { Breadcrumbs, Container, Button, Grid, Select, InputLabel, MenuItem, Input, InputAdornment, IconButton } from "@material-ui/core";
+import {
+  Breadcrumbs,
+  Container,
+  Button,
+  Grid,
+} from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
@@ -13,7 +18,6 @@ import { RedirectIfNotLoggedIn } from "../../auth";
 
 import LegalCasesTable from "../../components/legalCase/table";
 import { useHistory } from "react-router-dom";
-import SearchIcon from "@material-ui/icons/Search";
 
 const Page = () => {
   RedirectIfNotLoggedIn();
