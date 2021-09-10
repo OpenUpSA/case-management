@@ -3,7 +3,7 @@ import { Grid, MenuItem, Select } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from '@material-ui/core/FormHelperText';
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 import { useEffect, useState } from "react";
 import i18n from "../../i18n";
@@ -20,8 +20,10 @@ type Props = {
   phoneErrorMessage?: boolean;
   emailErrorMessage?: boolean;
   idErrorMessage?: boolean;
+  nameError?: boolean;
+  prefNameError?: boolean;
+  idTypeErrorMessage?: boolean;
 };
-
 
 const Component = (props: Props) => {
   const classes = useStyles();
@@ -74,6 +76,11 @@ const Component = (props: Props) => {
               }}
             />
           </FormControl>
+          {props.prefNameError && (
+            <FormHelperText error id="preferred_name_text">
+              Enter your preferred name
+            </FormHelperText>
+          )}
         </Grid>
         {props.detailedView ? (
           <Grid item xs={12} md={8}>
@@ -100,6 +107,11 @@ const Component = (props: Props) => {
                 }}
               />
             </FormControl>
+            {props.nameError && (
+            <FormHelperText error id="name_text">
+              Enter your name
+            </FormHelperText>
+          )}
           </Grid>
         ) : (
           ""
@@ -128,7 +140,11 @@ const Component = (props: Props) => {
               }}
             />
           </FormControl>
-          {props.idErrorMessage && <FormHelperText error id="official_identifier_text">Enter your unique id number</FormHelperText>}
+          {props.idErrorMessage && (
+            <FormHelperText error id="official_identifier_text">
+              Enter your unique id number
+            </FormHelperText>
+          )}
         </Grid>
         {props.detailedView ? (
           <Grid item xs={12} md={4}>
@@ -172,6 +188,11 @@ const Component = (props: Props) => {
                 ))}
               </Select>
             </FormControl>
+            {props.idTypeErrorMessage && (
+            <FormHelperText error id="official_identifier_type">
+              Select an Identifier type
+            </FormHelperText>
+          )}
           </Grid>
         ) : (
           ""
@@ -200,7 +221,11 @@ const Component = (props: Props) => {
               }}
             />
           </FormControl>
-            {props.phoneErrorMessage && <FormHelperText error id="contact_number-text">Enter a valid phone number</FormHelperText>}
+          {props.phoneErrorMessage && (
+            <FormHelperText error id="contact_number-text">
+              Enter a valid phone number
+            </FormHelperText>
+          )}
         </Grid>
         {props.detailedView ? (
           <Grid item xs={12} md={4}>
@@ -227,7 +252,11 @@ const Component = (props: Props) => {
                 }}
               />
             </FormControl>
-            {props.emailErrorMessage && <FormHelperText error id="contact_email-text">Enter a valid Email address</FormHelperText>}
+            {props.emailErrorMessage && (
+              <FormHelperText error id="contact_email-text">
+                Enter a valid Email address
+              </FormHelperText>
+            )}
           </Grid>
         ) : (
           ""

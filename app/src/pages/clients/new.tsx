@@ -31,55 +31,82 @@ const Page = () => {
   const classes = useStyles();
   const [client] = React.useState<IClient>();
 
+  const [nameError, setNameError] = React.useState<boolean>(false);
+  const [prefNameError, setPrefNameError] = React.useState<boolean>(false);
   const [emailErrorMessage, setEmailErrorMessage] =
     React.useState<boolean>(false);
   const [phoneErrorMessage, setPhoneErrorMessage] =
     React.useState<boolean>(false);
   const [idErrorMessage, setIdErrorMessage] = React.useState<boolean>(false);
+  const [idTypeErrorMessage, setIdTypeErrorMessage] = React.useState<boolean>(false);
 
   const newClient = async (client: IClient) => {
     try {
-      const { id, contact_email, contact_number, official_identifier } =
-        await createClient(client);
+      const {
+        id,
+        name,
+        preferred_name,
+        official_identifier,
+        official_identifier_type,
+        contact_email,
+        contact_number,
+      } = await createClient(client);
 
-      if (contact_email) {
-        if (
-          contact_email[0] === "Enter a valid email address." ||
-          "This field may not be blank."
-        ) {
-          setEmailErrorMessage(true);
-        } else {
-          setEmailErrorMessage(false);
-        }
-      } else {
-        setEmailErrorMessage(false);
-      }
-
-      if (contact_number) {
-        if (
-          contact_number[0] === "The phone number entered is not valid." ||
-          "This field may not be blank."
-        ) {
-          setPhoneErrorMessage(true);
-        } else {
-          setPhoneErrorMessage(false);
-        }
-      } else {
-        setPhoneErrorMessage(false);
-      }
-
-      if (!official_identifier) {
-        setIdErrorMessage(true);
-        console.log("1st")
-     
-      } else if (official_identifier[0] === "This field may not be blank.") {
-        setIdErrorMessage(true);
-        console.log("2nd")
-       
-      } else if (official_identifier) {
+      if (typeof name === "object") {
+        setNameError(true);
+        setPrefNameError(false);
         setIdErrorMessage(false);
-        console.log("3rd")
-        
+        setEmailErrorMessage(false);
+        setPhoneErrorMessage(false);
+        setIdTypeErrorMessage(false);
+        return false;
+      } else if (typeof preferred_name === "object") {
+        setPrefNameError(true);
+        setNameError(false);
+        setIdErrorMessage(false);
+        setEmailErrorMessage(false);
+        setPhoneErrorMessage(false);
+        setIdTypeErrorMessage(false);
+        return false;
+      } else if (typeof official_identifier === "object") {
+        setIdErrorMessage(true);
+        setEmailErrorMessage(false);
+        setPhoneErrorMessage(false);
+        setNameError(false);
+        setPrefNameError(false);
+        setIdTypeErrorMessage(false);
+        return false;
+    } else if (typeof official_identifier_type === "object") {
+        setIdTypeErrorMessage(true);
+        setIdErrorMessage(false);
+        setEmailErrorMessage(false);
+        setPhoneErrorMessage(false);
+        setNameError(false);
+        setPrefNameError(false);
+        return false;
+      } else if (typeof contact_email === "object") {
+        setEmailErrorMessage(true);
+        setIdErrorMessage(false);
+        setPhoneErrorMessage(false);
+        setNameError(false);
+        setPrefNameError(false);
+        setIdTypeErrorMessage(false);
+        return false;
+      } else if (typeof contact_number === "object") {
+        setPhoneErrorMessage(true);
+        setIdErrorMessage(false);
+        setEmailErrorMessage(false);
+        setNameError(false);
+        setPrefNameError(false);
+        setIdTypeErrorMessage(false);
+        return false;
+      } else {
+        setNameError(false);
+        setPrefNameError(false);
+        setIdErrorMessage(false);
+        setEmailErrorMessage(false);
+        setPhoneErrorMessage(false);
+        setIdTypeErrorMessage(false);
       }
 
       id && history.push(`/clients/${id}/cases`);
@@ -162,6 +189,9 @@ const Page = () => {
             emailErrorMessage={emailErrorMessage}
             phoneErrorMessage={phoneErrorMessage}
             idErrorMessage={idErrorMessage}
+            idTypeErrorMessage={idTypeErrorMessage}
+            prefNameError={prefNameError}
+            nameError={nameError}
             client={client}
             readOnly={false}
             detailedView={true}
