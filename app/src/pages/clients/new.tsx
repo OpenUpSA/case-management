@@ -31,10 +31,58 @@ const Page = () => {
   const classes = useStyles();
   const [client] = React.useState<IClient>();
 
+  const [emailErrorMessage, setEmailErrorMessage] =
+    React.useState<boolean>(false);
+  const [phoneErrorMessage, setPhoneErrorMessage] =
+    React.useState<boolean>(false);
+  const [idErrorMessage, setIdErrorMessage] = React.useState<boolean>(false);
+
   const newClient = async (client: IClient) => {
     try {
-      const { id } = await createClient(client);
-      history.push(`/clients/${id}/cases`);
+      const { id, contact_email, contact_number, official_identifier } =
+        await createClient(client);
+
+      if (contact_email) {
+        if (
+          contact_email[0] === "Enter a valid email address." ||
+          "This field may not be blank."
+        ) {
+          setEmailErrorMessage(true);
+        } else {
+          setEmailErrorMessage(false);
+        }
+      } else {
+        setEmailErrorMessage(false);
+      }
+
+      if (contact_number) {
+        if (
+          contact_number[0] === "The phone number entered is not valid." ||
+          "This field may not be blank."
+        ) {
+          setPhoneErrorMessage(true);
+        } else {
+          setPhoneErrorMessage(false);
+        }
+      } else {
+        setPhoneErrorMessage(false);
+      }
+
+      if (!official_identifier) {
+        setIdErrorMessage(true);
+        console.log("1st")
+     
+      } else if (official_identifier[0] === "This field may not be blank.") {
+        setIdErrorMessage(true);
+        console.log("2nd")
+       
+      } else if (official_identifier) {
+        setIdErrorMessage(false);
+        console.log("3rd")
+        
+      }
+
+      id && history.push(`/clients/${id}/cases`);
     } catch (e) {
       console.log(e);
     }
@@ -110,7 +158,14 @@ const Page = () => {
               </Button>
             </Grid>
           </Grid>
-          <ClientForm client={client} readOnly={false} detailedView={true} />
+          <ClientForm
+            emailErrorMessage={emailErrorMessage}
+            phoneErrorMessage={phoneErrorMessage}
+            idErrorMessage={idErrorMessage}
+            client={client}
+            readOnly={false}
+            detailedView={true}
+          />
         </form>
       </Container>
     </Layout>

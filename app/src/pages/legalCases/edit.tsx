@@ -73,7 +73,10 @@ const Page = () => {
         <Button onClick={() => history.push("/clients")}>
           {i18n.t("Client list")}
         </Button>
-        <Button onClick={() => history.push(`/clients/${client?.id}/cases`)}>
+        <Button
+          disabled={client ? false : true}
+          onClick={() => history.push(`/clients/${client?.id}/cases`)}
+        >
           {client ? client.preferred_name : ""}
         </Button>
         <div>{legalCase?.case_number}</div>
