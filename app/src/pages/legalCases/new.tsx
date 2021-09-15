@@ -20,7 +20,7 @@ import {
 
 import { useStyles } from "../../utils";
 import FolderIcon from "@material-ui/icons/Folder";
-import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
+import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -76,7 +76,10 @@ const Page = () => {
         <Button onClick={() => history.push("/clients")}>
           {i18n.t("Client list")}
         </Button>
-        <Button onClick={() => history.push(`/clients/${client?.id}/cases`)}>
+        <Button
+          disabled={client ? false : true}
+          onClick={() => history.push(`/clients/${client?.id}/cases`)}
+        >
           {client ? client.preferred_name : ""}
         </Button>
         <div>{i18n.t("New case")}</div>

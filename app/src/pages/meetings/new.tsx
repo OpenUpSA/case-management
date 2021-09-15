@@ -82,10 +82,16 @@ const Page = () => {
         <Button onClick={() => history.push("/clients")}>
           {i18n.t("Client list")}
         </Button>
-        <Button onClick={() => history.push(`/clients/${client?.id}/cases`)}>
+        <Button
+          disabled={client ? false : true}
+          onClick={() => history.push(`/clients/${client?.id}/cases`)}
+        >
           {client ? client.preferred_name : ""}
         </Button>
-        <Button onClick={() => history.push(`/cases/${legalCase?.id}`)}>
+        <Button
+          disabled={legalCase ? false : true}
+          onClick={() => history.push(`/cases/${legalCase?.id}`)}
+        >
           {legalCase?.case_number}
         </Button>
         <div>{i18n.t("New meeting")}</div>
@@ -109,7 +115,13 @@ const Page = () => {
             );
           }}
         >
-          <Grid className={classes.pageBar} container direction="row" spacing={2} alignItems="center">
+          <Grid
+            className={classes.pageBar}
+            container
+            direction="row"
+            spacing={2}
+            alignItems="center"
+          >
             <Grid item>
               <ChatIcon color="primary" style={{ display: "flex" }} />
             </Grid>
