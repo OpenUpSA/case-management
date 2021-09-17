@@ -31,7 +31,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build; echo '/* /index.html 200' > build/_redirects",
-    "test": "react-scripts test",
+    "test": "yarn cypress run",
     "eject": "react-scripts eject",
     "deploy": "netlify deploy --prod -d=./build",
     "serve": "serve -s build"
