@@ -1,0 +1,13 @@
+setup:
+  config:
+    DJANGO_DEBUG: 1
+    DJANGO_SECRET_KEY: default-change-me
+build:
+  docker:
+    web: Dockerfile
+run:
+  web: gunicorn msc.wsgi:application --log-file - --bind 0.0.0.0:$PORT
+release:
+  image: web
+  command:
+    - python manage.py migrate --noinput
