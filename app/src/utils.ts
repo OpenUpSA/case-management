@@ -184,6 +184,27 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0, 0, 0, 0.01)",
         borderColor: "rgba(0, 0, 0, 0.1)",
       },
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
+      },
+    },
+    selectStatus: {
+      display: "flex",
+      flexDirection: "row",
+      [theme.breakpoints.down("xs")]: {
+        flexDirection: "column",
+        "&>:nth-child(2)": {
+          width: "90vw!important" as any,
+        },
+        "& p": {
+            margin: 0
+          },
+      },
+      "& p": {
+        fontSize: "14px",
+        fontWeight: "700"
+        //margin: "1px"
+      },
     },
     textField: {
       backgroundColor: "rgba(0, 0, 0, 0.035)",
@@ -213,6 +234,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     pageBar: {
       marginBottom: "50px",
+      display: "flex",
+      [theme.breakpoints.down("xs")]: {
+        "&>:nth-child(3)": {
+          order: 4,
+        },
+        "&>:nth-child(4)": {
+          order: 3,
+        },
+      },
     },
     cursorPointer: {
       cursor: "pointer",

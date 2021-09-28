@@ -10,7 +10,9 @@ import {
   ListItemIcon,
   ListItemText,
   MenuItem,
+  Input
 } from "@material-ui/core";
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import FolderIcon from "@material-ui/icons/Folder";
 import ChatIcon from "@material-ui/icons/Chat";
 import MeetingsTable from "../../components/meeting/table";
@@ -32,6 +34,16 @@ import LegalCaseForm from "../../components/legalCase/form";
 
 type RouteParams = { id: string };
 
+const LegalCaseStates = [
+    "Opened",
+    "InProgress",
+    "Hanging",
+    "Pending",
+    "Referred",
+    "Resolved",
+    "Escalated",
+  ];
+
 const Page = () => {
   RedirectIfNotLoggedIn();
   const history = useHistory();
@@ -42,11 +54,17 @@ const Page = () => {
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
   const caseId = parseInt(params.id);
 
+  const [status, setStatus] = React.useState<string>("Opened");
+
   const destroyLegalCase = async () => {
     if (window.confirm(i18n.t("Are you sure you want to delete this case?"))) {
       await deleteLegalCase(caseId);
       history.push(`/cases/`);
     }
+  };
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setStatus(event.target.value as string);
   };
 
   useEffect(() => {
@@ -89,6 +107,25 @@ const Page = () => {
             <Typography variant="h6">
               <strong>{legalCase?.case_number}</strong>
             </Typography>
+          </Grid>
+          <Grid item className={classes.selectStatus}>
+              <p>Case status:</p>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                disableUnderline
+                className={classes.select}
+                input={<Input />}
+                value={status}
+                onChange={handleChange}
+                //style={{ width: "200px" }}
+              >
+               {LegalCaseStates?.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {value}
+                </MenuItem>
+              ))}
+              </Select>
           </Grid>
           <Grid item>
             <MoreMenu>
