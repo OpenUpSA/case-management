@@ -10,6 +10,7 @@
     "build": "parcel build assets/scss/case_management.scss assets/js/case_management.js --out-dir assets/bundles --no-content-hash"
   },
   "dependencies": {
+    "eslint-plugin-cypress": "^2.12.1",
     "parcel-bundler": "^1.12.4",
     "sass": "^1.25.1-test.1"
   }
