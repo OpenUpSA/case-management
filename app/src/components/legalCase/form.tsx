@@ -23,6 +23,7 @@ const LegalCaseStates = [
   "Referred",
   "Resolved",
   "Escalated",
+  "Closed"
 ];
 
 type Props = {
