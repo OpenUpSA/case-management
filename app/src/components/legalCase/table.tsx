@@ -5,6 +5,12 @@ import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
 import {
   Grid,
   Hidden,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   InputLabel,
   Select,
   Input,
@@ -133,6 +139,93 @@ const Component = (props: Props) => {
         </Grid>
       </Grid>
 
+      <TableContainer>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow className={classes.tableHeadRow}>
+              {props.standalone ? (
+                <TableCell className={classes.tableHeadCell}>
+                  {i18n.t("Client")}
+                </TableCell>
+              ) : null}
+              <TableCell className={classes.tableHeadCell}>
+                {i18n.t("Case type")}
+              </TableCell>
+              <TableCell className={classes.tableHeadCell}>
+                {i18n.t("Case number")}
+              </TableCell>
+              <Hidden mdDown>
+                <TableCell className={classes.tableHeadCell}>
+                  {i18n.t("Last updated")}
+                </TableCell>
+              </Hidden>
+              <TableCell className={classes.tableHeadCell} colSpan={2}>
+                {i18n.t("Status")}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          {filteredLegalCases && filteredLegalCases.length > 0 ? (
+            <TableBody>
+              {filteredLegalCases.map((legalCase) => (
+                <TableRow
+                  key={legalCase.id}
+                  className={classes.tableBodyRow}
+                  onClick={() => {
+                    history.push(`/cases/${legalCase.id}`);
+                  }}
+                >
+                  {props.standalone ? (
+                    <TableCell className={classes.tableBodyCell}>
+                      {clients
+                        ?.filter((client) => client.id === legalCase.client)
+                        .map((client) => client.preferred_name)}
+                    </TableCell>
+                  ) : null}
+                  <TableCell className={classes.tableBodyCell}>
+                    {caseTypes
+                      ?.filter(
+                        (caseType) =>
+                          legalCase.case_types.indexOf(caseType.id) > -1
+                      )
+                      .map((caseType) => caseType.title)
+                      .join(", ")}
+                  </TableCell>
+                  <TableCell className={classes.tableBodyCell}>
+                    {legalCase.case_number}
+                  </TableCell>
+                  <Hidden mdDown>
+                    <TableCell className={classes.tableBodyCell}>
+                      {format(
+                        new Date(
+                          legalCase?.updated_at || new Date().toISOString()
+                        ),
+                        "MM/dd/yyyy (h:ma)"
+                      )}
+                    </TableCell>
+                  </Hidden>
+                  <TableCell className={classes.tableBodyCell}>
+                    {legalCase.state}
+                  </TableCell>
+                  <TableCell className={classes.tableBodyCell} align="right">
+                    <ArrowRightAltIcon />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          ) : (
+            <TableBody>
+              <TableRow
+                className={`${classes.tableBodyRow} ${classes.tableBodyRowEmpty}`}
+              >
+                <TableCell
+                  colSpan={5}
+                  className={classes.tableBodyCell}
+                ></TableCell>
+              </TableRow>
+            </TableBody>
+          )}
+        </Table>
+      </TableContainer>
       <RecommendedTable />
     </div>
   );

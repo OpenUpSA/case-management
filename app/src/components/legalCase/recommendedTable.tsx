@@ -9,6 +9,7 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import CheckIcon from '@mui/icons-material/Check';
 
 export default function RecommendedTable() {
   const classes = useStyles();
@@ -35,10 +36,10 @@ export default function RecommendedTable() {
           <TableBody>
             <TableRow className={classes.tableBodyRow}>
               <TableCell className={classes.tableBodyCell}>icon here</TableCell>
-              <TableCell colSpan={10} className={classes.tableBodyCell}>
+              <TableCell colSpan={14} className={classes.tableBodyCell}>
                 <p>Notice to vacate</p>
               </TableCell>
-              <TableCell className={classes.tableBodyCell}>icon here</TableCell>
+              <TableCell className={classes.tableBodyCell}><CheckIcon color={"success"}/></TableCell>
               <TableCell className={classes.tableBodyCell}>icon here</TableCell>
             </TableRow>
           </TableBody>
