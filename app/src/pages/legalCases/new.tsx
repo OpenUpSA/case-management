@@ -35,7 +35,13 @@ const Page = () => {
   const history = useHistory();
   const classes = useStyles();
   const params = useParams<RouteParams>();
-  const [legalCase] = React.useState<ILegalCase>();
+  const [legalCase] = React.useState<ILegalCase>({
+    case_number: "Generated",
+    state: "",
+    case_types: [],
+    case_offices: [1],
+    client: 0,
+  });
   const [client, setClient] = React.useState<IClient>();
   const clientId = parseInt(params.id);
   const userInfo = UserInfo.getInstance();
@@ -142,7 +148,7 @@ const Page = () => {
               </Button>
             </Grid>
           </Grid>
-          <LegalCaseForm legalCase={legalCase} readOnly={false} />
+          <LegalCaseForm legalCase={legalCase} readOnly={false} newView={true} />
         </form>
       </Container>
     </Layout>
