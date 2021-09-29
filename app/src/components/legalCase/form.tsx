@@ -199,7 +199,7 @@ const Component = (props: Props) => {
             </InputLabel>
             <Select
               id="case_offices_select"
-              disabled={true}
+              disabled={props.readOnly}
               className={classes.select}
               disableUnderline
               onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
