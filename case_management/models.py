@@ -51,6 +51,8 @@ class CaseOffice(models.Model):
     name = models.CharField(max_length=500, unique=True)
     description = models.TextField()
 
+    case_office_code = models.CharField(max_length=3, default="D00")
+
     def __str__(self):
         return self.name
 

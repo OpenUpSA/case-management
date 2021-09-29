@@ -14,6 +14,7 @@ export interface ICaseOffice {
   updated_at: Date;
   name: string;
   description: string;
+  case_office_code: string;
 }
 
 export interface IClient {
