@@ -10,7 +10,7 @@ class CaseTypeSerializer(serializers.ModelSerializer):
 
 class LegalCaseSerializer(serializers.ModelSerializer):
     meetings = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-
+    case_number = serializers.CharField(required=False)
     class Meta:
         model = LegalCase
         fields = '__all__'
