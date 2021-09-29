@@ -200,18 +200,18 @@ const Component = (props: Props) => {
                   ) : null} */}
 
                   <TableCell className={classes.tableBodyCell}>
-                    {"Meeting " + (index + 1).toString()}
+                    <p>{"Meeting " + (index + 1).toString()}</p>
                   </TableCell>
 
                   <TableCell className={classes.tableBodyCell}>
-                    {format(
+                    <p>{format(
                       new Date(meeting.meeting_date),
                       "MM/dd/yyyy (h:ma)"
-                    )}
+                    )}</p>
                   </TableCell>
 
                   <TableCell className={classes.tableBodyCell}>
-                    {meeting.meeting_type}
+                    <p>{meeting.meeting_type}</p>
                   </TableCell>
 
                   <TableCell className={classes.tableBodyCell} align="right">
