@@ -6,6 +6,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import {
   Grid,
   IconButton,
+  Button,
   Input,
   InputAdornment,
   InputLabel,
@@ -18,15 +19,17 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import ChatIcon from "@material-ui/icons/Chat";
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
 import { format } from "date-fns";
-import { getLegalCases, getClients } from "../../api";
+import { getLegalCases, getClients, getLegalCase } from "../../api";
 import { ILegalCase, IClient, IMeeting } from "../../types";
 
 type Props = {
   meetings: IMeeting[];
   standalone: boolean;
+  caseId?: number;
 };
 
 const Component = (props: Props) => {
@@ -34,6 +37,7 @@ const Component = (props: Props) => {
   const classes = useStyles();
   const [clients, setClients] = React.useState<IClient[]>();
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
+  const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [filteredMeetings, setfilteredMeetings] = React.useState<IMeeting[]>();
   const [filterMeetingsValue, setfilterMeetingsValue] =
     React.useState<string>();
@@ -75,11 +79,13 @@ const Component = (props: Props) => {
     async function fetchData() {
       const dataClients = await getClients();
       const dataLegalCases = await getLegalCases();
+      const dataLegalCase = await getLegalCase(props.caseId!);
       setLegalCases(dataLegalCases);
+      setLegalCase(dataLegalCase);
       setClients(dataClients);
     }
     fetchData();
-  }, []);
+  }, [props.caseId]);
 
   return (
     <div>
@@ -112,6 +118,21 @@ const Component = (props: Props) => {
             </MenuItem>
           </Select>
         </Grid>
+        <Grid item className={classes.zeroWidthOnMobile}>
+          <Button
+            className={classes.canBeFab}
+            color="primary"
+            variant="contained"
+            startIcon={<ChatIcon />}
+            disabled={legalCase ? false : true}
+            onClick={() => {
+              history.push(`/cases/${legalCase?.id}/meetings/new`);
+            }}
+          >
+            {i18n.t("New meeting")}
+          </Button>
+        </Grid>
+
         <Grid item md={12}>
           <Input
             id="table_search"
@@ -137,22 +158,23 @@ const Component = (props: Props) => {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow className={classes.tableHeadRow}>
-              {props.standalone ? (
-                <TableCell className={classes.tableHeadCell}>
-                  {i18n.t("Client name")}
-                </TableCell>
-              ) : null}
               <TableCell className={classes.tableHeadCell}>
-                {i18n.t("Meeting type")}
+                {i18n.t("Meeting name")}
               </TableCell>
+
+              <TableCell className={classes.tableHeadCell} >
+                {i18n.t("Date")}
+              </TableCell>
+
               <TableCell className={classes.tableHeadCell} colSpan={2}>
-                {i18n.t("Meeting date")}
+                {i18n.t("Type")}
               </TableCell>
+
             </TableRow>
           </TableHead>
           {filteredMeetings && filteredMeetings.length > 0 ? (
             <TableBody>
-              {filteredMeetings.map((meeting) => (
+              {filteredMeetings.map((meeting, index) => (
                 <TableRow
                   key={meeting.id}
                   className={classes.tableBodyRow}
@@ -160,7 +182,7 @@ const Component = (props: Props) => {
                     history.push(`/meetings/${meeting.id}`);
                   }}
                 >
-                  {props.standalone ? (
+                  {/* {props.standalone ? (
                     <TableCell className={classes.tableBodyCell}>
                       {clients
                         ?.filter(
@@ -175,16 +197,23 @@ const Component = (props: Props) => {
                         )
                         .map((client) => client.preferred_name)}
                     </TableCell>
-                  ) : null}
+                  ) : null} */}
+
                   <TableCell className={classes.tableBodyCell}>
-                    {meeting.meeting_type}
+                    {"Meeting " + (index + 1).toString()}
                   </TableCell>
+
                   <TableCell className={classes.tableBodyCell}>
                     {format(
                       new Date(meeting.meeting_date),
                       "MM/dd/yyyy (h:ma)"
                     )}
                   </TableCell>
+
+                  <TableCell className={classes.tableBodyCell}>
+                    {meeting.meeting_type}
+                  </TableCell>
+
                   <TableCell className={classes.tableBodyCell} align="right">
                     <ArrowRightAltIcon />
                   </TableCell>

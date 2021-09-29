@@ -10,39 +10,40 @@ import {
   ListItemIcon,
   ListItemText,
   MenuItem,
-  Input
+  Input,
 } from "@material-ui/core";
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FolderIcon from "@material-ui/icons/Folder";
 import ChatIcon from "@material-ui/icons/Chat";
-import MeetingsTable from "../../components/meeting/table";
+//import MeetingsTable from "../../components/meeting/table";
 import MoreMenu from "../../components/moreMenu";
 
 import Layout from "../../components/layout";
 import {
   deleteLegalCase,
   getClient,
-  getLegalCase,
-  getMeetings,
+  getLegalCase
+  //getMeetings,
 } from "../../api";
-import { ILegalCase, IClient, IMeeting } from "../../types";
+import { ILegalCase, IClient } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import LegalCaseForm from "../../components/legalCase/form";
+//import LegalCaseForm from "../../components/legalCase/form";
+import MuiTabs from "../../components/legalCase/muiTabs";
 
 type RouteParams = { id: string };
 
 const LegalCaseStates = [
-    "Opened",
-    "InProgress",
-    "Hanging",
-    "Pending",
-    "Referred",
-    "Resolved",
-    "Escalated",
-  ];
+  "Opened",
+  "InProgress",
+  "Hanging",
+  "Pending",
+  "Referred",
+  "Resolved",
+  "Escalated",
+];
 
 const Page = () => {
   RedirectIfNotLoggedIn();
@@ -51,7 +52,7 @@ const Page = () => {
   const params = useParams<RouteParams>();
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
-  const [meetings, setMeetings] = React.useState<IMeeting[]>();
+  //const [meetings, setMeetings] = React.useState<IMeeting[]>();
   const caseId = parseInt(params.id);
 
   const [status, setStatus] = React.useState<string>("Opened");
@@ -70,10 +71,10 @@ const Page = () => {
   useEffect(() => {
     async function fetchData() {
       const dataLegalCase = await getLegalCase(caseId);
-      const dataMeetings = await getMeetings(caseId);
+      //const dataMeetings = await getMeetings(caseId);
       setLegalCase(dataLegalCase);
       setClient(await getClient(dataLegalCase.client));
-      setMeetings(dataMeetings);
+      //setMeetings(dataMeetings);
     }
     fetchData();
   }, [caseId]);
@@ -109,23 +110,23 @@ const Page = () => {
             </Typography>
           </Grid>
           <Grid item className={classes.selectStatus}>
-              <p>Case status:</p>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                disableUnderline
-                className={classes.select}
-                input={<Input />}
-                value={status}
-                onChange={handleChange}
-                //style={{ width: "200px" }}
-              >
-               {LegalCaseStates?.map((value) => (
+            <p>Case status:</p>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              disableUnderline
+              className={classes.select}
+              input={<Input />}
+              value={status}
+              onChange={handleChange}
+              //style={{ width: "200px" }}
+            >
+              {LegalCaseStates?.map((value) => (
                 <MenuItem key={value} value={value}>
                   {value}
                 </MenuItem>
               ))}
-              </Select>
+            </Select>
           </Grid>
           <Grid item>
             <MoreMenu>
@@ -147,27 +148,9 @@ const Page = () => {
               </MenuItem>
             </MoreMenu>
           </Grid>
-          <Grid item className={classes.zeroWidthOnMobile}>
-            <Button
-              className={classes.canBeFab}
-              color="primary"
-              variant="contained"
-              startIcon={<ChatIcon />}
-              disabled={legalCase ? false : true}
-              onClick={() => {
-                history.push(`/cases/${legalCase?.id}/meetings/new`);
-              }}
-            >
-              {i18n.t("New meeting")}
-            </Button>
-          </Grid>
+          
         </Grid>
-
-        <LegalCaseForm legalCase={legalCase} />
-
-        <hr className={classes.hr} />
-
-        <MeetingsTable meetings={meetings ? meetings : []} standalone={false} />
+        <MuiTabs caseId={caseId}/>
       </Container>
     </Layout>
   );
