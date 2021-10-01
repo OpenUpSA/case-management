@@ -104,6 +104,8 @@ class LegalCase(models.Model):
     case_types = models.ManyToManyField(CaseType)
     case_offices = models.ManyToManyField(CaseOffice)
 
+    summary = models.TextField(null=False, blank=True, default="")
+
     def __str__(self):
         return self.case_number
 
