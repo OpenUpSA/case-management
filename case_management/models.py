@@ -120,6 +120,7 @@ class Meeting(models.Model):
         max_length=50, null=False, blank=False, default="In person meeting")
     meeting_date = models.DateTimeField(null=False, blank=False)
     notes = models.TextField(null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=True, default="")
 
     def __str__(self):
         return f'{self.legal_case.case_number} - {self.id}'
