@@ -22,10 +22,10 @@ import Layout from "../../components/layout";
 import {
   deleteLegalCase,
   getClient,
-  getLegalCase
-  //getMeetings,
+  getLegalCase,
+  getMeetings
 } from "../../api";
-import { ILegalCase, IClient } from "../../types";
+import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import EditIcon from "@material-ui/icons/Edit";
@@ -52,7 +52,7 @@ const Page = () => {
   const params = useParams<RouteParams>();
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
-  //const [meetings, setMeetings] = React.useState<IMeeting[]>();
+  const [meetings, setMeetings] = React.useState<IMeeting[]>();
   const caseId = parseInt(params.id);
 
   const [status, setStatus] = React.useState<string>("Opened");
@@ -71,10 +71,10 @@ const Page = () => {
   useEffect(() => {
     async function fetchData() {
       const dataLegalCase = await getLegalCase(caseId);
-      //const dataMeetings = await getMeetings(caseId);
+      const dataMeetings = await getMeetings(caseId);
       setLegalCase(dataLegalCase);
       setClient(await getClient(dataLegalCase.client));
-      //setMeetings(dataMeetings);
+      setMeetings(dataMeetings);
     }
     fetchData();
   }, [caseId]);
@@ -150,7 +150,7 @@ const Page = () => {
           </Grid>
           
         </Grid>
-        <MuiTabs caseId={caseId}/>
+        <MuiTabs meetings={meetings ? meetings : []} standalone={false}/>
       </Container>
     </Layout>
   );

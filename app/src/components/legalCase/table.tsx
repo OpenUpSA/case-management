@@ -27,7 +27,7 @@ import { format } from "date-fns";
 import { getCaseTypes, getClients } from "../../api";
 import { ILegalCase, IClient, ICaseType } from "../../types";
 
-import RecommendedTable from "./recommendedTable";
+
 
 type Props = {
   legalCases: ILegalCase[];
@@ -226,7 +226,7 @@ const Component = (props: Props) => {
           )}
         </Table>
       </TableContainer>
-      <RecommendedTable />
+      
     </div>
   );
 };

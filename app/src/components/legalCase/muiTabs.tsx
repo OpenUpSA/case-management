@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 
 import MeetingsTable from "../meeting/table";
 import CasesTable from "../legalCase/table";
+import RecommendedTable from "./recommendedTable";
 import { IMeeting, ILegalCase } from "../../types";
 import { getMeetings, getLegalCases } from "../../api";
 
@@ -14,6 +15,11 @@ interface TabPanelProps {
   index: number;
   value: number;
 }
+
+type Props = {
+    meetings: IMeeting[];
+    standalone: boolean;
+  };
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -42,9 +48,9 @@ function a11yProps(index: number) {
   };
 }
 
-export default function BasicTabs(props: { caseId: number }) {
+export default function BasicTabs(props: Props) {
   const [value, setValue] = React.useState(0);
-  const [meetings, setMeetings] = React.useState<IMeeting[]>();
+  //const [meetings, setMeetings] = React.useState<IMeeting[]>();
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -53,11 +59,11 @@ export default function BasicTabs(props: { caseId: number }) {
 
   React.useEffect(() => {
     async function fetchData() {
-      const dataMeetings = await getMeetings(props.caseId);
-      setMeetings(dataMeetings);
+      //const dataMeetings = await getMeetings(props.caseId);
+      //setMeetings(dataMeetings);
     }
     fetchData();
-  }, [props.caseId]);
+  }, [props.meetings]);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -79,13 +85,12 @@ export default function BasicTabs(props: { caseId: number }) {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <MeetingsTable
-          caseId={props.caseId}
-          meetings={meetings ? meetings : []}
+          meetings={props.meetings ? props.meetings : []}
           standalone={false}
         />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <CasesTable legalCases={legalCases ? legalCases : []}/>
+        <RecommendedTable />
       </TabPanel>
     </Box>
   );
