@@ -1,6 +1,3 @@
-/// <reference types="cypress" />
-import "cypress-localstorage-commands";
-
 describe("Login", ()=>{
     it("logs in", ()=>{
         cy.visit("/login");
