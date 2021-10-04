@@ -23,12 +23,14 @@ const LegalCaseStates = [
   "Referred",
   "Resolved",
   "Escalated",
+  "Closed"
 ];
 
 type Props = {
   legalCase?: ILegalCase;
   readOnly: boolean;
   detailedView: boolean;
+  newView: boolean;
 };
 
 const Component = (props: Props) => {
@@ -71,16 +73,11 @@ const Component = (props: Props) => {
             <Input
               id="case_number"
               disableUnderline={true}
-              disabled={props.readOnly}
+              disabled={true}
               className={classes.textField}
               aria-describedby="my-helper-text"
+              placeholder={i18n.t("Generated")}
               value={legalCase.case_number}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setLegalCase((legalCase) => ({
-                  ...legalCase,
-                  case_number: e.target.value,
-                }));
-              }}
             />
           </FormControl>
         </Grid>
@@ -217,7 +214,8 @@ const Component = (props: Props) => {
               renderValue={() => {
                 return caseOffices
                   ?.filter(
-                    (caseOffice) => legalCase.case_offices.indexOf(caseOffice.id) > -1
+                    (caseOffice) =>
+                      legalCase.case_offices.indexOf(caseOffice.id) > -1
                   )
                   .map((caseOffice) => caseOffice.name)
                   .join(", ");
@@ -239,6 +237,7 @@ const Component = (props: Props) => {
 Component.defaultProps = {
   readOnly: true,
   detailedView: false,
+  newView: false,
 };
 
 export default Component;

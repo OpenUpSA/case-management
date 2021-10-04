@@ -14,3 +14,4 @@ class CaseStates(models.TextChoices):
     REFERRED = 'Referred', 'Referred'
     RESOLVED = 'Resolved', 'Resolved'
     ESCALATED = 'Escalated', 'Escalated'
+    CLOSED = 'Closed', 'Closed'

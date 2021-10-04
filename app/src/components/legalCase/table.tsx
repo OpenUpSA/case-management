@@ -44,25 +44,47 @@ const Component = (props: Props) => {
   const [filterLegalCasesValue, setFilterLegalCasesValue] =
     React.useState<string>();
 
-  //TODO: Better filtering
   const filterKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     filterLegalCases();
   };
 
   const filterLegalCases = () => {
     if (filterLegalCasesValue) {
-      setFilteredLegalCases(
-        props.legalCases?.filter((legalCase) => {
-          return (
-            legalCase.case_number
-              .toLowerCase()
-              .includes(filterLegalCasesValue.toLowerCase()) ||
-            legalCase.state
-              .toLowerCase()
-              .includes(filterLegalCasesValue.toLowerCase())
-          );
-        })
+      const rightCaseType: ICaseType[] | undefined = caseTypes?.filter((el1) =>
+        el1.title.toLowerCase().includes(filterLegalCasesValue.toLowerCase())
       );
+
+      let firstFilter: ILegalCase[] = props.legalCases?.filter((legalCase) => {
+        return (
+          legalCase.case_number
+            .toLowerCase()
+            .includes(filterLegalCasesValue.toLowerCase()) ||
+          legalCase.state
+            .toLowerCase()
+            .includes(filterLegalCasesValue.toLowerCase())
+        );
+      });
+
+      let secondFilter = (arr_lc: ILegalCase[], arr_ct: ICaseType[]) => {
+        let result: ILegalCase[] = [];
+        for (let i = 0; i < arr_lc.length; i++) {
+          for (let j = 0; j < arr_ct?.length; j++) {
+            if (Number(arr_lc[i].case_types.join()) === arr_ct[j].id) {
+              result.push(arr_lc[i]);
+            }
+          }
+        }
+        return result;
+      };
+
+      let combinedFilter: ILegalCase[] = [
+        ...firstFilter,
+        ...secondFilter(props.legalCases, rightCaseType!),
+      ];
+      let uniqueCombinedFilter: ILegalCase[] = combinedFilter.filter(
+        (item, pos) => combinedFilter.indexOf(item) === pos
+      );
+      setFilteredLegalCases(uniqueCombinedFilter);
     } else {
       setFilteredLegalCases(props.legalCases);
     }

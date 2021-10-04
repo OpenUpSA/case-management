@@ -10,6 +10,7 @@ from django.views import generic
 from case_management.serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, LegalCaseSerializer, MeetingSerializer, UserSerializer
 from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting, User
 
+import time
 
 class UpdateRetrieveViewSet(
         mixins.UpdateModelMixin,
@@ -62,6 +63,13 @@ class LegalCaseViewSet(viewsets.ModelViewSet):
     serializer_class = LegalCaseSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['client']
+
+    def perform_create(self, serializer):
+        last_id = LegalCase.objects.latest('id').id
+        case_office = CaseOffice.objects.get(pk=self.request.data['case_offices'][0])
+        case_office_code = case_office.case_office_code
+        generated_case_number = f'{case_office_code}{time.strftime("%y%m")}{str(last_id).zfill(4)}'
+        serializer.save(case_number=generated_case_number)
 
 
 class MeetingViewSet(viewsets.ModelViewSet):
