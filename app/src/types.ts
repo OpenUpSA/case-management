@@ -52,6 +52,7 @@ export interface IMeeting {
   meeting_date: string;
   meeting_type: string;
   notes: string;
+  name?: string  | null;
 }
 
 export interface IUserInfo {

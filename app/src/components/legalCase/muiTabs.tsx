@@ -3,12 +3,13 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-
-import MeetingsTable from "../meeting/table";
+import Container from "@mui/material/Container";
+import NewMeetingsTable from "../meeting/newTable";
 import CasesTable from "../legalCase/table";
-import RecommendedTable from "./recommendedTable";
+import CaseFileTab from "./caseFileTab";
 import { IMeeting, ILegalCase } from "../../types";
 import { getMeetings, getLegalCases } from "../../api";
+import { useStyles } from "../../utils";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -17,9 +18,9 @@ interface TabPanelProps {
 }
 
 type Props = {
-    meetings: IMeeting[];
-    standalone: boolean;
-  };
+  meetings: IMeeting[];
+  standalone: boolean;
+};
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -32,11 +33,7 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <>{children}</>}
     </div>
   );
 }
@@ -49,29 +46,31 @@ function a11yProps(index: number) {
 }
 
 export default function BasicTabs(props: Props) {
+  const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  //const [meetings, setMeetings] = React.useState<IMeeting[]>();
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  React.useEffect(() => {
-    async function fetchData() {
-      //const dataMeetings = await getMeetings(props.caseId);
-      //setMeetings(dataMeetings);
-    }
-    fetchData();
-  }, [props.meetings]);
+
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+    <div>
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: "divider",
+          paddingLeft: 0,
+          paddingRight: 0,
+        }}
+        className={classes.containerMarginBottom}
+      >
         <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="basic tabs example"
+          aria-label="tab panels"
           centered
           variant="fullWidth"
         >
@@ -84,14 +83,14 @@ export default function BasicTabs(props: Props) {
         Item One
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <MeetingsTable
+        <NewMeetingsTable
           meetings={props.meetings ? props.meetings : []}
           standalone={false}
         />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <RecommendedTable />
+        <CaseFileTab />
       </TabPanel>
-    </Box>
+    </div>
   );
 }

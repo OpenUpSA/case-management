@@ -15,7 +15,6 @@ import {
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FolderIcon from "@material-ui/icons/Folder";
 import ChatIcon from "@material-ui/icons/Chat";
-//import MeetingsTable from "../../components/meeting/table";
 import MoreMenu from "../../components/moreMenu";
 
 import Layout from "../../components/layout";
@@ -119,7 +118,7 @@ const Page = () => {
               input={<Input />}
               value={status}
               onChange={handleChange}
-              //style={{ width: "200px" }}
+              style={{ width: "200px" }}
             >
               {LegalCaseStates?.map((value) => (
                 <MenuItem key={value} value={value}>

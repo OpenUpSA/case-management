@@ -197,12 +197,12 @@ export const useStyles = makeStyles((theme: Theme) =>
           width: "90vw!important" as any,
         },
         "& p": {
-            margin: 0
-          },
+          margin: 0,
+        },
       },
       "& p": {
         fontSize: "14px",
-        fontWeight: "700"
+        fontWeight: "700",
         //margin: "1px"
       },
     },
@@ -271,6 +271,12 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     userCaseOffice: {
       fontWeight: 700,
+    },
+    containerMarginBottom: {
+      marginBottom: "28px",
+      [theme.breakpoints.down("md")]: {
+        marginBottom: "26px",
+      },
     },
   })
 );
