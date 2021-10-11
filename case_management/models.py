@@ -128,6 +128,26 @@ class Meeting(models.Model):
         return f'{self.legal_case.case_number} - {self.id}'
 
 
+class Log(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    parent_id = models.IntegerField(null=False, blank=False)
+
+    target_id = models.IntegerField(null=False, blank=False)
+    target_type = models.CharField(max_length=255, null=False, blank=False)
+
+    action = models.CharField(max_length=255, null=False, blank=False)
+    user = models.ForeignKey(User, related_name='logs',
+                             on_delete=models.CASCADE)
+
+    note = models.CharField(max_length=500, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.action} - {self.target_type}'
+
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
