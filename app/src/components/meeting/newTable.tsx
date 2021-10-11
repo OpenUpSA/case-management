@@ -220,8 +220,4 @@ const Component = (props: Props) => {
   );
 };
 
-// Component.defaultProps = {
-//   standalone: true,
-// };
-
 export default Component;

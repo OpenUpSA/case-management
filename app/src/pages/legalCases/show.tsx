@@ -14,7 +14,6 @@ import {
 } from "@material-ui/core";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FolderIcon from "@material-ui/icons/Folder";
-import ChatIcon from "@material-ui/icons/Chat";
 import MoreMenu from "../../components/moreMenu";
 
 import Layout from "../../components/layout";
@@ -29,7 +28,6 @@ import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-//import LegalCaseForm from "../../components/legalCase/form";
 import MuiTabs from "../../components/legalCase/muiTabs";
 
 type RouteParams = { id: string };

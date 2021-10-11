@@ -1,14 +1,13 @@
 import * as React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
+import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import NewMeetingsTable from "../meeting/newTable";
-import CasesTable from "../legalCase/table";
+import Typography from "@mui/material/Typography";
 import CaseFileTab from "./caseFileTab";
-import { IMeeting, ILegalCase } from "../../types";
-import { getMeetings, getLegalCases } from "../../api";
+import CaseInfoTab from "./caseInfoTab";
+import { IMeeting } from "../../types";
 import { useStyles } from "../../utils";
 
 interface TabPanelProps {
@@ -48,13 +47,10 @@ function a11yProps(index: number) {
 export default function BasicTabs(props: Props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
-
 
   return (
     <div>
@@ -74,13 +70,47 @@ export default function BasicTabs(props: Props) {
           centered
           variant="fullWidth"
         >
-          <Tab label="Case Info" {...a11yProps(0)} />
-          <Tab label="Meetings" {...a11yProps(1)} />
-          <Tab label="Case files" {...a11yProps(2)} />
+          <Tab
+          className={classes.tabButton}
+            label={
+              <Typography
+                sx={{ paddingTop: 1, paddingRight: 2, textTransform: "none", color: "black", fontWeight: 700 }}
+              >
+                Case info
+              </Typography>
+            }
+            {...a11yProps(0)}
+          />
+          <Tab
+          className={classes.tabButton}
+            label={
+              <Badge badgeContent={4} color="primary">
+                <Typography
+                  sx={{ paddingTop: 1, paddingRight: 2, textTransform: "none", color: "black", fontWeight: 700  }}
+                >
+                  Meetings
+                </Typography>
+              </Badge>
+            }
+            {...a11yProps(1)}
+          />
+          <Tab
+          className={classes.tabButton}
+            label={
+              <Badge badgeContent={4} color="primary">
+                <Typography
+                  sx={{ paddingTop: 1, paddingRight: 2, textTransform: "none", color: "black", fontWeight: 700  }}
+                >
+                  Case files
+                </Typography>
+              </Badge>
+            }
+            {...a11yProps(2)}
+          />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        Item One
+        <CaseInfoTab />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <NewMeetingsTable
