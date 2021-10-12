@@ -33,6 +33,7 @@ type Props = {
   newView: boolean;
 };
 
+
 const Component = (props: Props) => {
   const classes = useStyles();
   const [caseTypes, setCaseTypes] = React.useState<ICaseType[]>();

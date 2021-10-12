@@ -7,7 +7,7 @@ import NewMeetingsTable from "../meeting/newTable";
 import Typography from "@mui/material/Typography";
 import CaseFileTab from "./caseFileTab";
 import CaseInfoTab from "./caseInfoTab";
-import { IMeeting } from "../../types";
+import { IMeeting, ILegalCase } from "../../types";
 import { useStyles } from "../../utils";
 
 interface TabPanelProps {
@@ -19,6 +19,7 @@ interface TabPanelProps {
 type Props = {
   meetings: IMeeting[];
   standalone: boolean;
+  legalCase: ILegalCase;
 };
 
 function TabPanel(props: TabPanelProps) {
@@ -84,7 +85,7 @@ export default function BasicTabs(props: Props) {
           <Tab
           className={classes.tabButton}
             label={
-              <Badge badgeContent={4} color="primary">
+              <Badge badgeContent={props.meetings.length} color="primary">
                 <Typography
                   sx={{ paddingTop: 1, paddingRight: 2, textTransform: "none", color: "black", fontWeight: 700  }}
                 >
@@ -97,20 +98,18 @@ export default function BasicTabs(props: Props) {
           <Tab
           className={classes.tabButton}
             label={
-              <Badge badgeContent={4} color="primary">
                 <Typography
                   sx={{ paddingTop: 1, paddingRight: 2, textTransform: "none", color: "black", fontWeight: 700  }}
                 >
                   Case files
                 </Typography>
-              </Badge>
             }
             {...a11yProps(2)}
           />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <CaseInfoTab />
+        <CaseInfoTab legalCase={props.legalCase}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <NewMeetingsTable

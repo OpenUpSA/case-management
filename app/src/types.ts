@@ -41,6 +41,7 @@ export interface ILegalCase {
   client: number;
   case_types: number[];
   case_offices: number[];
+  summary?: string
 }
 
 export interface IMeeting {

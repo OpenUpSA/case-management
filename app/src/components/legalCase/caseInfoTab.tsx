@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -6,6 +7,7 @@ import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CheckIcon from "@mui/icons-material/Check";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -16,11 +18,26 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { format } from "date-fns";
 
 import { useStyles } from "../../utils";
+import {
+  ILegalCase,
+  ICaseType,
+  ICaseOffice,
+  IUser,
+  IClient,
+} from "../../types";
 import { Input, MenuItem } from "@material-ui/core";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
+import {
+  updateLegalCase,
+  getCaseTypes,
+  getCaseOffices,
+  getClient,
+  getUser,
+} from "../../api";
 
 const BlackTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
@@ -33,48 +50,103 @@ const BlackTooltip = styled(({ className, ...props }: TooltipProps) => (
   },
 }));
 
-const caseTypeList = [
-  "Eviction",
-  "Labour law",
-  "Family dispute",
-  "Customary law",
-  "Child neglect",
-  "Estate leasing",
-  "Citizenship law",
-];
+type Props = {
+  legalCase: ILegalCase;
+};
 
-const caseWorkerList = [
-  "Matthew",
-  "Jonathan",
-  "Shaun",
-  "Paul",
-  "Mbali"
-]
+export default function CaseInfoTab(props: Props) {
+  const history = useHistory();
+  const [toggleButton, setToggleButton] = React.useState<Boolean>(true);
+  const [caseSummary, setCaseSummary] = React.useState<string | undefined>("");
+  const [caseTypes, setCaseTypes] = React.useState<ICaseType[]>();
+  const [caseOffices, setCaseOffices] = React.useState<ICaseOffice[]>();
+  const [caseWorker, setCaseWorker] = React.useState<IUser | undefined>();
+  const [client, setClient] = React.useState<IClient>();
+  const [selectCaseType, setSelectCaseType] = React.useState<
+    number[] | undefined
+  >([]);
+  const [selectCaseOffice, setSelectCaseOffice] = React.useState<
+    number[] | undefined
+  >([]);
 
-const caseOffices = [
-  "Lutzville West",
-  "uMngeni North",
-  "Ndifuna Ukwazi (Cape Town)"
-]
+  React.useEffect(() => {
+    setSelectCaseOffice(props.legalCase?.case_offices);
+    setCaseSummary(props.legalCase?.summary);
+    setSelectCaseType(props.legalCase?.case_types);
 
-export default function CaseInfoTab() {
-  const [caseType, setCaseType] = React.useState<string>("Eviction");
-  const [caseWorker, setCaseWorker] = React.useState<string>("Matthew");
-  const [caseOffice, setCaseOffice] = React.useState<string>("Lutzville West");
+    async function fetchData() {
+      const dataCaseTypes = await getCaseTypes();
+      const dataCaseOffices = await getCaseOffices();
+      const clientInfo = await getClient(props.legalCase?.client);
+      const userNumber = Number(props.legalCase?.users?.join());
+      const userInfo = await getUser(userNumber);
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setCaseType(event.target.value as string);
+      setClient(clientInfo);
+      setCaseWorker(userInfo);
+      setCaseTypes(dataCaseTypes);
+      setCaseOffices(dataCaseOffices);
+    }
+    fetchData();
+  }, [props.legalCase]);
+
+  const discardChange = () => {
+    setToggleButton(true);
   };
 
-  const handleChange2 = (event: SelectChangeEvent) => {
-    setCaseWorker(event.target.value as string);
+  const saveCaseSummary = async () => {
+    try {
+      const updatedSummary: ILegalCase = {
+        id: props.legalCase.id,
+        summary: caseSummary,
+        case_number: props.legalCase.case_number,
+        state: props.legalCase.state,
+        client: props.legalCase.client,
+        case_types: props.legalCase.case_types,
+        case_offices: props.legalCase.case_offices,
+      };
+      const { id } = await updateLegalCase(updatedSummary);
+      setToggleButton(true);
+      history.push(`/cases/${id}`);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  const handleChange3 = (event: SelectChangeEvent) => {
-    setCaseOffice(event.target.value as string);
-  }
+  const caseTypePatch = async (arg:any) => {
+    try {
+      const updatedSummary: ILegalCase = {
+        id: props.legalCase.id,
+        summary: props.legalCase.summary,
+        case_number: props.legalCase.case_number,
+        state: props.legalCase.state,
+        client: props.legalCase.client,
+        case_types: arg,
+        case_offices: props.legalCase.case_offices,
+      };
+      const { id } = await updateLegalCase(updatedSummary);
+      history.push(`/cases/${id}`);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-
+  const caseOfficePatch = async (arg:any) => {
+    try {
+      const updatedSummary: ILegalCase = {
+        id: props.legalCase.id,
+        summary: props.legalCase.summary,
+        case_number: props.legalCase.case_number,
+        state: props.legalCase.state,
+        client: props.legalCase.client,
+        case_types: props.legalCase.case_types,
+        case_offices: arg,
+      };
+      const { id } = await updateLegalCase(updatedSummary);
+      history.push(`/cases/${id}`);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const classes = useStyles();
   return (
@@ -89,24 +161,44 @@ export default function CaseInfoTab() {
           <Grid item direction="row" sx={{ marginBottom: "-10px", zIndex: 2 }}>
             <BlackTooltip title="Discard changes" arrow placement="top">
               <IconButton
+                onClick={() => discardChange()}
                 className={classes.iconButton}
                 sx={{
                   marginRight: "8px",
+                  visibility: !toggleButton ? "visible" : "hidden",
                 }}
               >
                 <DeleteIcon />
               </IconButton>
             </BlackTooltip>
-            <BlackTooltip title="Edit field" arrow placement="top">
-              <IconButton className={classes.iconButton}>
-                <CreateIcon sx={{ color: "#000" }} />
-              </IconButton>
-            </BlackTooltip>
+
+            {toggleButton ? (
+              <BlackTooltip title="Edit field" arrow placement="top">
+                <IconButton
+                  className={classes.iconButton}
+                  onClick={() => setToggleButton(false)}
+                >
+                  <CreateIcon sx={{ color: "#000" }} />
+                </IconButton>
+              </BlackTooltip>
+            ) : (
+              <BlackTooltip title="save changes" arrow placement="top">
+                <IconButton
+                  onClick={() => saveCaseSummary()}
+                  className={classes.checkIconButton}
+                >
+                  <CheckIcon sx={{ color: "#fff" }} />
+                </IconButton>
+              </BlackTooltip>
+            )}
           </Grid>
         </Grid>
         <TextField
           multiline
-          value="Client (Xoliswa) is being evicted by her landlord who is her sister's husband. He (landlord) has not gone through the lawful eviction process and has cut off her electricity and is intimidating her. She does not have alternative accommodation available to her."
+          value={caseSummary}
+          onChange={(e: React.ChangeEvent<{ value: any }>) => {
+            setCaseSummary(e.target.value);
+          }}
           fullWidth
           rows={4}
           sx={{
@@ -116,7 +208,7 @@ export default function CaseInfoTab() {
           variant="standard"
           InputProps={{
             style: { fontSize: 12, padding: "14px 16.8px", lineHeight: 1.6 },
-            readOnly: true,
+            readOnly: toggleButton ? true : false,
             disableUnderline: true,
           }}
         />
@@ -141,8 +233,7 @@ export default function CaseInfoTab() {
             <ListItemText
               primary={
                 <Typography variant="caption">
-                  Client has received her 
-                  notice to vacate
+                  Client has received her notice to vacate
                 </Typography>
               }
               style={{ flexGrow: 1 }}
@@ -226,7 +317,7 @@ export default function CaseInfoTab() {
         </InputLabel>
         <TextField
           variant="standard"
-          defaultValue="SMIXOLEVI001"
+          value={props.legalCase?.case_number}
           fullWidth
           className={classes.smallTextField}
           InputProps={{
@@ -238,32 +329,52 @@ export default function CaseInfoTab() {
         <InputLabel htmlFor="put-later" className={classes.plainLabel}>
           Case type:
         </InputLabel>
+
         <Select
-          labelId="select-label"
           id="select"
           disableUnderline
           className={classes.caseSelect}
           input={<Input />}
-          value={caseType}
-          onChange={handleChange}
-          
+          value={selectCaseType}
+          onChange={(event: SelectChangeEvent<number[]>) => {
+            setSelectCaseType([event.target.value as any]);
+            caseTypePatch([event.target.value as any])
+          }}
+          renderValue={() => {
+            return caseTypes
+              ?.filter((caseType) => selectCaseType!.indexOf(caseType.id) > -1)
+              .map((caseType) => caseType.title)
+              .join(", ");
+          }}
         >
-          {caseTypeList?.map((value) => (
-            <MenuItem
-              className={classes.caseSelectMenuItem}
-              key={value}
-              value={value}
-            >
-              {value}
+          {caseTypes?.map(({ id, title }) => (
+            <MenuItem key={id} value={id}>
+              {title}
             </MenuItem>
           ))}
         </Select>
+
         <InputLabel htmlFor="put-later" className={classes.plainLabel}>
           Client name:
         </InputLabel>
         <TextField
           variant="standard"
-          defaultValue="Smith, Xoliswa"
+          value={client?.preferred_name}
+          fullWidth
+          className={classes.smallTextField}
+          InputProps={{
+            readOnly: true,
+            disableUnderline: true,
+            style: { fontSize: 13 },
+          }}
+        />
+
+        <InputLabel htmlFor="put-later" className={classes.plainLabel}>
+          Case worker:
+        </InputLabel>
+        <TextField
+          variant="standard"
+          value={caseWorker?.name}
           fullWidth
           className={classes.smallTextField}
           InputProps={{
@@ -273,57 +384,48 @@ export default function CaseInfoTab() {
           }}
         />
         <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-          Case worker:
-        </InputLabel>
-        <Select
-          labelId="select-label"
-          id="select"
-          disableUnderline
-          className={classes.caseSelect}
-          input={<Input />}
-          value={caseWorker}
-          onChange={handleChange2}
-          
-        >
-          {caseWorkerList?.map((value) => (
-            <MenuItem
-              className={classes.caseSelectMenuItem}
-              key={value}
-              value={value}
-            >
-              {value}
-            </MenuItem>
-          ))}
-        </Select>
-        <InputLabel htmlFor="put-later" className={classes.plainLabel}>
           Case office:
         </InputLabel>
+
         <Select
-          labelId="select-label"
-          id="select"
-          disableUnderline
+          id="case_offices_select"
           className={classes.caseSelect}
-          input={<Input  />}
-          value={caseOffice}
-          onChange={handleChange3}
-          
+          disableUnderline
+          onChange={(event: SelectChangeEvent<number[]>) => {
+            setSelectCaseOffice([event.target.value as any]);
+            caseOfficePatch([event.target.value as any]);
+          }}
+          input={<Input />}
+          value={selectCaseOffice}
+          renderValue={() => {
+            return caseOffices
+              ?.filter(
+                (caseOffice) => selectCaseOffice!.indexOf(caseOffice.id) > -1
+              )
+              .map((caseOffice) => caseOffice.name)
+              .join(", ");
+          }}
         >
-          {caseOffices?.map((value) => (
+          {caseOffices?.map(({ id, name }) => (
             <MenuItem
               className={classes.caseSelectMenuItem}
-              key={value}
-              value={value}
+              key={id}
+              value={id}
             >
-              {value}
+              {name}
             </MenuItem>
           ))}
         </Select>
+
         <InputLabel htmlFor="put-later" className={classes.plainLabel}>
           Date created:
         </InputLabel>
         <TextField
           variant="standard"
-          defaultValue="01/01/2020"
+          value={format(
+            new Date(props.legalCase?.created_at || new Date().toISOString()),
+            "MM/dd/yyyy"
+          )}
           fullWidth
           className={classes.smallTextField}
           InputProps={{
