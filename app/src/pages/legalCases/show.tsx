@@ -149,16 +149,6 @@ const Page = () => {
           </Grid>
           <Grid item>
             <MoreMenu>
-              <MenuItem
-                onClick={() => {
-                  history.push(`/cases/${legalCase?.id}/edit`);
-                }}
-              >
-                <ListItemIcon>
-                  <EditIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{i18n.t("Edit case")}</ListItemText>
-              </MenuItem>
               <MenuItem onClick={destroyLegalCase}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />

@@ -29,6 +29,7 @@ import { ILegalCase, IClient, IMeeting } from "../../types";
 type Props = {
   meetings: IMeeting[];
   standalone: boolean;
+  legalCase: ILegalCase;
 };
 
 const Component = (props: Props) => {
@@ -129,6 +130,9 @@ const Component = (props: Props) => {
             variant="contained"
             startIcon={<AddBoxIcon />}
             style={{ textTransform: "none" }}
+            onClick={() => {
+                history.push(`/cases/${props.legalCase?.id}/meetings/new`);
+              }}
           >
             {i18n.t("New meeting")}
           </Button>

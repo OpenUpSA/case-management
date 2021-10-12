@@ -115,6 +115,7 @@ export default function BasicTabs(props: Props) {
         <NewMeetingsTable
           meetings={props.meetings ? props.meetings : []}
           standalone={false}
+          legalCase={props.legalCase}
         />
       </TabPanel>
       <TabPanel value={value} index={2}>
