@@ -56,6 +56,8 @@ export function register(config?: Config) {
         registerValidSW(swUrl, config);
       }
     });
+  } else {
+    console.log('Nope');
   }
 }
 

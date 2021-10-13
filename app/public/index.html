@@ -26,7 +26,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>CaseFile</title>
+    <title>CaseFile by OpenUp</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -42,7 +42,9 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
-      /* DISABLED
+      /* DISABLED: Do not do it this way in the future as index.html is 
+                    cached and then we are unable to purge the cache and 
+                    have to wait 24 hours for users
         if('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./serviceworker.js')
