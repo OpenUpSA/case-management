@@ -188,6 +188,8 @@ class Log(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     parent_id = models.IntegerField(null=False, blank=False)
+    parent_type = models.CharField(
+        max_length=255, null=False, blank=False, default='LegalCase')
 
     target_id = models.IntegerField(null=False, blank=False)
     target_type = models.CharField(max_length=255, null=False, blank=False)

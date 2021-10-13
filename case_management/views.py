@@ -100,4 +100,4 @@ class LogViewSet(CreateListRetrieveViewSet):
     queryset = Log.objects.all()
     serializer_class = LogSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['parent_id']
+    filterset_fields = ['parent_id', 'parent_type', 'target_id', 'target_type']
