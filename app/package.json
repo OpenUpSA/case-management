@@ -2,7 +2,7 @@
   "name": "case-management-app",
   "description": "A client-side browser app for the OSF Case Management project built by OpenUp.",
   "author": "Paul Watson <paul@openup.org.za>",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "dependencies": {
     "@emotion/react": "latest",
