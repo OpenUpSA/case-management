@@ -43,6 +43,19 @@ class User(AbstractUser):
         return self.is_superuser
 
 
+def logIt(self, action, user=None, note=''):
+    if user is None:
+        user = User.objects.first()
+
+    log = Log(parent_id=self.id,
+              target_id=self.id,
+              target_type=self.__class__.__name__,
+              action=action,
+              user=user,
+              note='')
+    log.save()
+
+
 class CaseOffice(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
