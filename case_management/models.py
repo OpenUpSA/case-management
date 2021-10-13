@@ -9,6 +9,7 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from case_management.managers import UserManager
 from django_lifecycle import LifecycleModel, hook, AFTER_CREATE, AFTER_UPDATE
+import os
 
 
 class User(AbstractUser):
@@ -189,6 +190,36 @@ class Meeting(LifecycleModel, models.Model):
 
     def __str__(self):
         return f'{self.legal_case.case_number} - {self.id}'
+
+
+class LegalCaseFile(LifecycleModel, models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    legal_case = models.ForeignKey(
+        LegalCase, related_name='files', on_delete=models.CASCADE)
+
+    upload = models.FileField(upload_to='uploads/')
+
+    @hook(AFTER_CREATE)
+    def log_create(self):
+        logIt(self, 'Create', parent_id=self.legal_case.id,
+              parent_type='LegalCase')
+
+    @hook(AFTER_UPDATE)
+    def log_update(self):
+        logIt(self, 'Update', parent_id=self.legal_case.id,
+              parent_type='LegalCase')
+    
+    def __str__(self):
+        return self.upload_file_name()
+    
+    def upload_file_extension(self):
+        return os.path.splitext(self.upload.file.name)[1][1:]
+    
+    def upload_file_name(self):
+        return os.path.basename(self.upload.file.name)
 
 
 class Log(models.Model):
