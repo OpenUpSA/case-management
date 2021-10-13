@@ -53,4 +53,4 @@ class UserSerializer(serializers.ModelSerializer):
 class LegalCaseFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = LegalCaseFile
-        fields = ['id', 'legal_case', 'upload', 'upload_file_name', 'upload_file_extension']
+        fields = ['id', 'legal_case', 'upload', 'upload_file_name', 'upload_file_extension', 'created_at', 'updated_at']

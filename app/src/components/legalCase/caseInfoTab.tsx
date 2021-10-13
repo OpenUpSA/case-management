@@ -424,7 +424,7 @@ export default function CaseInfoTab(props: Props) {
           variant="standard"
           value={format(
             new Date(props.legalCase?.created_at || new Date().toISOString()),
-            "MM/dd/yyyy"
+            "dd/MM/yyyy"
           )}
           fullWidth
           className={classes.smallTextField}

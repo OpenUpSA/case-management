@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useStyles } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
 import CheckIcon from "@mui/icons-material/Check";
@@ -16,6 +16,10 @@ import ImageIcon from "@mui/icons-material/Image";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import LinkIcon from "@mui/icons-material/Link";
 import Divider from "@mui/material/Divider";
+import { format } from "date-fns";
+
+import { ILegalCase, ILegalCaseFile } from "../../types";
+import { getLegalCaseFiles } from "../../api";
 
 import {
   Grid,
@@ -30,9 +34,23 @@ import {
 } from "@material-ui/core";
 import i18n from "../../i18n";
 
-export default function CaseFileTab() {
+type Props = {
+  legalCase: ILegalCase;
+};
+
+export default function CaseFileTab(props: Props) {
   const [caseFiles] = React.useState<number>(0);
+  const [legalCaseFiles, setLegalCaseFiles] =
+    React.useState<ILegalCaseFile[]>();
   const classes = useStyles();
+
+  useEffect(() => {
+    async function fetchData() {
+      const dataLegalCaseFiles = await getLegalCaseFiles(props.legalCase.id);
+      setLegalCaseFiles(dataLegalCaseFiles);
+    }
+    fetchData();
+  }, []);
   return (
     <>
       <Grid
@@ -44,10 +62,10 @@ export default function CaseFileTab() {
       >
         <Grid item style={{ flexGrow: 1 }}>
           <strong>
-            {caseFiles ? caseFiles : "0"} {i18n.t("Case Files")}
+            {legalCaseFiles?.length} {i18n.t("Case Files")}
           </strong>
         </Grid>
-        <Grid item style={{ flexShrink: 2 }}>
+        <Grid item xs={12} style={{ flexShrink: 2 }}>
           <InputLabel
             className={classes.inputLabel}
             htmlFor="sort_table"
@@ -110,7 +128,7 @@ export default function CaseFileTab() {
           <Typography style={{ flexGrow: 1 }}>Notice to vacate</Typography>
           <CheckIcon style={{ color: "#3dd997" }} />
           <IconButton>
-            <MoreVertIcon sx={{color: "#000000"}}/>
+            <MoreVertIcon sx={{ color: "#000000" }} />
           </IconButton>
         </Grid>
         <Grid item className={classes.caseFiles}>
@@ -118,14 +136,14 @@ export default function CaseFileTab() {
           <Typography style={{ flexGrow: 1 }}>Notice of motion</Typography>
           <CheckIcon style={{ color: "#3dd997" }} />
           <IconButton>
-            <MoreVertIcon sx={{color: "#000000"}}/>
+            <MoreVertIcon sx={{ color: "#000000" }} />
           </IconButton>
         </Grid>
         <Grid item className={classes.caseFiles}>
           <GavelIcon style={{ margin: "0px 15px 0px 10px" }} />
           <Typography style={{ flexGrow: 1 }}>Eviction order</Typography>
           <IconButton>
-            <AddIcon sx={{color: "#000000"}}/>
+            <AddIcon sx={{ color: "#000000" }} />
           </IconButton>
         </Grid>
         <Grid item className={classes.caseFiles}>
@@ -134,14 +152,14 @@ export default function CaseFileTab() {
             Proof of rental payment
           </Typography>
           <IconButton>
-            <AddIcon sx={{color: "#000000"}}/>
+            <AddIcon sx={{ color: "#000000" }} />
           </IconButton>
         </Grid>
         <Grid item className={classes.caseFiles}>
           <HistoryEduIcon style={{ margin: "0px 15px 0px 10px" }} />
           <Typography style={{ flexGrow: 1 }}>Lease agreement</Typography>
           <IconButton>
-            <AddIcon sx={{color: "#000000"}}/>
+            <AddIcon sx={{ color: "#000000" }} />
           </IconButton>
         </Grid>
         <Grid item className={classes.caseFiles}>
@@ -150,7 +168,7 @@ export default function CaseFileTab() {
             Record of attempt to find legal council
           </Typography>
           <IconButton>
-            <AddIcon sx={{color: "#000000"}}/>
+            <AddIcon sx={{ color: "#000000" }} />
           </IconButton>
         </Grid>
       </Grid>
@@ -160,147 +178,52 @@ export default function CaseFileTab() {
       >
         All case files:{" "}
       </InputLabel>
-
-      <Grid container className={classes.caseFiles}>
-        <Grid
-          item
-          className={classes.caseFilesItem}
-          style={{ flexGrow: 1, width: 150 }}
-        >
-          <WorkIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography>Meeting-notes-102112</Typography>
-        </Grid>
-        <Grid item className={classes.caseFilesItem} style={{ flexGrow: 2 }}>
-          <Divider
-            sx={{ marginRight: 2 }}
-            orientation="vertical"
-            variant="middle"
-            flexItem
-          />
-          <p>04/02/2021</p>
-        </Grid>
-        <Grid item className={classes.caseFilesItem}>
-          <LinkIcon style={{ visibility: "hidden", color: "#3dd997" }} />
-          <IconButton>
-            <MoreVertIcon sx={{color: "#000000"}}/>
-          </IconButton>
-        </Grid>
-      </Grid>
-      <Grid container className={classes.caseFiles}>
-        <Grid
-          item
-          className={classes.caseFilesItem}
-          style={{ flexGrow: 1, width: 150 }}
-        >
-          <ImageIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography>notice-to-vacate</Typography>
-        </Grid>
-        <Grid item className={classes.caseFilesItem} style={{ flexGrow: 2 }}>
-          <Divider
-            sx={{ marginRight: 2 }}
-            orientation="vertical"
-            variant="middle"
-            flexItem
-          />
-          <p>04/02/2021</p>
-        </Grid>
-        <Grid item className={classes.caseFilesItem}>
-          <LinkIcon style={{ visibility: "visible", color: "#3dd997" }} />
-          <IconButton>
-            <MoreVertIcon sx={{color: "#000000"}}/>
-          </IconButton>
-        </Grid>
-      </Grid>
-      <Grid container className={classes.caseFiles}>
-        <Grid
-          item
-          className={classes.caseFilesItem}
-          style={{ flexGrow: 1, width: 150 }}
-        >
-          <ImageIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography>notice-of-motion</Typography>
-        </Grid>
-        <Grid item className={classes.caseFilesItem} style={{ flexGrow: 2 }}>
-          <Divider
-            sx={{ marginRight: 2 }}
-            orientation="vertical"
-            variant="middle"
-            flexItem
-          />
-          <p>04/02/2021</p>
-        </Grid>
-        <Grid item className={classes.caseFilesItem}>
-          <LinkIcon style={{ visibility: "visible", color: "#3dd997" }} />
-          <IconButton>
-            <MoreVertIcon sx={{color: "#000000"}}/>
-          </IconButton>
-        </Grid>
-      </Grid>
-      <Grid container className={classes.caseFiles}>
-        <Grid item className={classes.caseFilesItem} style={{ flexGrow: 1, width: 150 }}>
-          <StickyNote2Icon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography>Meeting notes</Typography>
-        </Grid>
-        <Grid item className={classes.caseFilesItem} style={{ flexGrow: 2 }}>
-          <Divider
-            sx={{ marginRight: 2 }}
-            orientation="vertical"
-            variant="middle"
-            flexItem
-          />
-          <p>04/02/2021</p>
-        </Grid>
-        <Grid item className={classes.caseFilesItem}>
-          <LinkIcon style={{visibility: 'hidden', color: "#3dd997"}}/>
-          <IconButton >
-            <MoreVertIcon sx={{color: "#000000"}}/>
-          </IconButton>
-        </Grid>
-      </Grid>
-      <Grid container className={classes.caseFiles}>
-        <Grid item className={classes.caseFilesItem} style={{ flexGrow: 1, width: 150 }}>
-          <StickyNote2Icon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography>meeting-notes-122112</Typography>
-        </Grid>
-        <Grid item className={classes.caseFilesItem} style={{ flexGrow: 2 }}>
-          <Divider
-            sx={{ marginRight: 2 }}
-            orientation="vertical"
-            variant="middle"
-            flexItem
-          />
-          <p>04/02/2021</p>
-        </Grid>
-        <Grid item className={classes.caseFilesItem}>
-          <LinkIcon style={{visibility: 'hidden', color: "#3dd997"}}/>
-          <IconButton >
-            <MoreVertIcon sx={{color: "#000000"}}/>
-          </IconButton>
-        </Grid>
-      </Grid>
-
-      <Grid container className={classes.caseFiles}>
-        <Grid item className={classes.caseFilesItem} style={{ flexGrow: 1, width: 150 }}>
-          <GraphicEqIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography>recording-10201020</Typography>
-        </Grid>
-        <Grid item className={classes.caseFilesItem} style={{ flexGrow: 2 }}>
-          <Divider
-            sx={{ marginRight: 2 }}
-            orientation="vertical"
-            variant="middle"
-            flexItem
-          />
-          <p>04/02/2021</p>
-        </Grid>
-        <Grid item className={classes.caseFilesItem}>
-          <LinkIcon style={{visibility: 'hidden', color: "#3dd997"}}/>
-          <IconButton >
-            <MoreVertIcon sx={{color: "#000000"}}/>
-          </IconButton>
-        </Grid>
-      </Grid>
-      
+      {legalCaseFiles && legalCaseFiles.length > 0 ? (
+        <div>
+          {legalCaseFiles.map((legalCaseFile) => (
+            <Grid container className={classes.caseFiles}>
+              <Grid
+                item
+                className={classes.caseFilesItem}
+                style={{ flexGrow: 1, width: 150 }}
+              >
+                <WorkIcon style={{ margin: "0px 15px 0px 10px" }} />
+                <Typography>
+                  <a href={legalCaseFile.upload} target="_blank" rel="noreferrer">
+                    {legalCaseFile.upload_file_name}
+                  </a>
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                className={classes.caseFilesItem}
+                style={{ flexGrow: 2 }}
+              >
+                <Divider
+                  sx={{ marginRight: 2 }}
+                  orientation="vertical"
+                  variant="middle"
+                  flexItem
+                />
+                <p>
+                  {format(
+                    new Date(
+                      legalCaseFile.updated_at || new Date().toISOString()
+                    ),
+                    "dd/MM/yyyy"
+                  )}
+                </p>
+              </Grid>
+              <Grid item className={classes.caseFilesItem}>
+                <LinkIcon style={{ visibility: "hidden", color: "#3dd997" }} />
+                <IconButton>
+                  <MoreVertIcon sx={{ color: "#000000" }} />
+                </IconButton>
+              </Grid>
+            </Grid>
+          ))}
+        </div>
+      ) : null}
     </>
   );
 }

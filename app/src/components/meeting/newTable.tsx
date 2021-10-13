@@ -179,7 +179,7 @@ const Component = (props: Props) => {
                     <TableCell className={classes.tableBodyCell}>
                     {format(
                       new Date(meeting.meeting_date),
-                      "MM/dd/yyyy (h:ma)"
+                      "dd/MM/yyyy (h:ma)"
                     )}
                   </TableCell>
 
