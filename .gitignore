@@ -258,3 +258,5 @@ dist
 
 app/.netlify
 .env
+
+uploads/
