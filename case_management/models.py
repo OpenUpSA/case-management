@@ -44,11 +44,18 @@ class User(AbstractUser):
         return self.is_superuser
 
 
-def logIt(self, action, user=None, note=None):
+def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
     if user is None:
         user = User.objects.first()
 
-    log = Log(parent_id=self.id,
+    if parent_id is None:
+        parent_id = self.id
+
+    if parent_type is None:
+        parent_type = self.__class__.__name__
+
+    log = Log(parent_id=parent_id,
+              parent_type=parent_type,
               target_id=self.id,
               target_type=self.__class__.__name__,
               action=action,
@@ -172,11 +179,13 @@ class Meeting(LifecycleModel, models.Model):
 
     @hook(AFTER_CREATE)
     def log_create(self):
-        logIt(self, 'Create')
+        logIt(self, 'Create', parent_id=self.legal_case.id,
+              parent_type='LegalCase')
 
     @hook(AFTER_UPDATE)
     def log_update(self):
-        logIt(self, 'Update')
+        logIt(self, 'Update', parent_id=self.legal_case.id,
+              parent_type='LegalCase')
 
     def __str__(self):
         return f'{self.legal_case.case_number} - {self.id}'
