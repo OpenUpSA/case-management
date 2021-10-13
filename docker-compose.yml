@@ -32,7 +32,8 @@ services:
       - DJANGO_SECRET_KEY=not-secret-in-dev
       - DJANGO_WHITENOISE_AUTOREFRESH=True
       - TAG_MANAGER_ENABLED=False
-
+    env_file:
+      - development.env
   db:
     image: postgres:11.6
     environment:
