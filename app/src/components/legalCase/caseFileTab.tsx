@@ -31,7 +31,7 @@ import {
 import i18n from "../../i18n";
 
 export default function CaseFileTab() {
-  const [caseFiles, setCaseFiles] = React.useState<number>(0);
+  const [caseFiles] = React.useState<number>(0);
   const classes = useStyles();
   return (
     <>

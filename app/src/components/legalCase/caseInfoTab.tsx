@@ -257,7 +257,7 @@ export default function CaseInfoTab(props: Props) {
             <ListItemText
               primary={
                 <Typography variant="caption">
-                  File uploaded <a href="#">"08381998.jpg"</a>
+                  File uploaded <a href="/#">"08381998.jpg"</a>
                 </Typography>
               }
               style={{ flexGrow: 1 }}
@@ -281,7 +281,7 @@ export default function CaseInfoTab(props: Props) {
             <ListItemText
               primary={
                 <Typography variant="caption">
-                  <a href="#">In-person-meeting</a> {" with client"}
+                  <a href="/#">In-person-meeting</a> {" with client"}
                 </Typography>
               }
               style={{ flexGrow: 1 }}
@@ -306,7 +306,7 @@ export default function CaseInfoTab(props: Props) {
           </Grid>
           <Grid item>
             <Typography variant="caption">
-              <a href="#">Show all updates</a>
+              <a href="/#">Show all updates</a>
             </Typography>
           </Grid>
         </Grid>

@@ -23,8 +23,7 @@ import {
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
 import { format } from "date-fns";
-import { getLegalCases, getClients } from "../../api";
-import { ILegalCase, IClient, IMeeting } from "../../types";
+import { ILegalCase,  IMeeting } from "../../types";
 
 type Props = {
   meetings: IMeeting[];
@@ -35,8 +34,6 @@ type Props = {
 const Component = (props: Props) => {
   const history = useHistory();
   const classes = useStyles();
-  const [clients, setClients] = React.useState<IClient[]>();
-  const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
   const [filteredMeetings, setfilteredMeetings] = React.useState<IMeeting[]>();
   const [filterMeetingsValue, setfilterMeetingsValue] =
     React.useState<string>();
@@ -74,16 +71,6 @@ const Component = (props: Props) => {
       filterMeetings();
     }
   });
-
-  useEffect(() => {
-    async function fetchData() {
-      const dataClients = await getClients();
-      const dataLegalCases = await getLegalCases();
-      setLegalCases(dataLegalCases);
-      setClients(dataClients);
-    }
-    fetchData();
-  }, []);
 
   return (
     <div>
