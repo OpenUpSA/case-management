@@ -41,18 +41,5 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <script>
-      /* DISABLED: Do not do it this way in the future as index.html is 
-                    cached and then we are unable to purge the cache and 
-                    have to wait 24 hours for users
-        if('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./serviceworker.js')
-                    .then((reg) => console.log('Success: ', reg.scope))
-                    .catch((err) => console.log('Failure: ', err));
-            })
-        }
-        */
-    </script>
   </body>
 </html>
