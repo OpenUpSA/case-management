@@ -7,8 +7,8 @@ from rest_framework import viewsets, mixins
 
 from django.views import generic
 
-from case_management.serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, LegalCaseSerializer, MeetingSerializer, UserSerializer
-from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting, User
+from case_management.serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, LegalCaseSerializer, MeetingSerializer, UserSerializer, LogSerializer
+from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting, User, Log
 
 import time
 
@@ -18,6 +18,19 @@ class UpdateRetrieveViewSet(
         viewsets.GenericViewSet):
     """
     A viewset that provides just the `update', and `retrieve` actions.
+
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+    """
+    pass
+
+class CreateListRetrieveViewSet(
+        mixins.CreateModelMixin,
+        mixins.ListModelMixin,
+        mixins.RetrieveModelMixin,
+        viewsets.GenericViewSet):
+    """
+    A viewset that provides just the `create', 'list', and `retrieve` actions.
 
     To use it, override the class and set the `.queryset` and
     `.serializer_class` attributes.
@@ -82,3 +95,9 @@ class MeetingViewSet(viewsets.ModelViewSet):
 class UserViewSet(UpdateRetrieveViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+class LogViewSet(CreateListRetrieveViewSet):
+    queryset = Log.objects.all()
+    serializer_class = LogSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['parent_id', 'parent_type', 'target_id', 'target_type']
