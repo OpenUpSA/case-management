@@ -41,7 +41,7 @@ export interface ILegalCase {
   client: number;
   case_types: number[];
   case_offices: number[];
-  summary?: string
+  summary?: string;
 }
 
 export interface IMeeting {
@@ -53,7 +53,7 @@ export interface IMeeting {
   meeting_date: string;
   meeting_type: string;
   notes: string;
-  name?: string  | null;
+  name: string;
 }
 
 export interface IUserInfo {

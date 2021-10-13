@@ -17,6 +17,7 @@ const Component = (props: Props) => {
     meeting_type: "",
     legal_case: 0,
     notes: "",
+    name: ""
   });
 
   useEffect(() => {
@@ -34,6 +35,31 @@ const Component = (props: Props) => {
         spacing={2}
         alignItems="center"
       >
+        <Grid item xs={12} md={12}>
+          <FormControl fullWidth size="small">
+            <InputLabel
+              className={classes.inputLabel}
+              htmlFor="name"
+              shrink={true}
+            >
+              {i18n.t("Name")}:
+            </InputLabel>
+            <Input
+              id="name"
+              disableUnderline={true}
+              disabled={props.readOnly}
+              className={classes.textField}
+              aria-describedby="my-helper-text"
+              value={meeting.name}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setMeeting((meeting) => ({
+                  ...meeting,
+                  name: e.target.value,
+                }));
+              }}
+            />
+          </FormControl>
+        </Grid>
         <Grid item xs={12} md={4}>
           <FormControl fullWidth size="small">
             <InputLabel
