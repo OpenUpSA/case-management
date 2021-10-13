@@ -18,12 +18,16 @@ import {
   IconButton,
   MenuItem,
 } from "@material-ui/core";
+
+import SearchIcon from "@material-ui/icons/Search";
+
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
 import { format } from "date-fns";
 import { getCaseTypes, getClients } from "../../api";
 import { ILegalCase, IClient, ICaseType } from "../../types";
-import SearchIcon from "@material-ui/icons/Search";
+
+
 
 type Props = {
   legalCases: ILegalCase[];
@@ -244,6 +248,7 @@ const Component = (props: Props) => {
           )}
         </Table>
       </TableContainer>
+      
     </div>
   );
 };

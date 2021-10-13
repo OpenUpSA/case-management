@@ -184,6 +184,25 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0, 0, 0, 0.01)",
         borderColor: "rgba(0, 0, 0, 0.1)",
       },
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
+      },
+    },
+    selectStatus: {
+      display: "flex",
+      flexDirection: "row",
+      [theme.breakpoints.down("xs")]: {
+        flexDirection: "column",
+        "&>:nth-child(2)": {
+          width: "90vw!important" as any,
+        },
+        "& p": {
+          margin: 0,
+        },
+      },
+      "& p": {
+        fontSize: "14px",
+      },
     },
     textField: {
       backgroundColor: "rgba(0, 0, 0, 0.035)",
@@ -213,6 +232,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     pageBar: {
       marginBottom: "50px",
+      display: "flex",
+      [theme.breakpoints.down("xs")]: {
+        "&>:nth-child(3)": {
+          order: 4,
+        },
+        "&>:nth-child(4)": {
+          order: 3,
+        },
+      },
     },
     cursorPointer: {
       cursor: "pointer",
@@ -241,6 +269,128 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     userCaseOffice: {
       fontWeight: 700,
+    },
+    containerMarginBottom: {
+      marginBottom: "28px",
+      [theme.breakpoints.down("md")]: {
+        marginBottom: "26px",
+      },
+    },
+    caseInfoContainer: {
+      "&>:first-child": {
+        order: 1,
+        [theme.breakpoints.down("sm")]: {
+          order: 2,
+        },
+      },
+      "&>:last-child": {
+        order: 2,
+        [theme.breakpoints.down("sm")]: {
+          order: 1,
+        },
+      },
+    },
+    caseHistoryList: {
+      height: "52px",
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.035)!important" as any,
+      },
+    },
+
+    caseHistoryAvatar: {
+      "&:hover": {
+        border: "0.5px solid blue",
+      },
+    },
+    smallTextField: {
+      minHeight: "36px!important" as any,
+      backgroundColor: "#f2f2f2",
+      borderRadius: "5px!important" as any,
+      padding: "8px 0px 0px 10px!important" as any,
+    },
+    iconButton: {
+      backgroundColor: "#dadada!important" as any,
+      borderRadius: "5px!important" as any,
+    },
+
+    checkIconButton: {
+      borderRadius: "5px!important" as any,
+      backgroundColor: "#00d97e!important" as any,
+    },
+    plainLabel: {
+      fontSize: "12px!important" as any,
+      color: "#000!important" as any,
+      marginTop: "10px!important" as any,
+      marginBottom: "3px!important" as any,
+    },
+    chip: {
+      backgroundColor: "#deebff!important" as any,
+      borderRadius: "5px!important" as any,
+      color: "blue!important" as any,
+      marginRight: "5px!important" as any,
+      fontSize: "12px!important" as any,
+      height: "20px!important" as any,
+      width: "70px!important" as any,
+    },
+    caseSelect: {
+      backgroundColor: "rgba(0, 0, 0, 0.035)",
+      border: "solid 1px rgba(0, 0, 0, 0)",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      fontSize: "13px!important" as any,
+      height: "42px!important" as any,
+      width: "104%!important" as any,
+      "&.Mui-disabled": {
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
+        color: "#000000",
+        "&>.MuiSelect-icon": {
+          display: "none",
+        },
+      },
+      "&.Mui-focused": {
+        backgroundColor: "rgba(0, 0, 0, 0.035)",
+        borderColor: "rgba(0, 0, 0, 0.1)",
+      },
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
+      },
+    },
+    caseSelectMenuItem: {
+      fontSize: "13px!important" as any,
+    },
+    caseFiles: {
+      height: "46px",
+      backgroundColor: "#f2f2f2",
+      marginBottom: "10px",
+      display: "flex",
+      flexWrap: "nowrap",
+      alignItems: "center",
+      borderRadius: "4px",
+      cursor: "pointer",
+      "& p": {
+        fontSize: "13px",
+        fontWeight: 600,
+      },
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
+      },
+    },
+
+    caseFilesItem: {
+      display: "flex",
+      alignItems: "center",
+    },
+
+    caseFileLabel: {
+      color: "#000",
+      fontSize: "13px",
+      fontWeight: 600,
+      paddingBottom: "20px",
+    },
+    tabButton: {
+      "&.Mui-selected": {
+        backgroundColor: "#f4f7fe",
+      },
     },
   })
 );

@@ -10,10 +10,10 @@ import {
   ListItemIcon,
   ListItemText,
   MenuItem,
+  Input,
 } from "@material-ui/core";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FolderIcon from "@material-ui/icons/Folder";
-import ChatIcon from "@material-ui/icons/Chat";
-import MeetingsTable from "../../components/meeting/table";
 import MoreMenu from "../../components/moreMenu";
 
 import Layout from "../../components/layout";
@@ -22,15 +22,26 @@ import {
   getClient,
   getLegalCase,
   getMeetings,
+  updateLegalCase
 } from "../../api";
 import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
-import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import LegalCaseForm from "../../components/legalCase/form";
+import MuiTabs from "../../components/legalCase/muiTabs";
 
 type RouteParams = { id: string };
+
+const LegalCaseStates = [
+  "Opened",
+  "InProgress",
+  "Hanging",
+  "Pending",
+  "Referred",
+  "Resolved",
+  "Escalated",
+  "Closed"
+];
 
 const Page = () => {
   RedirectIfNotLoggedIn();
@@ -42,6 +53,8 @@ const Page = () => {
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
   const caseId = parseInt(params.id);
 
+  const [status, setStatus] = React.useState<string | undefined>("");
+
   const destroyLegalCase = async () => {
     if (window.confirm(i18n.t("Are you sure you want to delete this case?"))) {
       await deleteLegalCase(caseId);
@@ -49,16 +62,37 @@ const Page = () => {
     }
   };
 
+
   useEffect(() => {
     async function fetchData() {
       const dataLegalCase = await getLegalCase(caseId);
       const dataMeetings = await getMeetings(caseId);
       setLegalCase(dataLegalCase);
       setClient(await getClient(dataLegalCase.client));
+      setStatus(dataLegalCase.state)
       setMeetings(dataMeetings);
     }
     fetchData();
   }, [caseId]);
+
+  const statusPatch = async (arg:any) => {
+    try {
+      const updatedSummary: ILegalCase = {
+        id: legalCase!.id,
+        summary: legalCase!.summary,
+        case_number: legalCase!.case_number,
+        state: arg,
+        client: legalCase!.client,
+        case_types: legalCase!.case_types,
+        case_offices: legalCase!.case_offices,
+      };
+      const { id } = await updateLegalCase(updatedSummary);
+      history.push(`/cases/${id}`);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  
 
   return (
     <Layout>
@@ -90,18 +124,30 @@ const Page = () => {
               <strong>{legalCase?.case_number}</strong>
             </Typography>
           </Grid>
+          <Grid item className={classes.selectStatus}>
+            <p>Case status:</p>
+            <Select
+              id="demo-simple-select"
+              disableUnderline
+              className={classes.select}
+              input={<Input />}
+              value={status}
+              onChange={(event: SelectChangeEvent<string | undefined >) => {
+                setStatus(event.target.value as any);         
+                statusPatch(event.target.value as any);
+              }}
+              style={{ width: "200px" }}
+              renderValue={()=>status}
+            >
+              {LegalCaseStates?.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {value}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
           <Grid item>
             <MoreMenu>
-              <MenuItem
-                onClick={() => {
-                  history.push(`/cases/${legalCase?.id}/edit`);
-                }}
-              >
-                <ListItemIcon>
-                  <EditIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{i18n.t("Edit case")}</ListItemText>
-              </MenuItem>
               <MenuItem onClick={destroyLegalCase}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />
@@ -110,27 +156,9 @@ const Page = () => {
               </MenuItem>
             </MoreMenu>
           </Grid>
-          <Grid item className={classes.zeroWidthOnMobile}>
-            <Button
-              className={classes.canBeFab}
-              color="primary"
-              variant="contained"
-              startIcon={<ChatIcon />}
-              disabled={legalCase ? false : true}
-              onClick={() => {
-                history.push(`/cases/${legalCase?.id}/meetings/new`);
-              }}
-            >
-              {i18n.t("New meeting")}
-            </Button>
-          </Grid>
+          
         </Grid>
-
-        <LegalCaseForm legalCase={legalCase} />
-
-        <hr className={classes.hr} />
-
-        <MeetingsTable meetings={meetings ? meetings : []} standalone={false} />
+        <MuiTabs legalCase={legalCase!} meetings={meetings ? meetings : []} standalone={false}/>
       </Container>
     </Layout>
   );
