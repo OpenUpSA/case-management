@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from case_management.managers import UserManager
+from django_lifecycle import LifecycleModel, hook, AFTER_CREATE, AFTER_UPDATE
 
 
 class User(AbstractUser):
@@ -43,7 +44,7 @@ class User(AbstractUser):
         return self.is_superuser
 
 
-def logIt(self, action, user=None, note=''):
+def logIt(self, action, user=None, note=None):
     if user is None:
         user = User.objects.first()
 
@@ -56,7 +57,7 @@ def logIt(self, action, user=None, note=''):
     log.save()
 
 
-class CaseOffice(models.Model):
+class CaseOffice(LifecycleModel, models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -66,11 +67,19 @@ class CaseOffice(models.Model):
 
     case_office_code = models.CharField(max_length=3, default="D00")
 
+    @hook(AFTER_CREATE)
+    def log_create(self):
+        logIt(self, 'Create')
+
+    @hook(AFTER_UPDATE)
+    def log_update(self):
+        logIt(self, 'Update')
+
     def __str__(self):
         return self.name
 
 
-class CaseType(models.Model):
+class CaseType(LifecycleModel, models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -78,11 +87,19 @@ class CaseType(models.Model):
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
 
+    @hook(AFTER_CREATE)
+    def log_create(self):
+        logIt(self, 'Create')
+
+    @hook(AFTER_UPDATE)
+    def log_update(self):
+        logIt(self, 'Update')
+
     def __str__(self):
         return self.title
 
 
-class Client(models.Model):
+class Client(LifecycleModel, models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -95,6 +112,14 @@ class Client(models.Model):
     contact_number = PhoneNumberField()
     contact_email = models.EmailField(max_length=254)
 
+    @hook(AFTER_CREATE)
+    def log_create(self):
+        logIt(self, 'Create')
+
+    @hook(AFTER_UPDATE)
+    def log_update(self):
+        logIt(self, 'Update')
+
     class Meta:
         unique_together = [['official_identifier', 'official_identifier_type']]
 
@@ -102,7 +127,7 @@ class Client(models.Model):
         return self.preferred_name
 
 
-class LegalCase(models.Model):
+class LegalCase(LifecycleModel, models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -119,11 +144,19 @@ class LegalCase(models.Model):
 
     summary = models.TextField(null=False, blank=True, default="")
 
+    @hook(AFTER_CREATE)
+    def log_create(self):
+        logIt(self, 'Create')
+
+    @hook(AFTER_UPDATE)
+    def log_update(self):
+        logIt(self, 'Update')
+
     def __str__(self):
         return self.case_number
 
 
-class Meeting(models.Model):
+class Meeting(LifecycleModel, models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -136,6 +169,14 @@ class Meeting(models.Model):
     meeting_date = models.DateTimeField(null=False, blank=False)
     notes = models.TextField(null=False, blank=False)
     name = models.CharField(max_length=255, null=False, blank=True, default="")
+
+    @hook(AFTER_CREATE)
+    def log_create(self):
+        logIt(self, 'Create')
+
+    @hook(AFTER_UPDATE)
+    def log_update(self):
+        logIt(self, 'Update')
 
     def __str__(self):
         return f'{self.legal_case.case_number} - {self.id}'
