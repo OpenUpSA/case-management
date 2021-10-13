@@ -7,6 +7,7 @@ import {
   IUserInfo,
   IUser,
   ICredentials,
+  ILegalCaseFile,
 } from "./types";
 
 const API_BASE_URL =
@@ -171,4 +172,29 @@ export const updateUser = async (user: IUser) => {
 
 export const authenticate = async (credentials: ICredentials) => {
   return await httpPost<ICredentials, IUserInfo>(`/authenticate`, credentials);
+};
+
+export const getLegalCaseFiles = async (legal_case?: number) => {
+  return await httpGet<ILegalCaseFile[]>(
+    `/files/${legal_case ? `?legal_case=${legal_case}` : ""}`
+  );
+};
+
+export const createLegalCaseFile = async (
+  legal_case: number | undefined,
+  file: any
+) => {
+  const formData = new FormData();
+
+  formData.append("upload", file);
+  if (legal_case) {
+    formData.append("legal_case", legal_case.toString());
+  }
+
+  const options = {
+    method: "POST",
+    body: formData,
+  };
+  const response = await fetch(`${API_BASE_URL}/files/`, options);
+  return response.json().catch(() => ({}));
 };

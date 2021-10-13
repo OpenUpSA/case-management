@@ -27,8 +27,6 @@ import { format } from "date-fns";
 import { getCaseTypes, getClients } from "../../api";
 import { ILegalCase, IClient, ICaseType } from "../../types";
 
-
-
 type Props = {
   legalCases: ILegalCase[];
   standalone: boolean;
@@ -221,7 +219,7 @@ const Component = (props: Props) => {
                         new Date(
                           legalCase?.updated_at || new Date().toISOString()
                         ),
-                        "MM/dd/yyyy (h:ma)"
+                        "dd/MM/yyyy (h:ma)"
                       )}
                     </TableCell>
                   </Hidden>
@@ -248,7 +246,6 @@ const Component = (props: Props) => {
           )}
         </Table>
       </TableContainer>
-      
     </div>
   );
 };

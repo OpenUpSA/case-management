@@ -205,7 +205,7 @@ const Page = () => {
                               new Date(
                                 client.updated_at || new Date().toISOString()
                               ),
-                              "MM/dd/yyyy (h:ma)"
+                              "dd/MM/yyyy (h:ma)"
                             )}
                           </span>
                         ) : (
