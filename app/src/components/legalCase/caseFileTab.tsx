@@ -31,7 +31,7 @@ import {
 import i18n from "../../i18n";
 
 export default function CaseFileTab() {
-  const [caseFiles, setCaseFiles] = React.useState<number>(2);
+  const [caseFiles] = React.useState<number>(0);
   const classes = useStyles();
   return (
     <>
@@ -73,6 +73,7 @@ export default function CaseFileTab() {
         <Grid item className={classes.zeroWidthOnMobile}>
           <Button
             className={classes.canBeFab}
+            disabled={true}
             color="primary"
             variant="contained"
             startIcon={<UploadIcon />}

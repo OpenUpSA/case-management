@@ -312,6 +312,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#dadada!important" as any,
       borderRadius: "5px!important" as any,
     },
+
+    checkIconButton: {
+      borderRadius: "5px!important" as any,
+      backgroundColor: "#00d97e!important" as any,
+    },
     plainLabel: {
       fontSize: "12px!important" as any,
       color: "#000!important" as any,
