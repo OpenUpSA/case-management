@@ -41,7 +41,7 @@ export interface ILegalCase {
   client: number;
   case_types: number[];
   case_offices: number[];
-  summary?: string
+  summary?: string;
 }
 
 export interface IMeeting {
@@ -53,7 +53,7 @@ export interface IMeeting {
   meeting_date: string;
   meeting_type: string;
   notes: string;
-  name?: string  | null;
+  name?: string | null;
 }
 
 export interface IUserInfo {
@@ -79,4 +79,17 @@ export interface IStorage {
   getItem(key: string): string | null;
   setItem(key: string, value: string): void;
   removeItem(key: string): void;
+}
+
+export interface ICaseHistory {
+  id?: number;
+  created_at?: string;
+  updated_at?: string;
+  parent_id?: number;
+  parent_type?: string;
+  target_id?: number;
+  target_type?: string;
+  action?: string;
+  note?: string;
+  user?: number;
 }

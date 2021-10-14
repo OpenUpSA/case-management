@@ -7,6 +7,7 @@ import {
   IUserInfo,
   IUser,
   ICredentials,
+  ICaseHistory
 } from "./types";
 
 const API_BASE_URL =
@@ -171,4 +172,12 @@ export const updateUser = async (user: IUser) => {
 
 export const authenticate = async (credentials: ICredentials) => {
   return await httpPost<ICredentials, IUserInfo>(`/authenticate`, credentials);
+};
+
+export const getCaseHistory = async (id: number, parent_type: string) => { 
+    return await httpGet<ICaseHistory[]>(`/logs/?paremt_id=${id}&parent_type=${parent_type}`);
+}
+
+export const updateCaseHistory = async (caseHistory: ICaseHistory) => {
+    return await httpPost<ICaseHistory, ICaseHistory>("/logs/", caseHistory);
 };
