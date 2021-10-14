@@ -302,6 +302,8 @@ export default function CaseInfoTab(props: Props) {
               <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
                 <Button
+                  color="primary"
+                  variant="contained"
                   onClick={(e) =>
                     addUpdateHandler(
                       props.legalCase?.id,
