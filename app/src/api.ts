@@ -175,7 +175,7 @@ export const authenticate = async (credentials: ICredentials) => {
 };
 
 export const getCaseHistory = async (id: number, parent_type: string) => { 
-    return await httpGet<ICaseHistory[]>(`/logs/?paremt_id=${id}&parent_type=${parent_type}`);
+    return await httpGet<ICaseHistory[]>(`/logs/?parent_id=${id}&parent_type=${parent_type}`);
 }
 
 export const updateCaseHistory = async (caseHistory: ICaseHistory) => {
