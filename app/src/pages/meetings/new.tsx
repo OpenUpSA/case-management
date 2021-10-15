@@ -43,13 +43,15 @@ const Page = () => {
     meeting_type: "",
     legal_case: 0,
     notes: "",
+    name: "",
   });
 
   const newMeeting = async (
     notes: string,
     location: string,
     meetingDate: string,
-    meetingType: string
+    meetingType: string,
+    name: string
   ) => {
     try {
       const newMeeting = {
@@ -58,6 +60,7 @@ const Page = () => {
         meeting_date: meetingDate,
         meeting_type: meetingType,
         notes: notes,
+        name: name,
       };
       const { id } = await createMeeting(newMeeting);
       history.push(`/meetings/${id}`);
@@ -105,13 +108,15 @@ const Page = () => {
               location: { value: string };
               meeting_date: { value: string };
               meeting_type: { value: string };
+              name: { value: string };
             };
 
             newMeeting(
               target.notes.value,
               target.location.value,
               target.meeting_date.value,
-              target.meeting_type.value
+              target.meeting_type.value,
+              target.name.value
             );
           }}
         >

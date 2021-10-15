@@ -4,11 +4,12 @@ from rest_framework.response import Response
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from django.views import generic
 
-from case_management.serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, LegalCaseSerializer, MeetingSerializer, UserSerializer, LogSerializer
-from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting, User, Log
+from case_management.serializers import CaseOfficeSerializer, CaseTypeSerializer, ClientSerializer, LegalCaseSerializer, MeetingSerializer, UserSerializer, LogSerializer, LegalCaseFileSerializer
+from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting, User, Log, LegalCaseFile
 
 import time
 
@@ -101,3 +102,10 @@ class LogViewSet(CreateListRetrieveViewSet):
     serializer_class = LogSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['parent_id', 'parent_type', 'target_id', 'target_type']
+
+class LegalCaseFileViewSet(viewsets.ModelViewSet):
+    parser_classes = (MultiPartParser, FormParser)
+    queryset = LegalCaseFile.objects.all()
+    serializer_class = LegalCaseFileSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['legal_case']

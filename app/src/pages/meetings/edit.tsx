@@ -41,7 +41,8 @@ const Page = () => {
     notes: string,
     location: string,
     meetingDate: string,
-    meetingType: string
+    meetingType: string,
+    name: string
   ) => {
     try {
       const updatedMeeting = {
@@ -51,6 +52,7 @@ const Page = () => {
         meeting_date: meetingDate,
         meeting_type: meetingType,
         notes: notes,
+        name: name,
       };
       const { id } = await updateMeeting(updatedMeeting);
       history.push(`/meetings/${id}`);
@@ -100,6 +102,7 @@ const Page = () => {
               location: { value: string };
               meeting_date: { value: string };
               meeting_type: { value: string };
+              name: { value: string };
             };
 
             saveMeeting(
@@ -107,7 +110,8 @@ const Page = () => {
               target.notes.value,
               target.location.value,
               target.meeting_date.value,
-              target.meeting_type.value
+              target.meeting_type.value,
+              target.name.value
             );
           }}
         >

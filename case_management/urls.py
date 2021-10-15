@@ -8,7 +8,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 from . import views
-from case_management.views import MeetingViewSet, LegalCaseViewSet, CaseOfficeViewSet, CaseTypeViewSet, ClientViewSet, CustomObtainAuthToken, UserViewSet, LogViewSet
+from case_management.views import MeetingViewSet, LegalCaseViewSet, CaseOfficeViewSet, CaseTypeViewSet, ClientViewSet, CustomObtainAuthToken, UserViewSet, LogViewSet, LegalCaseFileViewSet
 
 router = DefaultRouter()
 router.register(r'api/v1/meetings', MeetingViewSet)
@@ -18,6 +18,7 @@ router.register(r'api/v1/case-offices', CaseOfficeViewSet)
 router.register(r'api/v1/case-types', CaseTypeViewSet)
 router.register(r'api/v1/users', UserViewSet)
 router.register(r'api/v1/logs', LogViewSet)
+router.register(r'api/v1/files', LegalCaseFileViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(

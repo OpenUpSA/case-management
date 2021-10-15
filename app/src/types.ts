@@ -75,6 +75,17 @@ export interface IUser {
   case_office: Nullable<number>;
 }
 
+export interface ILegalCaseFile {
+  id?: number;
+  created_at?: Date;
+  updated_at?: Date;
+  legal_case: number;
+  upload: string;
+  upload_file_name?: string;
+  upload_file_extension?: string;
+}
+
+
 export interface IStorage {
   getItem(key: string): string | null;
   setItem(key: string, value: string): void;

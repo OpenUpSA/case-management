@@ -119,7 +119,7 @@ export default function BasicTabs(props: Props) {
         />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <CaseFileTab />
+        <CaseFileTab legalCase={props.legalCase} />
       </TabPanel>
     </div>
   );

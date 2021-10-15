@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting, User, Log
+from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting, User, Log, LegalCaseFile
 
 
 class CaseTypeSerializer(serializers.ModelSerializer):
@@ -49,3 +49,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'name', 'contact_number',
                   'email', 'membership_number', 'case_office']
+
+class LegalCaseFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LegalCaseFile
+        fields = ['id', 'legal_case', 'upload', 'upload_file_name', 'upload_file_extension', 'created_at', 'updated_at']

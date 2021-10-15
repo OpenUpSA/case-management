@@ -136,7 +136,7 @@ const Component = (props: Props) => {
               aria-describedby="my-helper-text"
               value={format(
                 new Date(legalCase.created_at || new Date().toISOString()),
-                "MM/dd/yyyy (h:ma)"
+                "dd/MM/yyyy (h:ma)"
               )}
             />
           </FormControl>

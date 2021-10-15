@@ -1,7 +1,7 @@
 from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
 
-from case_management.models import LegalCase, CaseOffice, CaseType, Client, User, Meeting, Log
+from case_management.models import LegalCase, CaseOffice, CaseType, Client, User, Meeting, Log, LegalCaseFile
 from case_management.forms import UserCreationForm, UserChangeForm
 
 
@@ -73,7 +73,10 @@ class MeetingAdmin(DefaultAdmin):
 class LogAdmin(DefaultAdmin):
     model = Log
     list_display = ['action', 'target_type']
-    #list_filter = ['a']
+
+class LegalCaseFileAdmin(DefaultAdmin):
+    model = LegalCaseFile
+    list_display = ['legal_case', 'upload']
 
 
 admin.site.register(CaseType, CaseTypeAdmin)
@@ -83,3 +86,4 @@ admin.site.register(LegalCase, LegalCaseAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Meeting, MeetingAdmin)
 admin.site.register(Log, LogAdmin)
+admin.site.register(LegalCaseFile, LegalCaseFileAdmin)
