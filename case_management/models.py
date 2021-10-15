@@ -47,6 +47,9 @@ class User(AbstractUser):
 
 
 def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
+    target_type = self.__class__.__name__
+    target_id = self.id
+
     if user is None:
         user = User.objects.first()
 
@@ -55,14 +58,22 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
 
     if parent_type is None:
         parent_type = self.__class__.__name__
+    
+    if note is None:
+        target_model = apps.get_model('case_management', target_type)
+        record = target_model.objects.filter(id=target_id)
+        if (record.count() > 0):
+            note = record[0].__str__()
+        else:
+            note = target_type
 
     log = Log(parent_id=parent_id,
               parent_type=parent_type,
-              target_id=self.id,
-              target_type=self.__class__.__name__,
+              target_id=target_id,
+              target_type=target_type,
               action=action,
               user=user,
-              note='')
+              note=note)
     log.save()
 
 
@@ -249,13 +260,6 @@ class Log(models.Model):
         info = {'user': {
                 'name': self.user.name
                 }}
-        target_model = apps.get_model('case_management', self.target_type)
-        record = target_model.objects.filter(id=self.target_id)
-        if (record.count() > 0):
-            info['target_label'] = record.first().__str__()
-        else:
-            info['target_label'] = self.target_type
-
         return info
 
 
