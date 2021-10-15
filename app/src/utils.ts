@@ -330,7 +330,16 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "5px!important" as any,
       fontSize: "12px!important" as any,
       height: "20px!important" as any,
-      width: "70px!important" as any,
+      //width: "70px!important" as any,
+    },
+    chipGrey: {
+      backgroundColor: "#eee!important" as any,
+      borderRadius: "5px!important" as any,
+      color: "000!important" as any,
+      marginRight: "5px!important" as any,
+      fontSize: "12px!important" as any,
+      height: "20px!important" as any,
+      //width: "70px!important" as any,
     },
     caseSelect: {
       backgroundColor: "rgba(0, 0, 0, 0.035)",

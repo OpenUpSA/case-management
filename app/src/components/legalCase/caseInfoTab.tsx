@@ -18,8 +18,12 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { format } from "date-fns";
-
+import { Input, MenuItem } from "@material-ui/core";
+import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import { useStyles } from "../../utils";
 import {
   ILegalCase,
@@ -27,9 +31,9 @@ import {
   ICaseOffice,
   IUser,
   IClient,
+  ICaseHistory,
 } from "../../types";
-import { Input, MenuItem } from "@material-ui/core";
-import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
+import { format } from "date-fns";
 import { styled } from "@mui/material/styles";
 import {
   updateLegalCase,
@@ -37,7 +41,22 @@ import {
   getCaseOffices,
   getClient,
   getUser,
+  getCaseHistory,
+  updateCaseHistory,
 } from "../../api";
+
+const LogLabels = new Map([
+  ['LegalCase Create', 'Case created'],
+  ['LegalCase Update', 'Case update'],
+  ['Meeting Create', 'New meeting'],
+  ['Meeting Update', 'Meeting updated'],
+  ['LegalCaseFile Create', 'File uploaded'],
+  ['LegalCaseFile Update', 'File updated']
+]);
+
+const logLabel = (targetAction:string | undefined, targetType: string | undefined) => {
+  return LogLabels.get(`${targetType} ${targetAction}`);
+};
 
 const BlackTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
@@ -68,6 +87,9 @@ export default function CaseInfoTab(props: Props) {
   const [selectCaseOffice, setSelectCaseOffice] = React.useState<
     number[] | undefined
   >([]);
+  const [caseHistory, setCaseHistory] = React.useState<ICaseHistory[]>([]);
+  const [open, setOpen] = React.useState(false);
+  const [manualUpdateValue, setManualUpdateValue] = React.useState<string>("");
 
   React.useEffect(() => {
     setSelectCaseOffice(props.legalCase?.case_offices);
@@ -80,17 +102,61 @@ export default function CaseInfoTab(props: Props) {
       const clientInfo = await getClient(props.legalCase?.client);
       const userNumber = Number(props.legalCase?.users?.join());
       const userInfo = await getUser(userNumber);
+      const historyData = await getCaseHistory(
+        props.legalCase?.id!,
+        "LegalCase"
+      );
 
       setClient(clientInfo);
       setCaseWorker(userInfo);
       setCaseTypes(dataCaseTypes);
       setCaseOffices(dataCaseOffices);
+      setCaseHistory(historyData);
     }
     fetchData();
   }, [props.legalCase]);
 
   const discardChange = () => {
     setToggleButton(true);
+  };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setManualUpdateValue("");
+  };
+
+  const addUpdateHandler = async (
+    parent_id: number | undefined,
+    parent_type: string,
+    target_id: number | undefined,
+    target_type: string,
+    action: string,
+    user: number,
+    note: string
+  ) => {
+    handleClose();
+    try {
+      const caseHistory: ICaseHistory = {
+        parent_id: parent_id,
+        parent_type: parent_type,
+        target_id: target_id,
+        target_type: target_type,
+        action: action,
+        user: user,
+        note: note,
+      };
+      await updateCaseHistory(caseHistory);
+      const historyData = await getCaseHistory(
+        props.legalCase?.id!,
+        "LegalCase"
+      );
+      setCaseHistory(historyData);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const saveCaseSummary = async () => {
@@ -112,7 +178,7 @@ export default function CaseInfoTab(props: Props) {
     }
   };
 
-  const caseTypePatch = async (arg:any) => {
+  const caseTypePatch = async (arg: any) => {
     try {
       const updatedSummary: ILegalCase = {
         id: props.legalCase.id,
@@ -130,7 +196,7 @@ export default function CaseInfoTab(props: Props) {
     }
   };
 
-  const caseOfficePatch = async (arg:any) => {
+  const caseOfficePatch = async (arg: any) => {
     try {
       const updatedSummary: ILegalCase = {
         id: props.legalCase.id,
@@ -223,90 +289,95 @@ export default function CaseInfoTab(props: Props) {
             </InputLabel>
           </Grid>
           <Grid item>
-            <Button variant="contained">Add update</Button>
+            <Button variant="contained" onClick={handleClickOpen}>
+              Add update
+            </Button>
+
+            <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+              <DialogTitle>Add Update</DialogTitle>
+              <DialogContent>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Note"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                  value={manualUpdateValue}
+                  onChange={(e: React.ChangeEvent<{ value: any }>) => {
+                    setManualUpdateValue(e.target.value);
+                  }}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={(e) =>
+                    addUpdateHandler(
+                      props.legalCase?.id,
+                      "LegalCase",
+                      props.legalCase?.id,
+                      "LegalCase",
+                      "Update",
+                      Number(props.legalCase?.users?.join()),
+                      manualUpdateValue
+                    )
+                  }
+                >
+                  Submit
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Grid>
         </Grid>
         <List sx={{ width: "100%", marginBottom: "26px" }}>
           <Divider />
-          <ListItem className={classes.caseHistoryList}>
-            <Chip label="Update" className={classes.chip} />
-            <ListItemText
-              primary={
-                <Typography variant="caption">
-                  Client has received her notice to vacate
-                </Typography>
-              }
-              style={{ flexGrow: 1 }}
-            />
-            <ListItemAvatar sx={{ minWidth: 40 }}>
-              <Avatar
-                alt="Remy Sharp"
-                src="/static/images/avatar/1.jpg"
-                className={classes.caseHistoryAvatar}
-                sx={{ width: 28, height: 28 }}
-              />
-            </ListItemAvatar>
-            <Typography sx={{ fontSize: "11px", color: "#616161" }}>
-              Aug 05, 2021
-            </Typography>
-          </ListItem>
-          <Divider />
-
-          <ListItem className={classes.caseHistoryList}>
-            <Chip label="Action" className={classes.chip} />
-            <ListItemText
-              primary={
-                <Typography variant="caption">
-                  File uploaded <a href="/#">"08381998.jpg"</a>
-                </Typography>
-              }
-              style={{ flexGrow: 1 }}
-            />
-            <ListItemAvatar sx={{ minWidth: 40 }}>
-              <Avatar
-                alt="Remy Sharp"
-                src="/static/images/avatar/1.jpg"
-                className={classes.caseHistoryAvatar}
-                sx={{ width: 28, height: 28 }}
-              />
-            </ListItemAvatar>
-            <Typography sx={{ fontSize: "11px", color: "#616161" }}>
-              Aug 05, 2021
-            </Typography>
-          </ListItem>
-          <Divider />
-
-          <ListItem className={classes.caseHistoryList}>
-            <Chip label="Meeting" className={classes.chip} />
-            <ListItemText
-              primary={
-                <Typography variant="caption">
-                  <a href="/#">In-person-meeting</a> {" with client"}
-                </Typography>
-              }
-              style={{ flexGrow: 1 }}
-            />
-            <ListItemAvatar sx={{ minWidth: 40 }}>
-              <Avatar
-                alt="Remy Sharp"
-                src="/static/images/avatar/1.jpg"
-                className={classes.caseHistoryAvatar}
-                sx={{ width: 28, height: 28 }}
-              />
-            </ListItemAvatar>
-            <Typography sx={{ fontSize: "11px", color: "#616161" }}>
-              Aug 05, 2021
-            </Typography>
-          </ListItem>
-          <Divider />
+          {caseHistory.length > 0
+            ? caseHistory
+                ?.slice(0)
+                .reverse()
+                .map((item) => (
+                  <>
+                    <ListItem className={classes.caseHistoryList}>
+                      <Chip
+                        label={logLabel(item.action, item.target_type)}
+                        className={classes.chip}
+                      />
+                      <ListItemText
+                        primary={
+                          <Typography variant="caption">{item.note}</Typography>
+                        }
+                        style={{ flexGrow: 1 }}
+                      />
+                      <ListItemAvatar sx={{ minWidth: 40 }}>
+                        <Avatar
+                          alt="Paul Watson"
+                          src="/static/images/avatar/1.jpg"
+                          className={classes.caseHistoryAvatar}
+                          sx={{ width: 28, height: 28 }}
+                        />
+                      </ListItemAvatar>
+                      <Typography sx={{ fontSize: "11px", color: "#616161" }}>
+                        {format(new Date(item?.created_at!), "MMM dd, yyyy")}
+                      </Typography>
+                    </ListItem>
+                    <Divider />
+                  </>
+                ))
+            : ""}
         </List>
         <Grid container justifyContent="space-between">
           <Grid item>
-            <Typography variant="caption">Showing 6 of 27 updates</Typography>
+            <Typography variant="caption">
+              Showing {caseHistory?.length} of {caseHistory?.length} updates
+            </Typography>
           </Grid>
           <Grid item>
             <Typography variant="caption">
-              <a href="/#">Show all updates</a>
+              {/* <a href="/#">Show all updates</a> */}
             </Typography>
           </Grid>
         </Grid>
@@ -338,7 +409,7 @@ export default function CaseInfoTab(props: Props) {
           value={selectCaseType}
           onChange={(event: SelectChangeEvent<number[]>) => {
             setSelectCaseType([event.target.value as any]);
-            caseTypePatch([event.target.value as any])
+            caseTypePatch([event.target.value as any]);
           }}
           renderValue={() => {
             return caseTypes

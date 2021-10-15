@@ -1,3 +1,4 @@
+import os
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db import models
@@ -9,7 +10,7 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from case_management.managers import UserManager
 from django_lifecycle import LifecycleModel, hook, AFTER_CREATE, AFTER_UPDATE
-import os
+from django.apps import apps
 
 
 class User(AbstractUser):
@@ -46,6 +47,9 @@ class User(AbstractUser):
 
 
 def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
+    target_type = self.__class__.__name__
+    target_id = self.id
+
     if user is None:
         user = User.objects.first()
 
@@ -54,14 +58,22 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
 
     if parent_type is None:
         parent_type = self.__class__.__name__
+    
+    if note is None:
+        target_model = apps.get_model('case_management', target_type)
+        record = target_model.objects.filter(id=target_id)
+        if (record.count() > 0):
+            note = record[0].__str__()
+        else:
+            note = target_type
 
     log = Log(parent_id=parent_id,
               parent_type=parent_type,
-              target_id=self.id,
-              target_type=self.__class__.__name__,
+              target_id=target_id,
+              target_type=target_type,
               action=action,
               user=user,
-              note='')
+              note=note)
     log.save()
 
 
@@ -189,7 +201,7 @@ class Meeting(LifecycleModel, models.Model):
               parent_type='LegalCase')
 
     def __str__(self):
-        return f'{self.legal_case.case_number} - {self.id}'
+        return self.name
 
 
 class LegalCaseFile(LifecycleModel, models.Model):
@@ -211,13 +223,13 @@ class LegalCaseFile(LifecycleModel, models.Model):
     def log_update(self):
         logIt(self, 'Update', parent_id=self.legal_case.id,
               parent_type='LegalCase')
-    
+
     def __str__(self):
         return self.upload_file_name()
-    
+
     def upload_file_extension(self):
         return os.path.splitext(self.upload.file.name)[1][1:]
-    
+
     def upload_file_name(self):
         return os.path.basename(self.upload.file.name)
 
@@ -243,8 +255,15 @@ class Log(models.Model):
     def __str__(self):
         return f'{self.action} - {self.target_type}'
 
+    @property
+    def extra(self):
+        info = {'user': {
+                'name': self.user.name
+                }}
+        return info
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+
+@ receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
