@@ -39,6 +39,7 @@ class MeetingSerializer(serializers.ModelSerializer):
 
 
 class LogSerializer(serializers.ModelSerializer):
+    extra = serializers.ReadOnlyField()
     class Meta:
         model = Log
         fields = '__all__'

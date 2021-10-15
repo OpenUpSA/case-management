@@ -1,3 +1,4 @@
+import os
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db import models
@@ -9,7 +10,7 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from case_management.managers import UserManager
 from django_lifecycle import LifecycleModel, hook, AFTER_CREATE, AFTER_UPDATE
-import os
+from django.apps import apps
 
 
 class User(AbstractUser):
@@ -189,7 +190,7 @@ class Meeting(LifecycleModel, models.Model):
               parent_type='LegalCase')
 
     def __str__(self):
-        return f'{self.legal_case.case_number} - {self.id}'
+        return self.name
 
 
 class LegalCaseFile(LifecycleModel, models.Model):
@@ -211,13 +212,13 @@ class LegalCaseFile(LifecycleModel, models.Model):
     def log_update(self):
         logIt(self, 'Update', parent_id=self.legal_case.id,
               parent_type='LegalCase')
-    
+
     def __str__(self):
         return self.upload_file_name()
-    
+
     def upload_file_extension(self):
         return os.path.splitext(self.upload.file.name)[1][1:]
-    
+
     def upload_file_name(self):
         return os.path.basename(self.upload.file.name)
 
@@ -243,8 +244,22 @@ class Log(models.Model):
     def __str__(self):
         return f'{self.action} - {self.target_type}'
 
+    @property
+    def extra(self):
+        info = {'user': {
+                'name': self.user.name
+                }}
+        target_model = apps.get_model('case_management', self.target_type)
+        record = target_model.objects.filter(id=self.target_id)
+        if (record.count() > 0):
+            info['target_label'] = record.first().__str__()
+        else:
+            info['target_label'] = self.target_type
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+        return info
+
+
+@ receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
