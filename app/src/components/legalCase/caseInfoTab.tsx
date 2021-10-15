@@ -56,34 +56,6 @@ const LogLabels = new Map([
 
 const logLabel = (targetAction:string | undefined, targetType: string | undefined) => {
   return LogLabels.get(`${targetType} ${targetAction}`);
-  //return `${targetAction} ${targetType}`;
-};
-
-const TargetTypes = new Map([
-  ["LegalCase", "Case"],
-  ["Meeting", "Meeting"],
-  ["LegalCaseFile", "File"],
-]);
-
-const Actions = new Map([
-  ["Create", "Create"],
-  ["Update", "Update"],
-]);
-
-const targetTypeLabel = (targetType: string | undefined) => {
-  if (targetType) {
-    return TargetTypes.get(targetType);
-  } else {
-    return "";
-  }
-};
-
-const actionLabel = (action: string | undefined) => {
-  if (action) {
-    return Actions.get(action);
-  } else {
-    return "";
-  }
 };
 
 const BlackTooltip = styled(({ className, ...props }: TooltipProps) => (
