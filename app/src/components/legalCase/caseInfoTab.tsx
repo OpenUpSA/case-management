@@ -74,7 +74,7 @@ export default function CaseInfoTab(props: Props) {
   const [selectCaseOffice, setSelectCaseOffice] = React.useState<
     number[] | undefined
   >([]);
-  const [caseHistory, setCaseHistory] = React.useState<ICaseHistory[]>();
+  const [caseHistory, setCaseHistory] = React.useState<ICaseHistory[]>([]);
   const [open, setOpen] = React.useState(false);
   const [manualUpdateValue, setManualUpdateValue] = React.useState<string>("");
 
@@ -99,16 +99,11 @@ export default function CaseInfoTab(props: Props) {
       setCaseTypes(dataCaseTypes);
       setCaseOffices(dataCaseOffices);
       setCaseHistory(historyData);
+      console.log(historyData);
     }
     fetchData();
   }, [props.legalCase]);
 
-  //   React.useEffect(() => {
-  //     const historyData = await getCaseHistory(
-  //         props.legalCase?.id!,
-  //         "LegalCase"
-  //       );
-  //   }, [caseHistory]);
 
   const discardChange = () => {
     setToggleButton(true);
@@ -329,34 +324,33 @@ export default function CaseInfoTab(props: Props) {
         </Grid>
         <List sx={{ width: "100%", marginBottom: "26px" }}>
           <Divider />
-          {caseHistory
-            ?.slice(0)
-            .reverse()
-            .map((item) => (
-              <>
-                <ListItem className={classes.caseHistoryList}>
-                  <Chip label={item.action} className={classes.chip} />
-                  <ListItemText
-                    primary={
-                      <Typography variant="caption">{item.note}</Typography>
-                    }
-                    style={{ flexGrow: 1 }}
-                  />
-                  <ListItemAvatar sx={{ minWidth: 40 }}>
-                    <Avatar
-                      alt="Paul Watson"
-                      src="/static/images/avatar/1.jpg"
-                      className={classes.caseHistoryAvatar}
-                      sx={{ width: 28, height: 28 }}
+          {caseHistory.length > 0
+            ? caseHistory?.slice(0).reverse().map((item) => (
+                <>
+                  <ListItem className={classes.caseHistoryList}>
+                    <Chip label={item.action} className={classes.chip} />
+                    <ListItemText
+                      primary={
+                        <Typography variant="caption">{item.note}</Typography>
+                      }
+                      style={{ flexGrow: 1 }}
                     />
-                  </ListItemAvatar>
-                  <Typography sx={{ fontSize: "11px", color: "#616161" }}>
-                    {format(new Date(item?.created_at!), "MMM dd, yyyy")}
-                  </Typography>
-                </ListItem>
-                <Divider />
-              </>
-            ))}
+                    <ListItemAvatar sx={{ minWidth: 40 }}>
+                      <Avatar
+                        alt="Paul Watson"
+                        src="/static/images/avatar/1.jpg"
+                        className={classes.caseHistoryAvatar}
+                        sx={{ width: 28, height: 28 }}
+                      />
+                    </ListItemAvatar>
+                    <Typography sx={{ fontSize: "11px", color: "#616161" }}>
+                      {format(new Date(item?.created_at!), "MMM dd, yyyy")}
+                    </Typography>
+                  </ListItem>
+                  <Divider />
+                </>
+              ))
+            : ""}
         </List>
         <Grid container justifyContent="space-between">
           <Grid item>
