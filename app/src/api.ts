@@ -7,11 +7,8 @@ import {
   IUserInfo,
   IUser,
   ICredentials,
-<<<<<<< HEAD
-  ICaseHistory
-=======
+  ICaseHistory,
   ILegalCaseFile,
->>>>>>> master
 } from "./types";
 
 const API_BASE_URL =
@@ -178,12 +175,14 @@ export const authenticate = async (credentials: ICredentials) => {
   return await httpPost<ICredentials, IUserInfo>(`/authenticate`, credentials);
 };
 
-export const getCaseHistory = async (id: number, parent_type: string) => { 
-    return await httpGet<ICaseHistory[]>(`/logs/?parent_id=${id}&parent_type=${parent_type}`);
-}
+export const getCaseHistory = async (id: number, parent_type: string) => {
+  return await httpGet<ICaseHistory[]>(
+    `/logs/?parent_id=${id}&parent_type=${parent_type}`
+  );
+};
 
 export const updateCaseHistory = async (caseHistory: ICaseHistory) => {
-    return await httpPost<ICaseHistory, ICaseHistory>("/logs/", caseHistory);
+  return await httpPost<ICaseHistory, ICaseHistory>("/logs/", caseHistory);
 };
 
 export const getLegalCaseFiles = async (legal_case?: number) => {
@@ -210,4 +209,3 @@ export const createLegalCaseFile = async (
   const response = await fetch(`${API_BASE_URL}/files/`, options);
   return response.json().catch(() => ({}));
 };
-
