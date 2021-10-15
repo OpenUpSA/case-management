@@ -45,6 +45,47 @@ import {
   updateCaseHistory,
 } from "../../api";
 
+const LogLabels = new Map([
+  ['LegalCase Create', 'Case created'],
+  ['LegalCase Update', 'Case update'],
+  ['Meeting Create', 'New meeting'],
+  ['Meeting Update', 'Meeting updated'],
+  ['LegalCaseFile Create', 'File uploaded'],
+  ['LegalCaseFile Update', 'File updated']
+]);
+
+const logLabel = (targetAction:string | undefined, targetType: string | undefined) => {
+  return LogLabels.get(`${targetType} ${targetAction}`);
+  //return `${targetAction} ${targetType}`;
+};
+
+const TargetTypes = new Map([
+  ["LegalCase", "Case"],
+  ["Meeting", "Meeting"],
+  ["LegalCaseFile", "File"],
+]);
+
+const Actions = new Map([
+  ["Create", "Create"],
+  ["Update", "Update"],
+]);
+
+const targetTypeLabel = (targetType: string | undefined) => {
+  if (targetType) {
+    return TargetTypes.get(targetType);
+  } else {
+    return "";
+  }
+};
+
+const actionLabel = (action: string | undefined) => {
+  if (action) {
+    return Actions.get(action);
+  } else {
+    return "";
+  }
+};
+
 const BlackTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
 ))(({ theme }) => ({
@@ -99,11 +140,9 @@ export default function CaseInfoTab(props: Props) {
       setCaseTypes(dataCaseTypes);
       setCaseOffices(dataCaseOffices);
       setCaseHistory(historyData);
-      console.log(historyData);
     }
     fetchData();
   }, [props.legalCase]);
-
 
   const discardChange = () => {
     setToggleButton(true);
@@ -325,31 +364,37 @@ export default function CaseInfoTab(props: Props) {
         <List sx={{ width: "100%", marginBottom: "26px" }}>
           <Divider />
           {caseHistory.length > 0
-            ? caseHistory?.slice(0).reverse().map((item) => (
-                <>
-                  <ListItem className={classes.caseHistoryList}>
-                    <Chip label={item.action} className={classes.chip} />
-                    <ListItemText
-                      primary={
-                        <Typography variant="caption">{item.note}</Typography>
-                      }
-                      style={{ flexGrow: 1 }}
-                    />
-                    <ListItemAvatar sx={{ minWidth: 40 }}>
-                      <Avatar
-                        alt="Paul Watson"
-                        src="/static/images/avatar/1.jpg"
-                        className={classes.caseHistoryAvatar}
-                        sx={{ width: 28, height: 28 }}
+            ? caseHistory
+                ?.slice(0)
+                .reverse()
+                .map((item) => (
+                  <>
+                    <ListItem className={classes.caseHistoryList}>
+                      <Chip
+                        label={logLabel(item.action, item.target_type)}
+                        className={classes.chip}
                       />
-                    </ListItemAvatar>
-                    <Typography sx={{ fontSize: "11px", color: "#616161" }}>
-                      {format(new Date(item?.created_at!), "MMM dd, yyyy")}
-                    </Typography>
-                  </ListItem>
-                  <Divider />
-                </>
-              ))
+                      <ListItemText
+                        primary={
+                          <Typography variant="caption">{item.note}</Typography>
+                        }
+                        style={{ flexGrow: 1 }}
+                      />
+                      <ListItemAvatar sx={{ minWidth: 40 }}>
+                        <Avatar
+                          alt="Paul Watson"
+                          src="/static/images/avatar/1.jpg"
+                          className={classes.caseHistoryAvatar}
+                          sx={{ width: 28, height: 28 }}
+                        />
+                      </ListItemAvatar>
+                      <Typography sx={{ fontSize: "11px", color: "#616161" }}>
+                        {format(new Date(item?.created_at!), "MMM dd, yyyy")}
+                      </Typography>
+                    </ListItem>
+                    <Divider />
+                  </>
+                ))
             : ""}
         </List>
         <Grid container justifyContent="space-between">
