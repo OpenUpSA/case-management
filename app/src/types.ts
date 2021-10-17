@@ -92,7 +92,7 @@ export interface IStorage {
   removeItem(key: string): void;
 }
 
-export interface ICaseHistory {
+export interface ILog {
   id?: number;
   created_at?: string;
   updated_at?: string;

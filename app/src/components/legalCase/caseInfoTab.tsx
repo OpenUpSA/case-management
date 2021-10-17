@@ -31,7 +31,7 @@ import {
   ICaseOffice,
   IUser,
   IClient,
-  ICaseHistory,
+  ILog,
 } from "../../types";
 import { format } from "date-fns";
 import { styled } from "@mui/material/styles";
@@ -41,8 +41,8 @@ import {
   getCaseOffices,
   getClient,
   getUser,
-  getCaseHistory,
-  updateCaseHistory,
+  getLogs,
+  createLog,
 } from "../../api";
 
 const LogLabels = new Map([
@@ -87,7 +87,7 @@ export default function CaseInfoTab(props: Props) {
   const [selectCaseOffice, setSelectCaseOffice] = React.useState<
     number[] | undefined
   >([]);
-  const [caseHistory, setCaseHistory] = React.useState<ICaseHistory[]>([]);
+  const [caseHistory, setCaseHistory] = React.useState<ILog[]>([]);
   const [open, setOpen] = React.useState(false);
   const [manualUpdateValue, setManualUpdateValue] = React.useState<string>("");
 
@@ -102,7 +102,7 @@ export default function CaseInfoTab(props: Props) {
       const clientInfo = await getClient(props.legalCase?.client);
       const userNumber = Number(props.legalCase?.users?.join());
       const userInfo = await getUser(userNumber);
-      const historyData = await getCaseHistory(
+      const historyData = await getLogs(
         props.legalCase?.id!,
         "LegalCase"
       );
@@ -139,7 +139,7 @@ export default function CaseInfoTab(props: Props) {
   ) => {
     handleClose();
     try {
-      const caseHistory: ICaseHistory = {
+      const caseHistory: ILog = {
         parent_id: parent_id,
         parent_type: parent_type,
         target_id: target_id,
@@ -148,8 +148,8 @@ export default function CaseInfoTab(props: Props) {
         user: user,
         note: note,
       };
-      await updateCaseHistory(caseHistory);
-      const historyData = await getCaseHistory(
+      await createLog(caseHistory);
+      const historyData = await getLogs(
         props.legalCase?.id!,
         "LegalCase"
       );

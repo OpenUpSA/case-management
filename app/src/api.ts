@@ -7,7 +7,7 @@ import {
   IUserInfo,
   IUser,
   ICredentials,
-  ICaseHistory,
+  ILog,
   ILegalCaseFile,
 } from "./types";
 
@@ -175,14 +175,14 @@ export const authenticate = async (credentials: ICredentials) => {
   return await httpPost<ICredentials, IUserInfo>(`/authenticate`, credentials);
 };
 
-export const getCaseHistory = async (id: number, parent_type: string) => {
-  return await httpGet<ICaseHistory[]>(
+export const getLogs = async (id: number, parent_type: string) => {
+  return await httpGet<ILog[]>(
     `/logs/?parent_id=${id}&parent_type=${parent_type}`
   );
 };
 
-export const updateCaseHistory = async (caseHistory: ICaseHistory) => {
-  return await httpPost<ICaseHistory, ICaseHistory>("/logs/", caseHistory);
+export const createLog = async (log: ILog) => {
+  return await httpPost<ILog, ILog>("/logs/", log);
 };
 
 export const getLegalCaseFiles = async (legal_case?: number) => {
