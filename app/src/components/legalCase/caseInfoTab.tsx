@@ -140,6 +140,9 @@ export default function CaseInfoTab(props: Props) {
     handleClose();
     try {
       const caseHistory: ILog = {
+        id: 0,
+        created_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+        updated_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
         parent_id: parent_id,
         parent_type: parent_type,
         target_id: target_id,

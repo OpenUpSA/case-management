@@ -21,7 +21,10 @@ const resources = {
       "Welcome to CaseFile": "Welcome to CaseFile.",
       "Login error": "Invalid email or password, please try again.",
       "© 2021 OpenUp": "© 2021 OpenUp.",
-      "Error saving account details": "There was an error saving your details."
+      "Error saving account details": "There was an error saving your details.",
+      "Logs list": "All updates",
+      "Logs": "Updates",
+      "Log": "Update",
     },
   },
   fr: {

@@ -175,9 +175,12 @@ export const authenticate = async (credentials: ICredentials) => {
   return await httpPost<ICredentials, IUserInfo>(`/authenticate`, credentials);
 };
 
-export const getLogs = async (id: number, parent_type: string) => {
+export const getLogs = async (id?: number, parent_type?: string) => {
+  const idParam = id ? `?id=${id}` : "";
+  const parent_typeParam =
+    parent_type ? `&parent_type=${parent_type}` : "";
   return await httpGet<ILog[]>(
-    `/logs/?parent_id=${id}&parent_type=${parent_type}`
+    `/logs/?${idParam}&${parent_typeParam}`
   );
 };
 
