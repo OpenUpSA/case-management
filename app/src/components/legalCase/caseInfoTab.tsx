@@ -7,7 +7,6 @@ import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CheckIcon from "@mui/icons-material/Check";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -253,7 +252,7 @@ export default function CaseInfoTab(props: Props) {
                   onClick={() => saveCaseSummary()}
                   className={classes.checkIconButton}
                 >
-                  <CheckIcon sx={{ color: "#fff" }} />
+                  <Typography color="black">Save</Typography>
                 </IconButton>
               </BlackTooltip>
             )}

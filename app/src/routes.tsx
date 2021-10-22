@@ -1,5 +1,5 @@
 import { Switch, Route } from "react-router-dom";
-
+import React from "react";
 import HomePage from "./pages/home";
 import LoginPage from "./pages/login";
 
@@ -11,7 +11,6 @@ import ClientLegalCasesPage from "./pages/clients/cases";
 
 import LegalCasesPage from "./pages/legalCases/list";
 import LegalCasePage from "./pages/legalCases/show";
-import LegalEditCasePage from "./pages/legalCases/edit";
 import LegalCaseNewPage from "./pages/legalCases/new";
 
 import MeetingsPage from "./pages/meetings/list";
@@ -27,6 +26,7 @@ import NotFoundPage from "./pages/notFound";
 import Navigation from "./components/navigation";
 
 function Routes() {
+
   return (
     <div>
       <Navigation />
@@ -37,7 +37,11 @@ function Routes() {
         <Route exact path="/clients" component={ClientsPage} />
         <Route exact path="/clients/new" component={ClientNewPage} />
         <Route exact path="/clients/:id" component={ClientPage} />
-        <Route exact path="/clients/:id/edit" component={ClientEditPage} />
+        <Route
+          exact
+          path="/clients/:id/edit"
+          component={ClientEditPage}
+        />
         <Route
           exact
           path="/clients/:id/cases"
@@ -46,7 +50,6 @@ function Routes() {
 
         <Route exact path="/cases" component={LegalCasesPage} />
         <Route exact path="/cases/:id" component={LegalCasePage} />
-        <Route exact path="/cases/:id/edit" component={LegalEditCasePage} />
         <Route
           exact
           path="/clients/:id/cases/new"

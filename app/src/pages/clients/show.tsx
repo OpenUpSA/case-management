@@ -59,7 +59,7 @@ const Page = () => {
         <Button onClick={() => history.push("/clients")}>
           {i18n.t("Client list")}
         </Button>
-        <div>{client ? client.preferred_name : ""}</div>
+        <div>Client: {client ? client.preferred_name : ""}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
         <Grid

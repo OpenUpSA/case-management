@@ -7,6 +7,8 @@ import { useStyles } from "../../utils";
 type Props = {
   meeting?: IMeeting;
   readOnly: boolean;
+  changed?: boolean;
+  setChanged?: any;
 };
 
 const Component = (props: Props) => {
@@ -42,7 +44,7 @@ const Component = (props: Props) => {
               htmlFor="name"
               shrink={true}
             >
-              {i18n.t("Name")}:
+              {i18n.t("Description")}:
             </InputLabel>
             <Input
               id="name"
@@ -56,6 +58,7 @@ const Component = (props: Props) => {
                   ...meeting,
                   name: e.target.value,
                 }));
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -81,6 +84,7 @@ const Component = (props: Props) => {
                   ...meeting,
                   location: e.target.value,
                 }));
+                props.setChanged(true)
               }}
             />
           </FormControl>
@@ -106,6 +110,7 @@ const Component = (props: Props) => {
                   ...meeting,
                   meeting_type: e.target.value,
                 }));
+                props.setChanged(true)
               }}
             />
           </FormControl>
@@ -132,6 +137,7 @@ const Component = (props: Props) => {
                   ...meeting,
                   meeting_date: e.target.value,
                 }));
+                props.setChanged(true)
               }}
             />
           </FormControl>
@@ -159,6 +165,7 @@ const Component = (props: Props) => {
                   ...meeting,
                   notes: e.target.value,
                 }));
+                props.setChanged(true)
               }}
             />
           </FormControl>

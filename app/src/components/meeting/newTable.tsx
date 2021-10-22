@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
 import SearchIcon from "@material-ui/icons/Search";
-import AddBoxIcon from '@mui/icons-material/AddBox';
+import AddBoxIcon from "@mui/icons-material/AddBox";
 
 import {
   Grid,
@@ -18,12 +18,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button
+  Button,
 } from "@material-ui/core";
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
 import { format } from "date-fns";
-import { ILegalCase,  IMeeting } from "../../types";
+import { ILegalCase, IMeeting } from "../../types";
 
 type Props = {
   meetings: IMeeting[];
@@ -42,7 +42,6 @@ const Component = (props: Props) => {
     filterMeetings();
   };
 
-
   //TODO: Better filtering
   const filterMeetings = () => {
     if (filterMeetingsValue) {
@@ -57,6 +56,9 @@ const Component = (props: Props) => {
               .includes(filterMeetingsValue.toLowerCase()) ||
             meeting.notes
               .toLowerCase()
+              .includes(filterMeetingsValue.toLowerCase()) ||
+            meeting
+              .name!.toLowerCase()
               .includes(filterMeetingsValue.toLowerCase())
           );
         })
@@ -118,8 +120,8 @@ const Component = (props: Props) => {
             startIcon={<AddBoxIcon />}
             style={{ textTransform: "none" }}
             onClick={() => {
-                history.push(`/cases/${props.legalCase?.id}/meetings/new`);
-              }}
+              history.push(`/cases/${props.legalCase?.id}/meetings/new`);
+            }}
           >
             {i18n.t("New meeting")}
           </Button>
@@ -129,7 +131,7 @@ const Component = (props: Props) => {
         <Input
           id="table_search"
           fullWidth
-          placeholder={i18n.t("Enter a meeting location, type, or note...")}
+          placeholder={i18n.t("Enter a meeting description, location, type, or note...")}
           startAdornment={
             <InputAdornment position="start">
               <IconButton>
@@ -149,11 +151,11 @@ const Component = (props: Props) => {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow className={classes.tableHeadRow}>
-            <TableCell className={classes.tableHeadCell}>
-                {i18n.t("Meeting name")}
+              <TableCell className={classes.tableHeadCell}>
+                {i18n.t("Meeting description")}
               </TableCell>
 
-              <TableCell className={classes.tableHeadCell} >
+              <TableCell className={classes.tableHeadCell}>
                 {i18n.t("Date")}
               </TableCell>
               <TableCell className={classes.tableHeadCell} colSpan={2}>
@@ -171,12 +173,11 @@ const Component = (props: Props) => {
                     history.push(`/meetings/${meeting.id}`);
                   }}
                 >
-                  
-                    <TableCell className={classes.tableBodyCell}>
-                      {meeting.name}
-                    </TableCell>
-                  
-                    <TableCell className={classes.tableBodyCell}>
+                  <TableCell className={classes.tableBodyCell}>
+                    {meeting.name}
+                  </TableCell>
+
+                  <TableCell className={classes.tableBodyCell}>
                     {format(
                       new Date(meeting.meeting_date),
                       "dd/MM/yyyy (h:ma)"
@@ -186,7 +187,7 @@ const Component = (props: Props) => {
                   <TableCell className={classes.tableBodyCell}>
                     {meeting.meeting_type}
                   </TableCell>
-                  
+
                   <TableCell className={classes.tableBodyCell} align="right">
                     <ArrowRightAltIcon />
                   </TableCell>

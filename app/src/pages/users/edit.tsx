@@ -1,17 +1,17 @@
 import i18n from "../../i18n";
 import React, { useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Prompt } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import { Breadcrumbs, Button, Container } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import SettingsIcon from "@material-ui/icons/Settings";
+import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 
 import Layout from "../../components/layout";
 import { getUser, updateUser } from "../../api";
 import { IUser, Nullable } from "../../types";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 import { useStyles } from "../../utils";
-import Grid from "@material-ui/core/Grid";
-import SettingsIcon from "@material-ui/icons/Settings";
-import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import UserForm from "../../components/user/form";
 
 type RouteParams = { id: string };
@@ -24,6 +24,7 @@ const Page = () => {
   const userId = parseInt(params.id);
   const [user, setUser] = React.useState<IUser>();
   const [saveError, setSaveError] = React.useState<Nullable<string>>();
+  const [changed, setChanged] = React.useState<boolean>(false);
 
   const saveUser = async (user: IUser) => {
     try {
@@ -111,19 +112,37 @@ const Page = () => {
                 variant="contained"
                 startIcon={<PermIdentityIcon />}
                 onClick={() => {
-                  history.push(`/users/${user?.id}/edit`);
+                  setChanged(false);
+                  if (!changed) {
+                    history.push(`/users/${user?.id}/edit`);
+                  }
                 }}
               >
                 {i18n.t("Save your account")}
               </Button>
             </Grid>
           </Grid>
+          <Prompt
+            when={changed}
+            message={() =>
+              "You have already made some changes\nAre you sure you want to leave?"
+            }
+          />
           {saveError ? (
             <p className={classes.formError}>
               {i18n.t("Error saving account details")} {saveError}
             </p>
           ) : null}
-          {user ? <UserForm user={user} readOnly={false} /> : ""}
+          {user ? (
+            <UserForm
+              user={user}
+              readOnly={false}
+              changed={changed}
+              setChanged={setChanged}
+            />
+          ) : (
+            ""
+          )}
         </form>
       </Container>
     </Layout>

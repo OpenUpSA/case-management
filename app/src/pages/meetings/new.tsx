@@ -89,13 +89,13 @@ const Page = () => {
           disabled={client ? false : true}
           onClick={() => history.push(`/clients/${client?.id}/cases`)}
         >
-          {client ? client.preferred_name : ""}
+          Client: {client ? client.preferred_name : ""}
         </Button>
         <Button
           disabled={legalCase ? false : true}
           onClick={() => history.push(`/cases/${legalCase?.id}`)}
         >
-          {legalCase?.case_number}
+          Case: {legalCase?.case_number}
         </Button>
         <div>{i18n.t("New meeting")}</div>
       </Breadcrumbs>

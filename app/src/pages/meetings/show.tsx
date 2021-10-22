@@ -67,15 +67,15 @@ const Page = () => {
           disabled={client ? false : true}
           onClick={() => history.push(`/clients/${client?.id}/cases`)}
         >
-          {client ? client.preferred_name : ""}
+          Client: {client ? client.preferred_name : ""}
         </Button>
         <Button
           disabled={legalCase ? false : true}
           onClick={() => history.push(`/cases/${legalCase?.id}`)}
         >
-          {legalCase?.case_number}
+          Case: {legalCase?.case_number}
         </Button>
-        <div>{meeting?.meeting_type}</div>
+        <div>Meeting: {meeting?.meeting_type}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
         <form>
@@ -91,7 +91,7 @@ const Page = () => {
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
               <Typography variant="h6">
-                <strong>{meeting?.meeting_type}</strong>
+               <strong>{meeting?.meeting_type}</strong>
               </Typography>
             </Grid>
             <Grid item>

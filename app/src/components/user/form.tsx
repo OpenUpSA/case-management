@@ -14,6 +14,8 @@ import React from "react";
 type Props = {
   user?: IUser;
   readOnly: boolean;
+  changed?: boolean;
+  setChanged?: any;
 };
 
 const Component = (props: Props) => {
@@ -69,6 +71,7 @@ const Component = (props: Props) => {
                   ...user,
                   name: e.target.value,
                 }));
+                props.setChanged(true)
               }}
             />
           </FormControl>
@@ -95,6 +98,7 @@ const Component = (props: Props) => {
                   ...user,
                   membership_number: e.target.value,
                 }));
+                props.setChanged(true)
               }}
             />
           </FormControl>
@@ -121,6 +125,7 @@ const Component = (props: Props) => {
                   ...user,
                   email: e.target.value,
                 }));
+                props.setChanged(true)
               }}
             />
           </FormControl>
@@ -146,6 +151,7 @@ const Component = (props: Props) => {
                   ...user,
                   contact_number: e.target.value,
                 }));
+                props.setChanged(true)
               }}
             />
           </FormControl>
@@ -174,6 +180,7 @@ const Component = (props: Props) => {
                   ...user,
                   case_office: e.target.value as number,
                 }));
+                props.setChanged(true)
               }}
               input={<Input id="select-multiple-chip" />}
               value={user.case_office || ""}
