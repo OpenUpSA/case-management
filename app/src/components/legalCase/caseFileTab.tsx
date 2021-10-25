@@ -74,12 +74,12 @@ export default function CaseFileTab(props: Props) {
         alignItems="center"
         className={classes.containerMarginBottom}
       >
-        <Grid item style={{ flexGrow: 1 }}>
+        <Grid item style={{ flexGrow: 1 }} >
           <strong>
             {legalCaseFiles?.length} {i18n.t("Case Files")}
           </strong>
         </Grid>
-        <Grid item xs={12} style={{ flexShrink: 2 }}>
+        <Grid item >
           <InputLabel
             className={classes.inputLabel}
             htmlFor="sort_table"

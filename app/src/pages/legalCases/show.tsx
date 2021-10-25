@@ -136,7 +136,7 @@ const Page = () => {
                 setStatus(event.target.value as any);         
                 statusPatch(event.target.value as any);
               }}
-              style={{ width: "200px" }}
+              style={{ width: "200px", fontSize: "13px" }}
               renderValue={()=>status}
             >
               {LegalCaseStates?.map((value) => (

@@ -1,13 +1,12 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
-import CreateIcon from "@mui/icons-material/Create";
-import DeleteIcon from "@mui/icons-material/Delete";
-
+import InputAdornment from '@mui/material/InputAdornment';
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
@@ -23,6 +22,12 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import { styled } from "@mui/material/styles";
+
+import CreateIcon from "@mui/icons-material/Create";
+import DeleteIcon from "@mui/icons-material/Delete";
+import LockIcon from '@mui/icons-material/Lock';
+
 import { useStyles } from "../../utils";
 import {
   ILegalCase,
@@ -33,7 +38,6 @@ import {
   ICaseHistory,
 } from "../../types";
 import { format } from "date-fns";
-import { styled } from "@mui/material/styles";
 import {
   updateLegalCase,
   getCaseTypes,
@@ -394,6 +398,11 @@ export default function CaseInfoTab(props: Props) {
             readOnly: true,
             disableUnderline: true,
             style: { fontSize: 13 },
+            endAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+                </InputAdornment>
+              ),
           }}
         />
         <InputLabel htmlFor="put-later" className={classes.plainLabel}>
@@ -436,6 +445,11 @@ export default function CaseInfoTab(props: Props) {
             readOnly: true,
             disableUnderline: true,
             style: { fontSize: 13 },
+            endAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+                </InputAdornment>
+              ),
           }}
         />
 
@@ -451,6 +465,11 @@ export default function CaseInfoTab(props: Props) {
             readOnly: true,
             disableUnderline: true,
             style: { fontSize: 13 },
+            endAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+                </InputAdornment>
+              ),
           }}
         />
         <InputLabel htmlFor="put-later" className={classes.plainLabel}>
@@ -502,6 +521,11 @@ export default function CaseInfoTab(props: Props) {
             readOnly: true,
             disableUnderline: true,
             style: { fontSize: 13 },
+            endAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+                </InputAdornment>
+              ),
           }}
         />
       </Grid>
