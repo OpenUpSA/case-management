@@ -7,8 +7,9 @@ import NewMeetingsTable from "../meeting/newTable";
 import Typography from "@mui/material/Typography";
 import CaseFileTab from "./caseFileTab";
 import CaseInfoTab from "./caseInfoTab";
-import { IMeeting, ILegalCase } from "../../types";
+import { IMeeting, ILegalCase, ILegalCaseFile } from "../../types";
 import { useStyles } from "../../utils";
+import { getLegalCaseFiles } from "../../api";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -48,6 +49,16 @@ function a11yProps(index: number) {
 export default function BasicTabs(props: Props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const [legalCaseFiles, setLegalCaseFiles] =
+  React.useState<ILegalCaseFile[] | undefined>();
+
+  React.useEffect(() => {
+    async function fetchData() {
+      const dataLegalCaseFiles = await getLegalCaseFiles(props.legalCase?.id);
+      setLegalCaseFiles(dataLegalCaseFiles);
+    }
+    fetchData();
+  }, [props.legalCase]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -72,10 +83,16 @@ export default function BasicTabs(props: Props) {
           variant="fullWidth"
         >
           <Tab
-          className={classes.tabButton}
+            className={classes.tabButton}
             label={
               <Typography
-                sx={{ paddingTop: 1, paddingRight: 2, textTransform: "none", color: "black", fontWeight: 700 }}
+                sx={{
+                  paddingTop: 1,
+                  paddingRight: 2,
+                  textTransform: "none",
+                  color: "black",
+                  fontWeight: 700,
+                }}
               >
                 Case info
               </Typography>
@@ -83,11 +100,17 @@ export default function BasicTabs(props: Props) {
             {...a11yProps(0)}
           />
           <Tab
-          className={classes.tabButton}
+            className={classes.tabButton}
             label={
               <Badge badgeContent={props.meetings.length} color="primary">
                 <Typography
-                  sx={{ paddingTop: 1, paddingRight: 2, textTransform: "none", color: "black", fontWeight: 700  }}
+                  sx={{
+                    paddingTop: 1,
+                    paddingRight: 2,
+                    textTransform: "none",
+                    color: "black",
+                    fontWeight: 700,
+                  }}
                 >
                   Meetings
                 </Typography>
@@ -96,20 +119,28 @@ export default function BasicTabs(props: Props) {
             {...a11yProps(1)}
           />
           <Tab
-          className={classes.tabButton}
+            className={classes.tabButton}
             label={
+              <Badge badgeContent={legalCaseFiles?.length} color="primary">
                 <Typography
-                  sx={{ paddingTop: 1, paddingRight: 2, textTransform: "none", color: "black", fontWeight: 700  }}
+                  sx={{
+                    paddingTop: 1,
+                    paddingRight: 2,
+                    textTransform: "none",
+                    color: "black",
+                    fontWeight: 700,
+                  }}
                 >
                   Case files
                 </Typography>
+              </Badge>
             }
             {...a11yProps(2)}
           />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <CaseInfoTab legalCase={props.legalCase}/>
+        <CaseInfoTab legalCase={props.legalCase} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <NewMeetingsTable
@@ -119,7 +150,7 @@ export default function BasicTabs(props: Props) {
         />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <CaseFileTab legalCase={props.legalCase} />
+        <CaseFileTab legalCase={props.legalCase} legalCaseFiles={legalCaseFiles}/>
       </TabPanel>
     </div>
   );

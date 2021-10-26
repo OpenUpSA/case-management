@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Prompt } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import MoreMenu from "../../components/moreMenu";
 
@@ -30,6 +30,7 @@ const Page = () => {
   const history = useHistory();
   const classes = useStyles();
   const [client] = React.useState<IClient>();
+  const [changed, setChanged] = React.useState<boolean>(false);
 
   const [nameError, setNameError] = React.useState<boolean>(false);
   const [prefNameError, setPrefNameError] = React.useState<boolean>(false);
@@ -180,11 +181,18 @@ const Page = () => {
                 variant="contained"
                 startIcon={<PersonAddIcon />}
                 type="submit"
+                onClick={()=> setChanged(false)}
               >
                 {i18n.t("Save client")}
               </Button>
             </Grid>
           </Grid>
+          <Prompt
+            when={changed}
+            message={() =>
+              "You have already made some changes\nAre you sure you want to leave?"
+            }
+          />
           <ClientForm
             emailErrorMessage={emailErrorMessage}
             phoneErrorMessage={phoneErrorMessage}
@@ -195,6 +203,8 @@ const Page = () => {
             client={client}
             readOnly={false}
             detailedView={true}
+            changed={changed}
+            setChanged={setChanged}
           />
         </form>
       </Container>
