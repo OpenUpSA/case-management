@@ -92,15 +92,15 @@ export interface IStorage {
   removeItem(key: string): void;
 }
 
-export interface ICaseHistory {
+export interface ILog {
   id?: number;
   created_at?: string;
   updated_at?: string;
-  parent_id?: number;
-  parent_type?: string;
-  target_id?: number;
-  target_type?: string;
-  action?: string;
-  note?: string;
-  user?: number;
+  parent_id: number | undefined;
+  parent_type: string;
+  target_id: number | undefined;
+  target_type: string;
+  action: string;
+  note: string;
+  user: number;
 }

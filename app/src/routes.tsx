@@ -26,6 +26,8 @@ import NotFoundPage from "./pages/notFound";
 
 import Navigation from "./components/navigation";
 
+import LogsPage from "./pages/logs/list";
+
 function Routes() {
   return (
     <div>
@@ -64,6 +66,8 @@ function Routes() {
 
         <Route exact path="/users/:id" component={UserPage} />
         <Route exact path="/users/:id/edit" component={UserEditPage} />
+
+        <Route exact path="/updates" component={LogsPage} />
 
         <Route component={NotFoundPage} />
       </Switch>
