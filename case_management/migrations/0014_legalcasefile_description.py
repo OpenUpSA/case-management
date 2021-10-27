@@ -8,7 +8,7 @@ from django.db import migrations, models
 def set_default_description(apps, schema_editor):
     LegalCaseFile = apps.get_model('case_management', 'LegalCaseFile')
 
-    for obj in LegalCaseFile.objects.all():
+    for obj in LegalCaseFile.objects.filter(description=''):
         obj.description = os.path.basename(obj.upload.name)
         obj.save()
 
@@ -26,9 +26,4 @@ class Migration(migrations.Migration):
             field=models.CharField(blank=True, default='', max_length=255),
         ),
         migrations.RunPython(set_default_description, migrations.RunPython.noop),
-        migrations.AlterField(
-            model_name='legalcasefile',
-            name='description',
-            field=models.CharField(blank=True, default=None, max_length=255),
-        ),
     ]

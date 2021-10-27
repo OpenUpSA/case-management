@@ -212,7 +212,13 @@ class LegalCaseFile(LifecycleModel, models.Model):
     legal_case = models.ForeignKey(
         LegalCase, related_name='files', on_delete=models.CASCADE)
     upload = models.FileField(upload_to='uploads/')
-    description = models.CharField(max_length=255, null=False, blank=True, default=upload.name)
+    description = models.CharField(
+        max_length=255, null=False, blank=True, default='')
+
+    def save(self, *args, **kwargs):
+        if self.description == '':
+            self.description = self.upload_file_name()
+        super().save(*args, **kwargs)
 
     @hook(AFTER_CREATE)
     def log_create(self):
