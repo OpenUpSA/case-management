@@ -79,10 +79,13 @@ class LegalCaseViewSet(viewsets.ModelViewSet):
     filterset_fields = ['client']
 
     def perform_create(self, serializer):
-        last_id = LegalCase.objects.latest('id').id + 1
+        try:
+            next_id = LegalCase.objects.latest('id').id + 1
+        except LegalCase.DoesNotExist:
+            next_id = 1
         case_office = CaseOffice.objects.get(pk=self.request.data['case_offices'][0])
         case_office_code = case_office.case_office_code
-        generated_case_number = f'{case_office_code}{time.strftime("%y%m")}{str(last_id).zfill(4)}'
+        generated_case_number = f'{case_office_code}{time.strftime("%y%m")}{str(next_id).zfill(4)}'
         serializer.save(case_number=generated_case_number)
 
 
