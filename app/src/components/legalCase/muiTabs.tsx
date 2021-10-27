@@ -49,8 +49,9 @@ function a11yProps(index: number) {
 export default function BasicTabs(props: Props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [legalCaseFiles, setLegalCaseFiles] =
-  React.useState<ILegalCaseFile[] | undefined>();
+  const [legalCaseFiles, setLegalCaseFiles] = React.useState<
+    ILegalCaseFile[] | undefined
+  >();
 
   React.useEffect(() => {
     async function fetchData() {
@@ -83,6 +84,7 @@ export default function BasicTabs(props: Props) {
           variant="fullWidth"
         >
           <Tab
+            key="caseInfo"
             className={classes.tabButton}
             label={
               <Typography
@@ -100,6 +102,7 @@ export default function BasicTabs(props: Props) {
             {...a11yProps(0)}
           />
           <Tab
+            key="meetings"
             className={classes.tabButton}
             label={
               <Badge badgeContent={props.meetings.length} color="primary">
@@ -119,6 +122,7 @@ export default function BasicTabs(props: Props) {
             {...a11yProps(1)}
           />
           <Tab
+            key="caseFiles"
             className={classes.tabButton}
             label={
               <Badge badgeContent={legalCaseFiles?.length} color="primary">
@@ -140,17 +144,24 @@ export default function BasicTabs(props: Props) {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <CaseInfoTab legalCase={props.legalCase} />
+        {props.legalCase ? <CaseInfoTab legalCase={props.legalCase} /> : null}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <NewMeetingsTable
-          meetings={props.meetings ? props.meetings : []}
-          standalone={false}
-          legalCase={props.legalCase}
-        />
+        {props.meetings && props.legalCase ? (
+          <NewMeetingsTable
+            meetings={props.meetings ? props.meetings : []}
+            standalone={false}
+            legalCase={props.legalCase}
+          />
+        ) : null}
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <CaseFileTab legalCase={props.legalCase} legalCaseFiles={legalCaseFiles}/>
+        {legalCaseFiles && props.legalCase ? (
+          <CaseFileTab
+            legalCase={props.legalCase}
+            legalCaseFiles={legalCaseFiles}
+          />
+        ) : null}
       </TabPanel>
     </div>
   );

@@ -146,7 +146,7 @@ export default function CaseFileTab(props: Props) {
       {legalCaseFiles && legalCaseFiles.length > 0 ? (
         <div>
           {legalCaseFiles.map((legalCaseFile) => (
-            <Grid container className={classes.caseFiles}>
+            <Grid container key={legalCaseFile.id} className={classes.caseFiles}>
               <Grid
                 item
                 className={classes.caseFilesItem}

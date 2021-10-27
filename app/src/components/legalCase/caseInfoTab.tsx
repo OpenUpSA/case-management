@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
-import InputAdornment from '@mui/material/InputAdornment';
+import InputAdornment from "@mui/material/InputAdornment";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
@@ -26,7 +26,7 @@ import { styled } from "@mui/material/styles";
 
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
-import LockIcon from '@mui/icons-material/Lock';
+import LockIcon from "@mui/icons-material/Lock";
 
 import { useStyles } from "../../utils";
 import {
@@ -35,7 +35,7 @@ import {
   ICaseOffice,
   IUser,
   IClient,
-  ICaseHistory,
+  ILog,
 } from "../../types";
 import { format } from "date-fns";
 import {
@@ -44,20 +44,23 @@ import {
   getCaseOffices,
   getClient,
   getUser,
-  getCaseHistory,
-  updateCaseHistory,
+  getLogs,
+  createLog,
 } from "../../api";
 
 const LogLabels = new Map([
-  ['LegalCase Create', 'Case created'],
-  ['LegalCase Update', 'Case update'],
-  ['Meeting Create', 'New meeting'],
-  ['Meeting Update', 'Meeting updated'],
-  ['LegalCaseFile Create', 'File uploaded'],
-  ['LegalCaseFile Update', 'File updated']
+  ["LegalCase Create", "Case created"],
+  ["LegalCase Update", "Case update"],
+  ["Meeting Create", "New meeting"],
+  ["Meeting Update", "Meeting updated"],
+  ["LegalCaseFile Create", "File uploaded"],
+  ["LegalCaseFile Update", "File updated"],
 ]);
 
-const logLabel = (targetAction:string | undefined, targetType: string | undefined) => {
+const logLabel = (
+  targetAction: string | undefined,
+  targetType: string | undefined
+) => {
   return LogLabels.get(`${targetType} ${targetAction}`);
 };
 
@@ -90,7 +93,7 @@ export default function CaseInfoTab(props: Props) {
   const [selectCaseOffice, setSelectCaseOffice] = React.useState<
     number[] | undefined
   >([]);
-  const [caseHistory, setCaseHistory] = React.useState<ICaseHistory[]>([]);
+  const [caseHistory, setCaseHistory] = React.useState<ILog[]>([]);
   const [open, setOpen] = React.useState(false);
   const [manualUpdateValue, setManualUpdateValue] = React.useState<string>("");
 
@@ -105,10 +108,7 @@ export default function CaseInfoTab(props: Props) {
       const clientInfo = await getClient(props.legalCase?.client);
       const userNumber = Number(props.legalCase?.users?.join());
       const userInfo = await getUser(userNumber);
-      const historyData = await getCaseHistory(
-        props.legalCase?.id!,
-        "LegalCase"
-      );
+      const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
 
       setClient(clientInfo);
       setCaseWorker(userInfo);
@@ -142,7 +142,10 @@ export default function CaseInfoTab(props: Props) {
   ) => {
     handleClose();
     try {
-      const caseHistory: ICaseHistory = {
+      const caseHistory: ILog = {
+        id: 0,
+        created_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+        updated_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
         parent_id: parent_id,
         parent_type: parent_type,
         target_id: target_id,
@@ -151,11 +154,8 @@ export default function CaseInfoTab(props: Props) {
         user: user,
         note: note,
       };
-      await updateCaseHistory(caseHistory);
-      const historyData = await getCaseHistory(
-        props.legalCase?.id!,
-        "LegalCase"
-      );
+      await createLog(caseHistory);
+      const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
       setCaseHistory(historyData);
     } catch (e) {
       console.log(e);
@@ -227,7 +227,7 @@ export default function CaseInfoTab(props: Props) {
               Case summary:
             </InputLabel>
           </Grid>
-          <Grid item direction="row" sx={{ marginBottom: "-10px", zIndex: 2 }}>
+          <Grid item sx={{ marginBottom: "-10px", zIndex: 2 }}>
             <BlackTooltip title="Discard changes" arrow placement="top">
               <IconButton
                 onClick={() => discardChange()}
@@ -344,7 +344,7 @@ export default function CaseInfoTab(props: Props) {
                 .reverse()
                 .map((item) => (
                   <>
-                    <ListItem className={classes.caseHistoryList}>
+                    <ListItem key={`caseHistory_${item.id}`} className={classes.caseHistoryList}>
                       <Chip
                         label={logLabel(item.action, item.target_type)}
                         className={classes.chip}
@@ -399,10 +399,10 @@ export default function CaseInfoTab(props: Props) {
             disableUnderline: true,
             style: { fontSize: 13 },
             endAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
-                </InputAdornment>
-              ),
+              <InputAdornment position="start">
+                <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+              </InputAdornment>
+            ),
           }}
         />
         <InputLabel htmlFor="put-later" className={classes.plainLabel}>
@@ -446,10 +446,10 @@ export default function CaseInfoTab(props: Props) {
             disableUnderline: true,
             style: { fontSize: 13 },
             endAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
-                </InputAdornment>
-              ),
+              <InputAdornment position="start">
+                <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+              </InputAdornment>
+            ),
           }}
         />
 
@@ -466,10 +466,10 @@ export default function CaseInfoTab(props: Props) {
             disableUnderline: true,
             style: { fontSize: 13 },
             endAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
-                </InputAdornment>
-              ),
+              <InputAdornment position="start">
+                <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+              </InputAdornment>
+            ),
           }}
         />
         <InputLabel htmlFor="put-later" className={classes.plainLabel}>
@@ -522,10 +522,10 @@ export default function CaseInfoTab(props: Props) {
             disableUnderline: true,
             style: { fontSize: 13 },
             endAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
-                </InputAdornment>
-              ),
+              <InputAdornment position="start">
+                <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+              </InputAdornment>
+            ),
           }}
         />
       </Grid>
