@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import SearchIcon from "@material-ui/icons/Search";
 
 import Typography from "@mui/material/Typography";
@@ -23,8 +22,7 @@ import List from "@mui/material/List";
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
 import { format } from "date-fns";
-import { getLegalCases, getClients } from "../../api";
-import { ILegalCase, IClient, ILog } from "../../types";
+import { ILog } from "../../types";
 
 const LogLabels = new Map([
   ['LegalCase Create', 'Case created'],
@@ -45,10 +43,7 @@ type Props = {
 };
 
 const Component = (props: Props) => {
-  const history = useHistory();
   const classes = useStyles();
-  const [clients, setClients] = React.useState<IClient[]>();
-  const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
   const [filteredLogs, setfilteredLogs] = React.useState<ILog[]>();
   const [filterLogsValue, setfilterLogsValue] = React.useState<string>();
 
@@ -80,16 +75,6 @@ const Component = (props: Props) => {
       filterLogs();
     }
   });
-
-  useEffect(() => {
-    async function fetchData() {
-      const dataClients = await getClients();
-      const dataLegalCases = await getLegalCases();
-      setLegalCases(dataLegalCases);
-      setClients(dataClients);
-    }
-    fetchData();
-  }, []);
 
   return (
     <div>

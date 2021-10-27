@@ -11,9 +11,6 @@ import AddIcon from "@mui/icons-material/Add";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import WorkIcon from "@mui/icons-material/Work";
-import StickyNote2Icon from "@mui/icons-material/StickyNote2";
-import ImageIcon from "@mui/icons-material/Image";
-import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import LinkIcon from "@mui/icons-material/Link";
 import Divider from "@mui/material/Divider";
 import { format } from "date-fns";
@@ -39,7 +36,6 @@ type Props = {
 };
 
 export default function CaseFileTab(props: Props) {
-  const [caseFiles] = React.useState<number>(0);
   const [legalCaseFiles, setLegalCaseFiles] =
     React.useState<ILegalCaseFile[]>();
   const classes = useStyles();
@@ -64,7 +60,7 @@ export default function CaseFileTab(props: Props) {
       setLegalCaseFiles(dataLegalCaseFiles);
     }
     fetchData();
-  }, []);
+  }, [props.legalCase.id]);
   return (
     <>
       <Grid
