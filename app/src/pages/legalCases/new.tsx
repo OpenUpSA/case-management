@@ -86,7 +86,7 @@ const Page = () => {
           disabled={client ? false : true}
           onClick={() => history.push(`/clients/${client?.id}/cases`)}
         >
-          {client ? client.preferred_name : ""}
+          Client: {client ? client.preferred_name : ""}
         </Button>
         <div>{i18n.t("New case")}</div>
       </Breadcrumbs>

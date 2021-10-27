@@ -104,9 +104,9 @@ const Page = () => {
           disabled={client ? false : true}
           onClick={() => history.push(`/clients/${client?.id}/cases`)}
         >
-          {client ? client.preferred_name : ""}
+          Client: {client ? client.preferred_name : ""}
         </Button>
-        <div>{legalCase?.case_number}</div>
+        <div>Case: {legalCase?.case_number}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
         <Grid
@@ -136,7 +136,7 @@ const Page = () => {
                 setStatus(event.target.value as any);         
                 statusPatch(event.target.value as any);
               }}
-              style={{ width: "200px" }}
+              style={{ width: "200px", fontSize: "13px" }}
               renderValue={()=>status}
             >
               {LegalCaseStates?.map((value) => (

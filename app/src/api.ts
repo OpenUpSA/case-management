@@ -176,11 +176,11 @@ export const authenticate = async (credentials: ICredentials) => {
 };
 
 export const getLogs = async (id?: number, parent_type?: string) => {
-  const idParam = id ? `?id=${id}` : "";
+  const idParam = id ? `parent_id=${id}` : "";
   const parent_typeParam =
     parent_type ? `&parent_type=${parent_type}` : "";
   return await httpGet<ILog[]>(
-    `/logs/?${idParam}&${parent_typeParam}`
+    `/logs/?${idParam}${parent_typeParam}`
   );
 };
 

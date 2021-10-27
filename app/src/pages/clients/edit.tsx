@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams, Prompt } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import MoreMenu from "../../components/moreMenu";
 
@@ -34,6 +33,7 @@ const Page = () => {
   const params = useParams<RouteParams>();
   const clientId = parseInt(params.id);
   const [client, setClient] = React.useState<IClient>();
+  const [changed, setChanged] = React.useState<boolean>(false);
 
   const saveClient = async (client: IClient) => {
     try {
@@ -62,7 +62,7 @@ const Page = () => {
         <Button onClick={() => history.push("/clients")}>
           {i18n.t("Client list")}
         </Button>
-        <div>{client ? client.preferred_name : ""}</div>
+        <div>Client: {client ? client.preferred_name : ""}</div>
       </Breadcrumbs>
       <Container maxWidth="md">
         <form
@@ -123,12 +123,25 @@ const Page = () => {
                 variant="contained"
                 startIcon={<PersonOutlineIcon />}
                 type="submit"
+                onClick={()=> setChanged(false)}
               >
                 {i18n.t("Save client")}
               </Button>
             </Grid>
           </Grid>
-          <ClientForm client={client} readOnly={false} detailedView={true} />
+          <Prompt
+            when={changed}
+            message={() =>
+              "You have already made some changes\nAre you sure you want to leave?"
+            }
+          />
+          <ClientForm
+            client={client}
+            readOnly={false}
+            detailedView={true}
+            changed={changed}
+            setChanged={setChanged}
+          />
         </form>
       </Container>
     </Layout>

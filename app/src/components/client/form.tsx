@@ -23,6 +23,8 @@ type Props = {
   nameError?: boolean;
   prefNameError?: boolean;
   idTypeErrorMessage?: boolean;
+  changed?: boolean;
+  setChanged?: any;
 };
 
 const Component = (props: Props) => {
@@ -35,7 +37,7 @@ const Component = (props: Props) => {
     contact_email: "",
     name: "",
   });
-
+  
   useEffect(() => {
     if (props.client) {
       setClient(props.client);
@@ -73,6 +75,7 @@ const Component = (props: Props) => {
                   ...client,
                   preferred_name: e.target.value,
                 }));
+                props.setChanged(true)
               }}
             />
           </FormControl>
@@ -104,6 +107,7 @@ const Component = (props: Props) => {
                     ...client,
                     name: e.target.value,
                   }));
+                  props.setChanged(true)
                 }}
               />
             </FormControl>
@@ -137,6 +141,7 @@ const Component = (props: Props) => {
                   ...client,
                   official_identifier: e.target.value,
                 }));
+                props.setChanged(true)
               }}
             />
           </FormControl>
@@ -171,6 +176,7 @@ const Component = (props: Props) => {
                     ...client,
                     official_identifier_type: e.target.value,
                   }));
+                  props.setChanged(true)
                 }}
                 input={<Input id="select-multiple-chip" />}
                 value={client.official_identifier_type}
@@ -218,6 +224,7 @@ const Component = (props: Props) => {
                   ...client,
                   contact_number: e.target.value,
                 }));
+                props.setChanged(true)
               }}
             />
           </FormControl>
@@ -249,6 +256,7 @@ const Component = (props: Props) => {
                     ...client,
                     contact_email: e.target.value,
                   }));
+                  props.setChanged(true)
                 }}
               />
             </FormControl>

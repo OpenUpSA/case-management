@@ -33,6 +33,7 @@ import i18n from "../../i18n";
 
 type Props = {
   legalCase: ILegalCase;
+  legalCaseFiles: ILegalCaseFile[] | undefined;
 };
 
 export default function CaseFileTab(props: Props) {
@@ -55,12 +56,8 @@ export default function CaseFileTab(props: Props) {
   };
 
   useEffect(() => {
-    async function fetchData() {
-      const dataLegalCaseFiles = await getLegalCaseFiles(props.legalCase.id);
-      setLegalCaseFiles(dataLegalCaseFiles);
-    }
-    fetchData();
-  }, [props.legalCase.id]);
+    setLegalCaseFiles(props.legalCaseFiles)
+  }, [props.legalCaseFiles]);
   return (
     <>
       <Grid
@@ -70,12 +67,12 @@ export default function CaseFileTab(props: Props) {
         alignItems="center"
         className={classes.containerMarginBottom}
       >
-        <Grid item style={{ flexGrow: 1 }}>
+        <Grid item style={{ flexGrow: 1 }} >
           <strong>
             {legalCaseFiles?.length} {i18n.t("Case Files")}
           </strong>
         </Grid>
-        <Grid item xs={12} style={{ flexShrink: 2 }}>
+        <Grid item >
           <InputLabel
             className={classes.inputLabel}
             htmlFor="sort_table"
@@ -149,7 +146,7 @@ export default function CaseFileTab(props: Props) {
       {legalCaseFiles && legalCaseFiles.length > 0 ? (
         <div>
           {legalCaseFiles.map((legalCaseFile) => (
-            <Grid container className={classes.caseFiles}>
+            <Grid container key={legalCaseFile.id} className={classes.caseFiles}>
               <Grid
                 item
                 className={classes.caseFilesItem}

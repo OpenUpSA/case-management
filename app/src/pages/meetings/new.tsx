@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams, Prompt } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import MoreMenu from "../../components/moreMenu";
 
@@ -45,6 +44,7 @@ const Page = () => {
     notes: "",
     name: "",
   });
+  const [changed, setChanged] = React.useState<boolean>(false);
 
   const newMeeting = async (
     notes: string,
@@ -89,13 +89,13 @@ const Page = () => {
           disabled={client ? false : true}
           onClick={() => history.push(`/clients/${client?.id}/cases`)}
         >
-          {client ? client.preferred_name : ""}
+          Client: {client ? client.preferred_name : ""}
         </Button>
         <Button
           disabled={legalCase ? false : true}
           onClick={() => history.push(`/cases/${legalCase?.id}`)}
         >
-          {legalCase?.case_number}
+          Case: {legalCase?.case_number}
         </Button>
         <div>{i18n.t("New meeting")}</div>
       </Breadcrumbs>
@@ -154,12 +154,24 @@ const Page = () => {
                 variant="contained"
                 startIcon={<RateReviewIcon />}
                 type="submit"
+                onClick={()=> setChanged(false)}
               >
                 {i18n.t("Save meeting")}
               </Button>
             </Grid>
           </Grid>
-          <MeetingForm meeting={meeting} readOnly={false} />
+          <Prompt
+            when={changed}
+            message={() =>
+              "You have already made some changes\nAre you sure you want to leave?"
+            }
+          />
+          <MeetingForm
+            meeting={meeting}
+            readOnly={false}
+            changed={changed}
+            setChanged={setChanged}
+          />
         </form>
       </Container>
     </Layout>
