@@ -58,7 +58,7 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
 
     if parent_type is None:
         parent_type = self.__class__.__name__
-    
+
     if note is None:
         target_model = apps.get_model('case_management', target_type)
         record = target_model.objects.filter(id=target_id)
@@ -211,8 +211,8 @@ class LegalCaseFile(LifecycleModel, models.Model):
 
     legal_case = models.ForeignKey(
         LegalCase, related_name='files', on_delete=models.CASCADE)
-
     upload = models.FileField(upload_to='uploads/')
+    description = models.CharField(max_length=255, null=False, blank=True, default=upload.name)
 
     @hook(AFTER_CREATE)
     def log_create(self):
