@@ -133,6 +133,11 @@ class Client(LifecycleModel, models.Model):
     contact_number = PhoneNumberField(blank=True)
     contact_email = models.EmailField(max_length=254, blank=True)
 
+    def save(self, *args, **kwargs):
+        if self.preferred_name == '':
+            self.preferred_name = self.name
+        super().save(*args, **kwargs)
+
     @hook(AFTER_CREATE)
     def log_create(self):
         logIt(self, 'Create')
