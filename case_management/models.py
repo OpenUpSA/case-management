@@ -125,12 +125,13 @@ class Client(LifecycleModel, models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     name = models.CharField(max_length=255, null=False, blank=False)
-    preferred_name = models.CharField(max_length=128, null=False, blank=False)
-    official_identifier = models.CharField(max_length=64)
+    preferred_name = models.CharField(max_length=128, null=False, blank=True)
+    official_identifier = models.CharField(max_length=64, null=True)
     official_identifier_type = models.CharField(max_length=20,
-                                                choices=OfficialIdentifiers.choices)
-    contact_number = PhoneNumberField()
-    contact_email = models.EmailField(max_length=254)
+                                                choices=OfficialIdentifiers.choices,
+                                                null=True)
+    contact_number = PhoneNumberField(blank=True)
+    contact_email = models.EmailField(max_length=254, blank=True)
 
     @hook(AFTER_CREATE)
     def log_create(self):
