@@ -58,7 +58,7 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
 
     if parent_type is None:
         parent_type = self.__class__.__name__
-    
+
     if note is None:
         target_model = apps.get_model('case_management', target_type)
         record = target_model.objects.filter(id=target_id)
@@ -155,11 +155,11 @@ class LegalCase(LifecycleModel, models.Model):
     case_number = models.CharField(
         max_length=32, null=False, blank=False, unique=True)
     state = models.CharField(max_length=10,
-                             choices=CaseStates.choices)
+                             choices=CaseStates.choices, default=CaseStates.OPENED)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     client = models.ForeignKey(
         Client, related_name='legal_cases', on_delete=models.CASCADE)
-    case_types = models.ManyToManyField(CaseType)
+    case_types = models.ManyToManyField(CaseType, blank=True)
     case_offices = models.ManyToManyField(CaseOffice)
 
     summary = models.TextField(null=False, blank=True, default="")
