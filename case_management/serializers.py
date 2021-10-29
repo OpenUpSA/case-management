@@ -20,6 +20,14 @@ class LegalCaseSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     legal_cases = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
+    def validate_official_identifier_type(self, official_identifier_type_value):
+        official_identifier = self.initial_data.get('official_identifier')
+        if official_identifier is not None and official_identifier_type_value is None:
+            raise serializers.ValidationError({
+                'official_identifier_type': f'official_identifier_type is mandatory if official_identifier is provided'
+            })
+        return official_identifier_type_value
+
     class Meta:
         model = Client
         fields = '__all__'
