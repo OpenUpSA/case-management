@@ -131,7 +131,9 @@ class Client(LifecycleModel, models.Model):
                                                 choices=OfficialIdentifiers.choices,
                                                 null=True)
     contact_number = PhoneNumberField(blank=True)
+    alternative_contact_number = PhoneNumberField(blank=True)
     contact_email = models.EmailField(max_length=254, blank=True)
+    alternative_contact_email = models.EmailField(max_length=254, blank=True)
 
     def save(self, *args, **kwargs):
         if self.preferred_name == '':
