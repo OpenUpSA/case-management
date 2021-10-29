@@ -39,7 +39,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3321",
     "http://localhost:3000",
     "https://osf-case-management-app.netlify.app",
-    "https://app.casefile.org.za"
+    "https://app.casefile.org.za",
+    "https://staging.casefile.org.za/"
 ]
 
 # Application definition
