@@ -5,6 +5,11 @@ A client-side browser app for the OSF Case Management project.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Development Setup
+Run `yarn install` to download all dependencies
+
+Create a .env file and set `REACT_APP_API_BASE_URL=https://casemanagement.openup.org.za/api/v1` to connect with the live backend, this is to bypass setting up the backend yourself with docker, also set `REACT_APP_GA_ID=` equal to the google analytics Measurement ID.
+
 ## Available Scripts
 
 In the project directory, you can run:
