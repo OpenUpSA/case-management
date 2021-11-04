@@ -1,5 +1,14 @@
 from rest_framework import serializers
+from django_countries.serializers import CountryFieldMixin
 from case_management.models import CaseOffice, CaseType, Client, LegalCase, Meeting, User, Log, LegalCaseFile
+from case_management.enums import MaritalStatuses
+
+
+class LogSerializer(serializers.ModelSerializer):
+    extra = serializers.ReadOnlyField()
+    class Meta:
+        model = Log
+        fields = '__all__'
 
 
 class CaseTypeSerializer(serializers.ModelSerializer):
@@ -17,16 +26,28 @@ class LegalCaseSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ClientSerializer(serializers.ModelSerializer):
+class ClientSerializer(CountryFieldMixin, serializers.ModelSerializer):
     legal_cases = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    updates = LogSerializer(many=True, read_only=True)
 
-    def validate_official_identifier_type(self, official_identifier_type_value):
-        official_identifier = self.initial_data.get('official_identifier')
-        if official_identifier is not None and official_identifier_type_value is None:
+    def validate(self, data):
+        if data.get('official_identifier') and not data.get('official_identifier_type'):
             raise serializers.ValidationError({
-                'official_identifier_type': f'official_identifier_type is mandatory if official_identifier is provided'
+                'official_identifier_type': 'official_identifier_type is mandatory if official_identifier is provided'
             })
-        return official_identifier_type_value
+        if data.get('translator_needed') and not data.get('translator_language'):
+            raise serializers.ValidationError({
+                'translator_language': 'translator_language is mandatory if translator_needed is true'
+            })
+        if data.get('marital_status') == MaritalStatuses.CIVIL_MARRIAGE and not data.get('civil_marriage_type'):
+            raise serializers.ValidationError({
+                'civil_marriage_type': f'civil_marriage_type is mandatory if marital_status is {MaritalStatuses.CIVIL_MARRIAGE}'
+            })
+        if data.get('has_disability') and not data.get('disabilities'):
+            raise serializers.ValidationError({
+                'disabilities': f'disabilities is mandatory if has_disability is true'
+            })
+        return data
 
     class Meta:
         model = Client
@@ -43,13 +64,6 @@ class CaseOfficeSerializer(serializers.ModelSerializer):
 class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
-        fields = '__all__'
-
-
-class LogSerializer(serializers.ModelSerializer):
-    extra = serializers.ReadOnlyField()
-    class Meta:
-        model = Log
         fields = '__all__'
 
 

@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "phonenumber_field",
     "rest_framework.authtoken",
+    "django_countries",
     "django_filters",
     "drf_yasg",
 ]
