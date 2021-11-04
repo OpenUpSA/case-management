@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   ILegalCase,
   IClient,
@@ -18,7 +19,7 @@ async function http<T>(path: string, config: RequestInit): Promise<T> {
   path = `${API_BASE_URL}${path}`;
   const request = new Request(path, config);
   const response = await fetch(request);
-  return response.json().catch(() => ({}));
+  return response.json().catch((e) => {console.log(e)});
 }
 
 export async function httpGet<T>(
@@ -177,11 +178,8 @@ export const authenticate = async (credentials: ICredentials) => {
 
 export const getLogs = async (id?: number, parent_type?: string) => {
   const idParam = id ? `parent_id=${id}` : "";
-  const parent_typeParam =
-    parent_type ? `&parent_type=${parent_type}` : "";
-  return await httpGet<ILog[]>(
-    `/logs/?${idParam}${parent_typeParam}`
-  );
+  const parent_typeParam = parent_type ? `&parent_type=${parent_type}` : "";
+  return await httpGet<ILog[]>(`/logs/?${idParam}${parent_typeParam}`);
 };
 
 export const createLog = async (log: ILog) => {
@@ -194,9 +192,35 @@ export const getLegalCaseFiles = async (legal_case?: number) => {
   );
 };
 
+// export const createLegalCaseFile = async (
+//   legal_case: number | undefined,
+//   file: any
+// ) => {
+//   const formData = new FormData();
+
+//   formData.append("upload", file);
+//   if (legal_case) {
+//     formData.append("legal_case", legal_case.toString());
+//   }
+
+//   const options = {
+//     method: "POST",
+//     body: formData,
+//   };
+//   const response = await fetch(`${API_BASE_URL}/files/`, options);
+//   return response.json().catch(() => ({}));
+// };
+
+type optionsType = {
+  method: string | any;
+  body: any;
+  onUploadProgress: any;
+};
+
 export const createLegalCaseFile = async (
   legal_case: number | undefined,
-  file: any
+  file: any,
+  onUploadProgress: any
 ) => {
   const formData = new FormData();
 
@@ -205,10 +229,15 @@ export const createLegalCaseFile = async (
     formData.append("legal_case", legal_case.toString());
   }
 
-  const options = {
+  const options: optionsType = {
     method: "POST",
     body: formData,
+    onUploadProgress: onUploadProgress,
   };
-  const response = await fetch(`${API_BASE_URL}/files/`, options);
-  return response.json().catch(() => ({}));
+  axios.post(`${API_BASE_URL}/files/`, formData, options).then((res) => {
+    return res;
+  }).catch((error) => {
+      console.log(error);
+      
+  })
 };

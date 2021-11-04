@@ -22,6 +22,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 
 import CreateIcon from "@mui/icons-material/Create";
@@ -96,11 +97,13 @@ export default function CaseInfoTab(props: Props) {
   const [caseHistory, setCaseHistory] = React.useState<ILog[]>([]);
   const [open, setOpen] = React.useState(false);
   const [manualUpdateValue, setManualUpdateValue] = React.useState<string>("");
+  const [width, setWidth] = React.useState<number>(0);
 
   React.useEffect(() => {
     setSelectCaseOffice(props.legalCase?.case_offices);
     setCaseSummary(props.legalCase?.summary);
     setSelectCaseType(props.legalCase?.case_types);
+    setWidth(window.innerWidth);
 
     async function fetchData() {
       const dataCaseTypes = await getCaseTypes();
@@ -351,10 +354,11 @@ export default function CaseInfoTab(props: Props) {
                       />
                       <ListItemText
                         primary={
-                          <Typography variant="caption">{item.note}</Typography>
+                          <Typography variant="caption">{item.note.length > 12 && width <= 500 ? item.note.slice(0, 10) + "..." : item.note}</Typography>
                         }
-                        style={{ flexGrow: 1 }}
+                        className={classes.caseHistoryText}
                       />
+                      <Box className={classes.caseHistoryBox}>
                       <ListItemAvatar sx={{ minWidth: 40 }}>
                         <Avatar
                           alt="Paul Watson"
@@ -366,6 +370,7 @@ export default function CaseInfoTab(props: Props) {
                       <Typography sx={{ fontSize: "11px", color: "#616161" }}>
                         {format(new Date(item?.created_at!), "MMM dd, yyyy")}
                       </Typography>
+                      </Box>
                     </ListItem>
                     <Divider />
                   </>
