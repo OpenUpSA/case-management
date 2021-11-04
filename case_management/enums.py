@@ -5,8 +5,14 @@ class OfficialIdentifiers(models.TextChoices):
     NATIONAL_ID = 'National', 'National Identity Number'
     PASSPORT_NUMBER = 'Passport', 'Passport Number'
     REFUGEE_PASSPORT_ID_NUMBER = 'RefugeePassport', 'Refugee Passport ID Number'
-    SECTION_24_PERMIT_ID_NUMBER = 'Section22AsylymSeekerVisa', 'Section 22 Asylym Seeker Visa ID Number'
-    SECTION_24_PERMIT_FILE_NUMBER = 'Section24RefugeePermit', 'Section 24 Refugee Permit File Number'
+    SECTION_24_PERMIT_ID_NUMBER = (
+        'Section22AsylymSeekerVisa',
+        'Section 22 Asylym Seeker Visa ID Number',
+    )
+    SECTION_24_PERMIT_FILE_NUMBER = (
+        'Section24RefugeePermit',
+        'Section 24 Refugee Permit File Number',
+    )
 
 
 class CaseStates(models.TextChoices):
@@ -43,8 +49,14 @@ class MaritalStatuses(models.TextChoices):
 
 class CivilMarriageTypes(models.TextChoices):
     IN_COMMUNITY = 'InCommunity', 'In Community Of Property'
-    OUT_OF_COMMUNITY_WITH_ACCRUAL = 'OutOfCommunityWithAccrual', 'Out Of Community Of Propery Subject To Accrual'
-    OUT_OF_COMMUNITY_NO_ACCRUAL = 'OutOfCommunityNoAccrual', 'Out Of Community Of Propery No Accrual'
+    OUT_OF_COMMUNITY_WITH_ACCRUAL = (
+        'OutOfCommunityWithAccrual',
+        'Out Of Community Of Propery Subject To Accrual',
+    )
+    OUT_OF_COMMUNITY_NO_ACCRUAL = (
+        'OutOfCommunityNoAccrual',
+        'Out Of Community Of Propery No Accrual',
+    )
 
 
 class Languages(models.TextChoices):

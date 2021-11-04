@@ -1,3 +1,7 @@
+[tool.black]
+target-version = ['py38']
+skip-string-normalization = true
+
 [tool.poetry]
 name = "case_management"
 version = "0.1.0"
