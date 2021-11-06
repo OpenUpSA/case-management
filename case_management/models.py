@@ -229,6 +229,9 @@ class Client(LifecycleModel, models.Model):
 
     @property
     def updates(self):
+        '''TODO: Do this in scalable way e.g. in view using proper join
+        The below would not scale, because the request is done for each row
+        '''
         updates = Log.objects.filter(target_type='Client', target_id=self.id).order_by(
             '-updated_at'
         )
