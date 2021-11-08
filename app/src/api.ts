@@ -11,8 +11,7 @@ import {
   ILegalCaseFile,
 } from "./types";
 
-const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
+const API_BASE_URL = "http://localhost:8000/api/v1" || process.env.REACT_APP_API_BASE_URL;
 
 async function http<T>(path: string, config: RequestInit): Promise<T> {
   path = `${API_BASE_URL}${path}`;

@@ -1,7 +1,16 @@
 from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
 
-from case_management.models import LegalCase, CaseOffice, CaseType, Client, User, Meeting, Log, LegalCaseFile
+from case_management.models import (
+    LegalCase,
+    CaseOffice,
+    CaseType,
+    Client,
+    User,
+    Meeting,
+    Log,
+    LegalCaseFile,
+)
 from case_management.forms import UserCreationForm, UserChangeForm
 
 
@@ -23,18 +32,40 @@ class UserAdmin(UserAdmin, DefaultAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     model = User
-    list_display = ('email', 'is_staff', 'is_active',)
-    list_filter = ('email', 'is_staff', 'is_active',)
+    list_display = (
+        'email',
+        'is_staff',
+        'is_active',
+    )
+    list_filter = (
+        'email',
+        'is_staff',
+        'is_active',
+    )
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'name',
-         'membership_number', 'contact_number', 'case_office')}),
+        (
+            None,
+            {
+                'fields': (
+                    'email',
+                    'password',
+                    'name',
+                    'membership_number',
+                    'contact_number',
+                    'case_office',
+                )
+            },
+        ),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active')}
-         ),
+        (
+            None,
+            {
+                'classes': ('wide',),
+                'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active'),
+            },
+        ),
     )
     search_fields = ('email',)
     ordering = ('email',)
@@ -73,6 +104,7 @@ class MeetingAdmin(DefaultAdmin):
 class LogAdmin(DefaultAdmin):
     model = Log
     list_display = ['action', 'target_type']
+
 
 class LegalCaseFileAdmin(DefaultAdmin):
     model = LegalCaseFile

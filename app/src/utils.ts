@@ -242,6 +242,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+
     cursorPointer: {
       cursor: "pointer",
     },
