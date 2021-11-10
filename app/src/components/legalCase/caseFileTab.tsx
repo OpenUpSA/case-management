@@ -30,6 +30,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import i18n from "../../i18n";
+import ProgressBar from "../progressBar/progressBar";
 
 type Props = {
   legalCase: ILegalCase;
@@ -41,9 +42,21 @@ export default function CaseFileTab(props: Props) {
     React.useState<ILegalCaseFile[]>();
   const classes = useStyles();
   const uploadFileRef = useRef<HTMLInputElement>(null);
+  const [progress, setProgress] = React.useState<number>(0);
 
-  const onFileChange = ({ target }: any) => {
-    createLegalCaseFile(props.legalCase.id, target.files[0]).then((res) => {
+  const onFileChange = (event: any) => {
+    //console.log(event.target.onprogress);
+    createLegalCaseFile(props.legalCase.id, event.target.files[0], (e: any) => {
+      const { loaded, total } = e;
+      const percent = Math.floor((loaded * 100) / total);
+
+      setProgress(percent);
+      if (percent === 100) {
+        setTimeout(() => {
+          setProgress(0);
+        }, 1000);
+      }
+    }).then((res) => {
       getLegalCaseFiles(props.legalCase.id).then((res) => {
         setLegalCaseFiles(res);
       });
@@ -56,7 +69,7 @@ export default function CaseFileTab(props: Props) {
   };
 
   useEffect(() => {
-    setLegalCaseFiles(props.legalCaseFiles)
+    setLegalCaseFiles(props.legalCaseFiles);
   }, [props.legalCaseFiles]);
   return (
     <>
@@ -67,12 +80,12 @@ export default function CaseFileTab(props: Props) {
         alignItems="center"
         className={classes.containerMarginBottom}
       >
-        <Grid item style={{ flexGrow: 1 }} >
+        <Grid item style={{ flexGrow: 1 }}>
           <strong>
             {legalCaseFiles?.length} {i18n.t("Case Files")}
           </strong>
         </Grid>
-        <Grid item >
+        <Grid item>
           <InputLabel
             className={classes.inputLabel}
             htmlFor="sort_table"
@@ -137,6 +150,8 @@ export default function CaseFileTab(props: Props) {
           value={"Enter a meeting location, type, or note..."}
         />
       </Grid>
+      {progress > 0 && <ProgressBar progress={progress} />}
+
       <InputLabel
         className={classes.caseFileLabel}
         style={{ paddingTop: "20px" }}
@@ -146,13 +161,17 @@ export default function CaseFileTab(props: Props) {
       {legalCaseFiles && legalCaseFiles.length > 0 ? (
         <div>
           {legalCaseFiles.map((legalCaseFile) => (
-            <Grid container key={legalCaseFile.id} className={classes.caseFiles}>
+            <Grid
+              container
+              key={legalCaseFile.id}
+              className={classes.caseFiles}
+            >
               <Grid
                 item
                 className={classes.caseFilesItem}
                 style={{ flexGrow: 1 }}
               >
-                <WorkIcon style={{ margin: "0px 15px 0px 10px" }} />
+                <DescriptionIcon style={{ margin: "0px 15px 0px 10px" }} />
                 <Typography>
                   <a
                     href={legalCaseFile.upload}
