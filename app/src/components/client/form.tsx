@@ -11,9 +11,6 @@ import { IClient } from "../../types";
 import { useStyles } from "../../utils";
 import { constants } from "../../dropDownConstants";
 
-//TODO: Get from API
-const OfficialIdentifierTypes = ["National", "Passport"];
-
 type Props = {
   client?: IClient;
   readOnly: boolean;
@@ -181,12 +178,6 @@ const Component = (props: Props) => {
                 }}
                 input={<Input id="select-multiple-chip" />}
                 value={client.official_identifier_type}
-                // renderValue={() => {
-                //   return OfficialIdentifierTypes.filter(
-                //     (officialIdentifierType) =>
-                //       client.official_identifier_type === officialIdentifierType
-                //   ).join(", ");
-                // }}
                 renderValue={() => {
                   return constants.officialIdentifierTypes
                     .filter((item) => item[0] === client.official_identifier_type)
@@ -195,11 +186,6 @@ const Component = (props: Props) => {
                     });
                 }}
               >
-                {/* {OfficialIdentifierTypes?.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    {value}
-                  </MenuItem>
-                ))} */}
                 {constants.officialIdentifierTypes.map((item) => (
                   <MenuItem key={item[0]} value={item[0]}>
                     {item.length > 1 ? item[1] : item[0]}

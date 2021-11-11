@@ -7,6 +7,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import InputAdornment from "@mui/material/InputAdornment";
 import LockIcon from "@mui/icons-material/Lock";
+import FormHelperText from "@mui/material/FormHelperText";
 
 import { IClient } from "../../types";
 import { useStyles } from "../../utils";
@@ -49,17 +50,17 @@ const Component = (props: Props) => {
     contact_email: "",
     name: "",
     address: "",
-    alternative_contact_email: "",
-    alternative_contact_number: "",
+    next_of_kin_name: "",
+    next_of_kin_contact_number: "",
     marital_status: "",
-    date_of_birth: "",
     dependents: "",
     gender: "",
-    employment_status: "",
     created_at: new Date(),
   });
 
   const [showDetailedInfo, setShowDetailedInfo] = useState<boolean>(false);
+  const [phoneErrorMessage, setPhoneErrorMessage] = useState<boolean>(false);
+  const [kinPhoneErrorMessage, setKinPhoneErrorMessage] = useState<boolean>(false);
 
   useEffect(() => {
     if (props.client) {
@@ -73,10 +74,24 @@ const Component = (props: Props) => {
         ...client,
         id: clientId,
       };
-      const { id } = await updateClient(updatedClient);
+      const { id, contact_number, next_of_kin_contact_number } = await updateClient(updatedClient); 
+
+      if (typeof contact_number === "object") {
+        setPhoneErrorMessage(true);
+        setKinPhoneErrorMessage(false);
+        return false;
+      } else if (typeof next_of_kin_contact_number === "object") {
+        setKinPhoneErrorMessage(true);
+        setPhoneErrorMessage(false);
+        return false;
+      } else {
+        setKinPhoneErrorMessage(false);
+        setPhoneErrorMessage(false);
+      };
+
       if (id) {
         history.push(`/clients/${id}/cases`);
-      }
+      };
     } catch (e) {
       console.log(e);
     }
@@ -138,6 +153,11 @@ const Component = (props: Props) => {
             prevValue={props.client?.contact_number!}
             editClientInput={editClientInput}
           />
+          { phoneErrorMessage && (
+            <FormHelperText error id="contact_number-text">
+              Enter a valid phone number
+            </FormHelperText>
+          )}
         </Grid>
         <Grid item xs={12} md={4}>
           <ReusableInput
@@ -280,6 +300,11 @@ const Component = (props: Props) => {
               prevValue={props.client?.next_of_kin_contact_number!}
               editClientInput={editClientInput}
             />
+            {kinPhoneErrorMessage && (
+            <FormHelperText error id="contact_number-text">
+              Enter a valid phone number
+            </FormHelperText>
+          )}
           </Grid>
           <Grid item xs={12} md={4}>
             <ReusableInput
