@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import logging.config
+import os
 import environ
 
 
@@ -41,7 +42,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3321",
     "http://localhost:3000",
     "https://osf-case-management-app.netlify.app",
-    "https://app.casefile.org.za"
+    "https://app.casefile.org.za",
+    "https://staging.casefile.org.za",
+    "https://*.netlify.app"
 ]
 
 # Application definition

@@ -15,6 +15,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     body: {
       paddingBottom: "10em",
+      marginTop: "60px!important" as any,
       [theme.breakpoints.down("xs")]: {
         paddingBottom: "4em",
       },
@@ -296,10 +297,26 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0, 0, 0, 0.035)!important" as any,
       },
     },
-
     caseHistoryAvatar: {
       "&:hover": {
         border: "0.5px solid blue",
+      },
+    },
+    caseHistoryText: {
+      flexGrow: 1,
+      paddingRight: "100px!important" as any,
+      [theme.breakpoints.down("xs")]: {
+        paddingRight: 0,
+      },
+    },
+    caseHistoryBox: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      minWidth: 120,
+      marginLeft: "auto",
+      [theme.breakpoints.down("xs")]: {
+        minWidth: 60,
       },
     },
     smallTextField: {
@@ -348,7 +365,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       padding: "8px 8px 4px 8px",
       fontSize: "13px!important" as any,
       height: "42px!important" as any,
-      width: "104%!important" as any,
+      width: "102%!important" as any,
       "&.Mui-disabled": {
         backgroundColor: "rgba(0, 0, 0, 0.05)",
         color: "#000000",
