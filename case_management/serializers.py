@@ -31,6 +31,15 @@ class LegalCaseSerializer(serializers.ModelSerializer):
     meetings = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     case_number = serializers.CharField(required=False)
 
+    def validate(self, data):
+        if data.get('has_respondent') and not data.get('respondent_name'):
+            raise serializers.ValidationError(
+                {
+                    'respondent_name': 'respondent_name is mandatory if has_respondent is true'
+                }
+            )
+        return data
+
     class Meta:
         model = LegalCase
         fields = '__all__'
