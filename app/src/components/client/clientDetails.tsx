@@ -1,25 +1,25 @@
-import { Grid, MenuItem, Select, Typography } from "@material-ui/core";
+import { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 
+import { Grid, Typography } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
-import CheckIcon from "@mui/icons-material/Check";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FormHelperText from "@material-ui/core/FormHelperText";
+import InputAdornment from "@mui/material/InputAdornment";
+import LockIcon from "@mui/icons-material/Lock";
 
-import { useEffect, useState } from "react";
-import i18n from "../../i18n";
 import { IClient } from "../../types";
 import { useStyles } from "../../utils";
+import { format } from "date-fns";
+import i18n from "../../i18n";
 
-//TODO: Get from API
-const OfficialIdentifierTypes = ["National", "Passport"];
+import ReusableInput from "./reusableInput";
+import ReusableSelect from "./reusableSelect";
+import { updateClient } from "../../api";
+import { constants } from "../../dropDownConstants";
 
 type Props = {
   client?: IClient;
-  readOnly: boolean;
   phoneErrorMessage?: boolean;
   emailErrorMessage?: boolean;
   idErrorMessage?: boolean;
@@ -30,26 +30,36 @@ type Props = {
   setChanged?: any;
 };
 
+type RouteParams = {
+  id: string;
+};
+
 const Component = (props: Props) => {
   const classes = useStyles();
+  const history = useHistory();
+  const params = useParams<RouteParams>();
+  const clientId = parseInt(params.id);
+
   const [client, setClient] = useState<IClient>({
     preferred_name: "",
+    home_language: "",
     official_identifier: "",
     official_identifier_type: "",
     contact_number: "",
     contact_email: "",
     name: "",
+    address: "",
+    alternative_contact_email: "",
+    alternative_contact_number: "",
+    marital_status: "",
+    date_of_birth: "",
+    dependents: "",
+    gender: "",
+    employment_status: "",
+    created_at: new Date(),
   });
-  const [showDetailedInfo, setShowDetailedInfo] = useState<boolean>(false);
 
-  //const [showFullName, setShowFullName] = useState<boolean>(false);
-  const [showButton, setShowButton] = useState<any>({
-    name: false,
-    prefName: false,
-    conNumber: false,
-    email: false,
-    address: false,
-  });
+  const [showDetailedInfo, setShowDetailedInfo] = useState<boolean>(false);
 
   useEffect(() => {
     if (props.client) {
@@ -57,10 +67,37 @@ const Component = (props: Props) => {
     }
   }, [props.client]);
 
-  useEffect(() => {
-    console.log(showButton.name, showButton.prefName);
-  }, [showButton]);
+  const editClientInput = async () => {
+    try {
+      const updatedClient: IClient = {
+        ...client,
+        id: clientId,
+      };
+      const { id } = await updateClient(updatedClient);
+      if (id) {
+        history.push(`/clients/${id}/cases`);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
+  const editClientSelect = async (arg: any, arg2: any) => {
+    try {
+      console.log(client);
+      const updatedClient: any = {
+        ...client,
+        [arg2]: arg,
+        id: clientId,
+      };
+      const { id } = await updateClient(updatedClient);
+      if (id) {
+        history.push(`/clients/${id}/cases`);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <div>
@@ -72,307 +109,65 @@ const Component = (props: Props) => {
         spacing={2}
         alignItems="center"
       >
-        {/* Name */}
         <Grid item xs={12} md={4}>
-          <FormControl fullWidth size="small">
-            <InputLabel
-              className={classes.inputLabel}
-              htmlFor="name"
-              shrink={true}
-            >
-              {i18n.t("Full name")}:
-            </InputLabel>
-            <Input
-              id="name"
-              name="name"
-              disableUnderline={true}
-              disabled={false}
-              className={classes.textField}
-              aria-describedby="my-helper-text"
-              value={client.name}
-              onClick={() => (!showButton.name ? setShowButton({name: true}) : null)}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setClient((client) => ({
-                  ...client,
-                  name: e.target.value,
-                }));
-                // props.setChanged(true);
-              }}
-              endAdornment={
-                showButton.name ? (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => {
-                        setShowButton({
-                          name: false,
-                        });
-                        setClient((client) => ({
-                          ...client,
-                          name: props.client!.name!,
-                        }));
-                      }}
-                      aria-label="delete icon"
-                      edge="end"
-                    >
-                      {<DeleteIcon sx={{ color: "#a9a9a9" }} />}
-                    </IconButton>
-
-                    <IconButton
-                      style={{
-                        backgroundColor: "#00d97e",
-                        borderRadius: 5,
-                        marginLeft: 12,
-                      }}
-                      aria-label="check icon"
-                      edge="end"
-                    >
-                      {<CheckIcon style={{ color: "#fff" }} />}
-                    </IconButton>
-                  </InputAdornment>
-                ) : null
-              }
-            />
-          </FormControl>
-        </Grid>
-        
-        {/* Preferred name */}
-        <Grid item xs={12} md={4}>
-          <FormControl fullWidth size="small">
-            <InputLabel
-              className={classes.inputLabel}
-              htmlFor="preferred_name"
-              shrink={true}
-            >
-              {i18n.t("Preferred name")}:
-            </InputLabel>
-            <Input
-              id="preferred_name"
-              disableUnderline={true}
-              disabled={false}
-              className={classes.textField}
-              aria-describedby="my-helper-text"
-              value={client.preferred_name}
-              onClick={() => (!showButton.prefName ? setShowButton({prefName: true}) : null)}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setClient((client) => ({
-                  ...client,
-                  preferred_name: e.target.value,
-                }));
-                //props.setChanged(true);
-              }}
-              endAdornment={
-                showButton.prefName ? (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => {
-                        setShowButton({
-                          prefName: false,
-                        });
-                        setClient((client) => ({
-                          ...client,
-                          preferred_name: props.client!.preferred_name!,
-                        }));
-                      }}
-                      aria-label="delete icon"
-                      edge="end"
-                    >
-                      {<DeleteIcon sx={{ color: "#a9a9a9" }} />}
-                    </IconButton>
-
-                    <IconButton
-                      style={{
-                        backgroundColor: "#00d97e",
-                        borderRadius: 5,
-                        marginLeft: 12,
-                      }}
-                      aria-label="check icon"
-                      edge="end"
-                    >
-                      {<CheckIcon style={{ color: "#fff" }} />}
-                    </IconButton>
-                  </InputAdornment>
-                ) : null
-              }
-            />
-          </FormControl>
-        </Grid>
-
-        {/* Contact number */}
-        <Grid item xs={12} md={4}>
-          <FormControl fullWidth size="small">
-            <InputLabel
-              className={classes.inputLabel}
-              htmlFor="contact_number"
-              shrink={true}
-            >
-              {i18n.t("Contact number")}:
-            </InputLabel>
-            <Input
-              id="contact_number"
-              disableUnderline={true}
-              disabled={false}
-              className={classes.textField}
-              aria-describedby="my-helper-text"
-              value={client.contact_number}
-              onClick={() => (!showButton.conNumber ? setShowButton({conNumber: true}) : null)}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setClient((client) => ({
-                  ...client,
-                  contact_number: e.target.value,
-                }));
-                //props.setChanged(true);
-              }}
-              endAdornment={
-                showButton.conNumber ? (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => {
-                        setShowButton({
-                          conNumber: false,
-                        });
-                        setClient((client) => ({
-                          ...client,
-                          contact_number: props.client!.contact_number!,
-                        }));
-                      }}
-                      aria-label="delete icon"
-                      edge="end"
-                    >
-                      {<DeleteIcon sx={{ color: "#a9a9a9" }} />}
-                    </IconButton>
-
-                    <IconButton
-                      style={{
-                        backgroundColor: "#00d97e",
-                        borderRadius: 5,
-                        marginLeft: 12,
-                      }}
-                      aria-label="check icon"
-                      edge="end"
-                    >
-                      {<CheckIcon style={{ color: "#fff" }} />}
-                    </IconButton>
-                  </InputAdornment>
-                ) : null
-              }
-            />
-          </FormControl>
-        </Grid>
-
-        {/* Email address */}
-        <Grid item xs={12} md={4}>
-          <FormControl fullWidth size="small">
-            <InputLabel
-              className={classes.inputLabel}
-              htmlFor="contact_email"
-              shrink={true}
-            >
-              {i18n.t("Email address")}:
-            </InputLabel>
-            <Input
-              id="contact_email"
-              disableUnderline={true}
-              disabled={false}
-              className={classes.textField}
-              aria-describedby="my-helper-text"
-              value={client.contact_email}
-              onClick={() => (!showButton.email ? setShowButton({email: true}) : null)}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setClient((client) => ({
-                  ...client,
-                  contact_email: e.target.value,
-                }));
-                //props.setChanged(true);
-              }}
-              endAdornment={
-                showButton.email ? (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => {
-                        setShowButton({
-                          email: false,
-                        });
-                        setClient((client) => ({
-                          ...client,
-                          contact_email: props.client!.contact_email!,
-                        }));
-                      }}
-                      aria-label="delete icon"
-                      edge="end"
-                    >
-                      {<DeleteIcon sx={{ color: "#a9a9a9" }} />}
-                    </IconButton>
-
-                    <IconButton
-                      style={{
-                        backgroundColor: "#00d97e",
-                        borderRadius: 5,
-                        marginLeft: 12,
-                      }}
-                      aria-label="check icon"
-                      edge="end"
-                    >
-                      {<CheckIcon style={{ color: "#fff" }} />}
-                    </IconButton>
-                  </InputAdornment>
-                ) : null
-              }
-            />
-          </FormControl>
-        </Grid>
-
-        {/* Physical address */}
-        <Grid item xs={12} md={4}>
-          <FormControl fullWidth size="small">
-            <InputLabel
-              className={classes.inputLabel}
-              htmlFor="Physical address"
-              shrink={true}
-            >
-              {i18n.t("Physical address")}:
-            </InputLabel>
-            <Input
-              id="Physical address"
-              disableUnderline={true}
-              disabled={false}
-              className={classes.textField}
-              aria-describedby="my-helper-text"
-              value={client.name}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setClient((client) => ({
-                  ...client,
-                  address: e.target.value,
-                }));
-                //props.setChanged(true);
-              }}
-            />
-          </FormControl>
+          <ReusableInput
+            inputName={"name"}
+            title={"Name"}
+            value={client?.name}
+            setClient={setClient}
+            prevValue={props.client?.name!}
+            editClientInput={editClientInput}
+          />
         </Grid>
         <Grid item xs={12} md={4}>
-          <FormControl fullWidth size="small">
-            <InputLabel
-              className={classes.inputLabel}
-              htmlFor="official_identifier"
-              shrink={true}
-            >
-              {i18n.t("Identification number")}:
-            </InputLabel>
-            <Input
-              id="official_identifier"
-              disableUnderline={true}
-              disabled={props.readOnly}
-              className={classes.textField}
-              aria-describedby="my-helper-text"
-              value={client.official_identifier}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setClient((client) => ({
-                  ...client,
-                  official_identifier: e.target.value,
-                }));
-                props.setChanged(true);
-              }}
-            />
-          </FormControl>
+          <ReusableInput
+            inputName={"preferred_name"}
+            title={"Preferred name"}
+            value={client?.preferred_name}
+            setClient={setClient}
+            prevValue={props.client?.preferred_name!}
+            editClientInput={editClientInput}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReusableInput
+            inputName={"contact_number"}
+            title={"Contact number"}
+            value={client?.contact_number}
+            setClient={setClient}
+            prevValue={props.client?.contact_number!}
+            editClientInput={editClientInput}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReusableInput
+            inputName={"contact_email"}
+            title={"Email address"}
+            value={client?.contact_email}
+            setClient={setClient}
+            prevValue={props.client?.contact_email!}
+            editClientInput={editClientInput}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReusableInput
+            inputName={"address"}
+            title={"Physical address"}
+            value={client?.address!}
+            setClient={setClient}
+            prevValue={props.client?.address!}
+            editClientInput={editClientInput}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReusableInput
+            inputName={"official_identifier"}
+            title={"Identification number"}
+            value={client?.official_identifier}
+            setClient={setClient}
+            prevValue={props.client?.official_identifier!}
+            editClientInput={editClientInput}
+          />
         </Grid>
       </Grid>
 
@@ -403,218 +198,98 @@ const Component = (props: Props) => {
           alignItems="center"
         >
           <Grid item xs={12} md={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel
-                className={classes.inputLabel}
-                htmlFor="official_identifier_type_select"
-                shrink={true}
-              >
-                {i18n.t("Identification type")}:
-              </InputLabel>
-              <Input
-                id="name"
-                disableUnderline={true}
-                disabled={props.readOnly}
-                className={classes.textField}
-                aria-describedby="my-helper-text"
-                value={client.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setClient((client) => ({
-                    ...client,
-                    name: e.target.value,
-                  }));
-                  props.setChanged(true);
-                }}
-              />
-            </FormControl>
+            <ReusableSelect
+              title={"Identification type"}
+              value={client?.official_identifier_type}
+              menuItems={constants.officialIdentifierTypes}
+              inputName={"official_identifier_type"}
+              setClient={setClient}
+              editClientSelect={editClientSelect}
+            />
           </Grid>
           <Grid item xs={12} md={4}>
             <FormControl fullWidth size="small">
               <InputLabel
-                className={classes.inputLabel}
-                htmlFor="official_identifier_type_select"
+                className={classes.clientDetailLabel}
+                htmlFor="date"
                 shrink={true}
               >
                 {i18n.t("Client added")}:
               </InputLabel>
               <Input
-                id="name"
+                id="date"
                 disableUnderline={true}
-                disabled={props.readOnly}
-                className={classes.textField}
-                aria-describedby="my-helper-text"
-                value={client.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setClient((client) => ({
-                    ...client,
-                    name: e.target.value,
-                  }));
-                  props.setChanged(true);
-                }}
+                disabled={true}
+                className={classes.clientDetailInput}
+                aria-describedby="date input"
+                value={format(new Date(client?.created_at!), "MMM dd, yyyy")}
+                endAdornment={
+                  <InputAdornment position="start">
+                    <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+                  </InputAdornment>
+                }
               />
             </FormControl>
           </Grid>
-
           <Grid item xs={12} md={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel
-                className={classes.inputLabel}
-                htmlFor="name"
-                shrink={true}
-              >
-                {i18n.t("Gender")}:
-              </InputLabel>
-              <Input
-                id="name"
-                disableUnderline={true}
-                disabled={props.readOnly}
-                className={classes.textField}
-                aria-describedby="my-helper-text"
-                value={client.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setClient((client) => ({
-                    ...client,
-                    name: e.target.value,
-                  }));
-                  props.setChanged(true);
-                }}
-              />
-            </FormControl>
+            <ReusableSelect
+              title={"Gender"}
+              value={client?.gender}
+              menuItems={constants.genders}
+              inputName={"gender"}
+              setClient={setClient}
+              editClientSelect={editClientSelect}
+            />
           </Grid>
-
           <Grid item xs={12} md={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel
-                className={classes.inputLabel}
-                htmlFor="name"
-                shrink={true}
-              >
-                {i18n.t("Preferred language")}:
-              </InputLabel>
-              <Input
-                id="name"
-                disableUnderline={true}
-                disabled={props.readOnly}
-                className={classes.textField}
-                aria-describedby="my-helper-text"
-                value={client.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setClient((client) => ({
-                    ...client,
-                    name: e.target.value,
-                  }));
-                  props.setChanged(true);
-                }}
-              />
-            </FormControl>
+            <ReusableSelect
+              title={"Preferred language"}
+              value={client?.home_language}
+              menuItems={constants.homeLanguages}
+              inputName={"home_language"}
+              setClient={setClient}
+              editClientSelect={editClientSelect}
+            />
           </Grid>
-
           <Grid item xs={12} md={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel
-                className={classes.inputLabel}
-                htmlFor="name"
-                shrink={true}
-              >
-                {i18n.t("Marital status")}:
-              </InputLabel>
-              <Input
-                id="name"
-                disableUnderline={true}
-                disabled={props.readOnly}
-                className={classes.textField}
-                aria-describedby="my-helper-text"
-                value={client.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setClient((client) => ({
-                    ...client,
-                    name: e.target.value,
-                  }));
-                  props.setChanged(true);
-                }}
-              />
-            </FormControl>
+            <ReusableSelect
+              title={"Marital status"}
+              value={client?.marital_status}
+              menuItems={constants.maritalStatuses}
+              inputName={"marital_status"}
+              setClient={setClient}
+              editClientSelect={editClientSelect}
+            />
           </Grid>
-
           <Grid item xs={12} md={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel
-                className={classes.inputLabel}
-                htmlFor="name"
-                shrink={true}
-              >
-                {i18n.t("Next of kin")}:
-              </InputLabel>
-              <Input
-                id="name"
-                disableUnderline={true}
-                disabled={props.readOnly}
-                className={classes.textField}
-                aria-describedby="my-helper-text"
-                value={client.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setClient((client) => ({
-                    ...client,
-                    name: e.target.value,
-                  }));
-                  props.setChanged(true);
-                }}
-              />
-            </FormControl>
+            <ReusableInput
+              inputName={"next_of_kin_name"}
+              title={"Next of kin"}
+              value={client?.next_of_kin_name}
+              setClient={setClient}
+              prevValue={props.client?.next_of_kin_name!}
+              editClientInput={editClientInput}
+            />
           </Grid>
-
           <Grid item xs={12} md={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel
-                className={classes.inputLabel}
-                htmlFor="contact_number"
-                shrink={true}
-              >
-                {i18n.t("Next of kin contact number")}:
-              </InputLabel>
-              <Input
-                id="contact_number"
-                disableUnderline={true}
-                disabled={props.readOnly}
-                className={classes.textField}
-                aria-describedby="my-helper-text"
-                value={client.contact_number}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setClient((client) => ({
-                    ...client,
-                    contact_number: e.target.value,
-                  }));
-                  props.setChanged(true);
-                }}
-              />
-            </FormControl>
+            <ReusableInput
+              inputName={"next_of_kin_contact_number"}
+              title={"Next of kin contact number"}
+              value={client?.next_of_kin_contact_number}
+              setClient={setClient}
+              prevValue={props.client?.next_of_kin_contact_number!}
+              editClientInput={editClientInput}
+            />
           </Grid>
-
           <Grid item xs={12} md={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel
-                className={classes.inputLabel}
-                htmlFor="contact_number"
-                shrink={true}
-              >
-                {i18n.t("Number of dependants")}:
-              </InputLabel>
-              <Input
-                id="contact_number"
-                disableUnderline={true}
-                disabled={props.readOnly}
-                className={classes.textField}
-                aria-describedby="my-helper-text"
-                value={client.contact_number}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setClient((client) => ({
-                    ...client,
-                    contact_number: e.target.value,
-                  }));
-                  props.setChanged(true);
-                }}
-              />
-            </FormControl>
+            <ReusableInput
+              inputName={"dependents"}
+              title={"Number of dependants"}
+              value={client?.dependents}
+              setClient={setClient}
+              prevValue={props.client?.dependents!}
+              editClientInput={editClientInput}
+            />
           </Grid>
         </Grid>
       ) : (
@@ -635,10 +310,6 @@ const Component = (props: Props) => {
       )}
     </div>
   );
-};
-
-Component.defaultProps = {
-  readOnly: true,
 };
 
 export default Component;

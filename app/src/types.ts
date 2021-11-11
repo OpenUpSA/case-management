@@ -28,6 +28,25 @@ export interface IClient {
   contact_number: string;
   contact_email: string;
   name: string;
+  address?: string;
+  alternative_contact_email?: string;
+  alternative_contact_number?: string;
+  civil_marriage_type?: string;
+  date_of_birth?: string;
+  dependents?: string;
+  disabilities?: string;
+  employment_status?: string;
+  gender?: string;
+  has_disability?: string;
+  home_language?: string;
+  marital_status?: string;
+  nationality?: string;
+  next_of_kin_contact_number?: string;
+  next_of_kin_name?: string;
+  next_of_kin_relationship?: string;
+  province?: string;
+  translator_language?: string;
+  translator_needed?: string;
 }
 
 //Note: Cannot use Case so internally use LegalCase. User interface refers to Case.
@@ -84,7 +103,6 @@ export interface ILegalCaseFile {
   upload_file_name?: string;
   upload_file_extension?: string;
 }
-
 
 export interface IStorage {
   getItem(key: string): string | null;

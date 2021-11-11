@@ -24,8 +24,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
 
-import CreateIcon from "@mui/icons-material/Create";
-import DeleteIcon from "@mui/icons-material/Delete";
 import LockIcon from "@mui/icons-material/Lock";
 
 import { useStyles } from "../../utils";
@@ -81,7 +79,7 @@ type Props = {
 
 export default function CaseInfoTab(props: Props) {
   const history = useHistory();
-  const [toggleButton, setToggleButton] = React.useState<Boolean>(true);
+  const classes = useStyles(); 
   const [caseSummary, setCaseSummary] = React.useState<string | undefined>("");
   const [caseTypes, setCaseTypes] = React.useState<ICaseType[]>();
   const [caseOffices, setCaseOffices] = React.useState<ICaseOffice[]>();
@@ -96,6 +94,7 @@ export default function CaseInfoTab(props: Props) {
   const [caseHistory, setCaseHistory] = React.useState<ILog[]>([]);
   const [open, setOpen] = React.useState(false);
   const [manualUpdateValue, setManualUpdateValue] = React.useState<string>("");
+  const [showButton, setShowButton] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     setSelectCaseOffice(props.legalCase?.case_offices);
@@ -120,7 +119,8 @@ export default function CaseInfoTab(props: Props) {
   }, [props.legalCase]);
 
   const discardChange = () => {
-    setToggleButton(true);
+    setCaseSummary(props.legalCase?.summary);
+    setShowButton(false);
   };
   const handleClickOpen = () => {
     setOpen(true);
@@ -162,7 +162,7 @@ export default function CaseInfoTab(props: Props) {
     }
   };
 
-  const saveCaseSummary = async () => {
+  const caseSummaryPatch = async () => {
     try {
       const updatedSummary: ILegalCase = {
         id: props.legalCase.id,
@@ -174,7 +174,7 @@ export default function CaseInfoTab(props: Props) {
         case_offices: props.legalCase.case_offices,
       };
       const { id } = await updateLegalCase(updatedSummary);
-      setToggleButton(true);
+      setShowButton(false);
       history.push(`/cases/${id}`);
     } catch (e) {
       console.log(e);
@@ -217,70 +217,56 @@ export default function CaseInfoTab(props: Props) {
     }
   };
 
-  const classes = useStyles();
+  
   return (
     <Grid container spacing={3} className={classes.caseInfoContainer}>
       <Grid item xs={12} md={8}>
-        <Grid container justifyContent="space-between">
-          <Grid item>
-            <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-              Case summary:
-            </InputLabel>
-          </Grid>
-          <Grid item sx={{ marginBottom: "-10px", zIndex: 2 }}>
-            <BlackTooltip title="Discard changes" arrow placement="top">
-              <IconButton
-                onClick={() => discardChange()}
-                className={classes.iconButton}
-                sx={{
-                  marginRight: "8px",
-                  visibility: !toggleButton ? "visible" : "hidden",
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </BlackTooltip>
-
-            {toggleButton ? (
-              <BlackTooltip title="Edit field" arrow placement="top">
-                <IconButton
-                  className={classes.iconButton}
-                  onClick={() => setToggleButton(false)}
-                >
-                  <CreateIcon sx={{ color: "#000" }} />
-                </IconButton>
-              </BlackTooltip>
-            ) : (
-              <BlackTooltip title="save changes" arrow placement="top">
-                <IconButton
-                  onClick={() => saveCaseSummary()}
-                  className={classes.checkIconButton}
-                >
-                  <Typography color="black">Save</Typography>
-                </IconButton>
-              </BlackTooltip>
-            )}
-          </Grid>
-        </Grid>
+          <InputLabel htmlFor="put-later" className={classes.plainLabel}>
+            Case summary:
+          </InputLabel>
         <TextField
           multiline
+          fullWidth
+          rows={4}
+          className={classes.caseSummary}
+          variant="standard"
           value={caseSummary}
           onChange={(e: React.ChangeEvent<{ value: any }>) => {
             setCaseSummary(e.target.value);
+            setShowButton(true);
           }}
-          fullWidth
-          rows={4}
-          sx={{
-            marginBottom: "26px",
-            backgroundColor: "#f2f2f2",
-          }}
-          variant="standard"
           InputProps={{
             style: { fontSize: 12, padding: "14px 16.8px", lineHeight: 1.6 },
-            readOnly: toggleButton ? true : false,
             disableUnderline: true,
           }}
         />
+        <Grid
+          style={{
+            transform: showButton ? "translateY(0)" : "translateY(-150%)",
+          }}
+          className={classes.twoButtonContainer}
+        >
+          <BlackTooltip title="save changes" arrow placement="top">
+            <IconButton
+              onClick={() => caseSummaryPatch()}
+              className={classes.saveButton}
+            >
+              <Typography color="white" variant="caption">
+                Save
+              </Typography>
+            </IconButton>
+          </BlackTooltip>
+          <BlackTooltip title="Discard changes" arrow placement="top">
+            <IconButton
+              onClick={() => discardChange()}
+              className={classes.discardButton}
+            >
+              <Typography color="#767271" variant="caption">
+                Discard
+              </Typography>
+            </IconButton>
+          </BlackTooltip>
+        </Grid>
         <Grid
           container
           justifyContent="space-between"
@@ -344,7 +330,10 @@ export default function CaseInfoTab(props: Props) {
                 .reverse()
                 .map((item) => (
                   <>
-                    <ListItem key={`caseHistory_${item.id}`} className={classes.caseHistoryList}>
+                    <ListItem
+                      key={`caseHistory_${item.id}`}
+                      className={classes.caseHistoryList}
+                    >
                       <Chip
                         label={logLabel(item.action, item.target_type)}
                         className={classes.chip}
