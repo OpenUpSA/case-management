@@ -17,15 +17,12 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Input, MenuItem } from "@material-ui/core";
-import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { styled } from "@mui/material/styles";
-
 import LockIcon from "@mui/icons-material/Lock";
-
+import { BlackTooltip } from "../general/tooltip";
 import { useStyles } from "../../utils";
 import {
   ILegalCase,
@@ -62,16 +59,6 @@ const logLabel = (
   return LogLabels.get(`${targetType} ${targetAction}`);
 };
 
-const BlackTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} arrow classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.common.black,
-  },
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.black,
-  },
-}));
 
 type Props = {
   legalCase: ILegalCase;

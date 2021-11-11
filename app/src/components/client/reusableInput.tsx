@@ -8,6 +8,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
+import { BlackTooltip } from "../general/tooltip";
 
 type Props = {
   value: any;
@@ -16,6 +17,7 @@ type Props = {
   title: string;
   inputName: string;
   editClientInput: any;
+  type?: string;
 };
 
 export default function ReusableInput(props: Props) {
@@ -23,7 +25,7 @@ export default function ReusableInput(props: Props) {
   const [showButton, setShowButton] = useState<boolean>(false);
 
   return (
-    <FormControl fullWidth size="small" >
+    <FormControl fullWidth size="small">
       <InputLabel
         className={classes.clientDetailLabel}
         htmlFor={props.title}
@@ -33,6 +35,7 @@ export default function ReusableInput(props: Props) {
       </InputLabel>
       <Input
         id={props.title}
+        type={props.type || "text"}
         name={props.inputName}
         disableUnderline={true}
         disabled={false}
@@ -48,35 +51,39 @@ export default function ReusableInput(props: Props) {
         }}
         endAdornment={
           showButton ? (
-            <InputAdornment position="end" sx={{marginBottom: "4px"}}>
-              <IconButton
-                aria-label="delete icon"
-                edge="end"
-                onClick={() => {
-                  setShowButton(false);
-                  props.setClient((client: any) => ({
-                    ...client,
-                    [props.inputName]: props.prevValue,
-                  }));
-                }}
-              >
-                {<DeleteIcon sx={{ color: "#a9a9a9" }} />}
-              </IconButton>
-              <IconButton
-                style={{
-                  backgroundColor: "#00d97e",
-                  borderRadius: 5,
-                  marginLeft: 12,
-                }}
-                aria-label="check icon"
-                edge="end"
-                onClick={(e) => {
-                  props.editClientInput();
-                  setShowButton(false);
-                }}
-              >
-                {<CheckIcon style={{ color: "#fff" }} />}
-              </IconButton>
+            <InputAdornment position="end" sx={{ marginBottom: "4px" }}>
+              <BlackTooltip title="Discard changes" arrow placement="top">
+                <IconButton
+                  aria-label="delete icon"
+                  edge="end"
+                  onClick={() => {
+                    setShowButton(false);
+                    props.setClient((client: any) => ({
+                      ...client,
+                      [props.inputName]: props.prevValue,
+                    }));
+                  }}
+                >
+                  {<DeleteIcon sx={{ color: "#a9a9a9" }} />}
+                </IconButton>
+              </BlackTooltip>
+              <BlackTooltip title="Save changes" arrow placement="top">
+                <IconButton
+                  style={{
+                    backgroundColor: "#00d97e",
+                    borderRadius: 5,
+                    marginLeft: 12,
+                  }}
+                  aria-label="check icon"
+                  edge="end"
+                  onClick={(e) => {
+                    props.editClientInput();
+                    setShowButton(false);
+                  }}
+                >
+                  {<CheckIcon style={{ color: "#fff" }} />}
+                </IconButton>
+              </BlackTooltip>
             </InputAdornment>
           ) : null
         }

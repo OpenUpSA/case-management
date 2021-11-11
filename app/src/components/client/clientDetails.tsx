@@ -61,6 +61,7 @@ const Component = (props: Props) => {
   const [showDetailedInfo, setShowDetailedInfo] = useState<boolean>(false);
   const [phoneErrorMessage, setPhoneErrorMessage] = useState<boolean>(false);
   const [kinPhoneErrorMessage, setKinPhoneErrorMessage] = useState<boolean>(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState<boolean>(false);
 
   useEffect(() => {
     if (props.client) {
@@ -74,19 +75,27 @@ const Component = (props: Props) => {
         ...client,
         id: clientId,
       };
-      const { id, contact_number, next_of_kin_contact_number } = await updateClient(updatedClient); 
+      const { id, contact_number, next_of_kin_contact_number, contact_email } = await updateClient(updatedClient); 
 
       if (typeof contact_number === "object") {
         setPhoneErrorMessage(true);
+        setKinPhoneErrorMessage(false);
+        setEmailErrorMessage(false);
+        return false;
+      } else if (typeof contact_email === "object") {
+        setEmailErrorMessage(true);
+        setPhoneErrorMessage(false);
         setKinPhoneErrorMessage(false);
         return false;
       } else if (typeof next_of_kin_contact_number === "object") {
         setKinPhoneErrorMessage(true);
         setPhoneErrorMessage(false);
+        setEmailErrorMessage(false);
         return false;
       } else {
         setKinPhoneErrorMessage(false);
         setPhoneErrorMessage(false);
+        setEmailErrorMessage(false);
       };
 
       if (id) {
@@ -99,7 +108,6 @@ const Component = (props: Props) => {
 
   const editClientSelect = async (arg: any, arg2: any) => {
     try {
-      console.log(client);
       const updatedClient: any = {
         ...client,
         [arg2]: arg,
@@ -168,6 +176,11 @@ const Component = (props: Props) => {
             prevValue={props.client?.contact_email!}
             editClientInput={editClientInput}
           />
+          { emailErrorMessage && (
+            <FormHelperText error id="contact_number-text">
+              Enter a valid email address
+            </FormHelperText>
+          )}
         </Grid>
         <Grid item xs={12} md={4}>
           <ReusableInput
@@ -314,6 +327,7 @@ const Component = (props: Props) => {
               setClient={setClient}
               prevValue={props.client?.dependents!}
               editClientInput={editClientInput}
+              type={"number"}
             />
           </Grid>
         </Grid>
