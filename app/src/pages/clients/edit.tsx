@@ -123,7 +123,7 @@ const Page = () => {
                 variant="contained"
                 startIcon={<PersonOutlineIcon />}
                 type="submit"
-                onClick={()=> setChanged(false)}
+                onClick={() => setChanged(false)}
               >
                 {i18n.t("Save client")}
               </Button>

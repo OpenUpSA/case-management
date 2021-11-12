@@ -18,6 +18,18 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='legalcase',
             name='state',
-            field=models.CharField(choices=[('Opened', 'Opened'), ('InProgress', 'In Progress'), ('Hanging', 'Hanging'), ('Pending', 'Pending'), ('Referred', 'Referred'), ('Resolved', 'Resolved'), ('Escalated', 'Escalated'), ('Closed', 'Closed')], max_length=10),
+            field=models.CharField(
+                choices=[
+                    ('Opened', 'Opened'),
+                    ('InProgress', 'In Progress'),
+                    ('Hanging', 'Hanging'),
+                    ('Pending', 'Pending'),
+                    ('Referred', 'Referred'),
+                    ('Resolved', 'Resolved'),
+                    ('Escalated', 'Escalated'),
+                    ('Closed', 'Closed'),
+                ],
+                max_length=10,
+            ),
         ),
     ]

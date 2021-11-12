@@ -12,14 +12,7 @@ import {
   ILegalCaseFile,
 } from "./types";
 
-type optionsType = {
-  method: string | any;
-  body: any;
-  onUploadProgress: any;
-};
-
-const API_BASE_URL =
-  "http://localhost:8000/api/v1" || process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
 
 async function http<T>(path: string, config: RequestInit): Promise<T> {
   path = `${API_BASE_URL}${path}`;
@@ -198,6 +191,12 @@ export const getLegalCaseFiles = async (legal_case?: number) => {
   return await httpGet<ILegalCaseFile[]>(
     `/files/${legal_case ? `?legal_case=${legal_case}` : ""}`
   );
+};
+
+type optionsType = {
+  method: string | any;
+  body: any;
+  onUploadProgress: any;
 };
 
 export const createLegalCaseFile = async (

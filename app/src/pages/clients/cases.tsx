@@ -20,7 +20,7 @@ import { ILegalCase, IClient } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 
-import ClientForm from "../../components/client/form";
+import ClientDetails from "../../components/client/clientDetails";
 import LegalCasesTable from "../../components/legalCase/table";
 import MoreMenu from "../../components/moreMenu";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -120,7 +120,7 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        <ClientForm client={client} />
+        <ClientDetails client={client} />
         <hr className={classes.hr} />
 
         <LegalCasesTable

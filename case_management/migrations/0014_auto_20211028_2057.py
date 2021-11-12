@@ -19,7 +19,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='client',
             name='contact_number',
-            field=phonenumber_field.modelfields.PhoneNumberField(blank=True, max_length=128, region=None),
+            field=phonenumber_field.modelfields.PhoneNumberField(
+                blank=True, max_length=128, region=None
+            ),
         ),
         migrations.AlterField(
             model_name='client',
@@ -29,7 +31,14 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='client',
             name='official_identifier_type',
-            field=models.CharField(choices=[('National', 'National Identity Number'), ('Passport', 'Passport Number')], max_length=20, null=True),
+            field=models.CharField(
+                choices=[
+                    ('National', 'National Identity Number'),
+                    ('Passport', 'Passport Number'),
+                ],
+                max_length=20,
+                null=True,
+            ),
         ),
         migrations.AlterField(
             model_name='client',

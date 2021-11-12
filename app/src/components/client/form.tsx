@@ -9,9 +9,7 @@ import { useEffect, useState } from "react";
 import i18n from "../../i18n";
 import { IClient } from "../../types";
 import { useStyles } from "../../utils";
-
-//TODO: Get from API
-const OfficialIdentifierTypes = ["National", "Passport"];
+import { constants } from "../../dropDownConstants";
 
 type Props = {
   client?: IClient;
@@ -37,7 +35,7 @@ const Component = (props: Props) => {
     contact_email: "",
     name: "",
   });
-  
+
   useEffect(() => {
     if (props.client) {
       setClient(props.client);
@@ -75,7 +73,7 @@ const Component = (props: Props) => {
                   ...client,
                   preferred_name: e.target.value,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -107,15 +105,15 @@ const Component = (props: Props) => {
                     ...client,
                     name: e.target.value,
                   }));
-                  props.setChanged(true)
+                  props.setChanged(true);
                 }}
               />
             </FormControl>
             {props.nameError && (
-            <FormHelperText error id="name_text">
-              Enter your name
-            </FormHelperText>
-          )}
+              <FormHelperText error id="name_text">
+                Enter your name
+              </FormHelperText>
+            )}
           </Grid>
         ) : (
           ""
@@ -141,7 +139,7 @@ const Component = (props: Props) => {
                   ...client,
                   official_identifier: e.target.value,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -176,29 +174,30 @@ const Component = (props: Props) => {
                     ...client,
                     official_identifier_type: e.target.value,
                   }));
-                  props.setChanged(true)
+                  props.setChanged(true);
                 }}
                 input={<Input id="select-multiple-chip" />}
                 value={client.official_identifier_type}
                 renderValue={() => {
-                  return OfficialIdentifierTypes.filter(
-                    (officialIdentifierType) =>
-                      client.official_identifier_type === officialIdentifierType
-                  ).join(", ");
+                  return constants.officialIdentifierTypes
+                    .filter((item) => item[0] === client.official_identifier_type)
+                    .map((item) => {
+                      return item.length > 1 ? item[1] : item[0];
+                    });
                 }}
               >
-                {OfficialIdentifierTypes?.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    {value}
+                {constants.officialIdentifierTypes.map((item) => (
+                  <MenuItem key={item[0]} value={item[0]}>
+                    {item.length > 1 ? item[1] : item[0]}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             {props.idTypeErrorMessage && (
-            <FormHelperText error id="official_identifier_type">
-              Select an Identifier type
-            </FormHelperText>
-          )}
+              <FormHelperText error id="official_identifier_type">
+                Select an Identifier type
+              </FormHelperText>
+            )}
           </Grid>
         ) : (
           ""
@@ -224,7 +223,7 @@ const Component = (props: Props) => {
                   ...client,
                   contact_number: e.target.value,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -256,7 +255,7 @@ const Component = (props: Props) => {
                     ...client,
                     contact_email: e.target.value,
                   }));
-                  props.setChanged(true)
+                  props.setChanged(true);
                 }}
               />
             </FormControl>

@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "phonenumber_field",
     "rest_framework.authtoken",
+    "django_countries",
     "django_filters",
     "drf_yasg",
 ]
@@ -119,9 +120,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", },
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", },
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
 ]
 
 
@@ -171,11 +178,17 @@ logging.config.dictConfig(
             },
         },
         "handlers": {
-            "console": {"class": "logging.StreamHandler", "formatter": "console", },
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "console",
+            },
         },
         "loggers": {
             # root logger
-            "": {"level": "INFO", "handlers": ["console"], },
+            "": {
+                "level": "INFO",
+                "handlers": ["console"],
+            },
         },
     }
 )
@@ -194,4 +207,4 @@ if os.getenv("AWS_ACCESS_KEY_ID"):
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME =  env('AWS_STORAGE_BUCKET_NAME')
+    AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
