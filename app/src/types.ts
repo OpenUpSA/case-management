@@ -83,6 +83,7 @@ export interface ILegalCaseFile {
   upload: string;
   upload_file_name?: string;
   upload_file_extension?: string;
+  description?: string;
 }
 
 

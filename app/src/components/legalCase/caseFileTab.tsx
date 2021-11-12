@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useStyles } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
 import CheckIcon from "@mui/icons-material/Check";
@@ -35,17 +35,15 @@ import ProgressBar from "../progressBar/progressBar";
 type Props = {
   legalCase: ILegalCase;
   legalCaseFiles: ILegalCaseFile[] | undefined;
+  setLegalCaseFiles: React.Dispatch<React.SetStateAction<ILegalCaseFile[] | undefined>>
 };
 
 export default function CaseFileTab(props: Props) {
-  const [legalCaseFiles, setLegalCaseFiles] =
-    React.useState<ILegalCaseFile[]>();
   const classes = useStyles();
   const uploadFileRef = useRef<HTMLInputElement>(null);
   const [progress, setProgress] = React.useState<number>(0);
 
-  const onFileChange = (event: any) => {
-    //console.log(event.target.onprogress);
+  const onFileChange = async (event: any) => {
     createLegalCaseFile(props.legalCase.id, event.target.files[0], (e: any) => {
       const { loaded, total } = e;
       const percent = Math.floor((loaded * 100) / total);
@@ -56,10 +54,12 @@ export default function CaseFileTab(props: Props) {
           setProgress(0);
         }, 1000);
       }
-    }).then((res) => {
-      getLegalCaseFiles(props.legalCase.id).then((res) => {
-        setLegalCaseFiles(res);
-      });
+    }).then((res: any) => {
+      if (res.legal_case) {
+        getLegalCaseFiles(res.legal_case).then((res) => {
+          props.setLegalCaseFiles(res);
+        });
+      }
     });
   };
 
@@ -68,9 +68,6 @@ export default function CaseFileTab(props: Props) {
     uploadFileRef.current.click();
   };
 
-  useEffect(() => {
-    setLegalCaseFiles(props.legalCaseFiles);
-  }, [props.legalCaseFiles]);
   return (
     <>
       <Grid
@@ -82,7 +79,7 @@ export default function CaseFileTab(props: Props) {
       >
         <Grid item style={{ flexGrow: 1 }}>
           <strong>
-            {legalCaseFiles?.length} {i18n.t("Case Files")}
+            {props.legalCaseFiles?.length} {i18n.t("Case Files")}
           </strong>
         </Grid>
         <Grid item>
@@ -115,7 +112,6 @@ export default function CaseFileTab(props: Props) {
             onChange={onFileChange}
             hidden
           />
-
           <Button
             className={classes.canBeFab}
             color="primary"
@@ -158,9 +154,9 @@ export default function CaseFileTab(props: Props) {
       >
         All case files:{" "}
       </InputLabel>
-      {legalCaseFiles && legalCaseFiles.length > 0 ? (
+      {props.legalCaseFiles && props.legalCaseFiles.length > 0 ? (
         <div>
-          {legalCaseFiles.map((legalCaseFile) => (
+          {props.legalCaseFiles.map((legalCaseFile) => (
             <Grid
               container
               key={legalCaseFile.id}
@@ -178,7 +174,7 @@ export default function CaseFileTab(props: Props) {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {legalCaseFile.upload_file_name}
+                    {legalCaseFile.description}
                   </a>
                 </Typography>
               </Grid>
