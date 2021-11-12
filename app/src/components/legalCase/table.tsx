@@ -117,9 +117,8 @@ const Component = (props: Props) => {
         </Grid>
         <Grid item>
           <InputLabel
-            className={classes.inputLabel}
+            className={classes.plainLabel}
             htmlFor="sort_table"
-            shrink={true}
           >
             {i18n.t("Sort")}:
           </InputLabel>

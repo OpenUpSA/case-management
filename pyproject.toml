@@ -1,3 +1,7 @@
+[tool.black]
+target-version = ['py38']
+skip-string-normalization = true
+
 [tool.poetry]
 name = "case_management"
 version = "0.1.0"
@@ -29,6 +33,7 @@ django-lifecycle = "^0.9.1"
 botocore = "^1.21.61"
 boto3 = "^1.18.61"
 django-storages = "^1.12.1"
+django-countries = "^7.2.1"
 
 
 [tool.poetry.dev-dependencies]

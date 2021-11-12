@@ -20,17 +20,83 @@ class Migration(migrations.Migration):
             name='User',
             fields=[
                 ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('first_name', models.CharField(blank=True, max_length=150, verbose_name='first name')),
-                ('last_name', models.CharField(blank=True, max_length=150, verbose_name='last name')),
-                ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status')),
-                ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
-                ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
+                (
+                    'last_login',
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name='last login'
+                    ),
+                ),
+                (
+                    'is_superuser',
+                    models.BooleanField(
+                        default=False,
+                        help_text='Designates that this user has all permissions without explicitly assigning them.',
+                        verbose_name='superuser status',
+                    ),
+                ),
+                (
+                    'first_name',
+                    models.CharField(
+                        blank=True, max_length=150, verbose_name='first name'
+                    ),
+                ),
+                (
+                    'last_name',
+                    models.CharField(
+                        blank=True, max_length=150, verbose_name='last name'
+                    ),
+                ),
+                (
+                    'is_staff',
+                    models.BooleanField(
+                        default=False,
+                        help_text='Designates whether the user can log into this admin site.',
+                        verbose_name='staff status',
+                    ),
+                ),
+                (
+                    'is_active',
+                    models.BooleanField(
+                        default=True,
+                        help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.',
+                        verbose_name='active',
+                    ),
+                ),
+                (
+                    'date_joined',
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name='date joined'
+                    ),
+                ),
                 ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('email', models.EmailField(max_length=255, unique=True, verbose_name='email address')),
-                ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups')),
-                ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions')),
+                (
+                    'email',
+                    models.EmailField(
+                        max_length=255, unique=True, verbose_name='email address'
+                    ),
+                ),
+                (
+                    'groups',
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+                        related_name='user_set',
+                        related_query_name='user',
+                        to='auth.Group',
+                        verbose_name='groups',
+                    ),
+                ),
+                (
+                    'user_permissions',
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text='Specific permissions for this user.',
+                        related_name='user_set',
+                        related_query_name='user',
+                        to='auth.Permission',
+                        verbose_name='user permissions',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'user',
@@ -61,12 +127,28 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=255)),
                 ('preferred_name', models.CharField(max_length=128)),
                 ('official_identifier', models.CharField(max_length=64)),
-                ('official_identifier_type', models.CharField(choices=[('National', 'National Identity Number'), ('Passport', 'Passport Number')], max_length=20)),
-                ('contact_number', phonenumber_field.modelfields.PhoneNumberField(max_length=128, region=None)),
+                (
+                    'official_identifier_type',
+                    models.CharField(
+                        choices=[
+                            ('National', 'National Identity Number'),
+                            ('Passport', 'Passport Number'),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                (
+                    'contact_number',
+                    phonenumber_field.modelfields.PhoneNumberField(
+                        max_length=128, region=None
+                    ),
+                ),
                 ('contact_email', models.EmailField(max_length=254)),
             ],
             options={
-                'unique_together': {('official_identifier', 'official_identifier_type')},
+                'unique_together': {
+                    ('official_identifier', 'official_identifier_type')
+                },
             },
         ),
         migrations.CreateModel(
@@ -74,10 +156,34 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('case_number', models.CharField(max_length=32, unique=True)),
-                ('state', models.CharField(choices=[('Opened', 'Opened'), ('InProgress', 'In Progress'), ('Hanging', 'Hanging'), ('Pending', 'Pending'), ('Referred', 'Referred'), ('Resolved', 'Resolved'), ('Escalated', 'Escalated')], max_length=10)),
-                ('case_offices', models.ManyToManyField(to='case_management.CaseOffice')),
+                (
+                    'state',
+                    models.CharField(
+                        choices=[
+                            ('Opened', 'Opened'),
+                            ('InProgress', 'In Progress'),
+                            ('Hanging', 'Hanging'),
+                            ('Pending', 'Pending'),
+                            ('Referred', 'Referred'),
+                            ('Resolved', 'Resolved'),
+                            ('Escalated', 'Escalated'),
+                        ],
+                        max_length=10,
+                    ),
+                ),
+                (
+                    'case_offices',
+                    models.ManyToManyField(to='case_management.CaseOffice'),
+                ),
                 ('case_types', models.ManyToManyField(to='case_management.CaseType')),
-                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='legal_cases', to='case_management.client')),
+                (
+                    'client',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='legal_cases',
+                        to='case_management.client',
+                    ),
+                ),
                 ('users', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -88,7 +194,14 @@ class Migration(migrations.Migration):
                 ('location', models.CharField(max_length=255)),
                 ('meeting_date', models.DateTimeField()),
                 ('notes', models.TextField()),
-                ('legal_case', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='meetings', to='case_management.legalcase')),
+                (
+                    'legal_case',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='meetings',
+                        to='case_management.legalcase',
+                    ),
+                ),
             ],
         ),
     ]
