@@ -203,13 +203,17 @@ export const getLegalCaseFiles = async (legal_case?: number) => {
 export const createLegalCaseFile = async (
   legal_case: number | undefined,
   file: any,
-  onUploadProgress: any
+  description: string,
+  onUploadProgress: any,
 ) => {
   const formData = new FormData();
 
   formData.append("upload", file);
   if (legal_case) {
     formData.append("legal_case", legal_case.toString());
+  }
+  if (description) {
+    formData.append("description", description);
   }
 
   const options: optionsType = {
