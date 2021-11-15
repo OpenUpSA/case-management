@@ -18,7 +18,9 @@ async function http<T>(path: string, config: RequestInit): Promise<T> {
   path = `${API_BASE_URL}${path}`;
   const request = new Request(path, config);
   const response = await fetch(request);
-  return response.json().catch((e) => {console.log(e)});
+  return response.json().catch((e) => {
+    console.log(e);
+  });
 }
 
 export async function httpGet<T>(
@@ -191,25 +193,6 @@ export const getLegalCaseFiles = async (legal_case?: number) => {
   );
 };
 
-// export const createLegalCaseFile = async (
-//   legal_case: number | undefined,
-//   file: any
-// ) => {
-//   const formData = new FormData();
-
-//   formData.append("upload", file);
-//   if (legal_case) {
-//     formData.append("legal_case", legal_case.toString());
-//   }
-
-//   const options = {
-//     method: "POST",
-//     body: formData,
-//   };
-//   const response = await fetch(`${API_BASE_URL}/files/`, options);
-//   return response.json().catch(() => ({}));
-// };
-
 type optionsType = {
   method: string | any;
   body: any;
@@ -219,7 +202,8 @@ type optionsType = {
 export const createLegalCaseFile = async (
   legal_case: number | undefined,
   file: any,
-  onUploadProgress: any
+  description: string,
+  onUploadProgress: any,
 ) => {
   const formData = new FormData();
 
@@ -227,16 +211,19 @@ export const createLegalCaseFile = async (
   if (legal_case) {
     formData.append("legal_case", legal_case.toString());
   }
+  if (description) {
+    formData.append("description", description);
+  }
 
   const options: optionsType = {
     method: "POST",
     body: formData,
     onUploadProgress: onUploadProgress,
   };
-  axios.post(`${API_BASE_URL}/files/`, formData, options).then((res) => {
-    return res;
-  }).catch((error) => {
-      console.log(error);
-      
-  })
+  const response = await axios.post(
+    `${API_BASE_URL}/files/`,
+    formData,
+    options
+  );
+  return response.data
 };

@@ -10,9 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+import os
 import logging.config
 import os
 import environ
+
 
 ROOT_DIR = environ.Path(__file__) - 2
 PROJ_DIR = ROOT_DIR.path("case_management")

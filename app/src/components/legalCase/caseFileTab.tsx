@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useStyles } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
 import CheckIcon from "@mui/icons-material/Check";
@@ -13,6 +13,11 @@ import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import WorkIcon from "@mui/icons-material/Work";
 import LinkIcon from "@mui/icons-material/Link";
 import Divider from "@mui/material/Divider";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import TextField from "@mui/material/TextField";
 import { format } from "date-fns";
 
 import { ILegalCase, ILegalCaseFile } from "../../types";
@@ -35,31 +40,41 @@ import ProgressBar from "../progressBar/progressBar";
 type Props = {
   legalCase: ILegalCase;
   legalCaseFiles: ILegalCaseFile[] | undefined;
+  setLegalCaseFiles: React.Dispatch<
+    React.SetStateAction<ILegalCaseFile[] | undefined>
+  >;
 };
 
 export default function CaseFileTab(props: Props) {
-  const [legalCaseFiles, setLegalCaseFiles] =
-    React.useState<ILegalCaseFile[]>();
   const classes = useStyles();
   const uploadFileRef = useRef<HTMLInputElement>(null);
   const [progress, setProgress] = React.useState<number>(0);
+  const [open, setOpen] = React.useState(false);
+  const [fileDescription, setFileDescription] = React.useState("");
 
-  const onFileChange = (event: any) => {
-    //console.log(event.target.onprogress);
-    createLegalCaseFile(props.legalCase.id, event.target.files[0], (e: any) => {
-      const { loaded, total } = e;
-      const percent = Math.floor((loaded * 100) / total);
+  const onFileChange = async (event: any) => {
+    createLegalCaseFile(
+      props.legalCase.id,
+      event.target.files[0],
+      fileDescription,
+      (e: any) => {
+        const { loaded, total } = e;
+        const percent = Math.floor((loaded * 100) / total);
 
-      setProgress(percent);
-      if (percent === 100) {
-        setTimeout(() => {
-          setProgress(0);
-        }, 1000);
+        setProgress(percent);
+        if (percent === 100) {
+          setTimeout(() => {
+            setProgress(0);
+          }, 1000);
+        }
       }
-    }).then((res) => {
-      getLegalCaseFiles(props.legalCase.id).then((res) => {
-        setLegalCaseFiles(res);
-      });
+    ).then((res: any) => {
+      setFileDescription("");
+      if (res.legal_case) {
+        getLegalCaseFiles(res.legal_case).then((res) => {
+          props.setLegalCaseFiles(res);
+        });
+      }
     });
   };
 
@@ -68,9 +83,11 @@ export default function CaseFileTab(props: Props) {
     uploadFileRef.current.click();
   };
 
-  useEffect(() => {
-    setLegalCaseFiles(props.legalCaseFiles);
-  }, [props.legalCaseFiles]);
+  const dialogClose = () => {
+    setOpen(false);
+    setFileDescription("");
+  };
+
   return (
     <>
       <Grid
@@ -82,7 +99,7 @@ export default function CaseFileTab(props: Props) {
       >
         <Grid item style={{ flexGrow: 1 }}>
           <strong>
-            {legalCaseFiles?.length} {i18n.t("Case Files")}
+            {props.legalCaseFiles?.length} {i18n.t("Case Files")}
           </strong>
         </Grid>
         <Grid item>
@@ -115,17 +132,48 @@ export default function CaseFileTab(props: Props) {
             onChange={onFileChange}
             hidden
           />
-
           <Button
             className={classes.canBeFab}
             color="primary"
             variant="contained"
             startIcon={<UploadIcon />}
             style={{ textTransform: "none" }}
-            onClick={showOpenFileDialog}
+            onClick={() => setOpen(true)}
           >
             {i18n.t("Upload file")}
           </Button>
+          <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
+            <DialogTitle>Upload file</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="File description"
+                type="text"
+                fullWidth
+                variant="standard"
+                value={fileDescription}
+                onChange={(e: React.ChangeEvent<{ value: any }>) => {
+                  setFileDescription(e.target.value);
+                }}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={dialogClose}>Cancel</Button>
+              <Button
+                color="primary"
+                variant="contained"
+                startIcon={<UploadIcon />}
+                onClick={() => {
+                  showOpenFileDialog();
+                  setOpen(false);
+                }}
+              >
+                Upload
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Grid>
       </Grid>
       <Grid
@@ -151,61 +199,65 @@ export default function CaseFileTab(props: Props) {
         />
       </Grid>
       {progress > 0 && <ProgressBar progress={progress} />}
-
       <InputLabel
         className={classes.caseFileLabel}
         style={{ paddingTop: "20px" }}
       >
         All case files:{" "}
       </InputLabel>
-      {legalCaseFiles && legalCaseFiles.length > 0 ? (
+      {props.legalCaseFiles && props.legalCaseFiles.length > 0 ? (
         <div>
-          {legalCaseFiles.map((legalCaseFile) => (
-            <Grid
-              container
-              key={legalCaseFile.id}
-              className={classes.caseFiles}
-            >
+          {props.legalCaseFiles
+            .slice(0)
+            .reverse()
+            .map((legalCaseFile) => (
               <Grid
-                item
-                className={classes.caseFilesItem}
-                style={{ flexGrow: 1 }}
+                container
+                key={legalCaseFile.id}
+                className={classes.caseFiles}
               >
-                <DescriptionIcon style={{ margin: "0px 15px 0px 10px" }} />
-                <Typography>
-                  <a
-                    href={legalCaseFile.upload}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {legalCaseFile.upload_file_name}
-                  </a>
-                </Typography>
+                <Grid
+                  item
+                  className={classes.caseFilesItem}
+                  style={{ flexGrow: 1 }}
+                >
+                  <DescriptionIcon style={{ margin: "0px 15px 0px 10px" }} />
+                  <Typography>
+                    <a
+                      href={legalCaseFile.upload}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {legalCaseFile.description}
+                    </a>
+                  </Typography>
+                </Grid>
+                <Grid item className={classes.caseFilesItem}>
+                  <Divider
+                    sx={{ marginRight: 2 }}
+                    orientation="vertical"
+                    variant="middle"
+                    flexItem
+                  />
+                  <p>
+                    {format(
+                      new Date(
+                        legalCaseFile.updated_at || new Date().toISOString()
+                      ),
+                      "dd/MM/yyyy"
+                    )}
+                  </p>
+                </Grid>
+                <Grid item className={classes.caseFilesItem}>
+                  <LinkIcon
+                    style={{ visibility: "hidden", color: "#3dd997" }}
+                  />
+                  <IconButton>
+                    <MoreVertIcon sx={{ color: "#000000" }} />
+                  </IconButton>
+                </Grid>
               </Grid>
-              <Grid item className={classes.caseFilesItem}>
-                <Divider
-                  sx={{ marginRight: 2 }}
-                  orientation="vertical"
-                  variant="middle"
-                  flexItem
-                />
-                <p>
-                  {format(
-                    new Date(
-                      legalCaseFile.updated_at || new Date().toISOString()
-                    ),
-                    "dd/MM/yyyy"
-                  )}
-                </p>
-              </Grid>
-              <Grid item className={classes.caseFilesItem}>
-                <LinkIcon style={{ visibility: "hidden", color: "#3dd997" }} />
-                <IconButton>
-                  <MoreVertIcon sx={{ color: "#000000" }} />
-                </IconButton>
-              </Grid>
-            </Grid>
-          ))}
+            ))}
         </div>
       ) : (
         <Grid container className={classes.caseFiles}>
