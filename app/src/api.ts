@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   ILegalCase,
   IClient,
@@ -11,14 +12,15 @@ import {
   ILegalCaseFile,
 } from "./types";
 
-const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
 
 async function http<T>(path: string, config: RequestInit): Promise<T> {
   path = `${API_BASE_URL}${path}`;
   const request = new Request(path, config);
   const response = await fetch(request);
-  return response.json().catch(() => ({}));
+  return response.json().catch((e) => {
+    console.log(e);
+  });
 }
 
 export async function httpGet<T>(
@@ -177,11 +179,8 @@ export const authenticate = async (credentials: ICredentials) => {
 
 export const getLogs = async (id?: number, parent_type?: string) => {
   const idParam = id ? `parent_id=${id}` : "";
-  const parent_typeParam =
-    parent_type ? `&parent_type=${parent_type}` : "";
-  return await httpGet<ILog[]>(
-    `/logs/?${idParam}${parent_typeParam}`
-  );
+  const parent_typeParam = parent_type ? `&parent_type=${parent_type}` : "";
+  return await httpGet<ILog[]>(`/logs/?${idParam}${parent_typeParam}`);
 };
 
 export const createLog = async (log: ILog) => {
@@ -194,9 +193,17 @@ export const getLegalCaseFiles = async (legal_case?: number) => {
   );
 };
 
+type optionsType = {
+  method: string | any;
+  body: any;
+  onUploadProgress: any;
+};
+
 export const createLegalCaseFile = async (
   legal_case: number | undefined,
-  file: any
+  file: any,
+  description: string,
+  onUploadProgress: any,
 ) => {
   const formData = new FormData();
 
@@ -204,11 +211,19 @@ export const createLegalCaseFile = async (
   if (legal_case) {
     formData.append("legal_case", legal_case.toString());
   }
+  if (description) {
+    formData.append("description", description);
+  }
 
-  const options = {
+  const options: optionsType = {
     method: "POST",
     body: formData,
+    onUploadProgress: onUploadProgress,
   };
-  const response = await fetch(`${API_BASE_URL}/files/`, options);
-  return response.json().catch(() => ({}));
+  const response = await axios.post(
+    `${API_BASE_URL}/files/`,
+    formData,
+    options
+  );
+  return response.data
 };

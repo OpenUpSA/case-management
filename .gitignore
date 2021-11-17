@@ -148,6 +148,7 @@ dmypy.json
 
 # Logs
 logs
+!app/src/pages/logs
 *.log
 npm-debug.log*
 yarn-debug.log*

@@ -15,6 +15,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     body: {
       paddingBottom: "10em",
+      marginTop: "60px!important" as any,
       [theme.breakpoints.down("xs")]: {
         paddingBottom: "4em",
       },
@@ -221,6 +222,9 @@ export const useStyles = makeStyles((theme: Theme) =>
         paddingTop: "8px",
         paddingBottom: "8px",
       },
+      "&.MuiInputBase-root": {
+        marginTop: "25px",
+      },
     },
     inputLabel: {
       color: "#000",
@@ -242,6 +246,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+
     cursorPointer: {
       cursor: "pointer",
     },
@@ -296,10 +301,26 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0, 0, 0, 0.035)!important" as any,
       },
     },
-
     caseHistoryAvatar: {
       "&:hover": {
         border: "0.5px solid blue",
+      },
+    },
+    caseHistoryText: {
+      flexGrow: 1,
+      paddingRight: "100px!important" as any,
+      [theme.breakpoints.down("xs")]: {
+        paddingRight: 0,
+      },
+    },
+    caseHistoryBox: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      minWidth: 120,
+      marginLeft: "auto",
+      [theme.breakpoints.down("xs")]: {
+        minWidth: 60,
       },
     },
     smallTextField: {
@@ -307,15 +328,21 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#f2f2f2",
       borderRadius: "5px!important" as any,
       padding: "8px 0px 0px 10px!important" as any,
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
+      },
     },
-    iconButton: {
+    discardButton: {
       backgroundColor: "#dadada!important" as any,
       borderRadius: "5px!important" as any,
+      padding: "15px!important" as any,
     },
 
-    checkIconButton: {
+    saveButton: {
       borderRadius: "5px!important" as any,
       backgroundColor: "#00d97e!important" as any,
+      padding: "15px!important" as any,
+      marginRight: "8px!important" as any,
     },
     plainLabel: {
       fontSize: "12px!important" as any,
@@ -330,7 +357,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "5px!important" as any,
       fontSize: "12px!important" as any,
       height: "20px!important" as any,
-      //width: "70px!important" as any,
     },
     chipGrey: {
       backgroundColor: "#eee!important" as any,
@@ -339,16 +365,24 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "5px!important" as any,
       fontSize: "12px!important" as any,
       height: "20px!important" as any,
-      //width: "70px!important" as any,
+    },
+    caseSummary: {
+      marginBottom: "26px",
+      backgroundColor: "#f2f2f2",
+      position: "relative",
+      zIndex: 10,
+      "&:hover": {
+        backgroundColor: "#dadada!important" as any,
+      },
     },
     caseSelect: {
-      backgroundColor: "rgba(0, 0, 0, 0.035)",
+      backgroundColor: "#f2f2f2",
       border: "solid 1px rgba(0, 0, 0, 0)",
       borderRadius: "4px",
       padding: "8px 8px 4px 8px",
       fontSize: "13px!important" as any,
       height: "42px!important" as any,
-      width: "104%!important" as any,
+      width: "102%!important" as any,
       "&.Mui-disabled": {
         backgroundColor: "rgba(0, 0, 0, 0.05)",
         color: "#000000",
@@ -400,6 +434,71 @@ export const useStyles = makeStyles((theme: Theme) =>
       "&.Mui-selected": {
         backgroundColor: "#f4f7fe",
       },
+    },
+    clientDetailLabel: {
+      color: "#000",
+      fontSize: "1.2em",
+      "&.Mui-focused": {
+        color: "unset",
+      },
+    },
+    clientDetailInput: {
+      backgroundColor: "rgba(0, 0, 0, 0.035)",
+      border: "solid 1px rgba(0, 0, 0, 0)",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      fontSize: "13px!important" as any,
+      "&.Mui-disabled": {
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
+        color: "#000000",
+      },
+      "&.Mui-focused": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
+        borderColor: "#00d97e",
+      },
+      "& textarea": {
+        paddingTop: "8px",
+        paddingBottom: "8px",
+      },
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
+      },
+      "&.MuiInputBase-root": {
+        marginTop: "25px",
+      },
+    },
+    clientDetailSelect: {
+      backgroundColor: "rgba(0, 0, 0, 0.035)",
+      border: "solid 1px rgba(0, 0, 0, 0)",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      fontSize: "13px!important" as any,
+      height: "42px!important" as any,
+      width: "100%!important" as any,
+      "&.Mui-disabled": {
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
+        color: "#000000",
+        "&>.MuiSelect-icon": {
+          display: "none",
+        },
+      },
+      "&.Mui-focused": {
+        backgroundColor: "rgba(0, 0, 0, 0.035)",
+        borderColor: "#00d97e",
+      },
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
+      },
+      "&.MuiInputBase-root": {
+        marginTop: "25px",
+      },
+    },
+    twoButtonContainer: {
+      marginTop: "15px",
+      marginBottom: "30px",
+      zIndex: 2,
+      position: "relative",
+      transition: "all 0.3s ease-in-out",
     },
   })
 );
