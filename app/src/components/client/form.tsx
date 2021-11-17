@@ -51,38 +51,6 @@ const Component = (props: Props) => {
         spacing={2}
         alignItems="center"
       >
-        <Grid item xs={12} md={4}>
-          <FormControl fullWidth size="small">
-            <InputLabel
-              className={classes.inputLabel}
-              htmlFor="preferred_name"
-              shrink={true}
-            >
-              {i18n.t("Preferred name")}:
-            </InputLabel>
-            <Input
-              id="preferred_name"
-              autoFocus
-              disableUnderline={true}
-              disabled={props.readOnly}
-              className={classes.textField}
-              aria-describedby="my-helper-text"
-              value={client.preferred_name}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setClient((client) => ({
-                  ...client,
-                  preferred_name: e.target.value,
-                }));
-                props.setChanged(true);
-              }}
-            />
-          </FormControl>
-          {props.prefNameError && (
-            <FormHelperText error id="preferred_name_text">
-              Enter your preferred name
-            </FormHelperText>
-          )}
-        </Grid>
         {props.detailedView ? (
           <Grid item xs={12} md={8}>
             <FormControl fullWidth size="small">
@@ -118,6 +86,38 @@ const Component = (props: Props) => {
         ) : (
           ""
         )}
+        <Grid item xs={12} md={4}>
+          <FormControl fullWidth size="small">
+            <InputLabel
+              className={classes.inputLabel}
+              htmlFor="preferred_name"
+              shrink={true}
+            >
+              {i18n.t("Preferred name")}:
+            </InputLabel>
+            <Input
+              id="preferred_name"
+              autoFocus
+              disableUnderline={true}
+              disabled={props.readOnly}
+              className={classes.textField}
+              aria-describedby="my-helper-text"
+              value={client.preferred_name}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setClient((client) => ({
+                  ...client,
+                  preferred_name: e.target.value,
+                }));
+                props.setChanged(true);
+              }}
+            />
+          </FormControl>
+          {props.prefNameError && (
+            <FormHelperText error id="preferred_name_text">
+              Enter your preferred name
+            </FormHelperText>
+          )}
+        </Grid>
         <Grid item xs={12} md={4}>
           <FormControl fullWidth size="small">
             <InputLabel
@@ -180,7 +180,9 @@ const Component = (props: Props) => {
                 value={client.official_identifier_type}
                 renderValue={() => {
                   return constants.officialIdentifierTypes
-                    .filter((item) => item[0] === client.official_identifier_type)
+                    .filter(
+                      (item) => item[0] === client.official_identifier_type
+                    )
                     .map((item) => {
                       return item.length > 1 ? item[1] : item[0];
                     });
