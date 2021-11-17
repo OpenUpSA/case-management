@@ -253,6 +253,10 @@ class LegalCase(LifecycleModel, models.Model):
     case_offices = models.ManyToManyField(CaseOffice)
 
     summary = models.TextField(null=False, blank=True, default="")
+    referred_by = models.CharField(max_length=255, blank=True)
+    has_respondent = models.BooleanField(blank=True, null=True)
+    respondent_name = models.CharField(max_length=255, blank=True)
+    respondent_contact_number = PhoneNumberField(blank=True)
 
     @hook(AFTER_CREATE)
     def log_create(self):
