@@ -61,9 +61,6 @@ const Page = () => {
               color="primary"
               variant="contained"
               startIcon={<CreateNewFolderIcon />}
-              onClick={() => {
-                history.push(`/cases/new`);
-              }}
             >
               {i18n.t("New case")}
             </Button>
