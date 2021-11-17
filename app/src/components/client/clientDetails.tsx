@@ -27,8 +27,6 @@ type Props = {
   nameError?: boolean;
   prefNameError?: boolean;
   idTypeErrorMessage?: boolean;
-  changed?: boolean;
-  setChanged?: any;
 };
 
 type RouteParams = {
@@ -55,13 +53,20 @@ const Component = (props: Props) => {
     marital_status: "",
     dependents: "",
     gender: "",
+    alternative_contact_email: "",
+    alternative_contact_number: "",
     created_at: new Date(),
   });
 
   const [showDetailedInfo, setShowDetailedInfo] = useState<boolean>(false);
   const [phoneErrorMessage, setPhoneErrorMessage] = useState<boolean>(false);
-  const [kinPhoneErrorMessage, setKinPhoneErrorMessage] = useState<boolean>(false);
+  const [kinPhoneErrorMessage, setKinPhoneErrorMessage] =
+    useState<boolean>(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState<boolean>(false);
+  const [altPhoneErrorMessage, setAltPhoneErrorMessage] =
+    useState<boolean>(false);
+  const [altEmailErrorMessage, setAltEmailErrorMessage] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (props.client) {
@@ -75,32 +80,61 @@ const Component = (props: Props) => {
         ...client,
         id: clientId,
       };
-      const { id, contact_number, next_of_kin_contact_number, contact_email } = await updateClient(updatedClient); 
+      const {
+        id,
+        contact_number,
+        next_of_kin_contact_number,
+        contact_email,
+        alternative_contact_number,
+        alternative_contact_email,
+      } = await updateClient(updatedClient);
 
       if (typeof contact_number === "object") {
         setPhoneErrorMessage(true);
         setKinPhoneErrorMessage(false);
         setEmailErrorMessage(false);
+        setAltEmailErrorMessage(false);
+        setAltPhoneErrorMessage(false);
         return false;
       } else if (typeof contact_email === "object") {
         setEmailErrorMessage(true);
         setPhoneErrorMessage(false);
         setKinPhoneErrorMessage(false);
+        setAltEmailErrorMessage(false);
+        setAltPhoneErrorMessage(false);
+        return false;
+      } else if (typeof alternative_contact_number === "object") {
+        setAltPhoneErrorMessage(true);
+        setEmailErrorMessage(false);
+        setPhoneErrorMessage(false);
+        setKinPhoneErrorMessage(false);
+        setAltEmailErrorMessage(false);
+        return false;
+      } else if (typeof alternative_contact_email === "object") {
+        setAltEmailErrorMessage(true);
+        setEmailErrorMessage(false);
+        setPhoneErrorMessage(false);
+        setKinPhoneErrorMessage(false);
+        setAltPhoneErrorMessage(false);
         return false;
       } else if (typeof next_of_kin_contact_number === "object") {
         setKinPhoneErrorMessage(true);
         setPhoneErrorMessage(false);
         setEmailErrorMessage(false);
+        setAltEmailErrorMessage(false);
+        setAltPhoneErrorMessage(false);
         return false;
       } else {
         setKinPhoneErrorMessage(false);
         setPhoneErrorMessage(false);
         setEmailErrorMessage(false);
-      };
+        setAltEmailErrorMessage(false);
+        setAltPhoneErrorMessage(false);
+      }
 
       if (id) {
         history.push(`/clients/${id}/cases`);
-      };
+      }
     } catch (e) {
       console.log(e);
     }
@@ -161,7 +195,7 @@ const Component = (props: Props) => {
             prevValue={props.client?.contact_number!}
             editClientInput={editClientInput}
           />
-          { phoneErrorMessage && (
+          {phoneErrorMessage && (
             <FormHelperText error id="contact_number-text">
               Enter a valid phone number
             </FormHelperText>
@@ -176,7 +210,7 @@ const Component = (props: Props) => {
             prevValue={props.client?.contact_email!}
             editClientInput={editClientInput}
           />
-          { emailErrorMessage && (
+          {emailErrorMessage && (
             <FormHelperText error id="contact_number-text">
               Enter a valid email address
             </FormHelperText>
@@ -239,6 +273,36 @@ const Component = (props: Props) => {
               setClient={setClient}
               editClientSelect={editClientSelect}
             />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <ReusableInput
+              inputName={"alternative_contact_number"}
+              title={"Alternative contact number"}
+              value={client?.alternative_contact_number}
+              setClient={setClient}
+              prevValue={props.client?.alternative_contact_number!}
+              editClientInput={editClientInput}
+            />
+            {altPhoneErrorMessage && (
+              <FormHelperText error id="contact_number-text">
+                Enter a valid phone number
+              </FormHelperText>
+            )}
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <ReusableInput
+              inputName={"alternative_contact_email"}
+              title={"Alternative email address"}
+              value={client?.alternative_contact_email}
+              setClient={setClient}
+              prevValue={props.client?.alternative_contact_email!}
+              editClientInput={editClientInput}
+            />
+            {altEmailErrorMessage && (
+              <FormHelperText error id="contact_number-text">
+                Enter a valid email address
+              </FormHelperText>
+            )}
           </Grid>
           <Grid item xs={12} md={4}>
             <FormControl fullWidth size="small">
@@ -314,10 +378,10 @@ const Component = (props: Props) => {
               editClientInput={editClientInput}
             />
             {kinPhoneErrorMessage && (
-            <FormHelperText error id="contact_number-text">
-              Enter a valid phone number
-            </FormHelperText>
-          )}
+              <FormHelperText error id="contact_number-text">
+                Enter a valid phone number
+              </FormHelperText>
+            )}
           </Grid>
           <Grid item xs={12} md={4}>
             <ReusableInput
