@@ -17,10 +17,7 @@ type Props = {
   detailedView: boolean;
   phoneErrorMessage?: boolean;
   emailErrorMessage?: boolean;
-  idErrorMessage?: boolean;
   nameError?: boolean;
-  prefNameError?: boolean;
-  idTypeErrorMessage?: boolean;
   changed?: boolean;
   setChanged?: any;
 };
@@ -112,11 +109,6 @@ const Component = (props: Props) => {
               }}
             />
           </FormControl>
-          {props.prefNameError && (
-            <FormHelperText error id="preferred_name_text">
-              Enter your preferred name
-            </FormHelperText>
-          )}
         </Grid>
         <Grid item xs={12} md={4}>
           <FormControl fullWidth size="small">
@@ -143,18 +135,13 @@ const Component = (props: Props) => {
               }}
             />
           </FormControl>
-          {props.idErrorMessage && (
-            <FormHelperText error id="official_identifier_text">
-              Enter your unique id number
-            </FormHelperText>
-          )}
         </Grid>
         {props.detailedView ? (
           <Grid item xs={12} md={4}>
             <input
               type="hidden"
               id="official_identifier_type"
-              value={client.official_identifier_type}
+              value={client.official_identifier_type} 
             />
             <FormControl fullWidth size="small">
               <InputLabel
@@ -195,11 +182,6 @@ const Component = (props: Props) => {
                 ))}
               </Select>
             </FormControl>
-            {props.idTypeErrorMessage && (
-              <FormHelperText error id="official_identifier_type">
-                Select an Identifier type
-              </FormHelperText>
-            )}
           </Grid>
         ) : (
           ""
