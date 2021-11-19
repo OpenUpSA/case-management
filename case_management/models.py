@@ -243,13 +243,14 @@ class LegalCase(LifecycleModel, models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    case_number = models.CharField(max_length=32, null=False, blank=False, unique=True)
-    state = models.CharField(max_length=10, choices=CaseStates.choices)
+    case_number = models.CharField(
+        max_length=32, null=False, blank=False, unique=True)
+    state = models.CharField(max_length=10,
+                             choices=CaseStates.choices, default=CaseStates.OPENED)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     client = models.ForeignKey(
-        Client, related_name='legal_cases', on_delete=models.CASCADE
-    )
-    case_types = models.ManyToManyField(CaseType)
+        Client, related_name='legal_cases', on_delete=models.CASCADE)
+    case_types = models.ManyToManyField(CaseType, blank=True)
     case_offices = models.ManyToManyField(CaseOffice)
 
     summary = models.TextField(null=False, blank=True, default="")
