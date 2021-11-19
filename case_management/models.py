@@ -243,13 +243,14 @@ class LegalCase(LifecycleModel, models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    case_number = models.CharField(
-        max_length=32, null=False, blank=False, unique=True)
-    state = models.CharField(max_length=10,
-                             choices=CaseStates.choices, default=CaseStates.OPENED)
+    case_number = models.CharField(max_length=32, null=False, blank=False, unique=True)
+    state = models.CharField(
+        max_length=10, choices=CaseStates.choices, default=CaseStates.OPENED
+    )
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     client = models.ForeignKey(
-        Client, related_name='legal_cases', on_delete=models.CASCADE)
+        Client, related_name='legal_cases', on_delete=models.CASCADE
+    )
     case_types = models.ManyToManyField(CaseType, blank=True)
     case_offices = models.ManyToManyField(CaseOffice)
 
@@ -305,10 +306,10 @@ class LegalCaseFile(LifecycleModel, models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     legal_case = models.ForeignKey(
-        LegalCase, related_name='files', on_delete=models.CASCADE)
+        LegalCase, related_name='files', on_delete=models.CASCADE
+    )
     upload = models.FileField(upload_to='uploads/')
-    description = models.CharField(
-        max_length=255, null=False, blank=True, default='')
+    description = models.CharField(max_length=255, null=False, blank=True, default='')
 
     def save(self, *args, **kwargs):
         if self.description == '':
