@@ -160,6 +160,7 @@ export default function BasicTabs(props: Props) {
           <CaseFileTab
             legalCase={props.legalCase}
             legalCaseFiles={legalCaseFiles}
+            setLegalCaseFiles={setLegalCaseFiles}
           />
         ) : null}
       </TabPanel>

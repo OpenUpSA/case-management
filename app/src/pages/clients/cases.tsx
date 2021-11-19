@@ -15,12 +15,12 @@ import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
 import Layout from "../../components/layout";
-import { getLegalCases, getClient, deleteClient } from "../../api";
+import { getLegalCases, getClient, deleteClient, createLegalCase } from "../../api";
 import { ILegalCase, IClient } from "../../types";
 import { useStyles } from "../../utils";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 
-import ClientForm from "../../components/client/form";
+import ClientDetails from "../../components/client/clientDetails";
 import LegalCasesTable from "../../components/legalCase/table";
 import MoreMenu from "../../components/moreMenu";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -35,15 +35,11 @@ const Page = () => {
   const clientId = parseInt(params.id);
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
   const [client, setClient] = React.useState<IClient>();
-
-  const destroyClient = async () => {
-    if (
-      window.confirm(i18n.t("Are you sure you want to delete this client?"))
-    ) {
-      await deleteClient(clientId);
-      history.push("/clients");
-    }
-  };
+  const [dataForCase, setDataForCase] = React.useState<any>({
+    client: "",
+    users: "",
+    case_offices: "",
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -55,7 +51,31 @@ const Page = () => {
       }
     }
     fetchData();
+    const userInfo = UserInfo.getInstance();
+    const userId = Number(userInfo.getUserId());
+    const case_office = Number(userInfo.getCaseOffice());
+    setDataForCase({
+      client: clientId,
+      users: [userId],
+      case_offices: case_office > 0 ? [case_office] : [1],
+    });
   }, [clientId]);
+
+  const destroyClient = async () => {
+    if (
+      window.confirm(i18n.t("Are you sure you want to delete this client?"))
+    ) {
+      await deleteClient(clientId);
+      history.push("/clients");
+    }
+  };
+
+  const newCaseHandler = async () => {
+    const { id } = await createLegalCase(dataForCase);
+    if (id) {
+      history.push(`/cases/${id}`);
+    }
+  };
 
   return (
     <Layout>
@@ -111,16 +131,14 @@ const Page = () => {
               variant="contained"
               startIcon={<CreateNewFolderIcon />}
               disabled={client ? false : true}
-              onClick={() => {
-                history.push(`/clients/${client?.id}/cases/new`);
-              }}
+              onClick={newCaseHandler}
             >
               {i18n.t("New case")}
             </Button>
           </Grid>
         </Grid>
 
-        <ClientForm client={client} />
+        <ClientDetails client={client} />
         <hr className={classes.hr} />
 
         <LegalCasesTable
