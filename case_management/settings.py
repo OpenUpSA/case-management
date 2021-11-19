@@ -44,7 +44,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://osf-case-management-app.netlify.app",
     "https://app.casefile.org.za",
     "https://staging.casefile.org.za",
-    "https://*.netlify.app"
+    "https://case-management.pages.dev"
 ]
 
 # Application definition
