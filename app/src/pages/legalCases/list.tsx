@@ -17,11 +17,9 @@ import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 
 import LegalCasesTable from "../../components/legalCase/table";
-import { useHistory } from "react-router-dom";
 
 const Page = () => {
   RedirectIfNotLoggedIn();
-  const history = useHistory();
   const classes = useStyles();
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
 
