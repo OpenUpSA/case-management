@@ -13,13 +13,14 @@ import { Integrations } from "@sentry/tracing";
 
 
 Sentry.init({
-  dsn: "https://b3729cd09c27476e997ef25177210fc0@o242378.ingest.sentry.io/6075435",
+  dsn: process.env.REACT_APP_SENTRY_DSN,
   integrations: [new Integrations.BrowserTracing()],
 
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
   // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
+  
+  // tracesSampleRate: 1.0,
 });
 
 
