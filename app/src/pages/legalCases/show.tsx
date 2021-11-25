@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -22,15 +22,22 @@ import {
   getClient,
   getLegalCase,
   getMeetings,
-  updateLegalCase
+  updateLegalCase,
 } from "../../api";
 import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MuiTabs from "../../components/legalCase/muiTabs";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
+
+interface LocationState {
+  pathname?: string;
+  openSnackbar?: boolean;
+  message?: string;
+}
 
 const LegalCaseStates = [
   "Opened",
@@ -40,20 +47,22 @@ const LegalCaseStates = [
   "Referred",
   "Resolved",
   "Escalated",
-  "Closed"
+  "Closed",
 ];
 
 const Page = () => {
   RedirectIfNotLoggedIn();
   const history = useHistory();
+  const location = useLocation<LocationState>();
   const classes = useStyles();
   const params = useParams<RouteParams>();
+  const caseId = parseInt(params.id);
+
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
-  const caseId = parseInt(params.id);
-
   const [status, setStatus] = React.useState<string | undefined>("");
+  const [showSnackbar] = React.useState(location.state?.openSnackbar!);
 
   const destroyLegalCase = async () => {
     if (window.confirm(i18n.t("Are you sure you want to delete this case?"))) {
@@ -62,6 +71,10 @@ const Page = () => {
     }
   };
 
+  // set location.state?.openSnackbar! to false on page load
+  useEffect(() => {
+    history.push({ state: { openSnackbar: false } });
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -69,13 +82,13 @@ const Page = () => {
       const dataMeetings = await getMeetings(caseId);
       setLegalCase(dataLegalCase);
       setClient(await getClient(dataLegalCase.client));
-      setStatus(dataLegalCase.state)
+      setStatus(dataLegalCase.state);
       setMeetings(dataMeetings);
     }
     fetchData();
   }, [caseId]);
 
-  const statusPatch = async (arg:any) => {
+  const statusPatch = async (arg: any) => {
     try {
       const updatedSummary: ILegalCase = {
         id: legalCase!.id,
@@ -92,7 +105,6 @@ const Page = () => {
       console.log(e);
     }
   };
-  
 
   return (
     <Layout>
@@ -132,12 +144,12 @@ const Page = () => {
               className={classes.select}
               input={<Input />}
               value={status}
-              onChange={(event: SelectChangeEvent<string | undefined >) => {
-                setStatus(event.target.value as any);         
+              onChange={(event: SelectChangeEvent<string | undefined>) => {
+                setStatus(event.target.value as any);
                 statusPatch(event.target.value as any);
               }}
               style={{ width: "200px", fontSize: "13px" }}
-              renderValue={()=>status}
+              renderValue={() => status}
             >
               {LegalCaseStates?.map((value) => (
                 <MenuItem key={value} value={value}>
@@ -156,10 +168,19 @@ const Page = () => {
               </MenuItem>
             </MoreMenu>
           </Grid>
-          
         </Grid>
-        <MuiTabs legalCase={legalCase!} meetings={meetings ? meetings : []} standalone={false}/>
+        <MuiTabs
+          legalCase={legalCase!}
+          meetings={meetings ? meetings : []}
+          standalone={false}
+        />
       </Container>
+      <SnackbarAlert
+        open={showSnackbar}
+        duration={6000}
+        message={"New case created"}
+        severity={"success"}
+      />
     </Layout>
   );
 };

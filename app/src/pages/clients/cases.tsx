@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -13,9 +13,15 @@ import {
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 import Layout from "../../components/layout";
-import { getLegalCases, getClient, deleteClient, createLegalCase } from "../../api";
+import {
+  getLegalCases,
+  getClient,
+  deleteClient,
+  createLegalCase,
+} from "../../api";
 import { ILegalCase, IClient } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
@@ -23,13 +29,21 @@ import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 import ClientDetails from "../../components/client/clientDetails";
 import LegalCasesTable from "../../components/legalCase/table";
 import MoreMenu from "../../components/moreMenu";
-import DeleteIcon from "@material-ui/icons/Delete";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
+
+interface LocationState {
+  pathname?: string;
+  openSnackbar?: boolean;
+  message?: string;
+  severity?: "success" | "error" | undefined;
+}
 
 const Page = () => {
   RedirectIfNotLoggedIn();
   const history = useHistory();
+  const location = useLocation<LocationState>();
   const classes = useStyles();
   const params = useParams<RouteParams>();
   const clientId = parseInt(params.id);
@@ -40,6 +54,16 @@ const Page = () => {
     users: "",
     case_offices: "",
   });
+  const [showSnackbar, setShowSnackbar] = React.useState({
+    open: location.state?.openSnackbar!,
+    message: location.state?.message!,
+    severity: location.state?.severity!,
+  });
+
+  // set location.state?.openSnackbar! to false on page load
+  useEffect(() => {
+    history.push({ state: { openSnackbar: false } });
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -71,9 +95,23 @@ const Page = () => {
   };
 
   const newCaseHandler = async () => {
-    const { id } = await createLegalCase(dataForCase);
-    if (id) {
-      history.push(`/cases/${id}`);
+    try {
+      const { id } = await createLegalCase(dataForCase);
+      if (id) {
+        history.push({
+          pathname: `/cases/${id}`,
+          state: { openSnackbar: true },
+        });
+      }
+    } catch (e) {
+      setShowSnackbar({
+        open: true,
+        message: "New case failed",
+        severity: "error",
+      });
+      setTimeout(() => {
+        setShowSnackbar({ open: false, message: "", severity: "error" });
+      }, 7000);
     }
   };
 
@@ -146,6 +184,14 @@ const Page = () => {
           standalone={false}
         />
       </Container>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          duration={6000}
+          message={showSnackbar.message}
+          severity={showSnackbar.severity}
+        />
+      )}
     </Layout>
   );
 };
