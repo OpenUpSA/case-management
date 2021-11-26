@@ -22,7 +22,7 @@ import {
   deleteClient,
   createLegalCase,
 } from "../../api";
-import { ILegalCase, IClient } from "../../types";
+import { ILegalCase, IClient, LocationState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 
@@ -32,13 +32,6 @@ import MoreMenu from "../../components/moreMenu";
 import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
-
-interface LocationState {
-  pathname?: string;
-  openSnackbar?: boolean;
-  message?: string;
-  severity?: "success" | "error" | undefined;
-}
 
 const Page = () => {
   RedirectIfNotLoggedIn();
@@ -54,16 +47,29 @@ const Page = () => {
     users: "",
     case_offices: "",
   });
-  const [showSnackbar, setShowSnackbar] = React.useState({
-    open: location.state?.openSnackbar!,
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: location.state?.open!,
     message: location.state?.message!,
     severity: location.state?.severity!,
   });
 
-  // set location.state?.openSnackbar! to false on page load
+  // set location.state?.open! to false on page load
   useEffect(() => {
-    history.push({ state: { openSnackbar: false } });
+    history.push({ state: { open: false } });
   }, []);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   useEffect(() => {
     async function fetchData() {
@@ -100,7 +106,11 @@ const Page = () => {
       if (id) {
         history.push({
           pathname: `/cases/${id}`,
-          state: { openSnackbar: true },
+          state: {
+            open: true,
+            message: "New case created",
+            severity: "success",
+          },
         });
       }
     } catch (e) {
@@ -109,9 +119,6 @@ const Page = () => {
         message: "New case failed",
         severity: "error",
       });
-      setTimeout(() => {
-        setShowSnackbar({ open: false, message: "", severity: "error" });
-      }, 7000);
     }
   };
 
@@ -187,8 +194,7 @@ const Page = () => {
       {showSnackbar.open && (
         <SnackbarAlert
           open={showSnackbar.open}
-          duration={6000}
-          message={showSnackbar.message}
+          message={showSnackbar.message ? showSnackbar.message : ""}
           severity={showSnackbar.severity}
         />
       )}

@@ -22,6 +22,7 @@ import { getClient, getLegalCase, createMeeting } from "../../api";
 import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
 
@@ -45,6 +46,7 @@ const Page = () => {
   const [meetingTypeError, setMeetingTypeError] =
     React.useState<boolean>(false);
   const [notesError, setNotesError] = React.useState<boolean>(false);
+  const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
 
   const newMeeting = async (newMeeting: IMeeting) => {
     try {
@@ -74,9 +76,17 @@ const Page = () => {
         setMeetingTypeError(false);
       }
 
-      id && history.push(`/meetings/${id}`);
+      id &&
+        history.push({
+          pathname: `/meetings/${id}`,
+          state: {
+            open: true,
+            message: "New meeting created",
+            severity: "success",
+          },
+        });
     } catch (e) {
-      console.log(e);
+      setShowSnackbar(true);
     }
   };
 
@@ -89,6 +99,15 @@ const Page = () => {
     }
     fetchData();
   }, [params.id]);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar]);
 
   return (
     <Layout>
@@ -188,6 +207,13 @@ const Page = () => {
           />
         </form>
       </Container>
+      {showSnackbar && (
+        <SnackbarAlert
+          open={showSnackbar}
+          message={"New meeting failed"}
+          severity={"error"}
+        />
+      )}
     </Layout>
   );
 };

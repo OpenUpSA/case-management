@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { EffectCallback, useRef } from "react";
 import { useStyles } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
 import CheckIcon from "@mui/icons-material/Check";
@@ -20,7 +20,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { format } from "date-fns";
 
-import { ILegalCase, ILegalCaseFile } from "../../types";
+import { ILegalCase, ILegalCaseFile, LocationState } from "../../types";
 import { getLegalCaseFiles, createLegalCaseFile } from "../../api";
 
 import {
@@ -36,6 +36,7 @@ import {
 } from "@material-ui/core";
 import i18n from "../../i18n";
 import ProgressBar from "../progressBar/progressBar";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type Props = {
   legalCase: ILegalCase;
@@ -51,6 +52,24 @@ export default function CaseFileTab(props: Props) {
   const [progress, setProgress] = React.useState<number>(0);
   const [open, setOpen] = React.useState(false);
   const [fileDescription, setFileDescription] = React.useState("");
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: false,
+    message: "",
+    severity: undefined,
+  });
+
+  React.useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   const onFileChange = async (event: any) => {
     createLegalCaseFile(
@@ -65,19 +84,31 @@ export default function CaseFileTab(props: Props) {
         if (percent === 100) {
           setTimeout(() => {
             setProgress(0);
+            setShowSnackbar({
+              open: true,
+              message: "File upload successful",
+              severity: "success",
+            });
           }, 1000);
         }
       }
-    ).then((res: any) => {
-      setFileDescription("");
-      if (res.legal_case) {
-        getLegalCaseFiles(res.legal_case).then((res) => {
-          props.setLegalCaseFiles(res);
+    )
+      .then((res: any) => {
+        setFileDescription("");
+        if (res.legal_case) {
+          getLegalCaseFiles(res.legal_case).then((res) => {
+            props.setLegalCaseFiles(res);
+          });
+        }
+      })
+      .catch(() => {
+        setShowSnackbar({
+          open: true,
+          message: "File upload failed",
+          severity: "error",
         });
-      }
-    });
+      });
   };
-
   const showOpenFileDialog = () => {
     if (!uploadFileRef.current) throw Error("uploadFileRef is not assigned");
     uploadFileRef.current.click();
@@ -326,6 +357,13 @@ export default function CaseFileTab(props: Props) {
           </IconButton>
         </Grid>
       </Grid>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </>
   );
 }

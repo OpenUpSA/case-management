@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
 import { getClient, getLegalCase, getMeeting, deleteMeeting } from "../../api";
-import { ILegalCase, IClient, IMeeting } from "../../types";
+import { ILegalCase, IClient, IMeeting, LocationState } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import {
   Breadcrumbs,
@@ -20,21 +19,29 @@ import { useStyles } from "../../utils";
 import ChatIcon from "@material-ui/icons/Chat";
 import DeleteIcon from "@material-ui/icons/Delete";
 import RateReviewIcon from "@material-ui/icons/RateReview";
+import ListItemText from "@material-ui/core/ListItemText";
 import MoreMenu from "../../components/moreMenu";
 
 import MeetingForm from "../../components/meeting/form";
-import ListItemText from "@material-ui/core/ListItemText";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
 
 const Page = () => {
   RedirectIfNotLoggedIn();
   const history = useHistory();
+  const location = useLocation<LocationState>();
   const classes = useStyles();
   const params = useParams<RouteParams>();
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meeting, setMeeting] = React.useState<IMeeting>();
+
+  const [showSnackbar] = React.useState({
+    open: location.state?.open!,
+    message: location.state?.message!,
+    severity: location.state?.severity!,
+  });
 
   const destroyMeeting = async () => {
     if (
@@ -56,6 +63,12 @@ const Page = () => {
     }
     fetchData();
   }, [params.id]);
+
+  // set location.state?.open! to false on page load
+  useEffect(() => {
+    history.push({ state: { open: false } });
+  }, []);
+
 
   return (
     <Layout>
@@ -122,6 +135,13 @@ const Page = () => {
           <MeetingForm meeting={meeting} />
         </form>
       </Container>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message}
+          severity={showSnackbar.severity}
+        />
+      )}
     </Layout>
   );
 };

@@ -123,3 +123,10 @@ export interface ILog {
   note: string;
   user: number;
 }
+
+export interface LocationState {
+  pathname?: string;
+  open?: boolean;
+  message?: string;
+  severity?: "success" | "error" | undefined;
+}

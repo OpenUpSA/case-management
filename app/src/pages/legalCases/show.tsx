@@ -24,7 +24,7 @@ import {
   getMeetings,
   updateLegalCase,
 } from "../../api";
-import { ILegalCase, IClient, IMeeting } from "../../types";
+import { ILegalCase, IClient, IMeeting, LocationState } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -32,12 +32,6 @@ import MuiTabs from "../../components/legalCase/muiTabs";
 import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
-
-interface LocationState {
-  pathname?: string;
-  openSnackbar?: boolean;
-  message?: string;
-}
 
 const LegalCaseStates = [
   "Opened",
@@ -62,7 +56,11 @@ const Page = () => {
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
   const [status, setStatus] = React.useState<string | undefined>("");
-  const [showSnackbar] = React.useState(location.state?.openSnackbar!);
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: location.state?.open!,
+    message: location.state?.message!,
+    severity: location.state?.severity!,
+  });
 
   const destroyLegalCase = async () => {
     if (window.confirm(i18n.t("Are you sure you want to delete this case?"))) {
@@ -71,10 +69,23 @@ const Page = () => {
     }
   };
 
-  // set location.state?.openSnackbar! to false on page load
+  // set location.state?.open! to false on page load
   useEffect(() => {
-    history.push({ state: { openSnackbar: false } });
+    history.push({ state: { open: false } });
   }, []);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   useEffect(() => {
     async function fetchData() {
@@ -88,6 +99,7 @@ const Page = () => {
     fetchData();
   }, [caseId]);
 
+  
   const statusPatch = async (arg: any) => {
     try {
       const updatedSummary: ILegalCase = {
@@ -100,9 +112,18 @@ const Page = () => {
         case_offices: legalCase!.case_offices,
       };
       const { id } = await updateLegalCase(updatedSummary);
-      history.push(`/cases/${id}`);
+      id &&
+        setShowSnackbar({
+          open: true,
+          message: "Case edit successful",
+          severity: "success",
+        });
     } catch (e) {
-      console.log(e);
+      setShowSnackbar({
+        open: true,
+        message: "Case edit failed",
+        severity: "error",
+      });
     }
   };
 
@@ -175,12 +196,13 @@ const Page = () => {
           standalone={false}
         />
       </Container>
-      <SnackbarAlert
-        open={showSnackbar}
-        duration={6000}
-        message={"New case created"}
-        severity={"success"}
-      />
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </Layout>
   );
 };

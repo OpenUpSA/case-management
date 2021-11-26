@@ -6,7 +6,7 @@ import MoreMenu from "../../components/moreMenu";
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
 import { createClient } from "../../api";
-import { IClient } from "../../types";
+import { IClient, LocationState } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import {
   Breadcrumbs,
@@ -26,13 +26,6 @@ import CloseIcon from "@material-ui/icons/Close";
 import ClientForm from "../../components/client/form";
 import SnackbarAlert from "../../components/general/snackBar";
 
-interface LocationState {
-  pathname?: string;
-  openSnackbar?: boolean;
-  message?: string;
-  severity?: "success" | "info" | undefined;
-}
-
 const Page = () => {
   RedirectIfNotLoggedIn();
   const history = useHistory();
@@ -48,7 +41,14 @@ const Page = () => {
     React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
 
-  console.log(showSnackbar);
+  React.useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar]);
 
   const newClient = async (client: IClient) => {
     try {
@@ -81,17 +81,13 @@ const Page = () => {
         history.push({
           pathname: `/clients/${id}/cases`,
           state: {
-            openSnackbar: true,
+            open: true,
             message: "New client created",
             severity: "success",
           },
         });
     } catch (e) {
       setShowSnackbar(true);
-      setTimeout(() => {
-        setShowSnackbar(false);
-      }, 7000);
-      console.log(e);
     }
   };
 
@@ -193,7 +189,6 @@ const Page = () => {
       {showSnackbar && (
         <SnackbarAlert
           open={showSnackbar}
-          duration={6000}
           message={"New client failed"}
           severity={"error"}
         />

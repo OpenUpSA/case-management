@@ -1,12 +1,9 @@
 import * as React from "react";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 type Props = {
   open: boolean;
-  duration: number;
   message: string;
   severity: "success" | "error" | undefined;
 };
@@ -30,10 +27,9 @@ export default function SnackbarAlert(props: Props) {
   };
 
   return (
-    <Stack spacing={2} sx={{ width: "100%" }}>
       <Snackbar
         open={open}
-        autoHideDuration={props.duration}
+        autoHideDuration={6000}
         onClose={handleClose}
       >
         <Alert
@@ -44,10 +40,5 @@ export default function SnackbarAlert(props: Props) {
           {props.message}
         </Alert>
       </Snackbar>
-      {/* <Alert severity="error">This is an error message!</Alert>
-      <Alert severity="warning">This is a warning message!</Alert>
-      <Alert severity="info">This is an information message!</Alert>
-      <Alert severity="success">This is a success message!</Alert> */}
-    </Stack>
   );
 }

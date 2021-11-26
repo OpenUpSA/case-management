@@ -9,15 +9,16 @@ import InputAdornment from "@mui/material/InputAdornment";
 import LockIcon from "@mui/icons-material/Lock";
 import FormHelperText from "@mui/material/FormHelperText";
 
-import { IClient } from "../../types";
+import { IClient, LocationState } from "../../types";
 import { useStyles } from "../../utils";
 import { format } from "date-fns";
 import i18n from "../../i18n";
 
 import ReusableInput from "./reusableInput";
 import ReusableSelect from "./reusableSelect";
-import { updateClient } from "../../api";
+import { updateClient, getClient } from "../../api";
 import { constants } from "../../dropDownConstants";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type Props = {
   client?: IClient;
@@ -67,6 +68,25 @@ const Component = (props: Props) => {
     useState<boolean>(false);
   const [altEmailErrorMessage, setAltEmailErrorMessage] =
     useState<boolean>(false);
+
+  const [showSnackbar, setShowSnackbar] = useState<LocationState>({
+    open: false,
+    message: "",
+    severity: undefined,
+  });
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   useEffect(() => {
     if (props.client) {
@@ -133,10 +153,19 @@ const Component = (props: Props) => {
       }
 
       if (id) {
-        history.push(`/clients/${id}/cases`);
+        setShowSnackbar({
+          open: true,
+          message: "Client edit successful",
+          severity: "success",
+        });
+        setClient(await getClient(id));
       }
     } catch (e) {
-      console.log(e);
+      setShowSnackbar({
+        open: true,
+        message: "Client edit failed",
+        severity: "error",
+      });
     }
   };
 
@@ -149,10 +178,19 @@ const Component = (props: Props) => {
       };
       const { id } = await updateClient(updatedClient);
       if (id) {
-        history.push(`/clients/${id}/cases`);
+        setShowSnackbar({
+          open: true,
+          message: "Client edit successful",
+          severity: "success",
+        });
+        setClient(await getClient(id));
       }
     } catch (e) {
-      console.log(e);
+      setShowSnackbar({
+        open: true,
+        message: "Client edit failed",
+        severity: "error",
+      });
     }
   };
 
@@ -211,7 +249,7 @@ const Component = (props: Props) => {
             editClientInput={editClientInput}
           />
           {emailErrorMessage && (
-            <FormHelperText error id="contact_number-text">
+            <FormHelperText error id="contact-email-text">
               Enter a valid email address
             </FormHelperText>
           )}
@@ -410,6 +448,13 @@ const Component = (props: Props) => {
         </Typography>
       ) : (
         ""
+      )}
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
       )}
     </div>
   );
