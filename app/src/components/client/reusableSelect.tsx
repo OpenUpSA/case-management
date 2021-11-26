@@ -20,7 +20,7 @@ function ReusableSelect(props: Props) {
     <FormControl fullWidth size="small">
       <InputLabel className={classes.clientDetailLabel} htmlFor="date" shrink={true}>
         {i18n.t(props.title)}:
-      </InputLabel>
+      </InputLabel>yarn 
       <Select
         id="select"
         disableUnderline
