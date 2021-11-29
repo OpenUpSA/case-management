@@ -37,18 +37,33 @@ const Page = () => {
   const [client, setClient] = React.useState<IClient>();
   const [meeting, setMeeting] = React.useState<IMeeting>();
 
-  const [showSnackbar] = React.useState({
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
     open: location.state?.open!,
     message: location.state?.message!,
     severity: location.state?.severity!,
   });
 
   const destroyMeeting = async () => {
-    if (
-      window.confirm(i18n.t("Are you sure you want to delete this meeting?"))
-    ) {
-      await deleteMeeting(parseInt(params.id));
-      history.push(`/cases/${legalCase?.id}`);
+    try {
+      if (
+        window.confirm(i18n.t("Are you sure you want to delete this meeting?"))
+      ) {
+        await deleteMeeting(parseInt(params.id));
+        history.push({
+          pathname: `/cases/${legalCase?.id}`,
+          state: {
+            open: true,
+            message: "Meeting delete successful",
+            severity: "success",
+          },
+        });
+      }
+    } catch (error) {
+      setShowSnackbar({
+        open: true,
+        message: "Meeting delete failed",
+        severity: "error",
+      });
     }
   };
 
@@ -69,6 +84,18 @@ const Page = () => {
     history.push({ state: { open: false } });
   }, []);
 
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   return (
     <Layout>
@@ -104,7 +131,7 @@ const Page = () => {
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
               <Typography variant="h6">
-               <strong>{meeting?.meeting_type}</strong>
+                <strong>{meeting?.meeting_type}</strong>
               </Typography>
             </Grid>
             <Grid item>
@@ -138,7 +165,7 @@ const Page = () => {
       {showSnackbar.open && (
         <SnackbarAlert
           open={showSnackbar.open}
-          message={showSnackbar.message}
+          message={showSnackbar.message ? showSnackbar.message : ""}
           severity={showSnackbar.severity}
         />
       )}

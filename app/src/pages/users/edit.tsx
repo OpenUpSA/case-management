@@ -9,10 +9,11 @@ import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 
 import Layout from "../../components/layout";
 import { getUser, updateUser } from "../../api";
-import { IUser, Nullable } from "../../types";
+import { IUser, LocationState } from "../../types";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 import { useStyles } from "../../utils";
 import UserForm from "../../components/user/form";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
 
@@ -23,12 +24,15 @@ const Page = () => {
   const params = useParams<RouteParams>();
   const userId = parseInt(params.id);
   const [user, setUser] = React.useState<IUser>();
-  const [saveError, setSaveError] = React.useState<Nullable<string>>();
   const [changed, setChanged] = React.useState<boolean>(false);
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: false,
+    message: "",
+    severity: undefined,
+  });
 
   const saveUser = async (user: IUser) => {
     try {
-      setSaveError(null);
       const updatedUser = {
         ...user,
         id: userId,
@@ -39,13 +43,21 @@ const Page = () => {
         userInfo.setName(response.name);
         userInfo.setCaseOffice(response.case_office);
         userInfo.setEmail(response.email);
-        history.push(`/users/${response.id}`);
-      } else {
-        //TODO: Better validation and error messages needed
-        setSaveError(Object.values(response).join("\n"));
+        history.push({
+          pathname: `/users/${response.id}`,
+          state: {
+            open: true,
+            message: "Account edit successful",
+            severity: "success",
+          },
+        });
       }
     } catch (e) {
-      console.log(e);
+      setShowSnackbar({
+        open: true,
+        message: "Account edit failed",
+        severity: "error",
+      });
     }
   };
 
@@ -55,6 +67,19 @@ const Page = () => {
     }
     fetchData();
   }, [userId]);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   return (
     <Layout>
@@ -128,11 +153,6 @@ const Page = () => {
               "You have already made some changes\nAre you sure you want to leave?"
             }
           />
-          {saveError ? (
-            <p className={classes.formError}>
-              {i18n.t("Error saving account details")} {saveError}
-            </p>
-          ) : null}
           {user ? (
             <UserForm
               user={user}
@@ -145,6 +165,13 @@ const Page = () => {
           )}
         </form>
       </Container>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </Layout>
   );
 };

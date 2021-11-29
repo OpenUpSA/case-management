@@ -63,9 +63,26 @@ const Page = () => {
   });
 
   const destroyLegalCase = async () => {
-    if (window.confirm(i18n.t("Are you sure you want to delete this case?"))) {
-      await deleteLegalCase(caseId);
-      history.push(`/cases/`);
+    try {
+      if (
+        window.confirm(i18n.t("Are you sure you want to delete this case?"))
+      ) {
+        await deleteLegalCase(caseId);
+        history.push({
+          pathname:`/cases/`,
+          state: {
+            open: true,
+            message: "Case delete successful",
+            severity: "success",
+          },
+        });
+      }
+    } catch (e) {
+      setShowSnackbar({
+        open: true,
+        message: "Case delete failed",
+        severity: "error",
+      });
     }
   };
 
@@ -99,7 +116,6 @@ const Page = () => {
     fetchData();
   }, [caseId]);
 
-  
   const statusPatch = async (arg: any) => {
     try {
       const updatedSummary: ILegalCase = {

@@ -1,39 +1,68 @@
 import i18n from "../../i18n";
 import React, { useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
-import {
-  Breadcrumbs,
-  Button,
-  Container,
-} from "@material-ui/core";
+import { Breadcrumbs, Button, Container } from "@material-ui/core";
 
 import Layout from "../../components/layout";
 import { getUser } from "../../api";
-import { IUser } from "../../types";
+import { IUser, LocationState } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import Grid from "@material-ui/core/Grid";
 import SettingsIcon from "@material-ui/icons/Settings";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import UserForm from "../../components/user/form";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
 
 const Page = () => {
   RedirectIfNotLoggedIn();
   const history = useHistory();
+  const location = useLocation<LocationState>();
   const classes = useStyles();
   const params = useParams<RouteParams>();
   const userId = parseInt(params.id);
   const [user, setUser] = React.useState<IUser>();
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: location.state?.open!,
+    message: location.state?.message!,
+    severity: location.state?.severity!,
+  });
 
   useEffect(() => {
     async function fetchData() {
-      setUser(await getUser(userId));
+      try {
+        setUser(await getUser(userId));
+      } catch (e) {
+        setShowSnackbar({
+          open: true,
+          message: "Account details cannot be loaded",
+          severity: "error",
+        });
+      }
     }
     fetchData();
   }, [userId]);
+
+  // set location.state?.open! to false on page load
+  useEffect(() => {
+    history.push({ state: { open: false } });
+  }, []);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   return (
     <Layout>
@@ -57,9 +86,7 @@ const Page = () => {
           </Grid>
           <Grid item style={{ flexGrow: 1 }}>
             <Typography variant="h6">
-              <strong>
-                {user ? user.name || user.email : ""}
-              </strong>
+              <strong>{user ? user.name || user.email : ""}</strong>
             </Typography>
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>
@@ -78,6 +105,13 @@ const Page = () => {
         </Grid>
         {user ? <UserForm user={user} /> : ""}
       </Container>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </Layout>
   );
 };

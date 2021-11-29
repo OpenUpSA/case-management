@@ -10,12 +10,32 @@ import { RedirectIfLoggedIn, UserInfo } from "../auth";
 import { authenticate, getUser } from "../api";
 import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
 import { useStyles } from "../utils";
+import { LocationState } from "../types";
+import SnackbarAlert from "../components/general/snackBar";
 
 const Page = () => {
   RedirectIfLoggedIn();
   const classes = useStyles();
   const history = useHistory();
   const [loginError, setLoginError] = React.useState<boolean>();
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: false,
+    message: "",
+    severity: undefined,
+  });
+
+  React.useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   const validateLogin = async (username: string, password: string) => {
     try {
@@ -24,8 +44,8 @@ const Page = () => {
         password: password,
       };
       const { token, user_id } = await authenticate(credentials);
-      const {name, case_office, email} = await getUser(user_id);
-          
+      const { name, case_office, email } = await getUser(user_id);
+
       if (token && user_id) {
         const userInfo = UserInfo.getInstance();
         userInfo.setAccessToken(token);
@@ -36,12 +56,21 @@ const Page = () => {
         history.push("/clients");
       } else {
         setLoginError(true);
+        setShowSnackbar({
+          open: true,
+          message: "Login failed",
+          severity: "error",
+        });
       }
     } catch (e) {
-      console.log(e);
+      setShowSnackbar({
+        open: true,
+        message: "Login failed",
+        severity: "error",
+      });
     }
   };
-  
+
   return (
     <LayoutSimple>
       <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>
@@ -121,6 +150,13 @@ const Page = () => {
           </Grid>
         </Grid>
       </Box>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </LayoutSimple>
   );
 };

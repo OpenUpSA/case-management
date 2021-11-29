@@ -1,35 +1,66 @@
 import React, { useEffect } from "react";
+import { useLocation, useHistory } from "react-router-dom";
+
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
-import {
-  Breadcrumbs,
-  Container,
-  Button,
-  Grid,
-} from "@material-ui/core";
+import { Breadcrumbs, Container, Button, Grid } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
 import Layout from "../../components/layout";
 import { getLegalCases } from "../../api";
-import { ILegalCase } from "../../types";
+import { ILegalCase, LocationState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 
 import LegalCasesTable from "../../components/legalCase/table";
+import SnackbarAlert from "../../components/general/snackBar";
 
 const Page = () => {
   RedirectIfNotLoggedIn();
   const classes = useStyles();
+  const history = useHistory();
+  const location = useLocation<LocationState>();
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: location.state?.open!,
+    message: location.state?.message!,
+    severity: location.state?.severity!,
+  });
 
   useEffect(() => {
     async function fetchData() {
-      const dataLegalCases = await getLegalCases();
-      setLegalCases(dataLegalCases);
+      try {
+        const dataLegalCases = await getLegalCases();
+        setLegalCases(dataLegalCases);
+      } catch (e) {
+        setShowSnackbar({
+          open: true,
+          message: "Case list cannot be loaded",
+          severity: "error",
+        });
+      }
     }
     fetchData();
   }, []);
+
+  // set location.state?.open! to false on page load
+  useEffect(() => {
+    history.push({ state: { open: false } });
+  }, []);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   return (
     <Layout>
@@ -67,6 +98,13 @@ const Page = () => {
 
         <LegalCasesTable legalCases={legalCases ? legalCases : []} />
       </Container>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </Layout>
   );
 };

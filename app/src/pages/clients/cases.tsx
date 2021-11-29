@@ -92,11 +92,26 @@ const Page = () => {
   }, [clientId]);
 
   const destroyClient = async () => {
-    if (
-      window.confirm(i18n.t("Are you sure you want to delete this client?"))
-    ) {
-      await deleteClient(clientId);
-      history.push("/clients");
+    try {
+      if (
+        window.confirm(i18n.t("Are you sure you want to delete this client?"))
+      ) {
+        await deleteClient(clientId);
+        history.push({
+          pathname: "/clients",
+          state: {
+            open: true,
+            message: "Client delete successful",
+            severity: "success",
+          },
+        });
+      }
+    } catch (e) {
+      setShowSnackbar({
+        open: true,
+        message: "Client delete failed",
+        severity: "error",
+      });
     }
   };
 
@@ -151,16 +166,6 @@ const Page = () => {
           </Grid>
           <Grid item>
             <MoreMenu>
-              <MenuItem
-                onClick={() => {
-                  history.push(`/clients/${clientId}/edit`);
-                }}
-              >
-                <ListItemIcon>
-                  <PersonIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{i18n.t("Edit client")}</ListItemText>
-              </MenuItem>
               <MenuItem onClick={destroyClient}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />

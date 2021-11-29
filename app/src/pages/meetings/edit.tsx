@@ -6,7 +6,7 @@ import MoreMenu from "../../components/moreMenu";
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
 import { getClient, getLegalCase, getMeeting, updateMeeting } from "../../api";
-import { ILegalCase, IClient, IMeeting } from "../../types";
+import { ILegalCase, IClient, IMeeting, LocationState } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import {
   Breadcrumbs,
@@ -23,6 +23,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
 
 import MeetingForm from "../../components/meeting/form";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
 
@@ -31,10 +32,16 @@ const Page = () => {
   const history = useHistory();
   const classes = useStyles();
   const params = useParams<RouteParams>();
+
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meeting, setMeeting] = React.useState<IMeeting>();
   const [changed, setChanged] = React.useState<boolean>(false);
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: false,
+    message: "",
+    severity: undefined,
+  });
 
   const saveMeeting = async (
     legalCase: number,
@@ -55,9 +62,21 @@ const Page = () => {
         name: name,
       };
       const { id } = await updateMeeting(updatedMeeting);
-      history.push(`/meetings/${id}`);
+      id &&
+        history.push({
+          pathname: `/meetings/${id}`,
+          state: {
+            open: true,
+            message: "Meeting edit successful",
+            severity: "success",
+          },
+        });
     } catch (e) {
-      console.log(e);
+      setShowSnackbar({
+        open: true,
+        message: "Meeting edit failed",
+        severity: "error",
+      });
     }
   };
 
@@ -72,6 +91,19 @@ const Page = () => {
     }
     fetchData();
   }, [params.id]);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   return (
     <Layout>
@@ -151,7 +183,7 @@ const Page = () => {
                 variant="contained"
                 startIcon={<RateReviewIcon />}
                 type="submit"
-                onClick={()=> setChanged(false)}
+                onClick={() => setChanged(false)}
               >
                 {i18n.t("Save meeting")}
               </Button>
@@ -171,6 +203,13 @@ const Page = () => {
           />
         </form>
       </Container>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </Layout>
   );
 };

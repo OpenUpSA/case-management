@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -29,18 +29,26 @@ import TableRow from "@material-ui/core/TableRow";
 
 import Layout from "../../components/layout";
 import { getClients } from "../../api";
-import { IClient } from "../../types";
+import { IClient, LocationState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import SearchIcon from "@material-ui/icons/Search";
+import SnackbarAlert from "../../components/general/snackBar";
 
 const Page = () => {
   RedirectIfNotLoggedIn();
   const classes = useStyles();
   const history = useHistory();
+  const location = useLocation<LocationState>();
+
   const [clients, setClients] = React.useState<IClient[]>();
   const [filteredClients, setFilteredClients] = React.useState<IClient[]>();
   const [filterClientsValue, setFilterClientsValue] = React.useState<string>();
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: location.state?.open!,
+    message: location.state?.message!,
+    severity: location.state?.severity!,
+  });
 
   //TODO: Better filtering
   const filterClients = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -48,12 +56,24 @@ const Page = () => {
       setFilteredClients(
         clients?.filter((client) => {
           return (
-            client.name.toLowerCase().includes(filterClientsValue.toLowerCase()) ||
-            client.official_identifier.toLowerCase().includes(filterClientsValue.toLowerCase()) ||
-            client.preferred_name.toLowerCase().includes(filterClientsValue.toLowerCase()) ||
-            client.contact_number.toLowerCase().includes(filterClientsValue.toLowerCase()) ||
-            client.contact_email.toLowerCase().includes(filterClientsValue.toLowerCase()) ||
-            client.official_identifier_type.toLowerCase().includes(filterClientsValue.toLowerCase())
+            client.name
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.official_identifier
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.preferred_name
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.contact_number
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.contact_email
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.official_identifier_type
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase())
           );
         })
       );
@@ -64,12 +84,38 @@ const Page = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await getClients();
-      setClients(data);
-      setFilteredClients(data);
+      try {
+        const data = await getClients();
+        setClients(data);
+        setFilteredClients(data);
+      } catch (e) {
+        setShowSnackbar({
+          open: true,
+          message: "Client list cannot be loaded",
+          severity: "error",
+        });
+      }
     }
     fetchData();
   }, []);
+
+  // set location.state?.open! to false on page load
+  useEffect(() => {
+    history.push({ state: { open: false } });
+  }, []);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   return (
     <Layout>
@@ -234,6 +280,13 @@ const Page = () => {
           </Table>
         </TableContainer>
       </Container>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </Layout>
   );
 };
