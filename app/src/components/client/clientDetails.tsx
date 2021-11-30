@@ -265,13 +265,13 @@ const Component = (props: Props) => {
           />
         </Grid>
         <Grid item xs={12} md={4}>
-          <ReusableInput
-            inputName={"official_identifier"}
-            title={"Identification number"}
-            value={client?.official_identifier}
+          <ReusableSelect
+            title={"Identification type"}
+            value={client?.official_identifier_type}
+            menuItems={constants.officialIdentifierTypes}
+            inputName={"official_identifier_type"}
             setClient={setClient}
-            prevValue={props.client?.official_identifier!}
-            editClientInput={editClientInput}
+            editClientSelect={editClientSelect}
           />
         </Grid>
       </Grid>
@@ -303,15 +303,16 @@ const Component = (props: Props) => {
           alignItems="center"
         >
           <Grid item xs={12} md={4}>
-            <ReusableSelect
-              title={"Identification type"}
-              value={client?.official_identifier_type}
-              menuItems={constants.officialIdentifierTypes}
-              inputName={"official_identifier_type"}
+            <ReusableInput
+              inputName={"official_identifier"}
+              title={"Identification number"}
+              value={client?.official_identifier}
               setClient={setClient}
-              editClientSelect={editClientSelect}
+              prevValue={props.client?.official_identifier!}
+              editClientInput={editClientInput}
             />
           </Grid>
+
           <Grid item xs={12} md={4}>
             <ReusableInput
               inputName={"alternative_contact_number"}

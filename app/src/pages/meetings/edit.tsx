@@ -37,31 +37,41 @@ const Page = () => {
   const [client, setClient] = React.useState<IClient>();
   const [meeting, setMeeting] = React.useState<IMeeting>();
   const [changed, setChanged] = React.useState<boolean>(false);
+  const [locationError, setLocationError] = React.useState<boolean>(false);
+  const [meetingTypeError, setMeetingTypeError] =
+    React.useState<boolean>(false);
+  const [notesError, setNotesError] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
     open: false,
     message: "",
     severity: undefined,
   });
 
-  const saveMeeting = async (
-    legalCase: number,
-    notes: string,
-    location: string,
-    meetingDate: string,
-    meetingType: string,
-    name: string
-  ) => {
+  const saveMeeting = async (saveMeeting: IMeeting  ) => {
     try {
-      const updatedMeeting = {
-        id: parseInt(params.id),
-        legal_case: legalCase,
-        location: location,
-        meeting_date: meetingDate,
-        meeting_type: meetingType,
-        notes: notes,
-        name: name,
-      };
-      const { id } = await updateMeeting(updatedMeeting);
+      const { id, location, meeting_type, notes } = await updateMeeting({...saveMeeting, id: parseInt(params.id)});
+
+      if (typeof location === "object") {
+        setLocationError(true);
+        setMeetingTypeError(false);
+        setNotesError(false);
+        return false;
+      } else if (typeof meeting_type === "object") {
+        setMeetingTypeError(true);
+        setLocationError(false);
+        setNotesError(false);
+        return false;
+      } else if (typeof notes === "object") {
+        setNotesError(true);
+        setLocationError(false);
+        setMeetingTypeError(false);
+        return false;
+      } else {
+        setNotesError(false);
+        setLocationError(false);
+        setMeetingTypeError(false);
+      }
+
       id &&
         history.push({
           pathname: `/meetings/${id}`,
@@ -137,14 +147,14 @@ const Page = () => {
               name: { value: string };
             };
 
-            saveMeeting(
-              meeting?.legal_case || 0,
-              target.notes.value,
-              target.location.value,
-              target.meeting_date.value,
-              target.meeting_type.value,
-              target.name.value
-            );
+            saveMeeting({
+              legal_case: meeting?.legal_case || 0,
+              notes: target.notes.value,
+              location: target.location.value,
+              meeting_date: target.meeting_date.value,
+              meeting_type: target.meeting_type.value,
+              name: target.name.value,
+            } );
           }}
         >
           <Grid
@@ -200,6 +210,9 @@ const Page = () => {
             readOnly={false}
             changed={changed}
             setChanged={setChanged}
+            locationError={locationError}
+            notesError={notesError}
+            meetingTypeError={meetingTypeError}
           />
         </form>
       </Container>

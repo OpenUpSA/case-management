@@ -201,7 +201,7 @@ export default function CaseFileTab(props: Props) {
                   setOpen(false);
                 }}
               >
-                Upload
+                {i18n.t("Choose file")}
               </Button>
             </DialogActions>
           </Dialog>
