@@ -88,6 +88,14 @@ class Log(models.Model):
         return info
 
 
+class LogChange(models.Model):
+    id = models.AutoField(primary_key=True)
+    log = models.ForeignKey(Log, related_name='changes', on_delete=models.CASCADE)
+
+    field = models.CharField(max_length=255)
+    value = models.TextField()
+
+
 def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
     target_type = self.__class__.__name__
     target_id = self.id
@@ -119,6 +127,14 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
         note=note,
     )
     log.save()
+    for field, value in self.__dict__.items():
+        if self.has_changed(field) is True:
+            log_change = LogChange(
+                log=log,
+                field=field,
+                value=value
+            )
+            log_change.save()
 
 
 class CaseOffice(LifecycleModel, models.Model):
