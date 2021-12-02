@@ -13,6 +13,8 @@ import ChatIcon from "@material-ui/icons/Chat";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
+import CircularProgress from "@mui/material/CircularProgress";
+
 
 import MeetingForm from "../../components/meeting/form";
 import MoreMenu from "../../components/moreMenu";
@@ -47,13 +49,17 @@ const Page = () => {
     React.useState<boolean>(false);
   const [notesError, setNotesError] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
 
   const newMeeting = async (newMeeting: IMeeting) => {
     try {
+      setIsLoading(true);
       const { id, location, meeting_type, notes } = await createMeeting({
         ...newMeeting,
         legal_case: parseInt(params.id),
       });
+      setIsLoading(false);
 
       if (typeof location === "object") {
         setLocationError(true);
@@ -86,6 +92,7 @@ const Page = () => {
           },
         });
     } catch (e) {
+      setIsLoading(false);
       setShowSnackbar(true);
     }
   };
@@ -177,17 +184,30 @@ const Page = () => {
                 </MenuItem>
               </MoreMenu>
             </Grid>
-            <Grid item className={classes.zeroWidthOnMobile}>
+            <Grid style={{ position: "relative" }} item className={classes.zeroWidthOnMobile}>
               <Button
                 className={classes.canBeFab}
                 color="primary"
                 variant="contained"
                 startIcon={<RateReviewIcon />}
+                disabled={isLoading}
                 type="submit"
                 onClick={() => setChanged(false)}
               >
                 {i18n.t("Save meeting")}
               </Button>
+              {isLoading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              )}
             </Grid>
           </Grid>
           <Prompt

@@ -21,6 +21,7 @@ import ChatIcon from "@material-ui/icons/Chat";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import MeetingForm from "../../components/meeting/form";
 import SnackbarAlert from "../../components/general/snackBar";
@@ -46,11 +47,13 @@ const Page = () => {
     message: "",
     severity: undefined,
   });
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const saveMeeting = async (saveMeeting: IMeeting  ) => {
     try {
+      setIsLoading(true)
       const { id, location, meeting_type, notes } = await updateMeeting({...saveMeeting, id: parseInt(params.id)});
-
+      setIsLoading(false)
       if (typeof location === "object") {
         setLocationError(true);
         setMeetingTypeError(false);
@@ -82,6 +85,7 @@ const Page = () => {
           },
         });
     } catch (e) {
+      setIsLoading(false)
       setShowSnackbar({
         open: true,
         message: "Meeting edit failed",
@@ -186,17 +190,30 @@ const Page = () => {
                 </MenuItem>
               </MoreMenu>
             </Grid>
-            <Grid item className={classes.zeroWidthOnMobile}>
+            <Grid style={{ position: "relative" }} item className={classes.zeroWidthOnMobile}>
               <Button
                 className={classes.canBeFab}
                 color="primary"
                 variant="contained"
+                disabled={isLoading}
                 startIcon={<RateReviewIcon />}
                 type="submit"
                 onClick={() => setChanged(false)}
               >
                 {i18n.t("Save meeting")}
               </Button>
+              {isLoading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                }}
+              />
+            )}
             </Grid>
           </Grid>
           <Prompt

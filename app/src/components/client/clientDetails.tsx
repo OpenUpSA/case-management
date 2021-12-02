@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { Grid, Typography } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
@@ -19,6 +19,7 @@ import ReusableSelect from "./reusableSelect";
 import { updateClient, getClient } from "../../api";
 import { constants } from "../../dropDownConstants";
 import SnackbarAlert from "../../components/general/snackBar";
+import CircularProgress from "@mui/material/CircularProgress";
 
 type Props = {
   client?: IClient;
@@ -36,7 +37,6 @@ type RouteParams = {
 
 const Component = (props: Props) => {
   const classes = useStyles();
-  const history = useHistory();
   const params = useParams<RouteParams>();
   const clientId = parseInt(params.id);
 
@@ -74,6 +74,7 @@ const Component = (props: Props) => {
     message: "",
     severity: undefined,
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const resetState = async () => {
@@ -89,13 +90,20 @@ const Component = (props: Props) => {
   }, [showSnackbar.open]);
 
   useEffect(() => {
-    if (props.client) {
-      setClient(props.client);
+    try {
+      setIsLoading(true);
+      if (props.client) {
+        setClient(props.client);
+        setIsLoading(false);
+      }
+    } catch (e) {
+      setIsLoading(false);
     }
   }, [props.client]);
 
   const editClientInput = async () => {
     try {
+      setIsLoading(true);
       const updatedClient: IClient = {
         ...client,
         id: clientId,
@@ -108,6 +116,7 @@ const Component = (props: Props) => {
         alternative_contact_number,
         alternative_contact_email,
       } = await updateClient(updatedClient);
+      setIsLoading(false);
 
       if (typeof contact_number === "object") {
         setPhoneErrorMessage(true);
@@ -161,6 +170,7 @@ const Component = (props: Props) => {
         setClient(await getClient(id));
       }
     } catch (e) {
+      setIsLoading(false);
       setShowSnackbar({
         open: true,
         message: "Client edit failed",
@@ -171,12 +181,14 @@ const Component = (props: Props) => {
 
   const editClientSelect = async (arg: any, arg2: any) => {
     try {
+      setIsLoading(true);
       const updatedClient: any = {
         ...client,
         [arg2]: arg,
         id: clientId,
       };
       const { id } = await updateClient(updatedClient);
+      setIsLoading(false);
       if (id) {
         setShowSnackbar({
           open: true,
@@ -186,6 +198,7 @@ const Component = (props: Props) => {
         setClient(await getClient(id));
       }
     } catch (e) {
+      setIsLoading(false);
       setShowSnackbar({
         open: true,
         message: "Client edit failed",
@@ -195,7 +208,14 @@ const Component = (props: Props) => {
   };
 
   return (
-    <div>
+    <div style={{ position: "relative" }}>
+      {isLoading && (
+        <Grid container justify="center">
+          <CircularProgress
+            style={{ position: "absolute", top: 70, left: "50%" }}
+          />
+        </Grid>
+      )}
       <Grid
         className={classes.pageBar}
         style={{ marginBottom: 5 }}

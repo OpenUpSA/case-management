@@ -14,6 +14,7 @@ import {
 import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 import DeleteIcon from "@material-ui/icons/Delete";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import Layout from "../../components/layout";
 import {
@@ -52,11 +53,13 @@ const Page = () => {
     message: location.state?.message!,
     severity: location.state?.severity!,
   });
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
 
   // set location.state?.open! to false on page load
   useEffect(() => {
     history.push({ state: { open: false } });
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     const resetState = async () => {
@@ -73,11 +76,19 @@ const Page = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const dataLegalCases = await getLegalCases(clientId);
-      setLegalCases(dataLegalCases);
+      try {
+        const dataLegalCases = await getLegalCases(clientId);
+        setLegalCases(dataLegalCases);
 
-      if (clientId) {
-        setClient(await getClient(clientId));
+        if (clientId) {
+          setClient(await getClient(clientId));
+        }
+      } catch (e: any) {
+        setShowSnackbar({
+          open: true,
+          message: e.message,
+          severity: "error",
+        });
       }
     }
     fetchData();
@@ -93,6 +104,7 @@ const Page = () => {
 
   const destroyClient = async () => {
     try {
+      setDeleteLoader(true);
       if (
         window.confirm(i18n.t("Are you sure you want to delete this client?"))
       ) {
@@ -106,7 +118,9 @@ const Page = () => {
           },
         });
       }
+      setDeleteLoader(false);
     } catch (e) {
+      setDeleteLoader(false);
       setShowSnackbar({
         open: true,
         message: "Client delete failed",
@@ -117,7 +131,9 @@ const Page = () => {
 
   const newCaseHandler = async () => {
     try {
+      setIsLoading(true);
       const { id } = await createLegalCase(dataForCase);
+      setIsLoading(false);
       if (id) {
         history.push({
           pathname: `/cases/${id}`,
@@ -129,6 +145,7 @@ const Page = () => {
         });
       }
     } catch (e) {
+      setIsLoading(false);
       setShowSnackbar({
         open: true,
         message: "New case failed",
@@ -166,25 +183,57 @@ const Page = () => {
           </Grid>
           <Grid item>
             <MoreMenu>
-              <MenuItem onClick={destroyClient}>
+              <MenuItem
+                style={{ position: "relative" }}
+                onClick={destroyClient}
+                disabled={deleteLoader}
+              >
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>{i18n.t("Delete client")}</ListItemText>
+                {deleteLoader && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      marginTop: "-12px",
+                      marginLeft: "-12px",
+                    }}
+                  />
+                )}
               </MenuItem>
             </MoreMenu>
           </Grid>
-          <Grid item className={classes.zeroWidthOnMobile}>
+          <Grid
+            style={{ position: "relative" }}
+            item
+            className={classes.zeroWidthOnMobile}
+          >
             <Button
               className={classes.canBeFab}
               color="primary"
               variant="contained"
               startIcon={<CreateNewFolderIcon />}
-              disabled={client ? false : true}
+              disabled={isLoading || client === undefined}
               onClick={newCaseHandler}
             >
               {i18n.t("New case")}
             </Button>
+            {isLoading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                }}
+              />
+            )}
           </Grid>
         </Grid>
 

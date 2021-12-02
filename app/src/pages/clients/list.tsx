@@ -26,13 +26,14 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
+import SearchIcon from "@material-ui/icons/Search";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import Layout from "../../components/layout";
 import { getClients } from "../../api";
 import { IClient, LocationState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
-import SearchIcon from "@material-ui/icons/Search";
 import SnackbarAlert from "../../components/general/snackBar";
 
 const Page = () => {
@@ -44,22 +45,19 @@ const Page = () => {
   const [clients, setClients] = React.useState<IClient[]>();
   const [filteredClients, setFilteredClients] = React.useState<IClient[]>();
   const [filterClientsValue, setFilterClientsValue] = React.useState<string>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
     open: location.state?.open!,
     message: location.state?.message!,
     severity: location.state?.severity!,
   });
 
-  //TODO: Better filtering
   const filterClients = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (filterClientsValue) {
       setFilteredClients(
         clients?.filter((client) => {
           return (
             client.name
-              .toLowerCase()
-              .includes(filterClientsValue.toLowerCase()) ||
-            client.official_identifier
               .toLowerCase()
               .includes(filterClientsValue.toLowerCase()) ||
             client.preferred_name
@@ -69,9 +67,6 @@ const Page = () => {
               .toLowerCase()
               .includes(filterClientsValue.toLowerCase()) ||
             client.contact_email
-              .toLowerCase()
-              .includes(filterClientsValue.toLowerCase()) ||
-            client.official_identifier_type
               .toLowerCase()
               .includes(filterClientsValue.toLowerCase())
           );
@@ -85,10 +80,13 @@ const Page = () => {
   useEffect(() => {
     async function fetchData() {
       try {
+        setIsLoading(true);
         const data = await getClients();
         setClients(data);
         setFilteredClients(data);
+        setIsLoading(false);
       } catch (e) {
+        setIsLoading(false);
         setShowSnackbar({
           open: true,
           message: "Client list cannot be loaded",
@@ -102,7 +100,7 @@ const Page = () => {
   // set location.state?.open! to false on page load
   useEffect(() => {
     history.push({ state: { open: false } });
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     const resetState = async () => {
@@ -279,6 +277,11 @@ const Page = () => {
             )}
           </Table>
         </TableContainer>
+        {isLoading && (
+          <Grid container justify="center">
+            <CircularProgress />
+          </Grid>
+        )}
       </Container>
       {showSnackbar.open && (
         <SnackbarAlert

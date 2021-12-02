@@ -1,12 +1,12 @@
 import React from "react";
-import { useHistory, Prompt, useLocation } from "react-router-dom";
+import { useHistory, Prompt } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
 import { createClient } from "../../api";
-import { IClient, LocationState } from "../../types";
+import { IClient } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import {
   Breadcrumbs,
@@ -22,6 +22,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import ClientForm from "../../components/client/form";
 import SnackbarAlert from "../../components/general/snackBar";
@@ -29,7 +30,6 @@ import SnackbarAlert from "../../components/general/snackBar";
 const Page = () => {
   RedirectIfNotLoggedIn();
   const history = useHistory();
-  const location = useLocation<LocationState>();
   const classes = useStyles();
   const [client] = React.useState<IClient>();
   const [changed, setChanged] = React.useState<boolean>(false);
@@ -40,6 +40,7 @@ const Page = () => {
   const [phoneErrorMessage, setPhoneErrorMessage] =
     React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     const resetState = async () => {
@@ -52,10 +53,11 @@ const Page = () => {
 
   const newClient = async (client: IClient) => {
     try {
+      setIsLoading(true);
       const { id, name, contact_email, contact_number } = await createClient(
         client
       );
-
+      setIsLoading(false);
       if (typeof name === "object") {
         setNameError(true);
         setEmailErrorMessage(false);
@@ -87,6 +89,7 @@ const Page = () => {
           },
         });
     } catch (e) {
+      setIsLoading(false);
       setShowSnackbar(true);
     }
   };
@@ -155,17 +158,34 @@ const Page = () => {
                 </MenuItem>
               </MoreMenu>
             </Grid>
-            <Grid item className={classes.zeroWidthOnMobile}>
+            <Grid
+              style={{ position: "relative" }}
+              item
+              className={classes.zeroWidthOnMobile}
+            >
               <Button
                 className={classes.canBeFab}
                 color="primary"
                 variant="contained"
+                disabled={isLoading}
                 startIcon={<PersonAddIcon />}
                 type="submit"
                 onClick={() => setChanged(false)}
               >
                 {i18n.t("Save client")}
               </Button>
+              {isLoading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              )}
             </Grid>
           </Grid>
           <Prompt

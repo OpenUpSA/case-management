@@ -24,6 +24,7 @@ import MoreMenu from "../../components/moreMenu";
 
 import MeetingForm from "../../components/meeting/form";
 import SnackbarAlert from "../../components/general/snackBar";
+import CircularProgress from "@mui/material/CircularProgress";
 
 type RouteParams = { id: string };
 
@@ -42,9 +43,12 @@ const Page = () => {
     message: location.state?.message!,
     severity: location.state?.severity!,
   });
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
 
   const destroyMeeting = async () => {
     try {
+      setDeleteLoader(true);
       if (
         window.confirm(i18n.t("Are you sure you want to delete this meeting?"))
       ) {
@@ -58,7 +62,9 @@ const Page = () => {
           },
         });
       }
+      setDeleteLoader(false);
     } catch (error) {
+      setDeleteLoader(false);
       setShowSnackbar({
         open: true,
         message: "Meeting delete failed",
@@ -68,21 +74,33 @@ const Page = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     async function fetchData() {
-      const meetingId = parseInt(params.id);
-      const dataMeeting = await getMeeting(meetingId);
-      const dataLegalCase = await getLegalCase(dataMeeting.legal_case);
-      setMeeting(dataMeeting);
-      setLegalCase(dataLegalCase);
-      setClient(await getClient(dataLegalCase.client));
+      try {
+        const meetingId = parseInt(params.id);
+        const dataMeeting = await getMeeting(meetingId);
+        const dataLegalCase = await getLegalCase(dataMeeting.legal_case);
+        setMeeting(dataMeeting);
+        setLegalCase(dataLegalCase);
+        setClient(await getClient(dataLegalCase.client));
+        setIsLoading(false);
+      } catch (e: any) {
+        setIsLoading(false);
+        setShowSnackbar({
+          open: true,
+          message: e.message,
+          severity: "error",
+        });
+      }
     }
+
     fetchData();
   }, [params.id]);
 
   // set location.state?.open! to false on page load
   useEffect(() => {
     history.push({ state: { open: false } });
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     const resetState = async () => {
@@ -117,7 +135,7 @@ const Page = () => {
         </Button>
         <div>Meeting: {meeting?.meeting_type}</div>
       </Breadcrumbs>
-      <Container maxWidth="md">
+      <Container maxWidth="md" style={{ position: "relative" }}>
         <form>
           <Grid
             className={classes.pageBar}
@@ -136,11 +154,27 @@ const Page = () => {
             </Grid>
             <Grid item>
               <MoreMenu>
-                <MenuItem onClick={destroyMeeting}>
+                <MenuItem
+                  style={{ position: "relative" }}
+                  disabled={deleteLoader}
+                  onClick={destroyMeeting}
+                >
                   <ListItemIcon>
                     <DeleteIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>{i18n.t("Delete meeting")}</ListItemText>
+                  {deleteLoader && (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        marginTop: "-12px",
+                        marginLeft: "-12px",
+                      }}
+                    />
+                  )}
                 </MenuItem>
               </MoreMenu>
             </Grid>
@@ -161,6 +195,13 @@ const Page = () => {
 
           <MeetingForm meeting={meeting} />
         </form>
+        {isLoading && (
+          <Grid container justify="center">
+            <CircularProgress
+              sx={{ position: "absolute", top: "42vh", left: "50%" }}
+            />
+          </Grid>
+        )}
       </Container>
       {showSnackbar.open && (
         <SnackbarAlert

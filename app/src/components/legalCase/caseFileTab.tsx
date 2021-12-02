@@ -1,4 +1,4 @@
-import React, { EffectCallback, useRef } from "react";
+import React, { useRef } from "react";
 import { useStyles } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
 import CheckIcon from "@mui/icons-material/Check";

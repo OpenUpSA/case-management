@@ -5,6 +5,7 @@ import i18n from "../i18n";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { RedirectIfLoggedIn, UserInfo } from "../auth";
 import { authenticate, getUser } from "../api";
@@ -18,6 +19,7 @@ const Page = () => {
   const classes = useStyles();
   const history = useHistory();
   const [loginError, setLoginError] = React.useState<boolean>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
     open: false,
     message: "",
@@ -39,6 +41,7 @@ const Page = () => {
 
   const validateLogin = async (username: string, password: string) => {
     try {
+      setIsLoading(true);
       const credentials = {
         username: username,
         password: password,
@@ -62,7 +65,9 @@ const Page = () => {
           severity: "error",
         });
       }
+      setIsLoading(false);
     } catch (e) {
+      setIsLoading(false);
       setShowSnackbar({
         open: true,
         message: "Login failed",
@@ -137,16 +142,29 @@ const Page = () => {
               />
             </FormControl>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} style={{ position: "relative" }}>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
               style={{ marginTop: 3, marginBottom: 2 }}
+              disabled={isLoading}
             >
               {i18n.t("Login")}
             </Button>
+            {isLoading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                }}
+              />
+            )}
           </Grid>
         </Grid>
       </Box>

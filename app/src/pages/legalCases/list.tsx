@@ -1,18 +1,16 @@
 import React, { useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-
-import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
 import { Breadcrumbs, Container, Button, Grid } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
+import i18n from "../../i18n";
 import Layout from "../../components/layout";
 import { getLegalCases } from "../../api";
 import { ILegalCase, LocationState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
-
 import LegalCasesTable from "../../components/legalCase/table";
 import SnackbarAlert from "../../components/general/snackBar";
 
@@ -47,7 +45,7 @@ const Page = () => {
   // set location.state?.open! to false on page load
   useEffect(() => {
     history.push({ state: { open: false } });
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     const resetState = async () => {
@@ -95,7 +93,6 @@ const Page = () => {
             </Button>
           </Grid>
         </Grid>
-
         <LegalCasesTable legalCases={legalCases ? legalCases : []} />
       </Container>
       {showSnackbar.open && (

@@ -1,6 +1,4 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
-
 import Box from "@material-ui/core/Box";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
@@ -25,6 +23,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import LockIcon from "@mui/icons-material/Lock";
 import { BlackTooltip } from "../general/tooltip";
 import { useStyles } from "../../utils";
+import SnackbarAlert from "../../components/general/snackBar";
+import CircularProgress from "@mui/material/CircularProgress";
+
 import {
   ILegalCase,
   ICaseType,
@@ -44,7 +45,6 @@ import {
   getLogs,
   createLog,
 } from "../../api";
-import SnackbarAlert from "../../components/general/snackBar";
 
 const LogLabels = new Map([
   ["LegalCase Create", "Case created"],
@@ -67,7 +67,6 @@ type Props = {
 };
 
 export default function CaseInfoTab(props: Props) {
-  const history = useHistory();
   const classes = useStyles();
   const [caseSummary, setCaseSummary] = React.useState<string | undefined>("");
   const [caseTypes, setCaseTypes] = React.useState<ICaseType[]>();
@@ -91,26 +90,42 @@ export default function CaseInfoTab(props: Props) {
     severity: undefined,
   });
 
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [updateLoader, setUpdateLoader] = React.useState<boolean>(false);
+  const [summaryLoader, setSummaryLoader] = React.useState<boolean>(false);
+
   React.useEffect(() => {
+    setIsLoading(true);
     setSelectCaseOffice(props.legalCase?.case_offices);
     setCaseSummary(props.legalCase?.summary);
     setSelectCaseType(props.legalCase?.case_types);
     setWidth(window.innerWidth);
 
     async function fetchData() {
-      const dataCaseTypes = await getCaseTypes();
-      const dataCaseOffices = await getCaseOffices();
-      const clientInfo = await getClient(props.legalCase?.client);
-      const userNumber = Number(props.legalCase?.users?.join());
-      const userInfo = await getUser(userNumber);
-      const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
+      try {
+        const dataCaseTypes = await getCaseTypes();
+        const dataCaseOffices = await getCaseOffices();
+        const clientInfo = await getClient(props.legalCase?.client);
+        const userNumber = Number(props.legalCase?.users?.join());
+        const userInfo = await getUser(userNumber);
+        const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
 
-      setClient(clientInfo);
-      setCaseWorker(userInfo);
-      setCaseTypes(dataCaseTypes);
-      setCaseOffices(dataCaseOffices);
-      setCaseHistory(historyData);
+        setClient(clientInfo);
+        setCaseWorker(userInfo);
+        setCaseTypes(dataCaseTypes);
+        setCaseOffices(dataCaseOffices);
+        setCaseHistory(historyData);
+        setIsLoading(false);
+      } catch (e: any) {
+        setIsLoading(false);
+        setShowSnackbar({
+          open: true,
+          message: e.message,
+          severity: "error",
+        });
+      }
     }
+
     fetchData();
   }, [props.legalCase]);
 
@@ -149,8 +164,8 @@ export default function CaseInfoTab(props: Props) {
     user: number,
     note: string
   ) => {
-    handleClose();
     try {
+      setUpdateLoader(true);
       const caseHistory: ILog = {
         id: 0,
         created_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
@@ -164,7 +179,9 @@ export default function CaseInfoTab(props: Props) {
         note: note,
       };
       const { id } = await createLog(caseHistory);
+      setUpdateLoader(false);
       if (id) {
+        handleClose();
         setShowSnackbar({
           open: true,
           message: "Case update successful",
@@ -174,6 +191,8 @@ export default function CaseInfoTab(props: Props) {
       const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
       setCaseHistory(historyData);
     } catch (e) {
+      setUpdateLoader(false);
+      handleClose();
       setShowSnackbar({
         open: true,
         message: "Case update failed",
@@ -184,6 +203,7 @@ export default function CaseInfoTab(props: Props) {
 
   const caseSummaryPatch = async () => {
     try {
+      setSummaryLoader(true);
       const updatedSummary: ILegalCase = {
         id: props.legalCase.id,
         summary: caseSummary,
@@ -194,14 +214,18 @@ export default function CaseInfoTab(props: Props) {
         case_offices: props.legalCase.case_offices,
       };
       const { id } = await updateLegalCase(updatedSummary);
-      setShowButton(false);
-      id &&
+
+      if (id) {
+        setSummaryLoader(false);
+        setShowButton(false);
         setShowSnackbar({
           open: true,
           message: "Case edit successful",
           severity: "success",
         });
+      }
     } catch (e) {
+      setSummaryLoader(false);
       setShowSnackbar({
         open: true,
         message: "Case edit failed",
@@ -212,6 +236,7 @@ export default function CaseInfoTab(props: Props) {
 
   const caseTypePatch = async (arg: any) => {
     try {
+      setIsLoading(true);
       const updatedSummary: ILegalCase = {
         id: props.legalCase.id,
         summary: props.legalCase.summary,
@@ -222,6 +247,7 @@ export default function CaseInfoTab(props: Props) {
         case_offices: props.legalCase.case_offices,
       };
       const { id } = await updateLegalCase(updatedSummary);
+      setIsLoading(false);
       id &&
         setShowSnackbar({
           open: true,
@@ -229,6 +255,7 @@ export default function CaseInfoTab(props: Props) {
           severity: "success",
         });
     } catch (e) {
+      setIsLoading(false);
       setShowSnackbar({
         open: true,
         message: "Case edit failed",
@@ -239,6 +266,7 @@ export default function CaseInfoTab(props: Props) {
 
   const caseOfficePatch = async (arg: any) => {
     try {
+      setIsLoading(true);
       const updatedSummary: ILegalCase = {
         id: props.legalCase.id,
         summary: props.legalCase.summary,
@@ -249,6 +277,7 @@ export default function CaseInfoTab(props: Props) {
         case_offices: arg,
       };
       const { id } = await updateLegalCase(updatedSummary);
+      setIsLoading(false);
       id &&
         setShowSnackbar({
           open: true,
@@ -256,6 +285,7 @@ export default function CaseInfoTab(props: Props) {
           severity: "success",
         });
     } catch (e) {
+      setIsLoading(false);
       setShowSnackbar({
         open: true,
         message: "Case edit failed",
@@ -297,10 +327,26 @@ export default function CaseInfoTab(props: Props) {
               <IconButton
                 onClick={() => caseSummaryPatch()}
                 className={classes.saveButton}
+                disabled={summaryLoader}
               >
-                <Typography color="white" variant="caption">
+                <Typography
+                  color={summaryLoader ? "#767271" : "#ffffff"}
+                  variant="caption"
+                >
                   Save
                 </Typography>
+                {summaryLoader && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      marginTop: "-12px",
+                      marginLeft: "-12px",
+                    }}
+                  />
+                )}
               </IconButton>
             </BlackTooltip>
             <BlackTooltip title="Discard changes" arrow placement="top">
@@ -314,6 +360,13 @@ export default function CaseInfoTab(props: Props) {
               </IconButton>
             </BlackTooltip>
           </Grid>
+          {isLoading && (
+            <Grid container justifyContent="center">
+              <CircularProgress
+                style={{ position: "absolute", top: 190, left: "50%" }}
+              />
+            </Grid>
+          )}
           <Grid
             container
             justifyContent="space-between"
@@ -349,9 +402,10 @@ export default function CaseInfoTab(props: Props) {
                 <DialogActions>
                   <Button onClick={handleClose}>Cancel</Button>
                   <Button
+                    style={{ position: "relative" }}
                     color="primary"
                     variant="contained"
-                    disabled={manualUpdateValue.length === 0}
+                    disabled={manualUpdateValue.length === 0 || updateLoader}
                     onClick={(e) =>
                       addUpdateHandler(
                         props.legalCase?.id,
@@ -365,6 +419,18 @@ export default function CaseInfoTab(props: Props) {
                     }
                   >
                     Submit
+                    {updateLoader && (
+                      <CircularProgress
+                        size={24}
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          marginTop: "-12px",
+                          marginLeft: "-12px",
+                        }}
+                      />
+                    )}
                   </Button>
                 </DialogActions>
               </Dialog>
