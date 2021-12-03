@@ -28,8 +28,9 @@ import LogsPage from "./pages/logs/list";
 import ReactGA from "react-ga4";
 import { UserInfo } from "./auth";
 
-ReactGA.initialize(process.env.REACT_APP_GA_ID!);
-
+if (process.env.REACT_APP_GA_ID) {
+  ReactGA.initialize(process.env.REACT_APP_GA_ID!);
+}
 
 function Routes() {
   const [id, setId] = React.useState<number>();
@@ -43,11 +44,10 @@ function Routes() {
     const userId = Number(userInfo.getUserId());
 
     setId(userId);
-    
+
     if (id! > 0) {
       ReactGA.set({ userId: id });
     }
-
   }, [id]);
 
   return (
