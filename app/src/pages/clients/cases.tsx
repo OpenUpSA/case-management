@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -13,23 +13,31 @@ import {
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
+import DeleteIcon from "@material-ui/icons/Delete";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import Layout from "../../components/layout";
-import { getLegalCases, getClient, deleteClient, createLegalCase } from "../../api";
-import { ILegalCase, IClient } from "../../types";
+import {
+  getLegalCases,
+  getClient,
+  deleteClient,
+  createLegalCase,
+} from "../../api";
+import { ILegalCase, IClient, LocationState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 
 import ClientDetails from "../../components/client/clientDetails";
 import LegalCasesTable from "../../components/legalCase/table";
 import MoreMenu from "../../components/moreMenu";
-import DeleteIcon from "@material-ui/icons/Delete";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
 
 const Page = () => {
   RedirectIfNotLoggedIn();
   const history = useHistory();
+  const location = useLocation<LocationState>();
   const classes = useStyles();
   const params = useParams<RouteParams>();
   const clientId = parseInt(params.id);
@@ -40,14 +48,47 @@ const Page = () => {
     users: "",
     case_offices: "",
   });
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: location.state?.open!,
+    message: location.state?.message!,
+    severity: location.state?.severity!,
+  });
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
+
+  // set location.state?.open! to false on page load
+  useEffect(() => {
+    history.push({ state: { open: false } });
+  }, [history]);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   useEffect(() => {
     async function fetchData() {
-      const dataLegalCases = await getLegalCases(clientId);
-      setLegalCases(dataLegalCases);
+      try {
+        const dataLegalCases = await getLegalCases(clientId);
+        setLegalCases(dataLegalCases);
 
-      if (clientId) {
-        setClient(await getClient(clientId));
+        if (clientId) {
+          setClient(await getClient(clientId));
+        }
+      } catch (e: any) {
+        setShowSnackbar({
+          open: true,
+          message: e.message,
+          severity: "error",
+        });
       }
     }
     fetchData();
@@ -62,18 +103,54 @@ const Page = () => {
   }, [clientId]);
 
   const destroyClient = async () => {
-    if (
-      window.confirm(i18n.t("Are you sure you want to delete this client?"))
-    ) {
-      await deleteClient(clientId);
-      history.push("/clients");
+    try {
+      setDeleteLoader(true);
+      if (
+        window.confirm(i18n.t("Are you sure you want to delete this client?"))
+      ) {
+        await deleteClient(clientId);
+        history.push({
+          pathname: "/clients",
+          state: {
+            open: true,
+            message: "Client delete successful",
+            severity: "success",
+          },
+        });
+      }
+      setDeleteLoader(false);
+    } catch (e) {
+      setDeleteLoader(false);
+      setShowSnackbar({
+        open: true,
+        message: "Client delete failed",
+        severity: "error",
+      });
     }
   };
 
   const newCaseHandler = async () => {
-    const { id } = await createLegalCase(dataForCase);
-    if (id) {
-      history.push(`/cases/${id}`);
+    try {
+      setIsLoading(true);
+      const { id } = await createLegalCase(dataForCase);
+      setIsLoading(false);
+      if (id) {
+        history.push({
+          pathname: `/cases/${id}`,
+          state: {
+            open: true,
+            message: "New case created",
+            severity: "success",
+          },
+        });
+      }
+    } catch (e) {
+      setIsLoading(false);
+      setShowSnackbar({
+        open: true,
+        message: "New case failed",
+        severity: "error",
+      });
     }
   };
 
@@ -107,34 +184,56 @@ const Page = () => {
           <Grid item>
             <MoreMenu>
               <MenuItem
-                onClick={() => {
-                  history.push(`/clients/${clientId}/edit`);
-                }}
+                style={{ position: "relative" }}
+                onClick={destroyClient}
+                disabled={deleteLoader}
               >
-                <ListItemIcon>
-                  <PersonIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{i18n.t("Edit client")}</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={destroyClient}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>{i18n.t("Delete client")}</ListItemText>
+                {deleteLoader && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      marginTop: "-12px",
+                      marginLeft: "-12px",
+                    }}
+                  />
+                )}
               </MenuItem>
             </MoreMenu>
           </Grid>
-          <Grid item className={classes.zeroWidthOnMobile}>
+          <Grid
+            style={{ position: "relative" }}
+            item
+            className={classes.zeroWidthOnMobile}
+          >
             <Button
               className={classes.canBeFab}
               color="primary"
               variant="contained"
               startIcon={<CreateNewFolderIcon />}
-              disabled={client ? false : true}
+              disabled={isLoading || client === undefined}
               onClick={newCaseHandler}
             >
               {i18n.t("New case")}
             </Button>
+            {isLoading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                }}
+              />
+            )}
           </Grid>
         </Grid>
 
@@ -146,6 +245,13 @@ const Page = () => {
           standalone={false}
         />
       </Container>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </Layout>
   );
 };

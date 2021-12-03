@@ -55,8 +55,10 @@ export default function BasicTabs(props: Props) {
 
   React.useEffect(() => {
     async function fetchData() {
-      const dataLegalCaseFiles = await getLegalCaseFiles(props.legalCase?.id);
-      setLegalCaseFiles(dataLegalCaseFiles);
+      if (props.legalCase?.id) {
+        const dataLegalCaseFiles = await getLegalCaseFiles(props.legalCase?.id);
+        setLegalCaseFiles(dataLegalCaseFiles);
+      }
     }
     fetchData();
   }, [props.legalCase]);

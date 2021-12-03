@@ -6,13 +6,15 @@ import { Breadcrumbs, Button, Container } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import SettingsIcon from "@material-ui/icons/Settings";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import Layout from "../../components/layout";
 import { getUser, updateUser } from "../../api";
-import { IUser, Nullable } from "../../types";
+import { IUser, LocationState } from "../../types";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 import { useStyles } from "../../utils";
 import UserForm from "../../components/user/form";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
 
@@ -23,29 +25,44 @@ const Page = () => {
   const params = useParams<RouteParams>();
   const userId = parseInt(params.id);
   const [user, setUser] = React.useState<IUser>();
-  const [saveError, setSaveError] = React.useState<Nullable<string>>();
   const [changed, setChanged] = React.useState<boolean>(false);
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: false,
+    message: "",
+    severity: undefined,
+  });
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const saveUser = async (user: IUser) => {
     try {
-      setSaveError(null);
+      setIsLoading(true);
       const updatedUser = {
         ...user,
         id: userId,
       };
       const response = await updateUser(updatedUser);
+      setIsLoading(false);
       if (response.id) {
         const userInfo = UserInfo.getInstance();
         userInfo.setName(response.name);
         userInfo.setCaseOffice(response.case_office);
         userInfo.setEmail(response.email);
-        history.push(`/users/${response.id}`);
-      } else {
-        //TODO: Better validation and error messages needed
-        setSaveError(Object.values(response).join("\n"));
+        history.push({
+          pathname: `/users/${response.id}`,
+          state: {
+            open: true,
+            message: "Account edit successful",
+            severity: "success",
+          },
+        });
       }
     } catch (e) {
-      console.log(e);
+      setIsLoading(false);
+      setShowSnackbar({
+        open: true,
+        message: "Account edit failed",
+        severity: "error",
+      });
     }
   };
 
@@ -55,6 +72,19 @@ const Page = () => {
     }
     fetchData();
   }, [userId]);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   return (
     <Layout>
@@ -104,11 +134,16 @@ const Page = () => {
                 <strong>{user ? user.name || user.email : ""}</strong>
               </Typography>
             </Grid>
-            <Grid item className={classes.zeroWidthOnMobile}>
+            <Grid
+              style={{ position: "relative" }}
+              item
+              className={classes.zeroWidthOnMobile}
+            >
               <Button
                 type="submit"
                 className={classes.canBeFab}
                 color="primary"
+                disabled={isLoading}
                 variant="contained"
                 startIcon={<PermIdentityIcon />}
                 onClick={() => {
@@ -120,6 +155,18 @@ const Page = () => {
               >
                 {i18n.t("Save your account")}
               </Button>
+              {isLoading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              )}
             </Grid>
           </Grid>
           <Prompt
@@ -128,11 +175,6 @@ const Page = () => {
               "You have already made some changes\nAre you sure you want to leave?"
             }
           />
-          {saveError ? (
-            <p className={classes.formError}>
-              {i18n.t("Error saving account details")} {saveError}
-            </p>
-          ) : null}
           {user ? (
             <UserForm
               user={user}
@@ -145,6 +187,13 @@ const Page = () => {
           )}
         </form>
       </Container>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </Layout>
   );
 };
