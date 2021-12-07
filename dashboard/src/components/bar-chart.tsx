@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     bar: {
-      padding: theme.spacing(2),
+      padding: 0,
       textAlign: "center",
       backgroundColor: theme.palette.primary.main,
     },
@@ -57,7 +57,7 @@ export default function BarChart(props: IProps) {
           <div>
             <Grid container spacing={3} alignItems="flex-end">
               {data.map(dataPoint => (
-                <Grid key={dataPoint.label} item xs={2} className={classes.barWithLabels}>
+                <Grid key={dataPoint.label} item xs={1} className={classes.barWithLabels}>
                   <Box className={classes.labels} textAlign="center">{dataPoint.value}</Box>
                   <Box className={classes.bar} height={`${dataPoint.value / max * 5}rem`}></Box>
                   <Box className={classes.labels} textAlign="center">{dataPoint.label}</Box>
