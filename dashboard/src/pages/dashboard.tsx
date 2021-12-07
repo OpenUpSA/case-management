@@ -19,8 +19,8 @@ class Page extends Component<IProps, IState> {
   }
 
   async componentDidMount() {
-    const dataMonthly = await http<IDbDataMonthly>("/api/v1/TODO_monthly_data_json_view");
-    const dataDaily = await http<IDbDataDailyPerMonth>("/api/v1/TODO_daily_data_json_view");
+    const dataMonthly = await http<IDbDataMonthly>("/reports/monthly-summary");
+    const dataDaily = await http<IDbDataDailyPerMonth>("/TODO_daily_data_json_view");
     this.setState({
       dataMonthly: dataMonthly,
       dataDaily: dataDaily
