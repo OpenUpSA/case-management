@@ -20,6 +20,7 @@ import {
 } from "@material-ui/core";
 
 import SearchIcon from "@material-ui/icons/Search";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
@@ -41,6 +42,7 @@ const Component = (props: Props) => {
     React.useState<ILegalCase[]>();
   const [filterLegalCasesValue, setFilterLegalCasesValue] =
     React.useState<string>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const filterKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     filterLegalCases();
@@ -52,7 +54,7 @@ const Component = (props: Props) => {
         el1.title.toLowerCase().includes(filterLegalCasesValue.toLowerCase())
       );
 
-      let firstFilter: ILegalCase[] = props.legalCases?.filter((legalCase) => {
+      let stringFilter: ILegalCase[] = props.legalCases?.filter((legalCase) => {
         return (
           legalCase.case_number
             .toLowerCase()
@@ -63,7 +65,7 @@ const Component = (props: Props) => {
         );
       });
 
-      let secondFilter = (arr_lc: ILegalCase[], arr_ct: ICaseType[]) => {
+      let numberArrayFilter = (arr_lc: ILegalCase[], arr_ct: ICaseType[]) => {
         let result: ILegalCase[] = [];
         for (let i = 0; i < arr_lc.length; i++) {
           for (let j = 0; j < arr_ct?.length; j++) {
@@ -76,8 +78,8 @@ const Component = (props: Props) => {
       };
 
       let combinedFilter: ILegalCase[] = [
-        ...firstFilter,
-        ...secondFilter(props.legalCases, rightCaseType!),
+        ...stringFilter,
+        ...numberArrayFilter(props.legalCases, rightCaseType!),
       ];
       let uniqueCombinedFilter: ILegalCase[] = combinedFilter.filter(
         (item, pos) => combinedFilter.indexOf(item) === pos
@@ -94,15 +96,21 @@ const Component = (props: Props) => {
       typeof filteredLegalCases === "undefined"
     ) {
       filterLegalCases();
-    }
+    } 
   });
 
   useEffect(() => {
+    setIsLoading(true);
     async function fetchData() {
-      const dataClients = await getClients();
-      const dataCaseTypes = await getCaseTypes();
-      setCaseTypes(dataCaseTypes);
-      setClients(dataClients);
+      try {
+        const dataClients = await getClients();
+        const dataCaseTypes = await getCaseTypes();
+        setCaseTypes(dataCaseTypes);
+        setClients(dataClients);
+        setIsLoading(false);
+      } catch (e: any) {
+        setIsLoading(false);
+      }
     }
     fetchData();
   }, []);
@@ -116,10 +124,7 @@ const Component = (props: Props) => {
           </strong>
         </Grid>
         <Grid item>
-          <InputLabel
-            className={classes.plainLabel}
-            htmlFor="sort_table"
-          >
+          <InputLabel className={classes.plainLabel} htmlFor="sort_table">
             {i18n.t("Sort")}:
           </InputLabel>
         </Grid>
@@ -245,6 +250,11 @@ const Component = (props: Props) => {
           )}
         </Table>
       </TableContainer>
+      {isLoading && (
+        <Grid container justify="center">
+          <CircularProgress />
+        </Grid>
+      )}
     </div>
   );
 };

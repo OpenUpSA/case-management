@@ -282,6 +282,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     caseInfoContainer: {
+      position: "relative",
       "&>:first-child": {
         order: 1,
         [theme.breakpoints.down("sm")]: {
@@ -337,12 +338,15 @@ export const useStyles = makeStyles((theme: Theme) =>
       borderRadius: "5px!important" as any,
       padding: "15px!important" as any,
     },
-
     saveButton: {
       borderRadius: "5px!important" as any,
       backgroundColor: "#00d97e!important" as any,
       padding: "15px!important" as any,
       marginRight: "8px!important" as any,
+      position: "relative",
+      "&.Mui-disabled": {
+        backgroundColor:  "#dadada!important" as any,
+      },
     },
     plainLabel: {
       fontSize: "12px!important" as any,

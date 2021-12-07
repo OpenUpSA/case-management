@@ -22,8 +22,10 @@ import PersonIcon from "@material-ui/icons/Person";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import ClientForm from "../../components/client/form";
+import SnackbarAlert from "../../components/general/snackBar";
 
 const Page = () => {
   RedirectIfNotLoggedIn();
@@ -37,22 +39,31 @@ const Page = () => {
     React.useState<boolean>(false);
   const [phoneErrorMessage, setPhoneErrorMessage] =
     React.useState<boolean>(false);
+  const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar]);
 
   const newClient = async (client: IClient) => {
     try {
-      const {
-        id,
-        name,
-        contact_email,
-        contact_number,
-      } = await createClient(client);
-
+      setIsLoading(true);
+      const { id, name, contact_email, contact_number } = await createClient(
+        client
+      );
+      setIsLoading(false);
       if (typeof name === "object") {
         setNameError(true);
         setEmailErrorMessage(false);
         setPhoneErrorMessage(false);
         return false;
-      }  else if (typeof contact_email === "object") {
+      } else if (typeof contact_email === "object") {
         setEmailErrorMessage(true);
         setPhoneErrorMessage(false);
         setNameError(false);
@@ -68,9 +79,18 @@ const Page = () => {
         setPhoneErrorMessage(false);
       }
 
-      id && history.push(`/clients/${id}/cases`);
+      id &&
+        history.push({
+          pathname: `/clients/${id}/cases`,
+          state: {
+            open: true,
+            message: "New client created",
+            severity: "success",
+          },
+        });
     } catch (e) {
-      console.log(e);
+      setIsLoading(false);
+      setShowSnackbar(true);
     }
   };
 
@@ -89,7 +109,7 @@ const Page = () => {
             const target = event.target as typeof event.target & {
               preferred_name: { value: string };
               official_identifier: { value: string | null };
-              official_identifier_type: { value: string | null};
+              official_identifier_type: { value: string | null };
               contact_number: { value: string };
               contact_email: { value: string };
               name: { value: string };
@@ -97,8 +117,14 @@ const Page = () => {
 
             newClient({
               preferred_name: target.preferred_name.value,
-              official_identifier: target.official_identifier.value!.length > 0 ? target.official_identifier.value : null,
-              official_identifier_type: target.official_identifier_type.value!.length > 0 ? target.official_identifier_type.value : null,
+              official_identifier:
+                target.official_identifier.value!.length > 0
+                  ? target.official_identifier.value
+                  : null,
+              official_identifier_type:
+                target.official_identifier_type.value!.length > 0
+                  ? target.official_identifier_type.value
+                  : null,
               contact_number: target.contact_number.value,
               contact_email: target.contact_email.value,
               name: target.name.value,
@@ -132,17 +158,34 @@ const Page = () => {
                 </MenuItem>
               </MoreMenu>
             </Grid>
-            <Grid item className={classes.zeroWidthOnMobile}>
+            <Grid
+              style={{ position: "relative" }}
+              item
+              className={classes.zeroWidthOnMobile}
+            >
               <Button
                 className={classes.canBeFab}
                 color="primary"
                 variant="contained"
+                disabled={isLoading}
                 startIcon={<PersonAddIcon />}
                 type="submit"
-                onClick={()=> setChanged(false)}
+                onClick={() => setChanged(false)}
               >
                 {i18n.t("Save client")}
               </Button>
+              {isLoading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              )}
             </Grid>
           </Grid>
           <Prompt
@@ -163,6 +206,13 @@ const Page = () => {
           />
         </form>
       </Container>
+      {showSnackbar && (
+        <SnackbarAlert
+          open={showSnackbar}
+          message={"New client failed"}
+          severity={"error"}
+        />
+      )}
     </Layout>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -22,13 +22,15 @@ import {
   getClient,
   getLegalCase,
   getMeetings,
-  updateLegalCase
+  updateLegalCase,
 } from "../../api";
-import { ILegalCase, IClient, IMeeting } from "../../types";
+import { ILegalCase, IClient, IMeeting, LocationState } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MuiTabs from "../../components/legalCase/muiTabs";
+import SnackbarAlert from "../../components/general/snackBar";
+import CircularProgress from "@mui/material/CircularProgress";
 
 type RouteParams = { id: string };
 
@@ -40,43 +42,100 @@ const LegalCaseStates = [
   "Referred",
   "Resolved",
   "Escalated",
-  "Closed"
+  "Closed",
 ];
 
 const Page = () => {
   RedirectIfNotLoggedIn();
   const history = useHistory();
+  const location = useLocation<LocationState>();
   const classes = useStyles();
   const params = useParams<RouteParams>();
+  const caseId = parseInt(params.id);
+
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
-  const caseId = parseInt(params.id);
-
   const [status, setStatus] = React.useState<string | undefined>("");
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: location.state?.open!,
+    message: location.state?.message!,
+    severity: location.state?.severity!,
+  });
 
   const destroyLegalCase = async () => {
-    if (window.confirm(i18n.t("Are you sure you want to delete this case?"))) {
-      await deleteLegalCase(caseId);
-      history.push(`/cases/`);
+    try {
+      setDeleteLoader(true);
+      if (
+        window.confirm(i18n.t("Are you sure you want to delete this case?"))
+      ) {
+        await deleteLegalCase(caseId);
+        history.push({
+          pathname: `/cases/`,
+          state: {
+            open: true,
+            message: "Case delete successful",
+            severity: "success",
+          },
+        });
+      }
+      setDeleteLoader(false);
+    } catch (e) {
+      setDeleteLoader(false);
+      setShowSnackbar({
+        open: true,
+        message: "Case delete failed",
+        severity: "error",
+      });
     }
   };
 
+  // set location.state?.open! to false on page load
+  useEffect(() => {
+    history.push({ state: { open: false } });
+  }, [history]);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   useEffect(() => {
     async function fetchData() {
-      const dataLegalCase = await getLegalCase(caseId);
-      const dataMeetings = await getMeetings(caseId);
-      setLegalCase(dataLegalCase);
-      setClient(await getClient(dataLegalCase.client));
-      setStatus(dataLegalCase.state)
-      setMeetings(dataMeetings);
+      try {
+        setIsLoading(true);
+        const dataLegalCase = await getLegalCase(caseId);
+        const dataMeetings = await getMeetings(caseId);
+        setLegalCase(dataLegalCase);
+        setClient(await getClient(dataLegalCase.client));
+        setStatus(dataLegalCase.state);
+        setMeetings(dataMeetings);
+        setIsLoading(false);
+      } catch (e: any) {
+        setIsLoading(false);
+        setShowSnackbar({
+          open: true,
+          message: e.message,
+          severity: "error",
+        });
+      }
     }
     fetchData();
   }, [caseId]);
 
-  const statusPatch = async (arg:any) => {
+  const statusPatch = async (arg: any) => {
     try {
+      setIsLoading(true);
       const updatedSummary: ILegalCase = {
         id: legalCase!.id,
         summary: legalCase!.summary,
@@ -87,12 +146,22 @@ const Page = () => {
         case_offices: legalCase!.case_offices,
       };
       const { id } = await updateLegalCase(updatedSummary);
-      history.push(`/cases/${id}`);
+      setIsLoading(false);
+      id &&
+        setShowSnackbar({
+          open: true,
+          message: "Case edit successful",
+          severity: "success",
+        });
     } catch (e) {
-      console.log(e);
+      setIsLoading(false);
+      setShowSnackbar({
+        open: true,
+        message: "Case edit failed",
+        severity: "error",
+      });
     }
   };
-  
 
   return (
     <Layout>
@@ -108,7 +177,7 @@ const Page = () => {
         </Button>
         <div>Case: {legalCase?.case_number}</div>
       </Breadcrumbs>
-      <Container maxWidth="md">
+      <Container maxWidth="md" style={{ position: "relative" }}>
         <Grid
           className={classes.pageBar}
           container
@@ -132,12 +201,12 @@ const Page = () => {
               className={classes.select}
               input={<Input />}
               value={status}
-              onChange={(event: SelectChangeEvent<string | undefined >) => {
-                setStatus(event.target.value as any);         
+              onChange={(event: SelectChangeEvent<string | undefined>) => {
+                setStatus(event.target.value as any);
                 statusPatch(event.target.value as any);
               }}
               style={{ width: "200px", fontSize: "13px" }}
-              renderValue={()=>status}
+              renderValue={() => status}
             >
               {LegalCaseStates?.map((value) => (
                 <MenuItem key={value} value={value}>
@@ -148,18 +217,53 @@ const Page = () => {
           </Grid>
           <Grid item>
             <MoreMenu>
-              <MenuItem onClick={destroyLegalCase}>
+              <MenuItem
+                style={{ position: "relative" }}
+                disabled={deleteLoader}
+                onClick={destroyLegalCase}
+              >
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>{i18n.t("Delete case")}</ListItemText>
+                {deleteLoader && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      marginTop: "-12px",
+                      marginLeft: "-12px",
+                    }}
+                  />
+                )}
               </MenuItem>
             </MoreMenu>
           </Grid>
-          
         </Grid>
-        <MuiTabs legalCase={legalCase!} meetings={meetings ? meetings : []} standalone={false}/>
+
+        <MuiTabs
+          legalCase={legalCase!}
+          meetings={meetings ? meetings : []}
+          standalone={false}
+        />
+
+        {isLoading && (
+          <Grid container justify="center">
+            <CircularProgress
+              sx={{ position: "absolute", top: 10, left: "50%" }}
+            />
+          </Grid>
+        )}
       </Container>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </Layout>
   );
 };

@@ -42,7 +42,7 @@ const Page = () => {
         id: clientId,
       };
       const { id } = await updateClient(updatedClient);
-      history.push(`/clients/${id}`);
+      id && history.push(`/clients/${id}`);
     } catch (e) {
       console.log(e);
     }

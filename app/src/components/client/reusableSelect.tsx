@@ -29,7 +29,6 @@ function ReusableSelect(props: Props) {
         input={<Input />}
         value={props.value}
         onChange={(e: SelectChangeEvent<HTMLInputElement>) => {
-      
           props.setClient((client: any) => ({
             ...client,
             [props.inputName]: e.target.value,

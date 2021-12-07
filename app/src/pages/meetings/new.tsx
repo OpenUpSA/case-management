@@ -1,13 +1,6 @@
 import React, { useEffect } from "react";
 import { useHistory, useParams, Prompt } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
-import MoreMenu from "../../components/moreMenu";
-
-import i18n from "../../i18n";
-import Layout from "../../components/layout";
-import { getClient, getLegalCase } from "../../api";
-import { ILegalCase, IClient, IMeeting } from "../../types";
-import { RedirectIfNotLoggedIn } from "../../auth";
 import {
   Breadcrumbs,
   Container,
@@ -16,16 +9,22 @@ import {
   ListItemIcon,
   MenuItem,
 } from "@material-ui/core";
-
-import { useStyles } from "../../utils";
 import ChatIcon from "@material-ui/icons/Chat";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
+import CircularProgress from "@mui/material/CircularProgress";
+
 
 import MeetingForm from "../../components/meeting/form";
-
-import { createMeeting } from "../../api";
+import MoreMenu from "../../components/moreMenu";
+import i18n from "../../i18n";
+import Layout from "../../components/layout";
+import { getClient, getLegalCase, createMeeting } from "../../api";
+import { ILegalCase, IClient, IMeeting } from "../../types";
+import { RedirectIfNotLoggedIn } from "../../auth";
+import { useStyles } from "../../utils";
+import SnackbarAlert from "../../components/general/snackBar";
 
 type RouteParams = { id: string };
 
@@ -45,27 +44,56 @@ const Page = () => {
     name: "",
   });
   const [changed, setChanged] = React.useState<boolean>(false);
+  const [locationError, setLocationError] = React.useState<boolean>(false);
+  const [meetingTypeError, setMeetingTypeError] =
+    React.useState<boolean>(false);
+  const [notesError, setNotesError] = React.useState<boolean>(false);
+  const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const newMeeting = async (
-    notes: string,
-    location: string,
-    meetingDate: string,
-    meetingType: string,
-    name: string
-  ) => {
+
+  const newMeeting = async (newMeeting: IMeeting) => {
     try {
-      const newMeeting = {
+      setIsLoading(true);
+      const { id, location, meeting_type, notes } = await createMeeting({
+        ...newMeeting,
         legal_case: parseInt(params.id),
-        location: location,
-        meeting_date: meetingDate,
-        meeting_type: meetingType,
-        notes: notes,
-        name: name,
-      };
-      const { id } = await createMeeting(newMeeting);
-      history.push(`/meetings/${id}`);
+      });
+      setIsLoading(false);
+
+      if (typeof location === "object") {
+        setLocationError(true);
+        setMeetingTypeError(false);
+        setNotesError(false);
+        return false;
+      } else if (typeof meeting_type === "object") {
+        setMeetingTypeError(true);
+        setLocationError(false);
+        setNotesError(false);
+        return false;
+      } else if (typeof notes === "object") {
+        setNotesError(true);
+        setLocationError(false);
+        setMeetingTypeError(false);
+        return false;
+      } else {
+        setNotesError(false);
+        setLocationError(false);
+        setMeetingTypeError(false);
+      }
+
+      id &&
+        history.push({
+          pathname: `/meetings/${id}`,
+          state: {
+            open: true,
+            message: "New meeting created",
+            severity: "success",
+          },
+        });
     } catch (e) {
-      console.log(e);
+      setIsLoading(false);
+      setShowSnackbar(true);
     }
   };
 
@@ -78,6 +106,15 @@ const Page = () => {
     }
     fetchData();
   }, [params.id]);
+
+  useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar]);
 
   return (
     <Layout>
@@ -111,13 +148,13 @@ const Page = () => {
               name: { value: string };
             };
 
-            newMeeting(
-              target.notes.value,
-              target.location.value,
-              target.meeting_date.value,
-              target.meeting_type.value,
-              target.name.value
-            );
+            newMeeting({
+              notes: target.notes.value,
+              location: target.location.value,
+              meeting_date: target.meeting_date.value,
+              meeting_type: target.meeting_type.value,
+              name: target.name.value,
+            } as IMeeting);
           }}
         >
           <Grid
@@ -147,17 +184,30 @@ const Page = () => {
                 </MenuItem>
               </MoreMenu>
             </Grid>
-            <Grid item className={classes.zeroWidthOnMobile}>
+            <Grid style={{ position: "relative" }} item className={classes.zeroWidthOnMobile}>
               <Button
                 className={classes.canBeFab}
                 color="primary"
                 variant="contained"
                 startIcon={<RateReviewIcon />}
+                disabled={isLoading}
                 type="submit"
-                onClick={()=> setChanged(false)}
+                onClick={() => setChanged(false)}
               >
                 {i18n.t("Save meeting")}
               </Button>
+              {isLoading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              )}
             </Grid>
           </Grid>
           <Prompt
@@ -171,9 +221,19 @@ const Page = () => {
             readOnly={false}
             changed={changed}
             setChanged={setChanged}
+            locationError={locationError}
+            notesError={notesError}
+            meetingTypeError={meetingTypeError}
           />
         </form>
       </Container>
+      {showSnackbar && (
+        <SnackbarAlert
+          open={showSnackbar}
+          message={"New meeting failed"}
+          severity={"error"}
+        />
+      )}
     </Layout>
   );
 };
