@@ -15,6 +15,8 @@ import logging.config
 import os
 import environ
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 ROOT_DIR = environ.Path(__file__) - 2
 PROJ_DIR = ROOT_DIR.path("case_management")
@@ -23,6 +25,14 @@ PROJ_DIR = ROOT_DIR.path("case_management")
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 env = environ.Env()
+
+if os.getenv("SENTRY_DSN"):
+    sentry_sdk.init(
+        dsn=env('SENTRY_DSN'),
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=0.5,
+        send_default_pii=True,
+    )
 
 # GENERAL
 # ------------------------------------------------------------------------------

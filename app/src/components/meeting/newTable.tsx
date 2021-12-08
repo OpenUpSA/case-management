@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
 import SearchIcon from "@material-ui/icons/Search";
 import AddBoxIcon from "@mui/icons-material/AddBox";
-
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   Grid,
   IconButton,
@@ -37,12 +37,12 @@ const Component = (props: Props) => {
   const [filteredMeetings, setfilteredMeetings] = React.useState<IMeeting[]>();
   const [filterMeetingsValue, setfilterMeetingsValue] =
     React.useState<string>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const filterKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     filterMeetings();
   };
 
-  //TODO: Better filtering
   const filterMeetings = () => {
     if (filterMeetingsValue) {
       setfilteredMeetings(
@@ -73,6 +73,14 @@ const Component = (props: Props) => {
       filterMeetings();
     }
   });
+
+  useEffect(() => {
+    if (props.meetings.length === 0) {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
+  }, [props.meetings]);
 
   return (
     <div>
@@ -131,7 +139,9 @@ const Component = (props: Props) => {
         <Input
           id="table_search"
           fullWidth
-          placeholder={i18n.t("Enter a meeting description, location, type, or note...")}
+          placeholder={i18n.t(
+            "Enter a meeting description, location, type, or note..."
+          )}
           startAdornment={
             <InputAdornment position="start">
               <IconButton>
@@ -208,6 +218,11 @@ const Component = (props: Props) => {
           )}
         </Table>
       </TableContainer>
+      {isLoading && (
+        <Grid container justify="center">
+          <CircularProgress />
+        </Grid>
+      )}
     </div>
   );
 };
