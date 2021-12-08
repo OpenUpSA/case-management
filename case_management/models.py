@@ -24,7 +24,7 @@ from django_lifecycle import LifecycleModel, hook, AFTER_CREATE, AFTER_UPDATE
 from django.apps import apps
 
 
-LOG_CHANGE_EXCLUDED_FIELDS = ('created_at', 'updated_at')
+LOG_CHANGE_EXCLUDED_FIELDS = ('id', 'created_at', 'updated_at')
 
 
 class User(AbstractUser):
@@ -132,11 +132,7 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
     log.save()
     for field, value in self.__dict__.items():
         if field not in LOG_CHANGE_EXCLUDED_FIELDS and self.has_changed(field) is True:
-            log_change = LogChange(
-                log=log,
-                field=field,
-                value=value
-            )
+            log_change = LogChange(log=log, field=field, value=value)
             log_change.save()
 
 

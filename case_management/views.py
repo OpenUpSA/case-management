@@ -149,8 +149,7 @@ class LegalCaseFileViewSet(viewsets.ModelViewSet):
     filterset_fields = ['legal_case']
 
 
-@api_view(['GET'])
-def monthly_summary(request):
+def _get_summary_months_range(request):
     months = {'start': None, 'end': None}
     month_input_pattern = re.compile('^([0-9]{4})-(0[1-9]|1[0-2])$')
     for month in list(months):
@@ -163,14 +162,137 @@ def monthly_summary(request):
                 month_input = int(match.group(2))
                 months[month] = date(year=year_input, month=month_input, day=1)
             else:
-                return HttpResponseBadRequest(f'{query_param} query param must be in format yyyy-mm')
+                return HttpResponseBadRequest(
+                    f'{query_param} query param must be in format yyyy-mm'
+                )
     if months['end'] is None:
         if months['start'] is None:
             months['end'] = date.today()
         else:
-            months['end'] = (months['start'] + timedelta(days = 30 * 11.5)).replace(day=1)
+            months['end'] = (months['start'] + timedelta(days=30 * 11.5)).replace(day=1)
     if months['start'] is None:
-        months['start'] = (months['end'] - timedelta(days = 30 * 10.5)).replace(day=1)
+        months['start'] = (months['end'] - timedelta(days=30 * 10.5)).replace(day=1)
+    start_month = months['start'].strftime("%Y-%m-%d")
+    end_month = months['end'].strftime("%Y-%m-%d")
+    return start_month, end_month
+
+
+@api_view(['GET'])
+def daily_summary(request):
+    start_month, end_month = _get_summary_months_range(request)
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"""
+WITH
+	months AS (
+		SELECT DATE_TRUNC('month', months_series)::date AS month, (DATE_TRUNC('month', months_series) + interval '1 month' - interval '1 day')::date month_end
+		FROM generate_series(
+			'{start_month}'::timestamp,
+			'{end_month}'::timestamp,
+			'1 month'::interval
+		) months_series
+	),
+	days AS (
+		SELECT DATE_TRUNC('day', days_series)::date AS day
+		FROM generate_series(
+			'2021-01-01'::timestamp,
+			'2021-12-31'::timestamp,
+			'1 day'::interval
+		) days_series
+	),
+	metric_cases_created AS (
+		SELECT case_office.caseoffice_id, DATE_TRUNC('month', legalcase.created_at)::date AS month, DATE_TRUNC('day', legalcase.created_at)::date AS day, COUNT(legalcase.id) n
+		FROM case_management_legalcase legalcase, case_management_legalcase_case_offices case_office
+		WHERE legalcase.id = case_office.legalcase_id
+		GROUP BY month, case_office.caseoffice_id, day
+	),
+	metric_cases_closed AS (
+		SELECT case_office.caseoffice_id, DATE_TRUNC('month', legalcase.created_at)::date AS month, DATE_TRUNC('day', log.created_at)::date AS day, COUNT(logchange.id) n
+		FROM case_management_logchange logchange
+		INNER JOIN case_management_log log ON log.id = logchange.log_id
+		INNER JOIN case_management_legalcase legalcase ON legalcase.id = log.target_id
+		INNER JOIN case_management_legalcase_case_offices case_office ON case_office.legalcase_id = legalcase.id
+		WHERE logchange.field = 'state' AND logchange.value = 'Closed'
+		GROUP BY month, case_office.caseoffice_id, day
+	),
+	metric_updates AS (
+		SELECT case_office.caseoffice_id, DATE_TRUNC('month', legalcase.created_at)::date AS month, DATE_TRUNC('day', log.created_at)::date AS day, COUNT(log.id) n
+		FROM case_management_log log
+		INNER JOIN case_management_legalcase legalcase ON legalcase.id = log.target_id
+		INNER JOIN case_management_legalcase_case_offices case_office ON case_office.legalcase_id = legalcase.id
+		GROUP BY month, case_office.caseoffice_id, day
+	)
+SELECT json_object_agg(
+  name, json_build_object(
+    'Cases opened', (
+		SELECT json_object_agg(
+			to_char(months.month, 'YYYY-MM'), (
+				SELECT json_agg(
+			  		json_build_object(
+						'date', days.day,
+						'value', (
+				  			SELECT n
+				  			FROM metric_cases_created cases_created
+				  			WHERE cases_created.caseoffice_id = caseoffice.id AND cases_created.day = days.day
+						)
+			  		)
+				)
+				FROM days
+				WHERE days.day BETWEEN months.month and months.month_end
+			)
+		)
+		FROM months
+	),
+	'Cases closed', (
+		SELECT json_object_agg(
+			to_char(months.month, 'YYYY-MM'), (
+				SELECT json_agg(
+			  		json_build_object(
+						'date', days.day,
+						'value', (
+				  			SELECT n
+				  			FROM metric_cases_closed cases_closed
+				  			WHERE cases_closed.caseoffice_id = caseoffice.id AND cases_closed.day = days.day
+						)
+			  		)
+				)
+				FROM days
+				WHERE days.day BETWEEN months.month and months.month_end
+			)
+		)
+		FROM months
+	),
+	'Cases with activity', (
+		SELECT json_object_agg(
+			to_char(months.month, 'YYYY-MM'), (
+				SELECT json_agg(
+			  		json_build_object(
+						'date', days.day,
+						'value', (
+				  			SELECT n
+				  			FROM metric_updates updates
+				  			WHERE updates.caseoffice_id = caseoffice.id AND updates.day = days.day
+						)
+			  		)
+				)
+				FROM days
+				WHERE days.day BETWEEN months.month and months.month_end
+			)
+		)
+		FROM months
+	)
+  )
+)
+FROM case_management_caseoffice AS caseoffice;
+        """
+        )
+        row = cursor.fetchone()
+    return Response(row[0])
+
+
+@api_view(['GET'])
+def monthly_summary(request):
+    start_month, end_month = _get_summary_months_range(request)
     with connection.cursor() as cursor:
         cursor.execute(
             f"""
@@ -178,8 +300,8 @@ WITH
 	months AS (
 		SELECT date_trunc('month', months_series)::date AS month, (date_trunc('month', months_series) + interval '1 month' - interval '1 day')::date month_end
 		FROM generate_series(
-			'{months["start"].strftime("%Y-%m-%d")}'::timestamp,
-			'{months["end"].strftime("%Y-%m-%d")}'::timestamp,
+			'{start_month}'::timestamp,
+			'{end_month}'::timestamp,
 			'1 month'::interval
 		) months_series
 	),

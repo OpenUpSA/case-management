@@ -51,8 +51,8 @@ export default function HeatmapChart(props: IProps) {
     const chartData: {[metric: string]: {[month: string]: {max: number, data7x5: any[]}}} = {}
     Object.keys(selectedOfficeData).forEach((metric: string) => {
       chartData[metric] = {}
-      Object.keys(selectedMetricData).forEach((month: string) => {
-        const data = selectedMetricData[month]
+      Object.keys(selectedOfficeData[metric]).forEach((month: string) => {
+        const data = selectedOfficeData[metric][month]
         const flatGrid = []
         const weeklyGrid = []
         const firstPosition = new Date(data[0].date).getDay()
@@ -62,7 +62,7 @@ export default function HeatmapChart(props: IProps) {
           } else if (i < data.length + firstPosition) {
               flatGrid.push({
                 day: i - firstPosition + 1,
-                value: data[i - firstPosition].value
+                value: data[i - firstPosition].value || 0
               });
           } else {
               flatGrid.push(null);
@@ -158,7 +158,7 @@ export default function HeatmapChart(props: IProps) {
                 {week.map((dayData: {day: number, value: number}, j: number) => (
                   <Grid key={j} item xs>
                   <Tooltip title={dayData === null ? "" : `${dayData.day} ${yearMonthLabel(new Date(state.selectedMonth))}: ${dayData.value} ${state.selectedMetric}`} arrow>
-                    <Box className={classes.dayValue} style={dayData === null ? {opacity: 0.2, backgroundColor: "grey"} : {opacity: 0.2 + (dayData.value / state.chartData[state.selectedMetric][state.selectedMonth].max) * 0.8, color: "white"}}>
+                    <Box className={classes.dayValue} style={dayData === null ? {opacity: 0.2, backgroundColor: "grey"} : {opacity: 0.2 + (dayData.value / (state.chartData[state.selectedMetric][state.selectedMonth].max || 1)) * 0.8, color: "white"}}>
                       {dayData === null ? "-" : dayData.value}
                     </Box>
                   </Tooltip>

@@ -130,7 +130,7 @@ export default function Dashboard(props: IProps) {
       <Container className={classes.chartContainer}>
         <Grid container spacing={3}>
           {state.charts.map((chart, i) => (
-            <Grid key={i} item xs={12} sm={6} md={4}>
+            <Grid key={i} item sm={12} md={6}>
               {renderChart(chart)}
             </Grid>
           ))}

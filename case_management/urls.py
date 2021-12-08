@@ -18,6 +18,7 @@ from case_management.views import (
     LogViewSet,
     LegalCaseFileViewSet,
     monthly_summary,
+    daily_summary,
 )
 
 router = DefaultRouter()
@@ -56,6 +57,7 @@ urlpatterns = [
         name='schema-json',
     ),
     path('api/v1/reports/monthly-summary', monthly_summary, name='monthly-summary'),
+    path('api/v1/reports/daily-summary', daily_summary, name='daily-summary'),
     path(
         'api/ui/',
         schema_view.with_ui('swagger', cache_timeout=0),
