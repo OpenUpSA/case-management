@@ -33,11 +33,14 @@ class UserAdmin(UserAdmin, DefaultAdmin):
     form = UserChangeForm
     model = User
     list_display = (
-        'email',
+        'name',
+        'case_office',
         'is_staff',
         'is_active',
     )
     list_filter = (
+        'name',
+        'case_office',
         'email',
         'is_staff',
         'is_active',
