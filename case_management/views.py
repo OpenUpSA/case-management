@@ -99,9 +99,14 @@ class CaseTypeViewSet(viewsets.ModelViewSet):
 
 
 class ClientViewSet(viewsets.ModelViewSet):
-    queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
+    def get_queryset(self):
+        queryset = Client.objects.all()
+        case_office = self.request.query_params.get('caseOffice')
+        if case_office is not None:
+            queryset = Client.objects.filter(legal_cases__case_offices__id=case_office).distinct('id')
+        return queryset
 
 class LegalCaseViewSet(viewsets.ModelViewSet):
     queryset = LegalCase.objects.all()
