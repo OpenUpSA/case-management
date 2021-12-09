@@ -9,7 +9,7 @@ import CaseFileTab from "./caseFileTab";
 import CaseInfoTab from "./caseInfoTab";
 import { IMeeting, ILegalCase, ILegalCaseFile } from "../../types";
 import { useStyles } from "../../utils";
-import { getLegalCaseFiles } from "../../api";
+import { getLegalCaseFiles, getMeetings } from "../../api";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -18,7 +18,6 @@ interface TabPanelProps {
 }
 
 type Props = {
-  meetings: IMeeting[];
   standalone: boolean;
   legalCase: ILegalCase;
 };
@@ -52,12 +51,18 @@ export default function BasicTabs(props: Props) {
   const [legalCaseFiles, setLegalCaseFiles] = React.useState<
     ILegalCaseFile[] | undefined
   >();
+  const [meetings, setMeetings] = React.useState<IMeeting[]>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     async function fetchData() {
       if (props.legalCase?.id) {
+        setIsLoading(true);
         const dataLegalCaseFiles = await getLegalCaseFiles(props.legalCase?.id);
+        const dataMeetings = await getMeetings(props.legalCase?.id);
         setLegalCaseFiles(dataLegalCaseFiles);
+        setMeetings(dataMeetings);
+        setIsLoading(false);
       }
     }
     fetchData();
@@ -107,7 +112,7 @@ export default function BasicTabs(props: Props) {
             key="meetings"
             className={classes.tabButton}
             label={
-              <Badge badgeContent={props.meetings.length} color="primary">
+              <Badge badgeContent={meetings?.length} color="primary">
                 <Typography
                   sx={{
                     paddingTop: 1,
@@ -149,11 +154,12 @@ export default function BasicTabs(props: Props) {
         {props.legalCase ? <CaseInfoTab legalCase={props.legalCase} /> : null}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {props.meetings && props.legalCase ? (
+        {props.legalCase ? (
           <NewMeetingsTable
-            meetings={props.meetings ? props.meetings : []}
+            meetings={meetings ? meetings : []}
             standalone={false}
             legalCase={props.legalCase}
+            isLoading={isLoading}
           />
         ) : null}
       </TabPanel>
