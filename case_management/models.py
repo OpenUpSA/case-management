@@ -286,6 +286,13 @@ class Meeting(LifecycleModel, models.Model):
     meeting_date = models.DateTimeField(null=False, blank=False)
     notes = models.TextField(null=False, blank=False)
     name = models.CharField(max_length=255, null=False, blank=True, default="")
+    legal_case_file = models.ForeignKey(
+        'LegalCaseFile',
+        related_name='legal_case_files',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
 
     @hook(AFTER_CREATE)
     def log_create(self):
