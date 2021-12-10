@@ -12,7 +12,8 @@ import {
   ILegalCaseFile,
 } from "./types";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
 
 async function http<T>(path: string, config: RequestInit): Promise<T> {
   path = `${API_BASE_URL}${path}`;
@@ -203,7 +204,7 @@ export const createLegalCaseFile = async (
   legal_case: number | undefined,
   file: any,
   description: string,
-  onUploadProgress: any,
+  onUploadProgress: any
 ) => {
   const formData = new FormData();
 
@@ -225,5 +226,5 @@ export const createLegalCaseFile = async (
     formData,
     options
   );
-  return response.data
+  return response.data;
 };

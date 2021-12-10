@@ -159,7 +159,7 @@ const Page = () => {
               </MoreMenu>
             </Grid>
             <Grid
-              style={{ position: "relative" }}
+              //style={{ position: "relative" }}
               item
               className={classes.zeroWidthOnMobile}
             >
@@ -173,19 +173,17 @@ const Page = () => {
                 onClick={() => setChanged(false)}
               >
                 {i18n.t("Save client")}
+                {isLoading && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      position: "absolute",
+                      zIndex: 10000,
+                      left: "50%",
+                    }}
+                  />
+                )}
               </Button>
-              {isLoading && (
-                <CircularProgress
-                  size={24}
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    marginTop: "-12px",
-                    marginLeft: "-12px",
-                  }}
-                />
-              )}
             </Grid>
           </Grid>
           <Prompt

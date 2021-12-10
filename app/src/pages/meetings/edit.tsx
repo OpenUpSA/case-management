@@ -190,7 +190,7 @@ const Page = () => {
                 </MenuItem>
               </MoreMenu>
             </Grid>
-            <Grid style={{ position: "relative" }} item className={classes.zeroWidthOnMobile}>
+            <Grid item className={classes.zeroWidthOnMobile}>
               <Button
                 className={classes.canBeFab}
                 color="primary"
@@ -201,19 +201,18 @@ const Page = () => {
                 onClick={() => setChanged(false)}
               >
                 {i18n.t("Save meeting")}
+                {isLoading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    position: "absolute",     
+                    zIndex: 10000,
+                    left: "50%",
+                  }}
+                />
+              )}
               </Button>
-              {isLoading && (
-              <CircularProgress
-                size={24}
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  marginTop: "-12px",
-                  marginLeft: "-12px",
-                }}
-              />
-            )}
+              
             </Grid>
           </Grid>
           <Prompt
