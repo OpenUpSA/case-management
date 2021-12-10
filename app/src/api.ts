@@ -227,3 +227,15 @@ export const createLegalCaseFile = async (
   );
   return response.data
 };
+
+export const deleteLegalCaseFile = async (id: number) => {
+  return await httpDelete<ILegalCaseFile>(`/files/${id}/`);
+};
+
+export const renameLegalCaseFile = async (legalCaseFile: ILegalCaseFile) => {
+  return await httpPatch<ILegalCaseFile, ILegalCaseFile>(
+    `/files/${legalCaseFile.id}/`,
+    legalCaseFile
+  );
+}
+

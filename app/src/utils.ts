@@ -345,7 +345,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "8px!important" as any,
       position: "relative",
       "&.Mui-disabled": {
-        backgroundColor:  "#dadada!important" as any,
+        backgroundColor: "#dadada!important" as any,
       },
     },
     plainLabel: {
@@ -503,6 +503,20 @@ export const useStyles = makeStyles((theme: Theme) =>
       zIndex: 2,
       position: "relative",
       transition: "all 0.3s ease-in-out",
+    },
+    fileMoreMenu: {
+      position: "absolute",
+      left: -150,
+      display: "flex",
+      flexDirection: "column",
+      width: 180,
+      backgroundColor: "#fff",
+      borderRadius: 4,
+      transition:
+        "opacity 214ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 143ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;",
+      boxShadow:
+        "0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%);",
+      fontSize: 16,
     },
   })
 );
