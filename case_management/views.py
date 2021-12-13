@@ -206,26 +206,26 @@ WITH
 		) days_series
 	),
 	metric_cases_created AS (
-		SELECT case_office.caseoffice_id, DATE_TRUNC('month', legalcase.created_at)::date AS month, DATE_TRUNC('day', legalcase.created_at)::date AS day, COUNT(legalcase.id) n
+		SELECT case_office.caseoffice_id, DATE_TRUNC('day', legalcase.created_at)::date AS day, COUNT(legalcase.id) n
 		FROM case_management_legalcase legalcase, case_management_legalcase_case_offices case_office
 		WHERE legalcase.id = case_office.legalcase_id
-		GROUP BY month, case_office.caseoffice_id, day
+		GROUP BY case_office.caseoffice_id, day
 	),
 	metric_cases_closed AS (
-		SELECT case_office.caseoffice_id, DATE_TRUNC('month', legalcase.created_at)::date AS month, DATE_TRUNC('day', log.created_at)::date AS day, COUNT(logchange.id) n
+		SELECT case_office.caseoffice_id, DATE_TRUNC('day', log.created_at)::date AS day, COUNT(logchange.id) n
 		FROM case_management_logchange logchange
 		INNER JOIN case_management_log log ON log.id = logchange.log_id
 		INNER JOIN case_management_legalcase legalcase ON legalcase.id = log.target_id
 		INNER JOIN case_management_legalcase_case_offices case_office ON case_office.legalcase_id = legalcase.id
 		WHERE logchange.field = 'state' AND logchange.value = 'Closed'
-		GROUP BY month, case_office.caseoffice_id, day
+		GROUP BY case_office.caseoffice_id, day
 	),
 	metric_updates AS (
-		SELECT case_office.caseoffice_id, DATE_TRUNC('month', legalcase.created_at)::date AS month, DATE_TRUNC('day', log.created_at)::date AS day, COUNT(log.id) n
+		SELECT case_office.caseoffice_id, DATE_TRUNC('day', log.created_at)::date AS day, COUNT(log.id) n
 		FROM case_management_log log
 		INNER JOIN case_management_legalcase legalcase ON legalcase.id = log.target_id
 		INNER JOIN case_management_legalcase_case_offices case_office ON case_office.legalcase_id = legalcase.id
-		GROUP BY month, case_office.caseoffice_id, day
+		GROUP BY case_office.caseoffice_id, day
 	)
 SELECT json_object_agg(
   name, json_build_object(
