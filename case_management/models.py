@@ -13,10 +13,11 @@ from case_management.enums import (
     CivilMarriageTypes,
     Languages,
     Provinces,
+    LogChangeTypes,
 )
 from django_countries.fields import CountryField
 from django.conf import settings
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from case_management.managers import UserManager
@@ -97,6 +98,7 @@ class LogChange(models.Model):
 
     field = models.CharField(max_length=255)
     value = models.TextField()
+    action = models.CharField(max_length=10, choices=LogChangeTypes.choices)
 
 
 def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
@@ -120,7 +122,7 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
         else:
             note = target_type
 
-    log = Log(
+    self.log = Log(
         parent_id=parent_id,
         parent_type=parent_type,
         target_id=target_id,
@@ -129,11 +131,30 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
         user=user,
         note=note,
     )
-    log.save()
+    self.log.save()
     for field, value in self.__dict__.items():
         if field not in LOG_CHANGE_EXCLUDED_FIELDS and self.has_changed(field) is True:
-            log_change = LogChange(log=log, field=field, value=value)
+            log_change = LogChange(
+                log=self.log, field=field, value=value, action=LogChangeTypes.CHANGE
+            )
             log_change.save()
+
+
+@receiver(m2m_changed)
+def logManyToManyChange(
+    sender, instance=None, action=None, model=None, pk_set=None, **kwargs
+):
+    if action in ('post_add', 'post_remove'):
+        if action == 'post_add':
+            change_action = LogChangeTypes.ADD
+        elif action == 'post_remove':
+            change_action = LogChangeTypes.REMOVE
+        _, field = sender.__name__.split('_', 1)
+        value = list(pk_set)
+        log_change = LogChange(
+            log=instance.log, field=field, value=value, action=change_action
+        )
+        log_change.save()
 
 
 class CaseOffice(LifecycleModel, models.Model):
