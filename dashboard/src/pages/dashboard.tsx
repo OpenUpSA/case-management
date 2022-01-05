@@ -1,13 +1,13 @@
 import { Component } from "react";
 import Dashboard from "../components/dashboard";
 import { IDbDataMonthly, IDbDataDailyPerMonth } from "../types";
-import { http } from "../api";
+import { getDailySummary, getMonthlySummary } from "../api";
 
 interface IProps {}
 
 interface IState {
-  dataMonthly: IDbDataMonthly
-  dataDaily: IDbDataDailyPerMonth
+  dataMonthly: IDbDataMonthly;
+  dataDaily: IDbDataDailyPerMonth;
 }
 class Page extends Component<IProps, IState> {
   constructor(props: IProps) {
@@ -19,17 +19,20 @@ class Page extends Component<IProps, IState> {
   }
 
   async componentDidMount() {
-    const dataMonthly = await http<IDbDataMonthly>("/reports/monthly-summary");
-    const dataDaily = await http<IDbDataDailyPerMonth>("/reports/daily-summary");
+    const dataMonthly = await getMonthlySummary();
+    const dataDaily = await getDailySummary();
     this.setState({
       dataMonthly: dataMonthly,
-      dataDaily: dataDaily
+      dataDaily: dataDaily,
     });
   }
 
   public render(): any {
     return (
-      <Dashboard dataMonthly={this.state.dataMonthly} dataDaily={this.state.dataDaily}></Dashboard>
+      <Dashboard
+        dataMonthly={this.state.dataMonthly}
+        dataDaily={this.state.dataDaily}
+      ></Dashboard>
     );
   }
 }
