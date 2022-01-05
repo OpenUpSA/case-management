@@ -45,6 +45,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://app.casefile.org.za",
     "https://staging.casefile.org.za",
     "https://case-management.pages.dev",
+    "https://dashboard.casefile.org.za",
 ]
 
 # Application definition
