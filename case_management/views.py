@@ -13,6 +13,8 @@ from django.views import generic
 
 from django.db import connection
 
+from django.contrib.auth.models import AnonymousUser
+
 from django.http import HttpResponseBadRequest
 
 from case_management.serializers import (
@@ -37,6 +39,20 @@ from case_management.models import (
 )
 
 import time
+
+
+def get_user(request):
+    if isinstance(request.user, AnonymousUser):
+        return None
+    return request.user
+
+
+class LoggedModelViewSet(viewsets.ModelViewSet):
+    def perform_create(self, serializer):
+        serializer.save(created_by=get_user(self.request))
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=get_user(self.request))
 
 
 class UpdateRetrieveViewSet(
@@ -88,27 +104,30 @@ class CustomObtainAuthToken(ObtainAuthToken):
         )
 
 
-class CaseOfficeViewSet(viewsets.ModelViewSet):
+class CaseOfficeViewSet(LoggedModelViewSet):
     queryset = CaseOffice.objects.all()
     serializer_class = CaseOfficeSerializer
 
 
-class CaseTypeViewSet(viewsets.ModelViewSet):
+class CaseTypeViewSet(LoggedModelViewSet):
     queryset = CaseType.objects.all()
     serializer_class = CaseTypeSerializer
 
 
-class ClientViewSet(viewsets.ModelViewSet):
+class ClientViewSet(LoggedModelViewSet):
     serializer_class = ClientSerializer
 
     def get_queryset(self):
         queryset = Client.objects.all()
         case_office = self.request.query_params.get('caseOffice')
         if case_office is not None:
-            queryset = Client.objects.filter(legal_cases__case_offices__id=case_office).distinct('id')
+            queryset = Client.objects.filter(
+                legal_cases__case_offices__id=case_office
+            ).distinct('id')
         return queryset
 
-class LegalCaseViewSet(viewsets.ModelViewSet):
+
+class LegalCaseViewSet(LoggedModelViewSet):
     queryset = LegalCase.objects.all()
     serializer_class = LegalCaseSerializer
     filter_backends = [DjangoFilterBackend]
@@ -127,9 +146,17 @@ class LegalCaseViewSet(viewsets.ModelViewSet):
         serializer.save(case_number=generated_case_number)
 
 
-class MeetingViewSet(viewsets.ModelViewSet):
+class MeetingViewSet(LoggedModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['legal_case']
+
+
+class LegalCaseFileViewSet(LoggedModelViewSet):
+    parser_classes = (MultiPartParser, FormParser)
+    queryset = LegalCaseFile.objects.all()
+    serializer_class = LegalCaseFileSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['legal_case']
 
@@ -144,14 +171,6 @@ class LogViewSet(CreateListRetrieveViewSet):
     serializer_class = LogSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['parent_id', 'parent_type', 'target_id', 'target_type']
-
-
-class LegalCaseFileViewSet(viewsets.ModelViewSet):
-    parser_classes = (MultiPartParser, FormParser)
-    queryset = LegalCaseFile.objects.all()
-    serializer_class = LegalCaseFileSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['legal_case']
 
 
 def _get_summary_months_range(request):
