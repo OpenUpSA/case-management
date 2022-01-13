@@ -21,6 +21,13 @@ from case_management.views import (
     daily_summary,
 )
 
+# Note: For Sentry integration testing
+
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
+
 router = DefaultRouter()
 router.register(r'api/v1/meetings', MeetingViewSet)
 router.register(r'api/v1/cases', LegalCaseViewSet)
@@ -63,4 +70,5 @@ urlpatterns = [
         schema_view.with_ui('swagger', cache_timeout=0),
         name='schema-swagger-ui',
     ),
+    path('debug/bnp6tVkWRPhVUd5ieGij-sentry/', trigger_error),
 ]
