@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
@@ -30,11 +30,13 @@ import SearchIcon from "@material-ui/icons/Search";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import Layout from "../../components/layout";
-import { getClients } from "../../api";
-import { IClient, LocationState } from "../../types";
+import Toggle from "../../components/general/toggle";
+import { getClients, getClientsForCaseOffice } from "../../api";
+import { IClient, LocationState, ICaseOffice } from "../../types";
 import { useStyles } from "../../utils";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 import SnackbarAlert from "../../components/general/snackBar";
+import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 
 const Page = () => {
   RedirectIfNotLoggedIn();
@@ -42,7 +44,9 @@ const Page = () => {
   const history = useHistory();
   const location = useLocation<LocationState>();
 
-  const [clients, setClients] = React.useState<IClient[]>();
+  const [caseOfficeClients, setCaseOfficeClients] = React.useState<IClient[]>();
+  const [caseWorkersClients, setCaseWorkersClients] =
+    React.useState<IClient[]>();
   const [filteredClients, setFilteredClients] = React.useState<IClient[]>();
   const [filterClientsValue, setFilterClientsValue] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -51,39 +55,29 @@ const Page = () => {
     message: location.state?.message!,
     severity: location.state?.severity!,
   });
-
-  const filterClients = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (filterClientsValue) {
-      setFilteredClients(
-        clients?.filter((client) => {
-          return (
-            client.name
-              .toLowerCase()
-              .includes(filterClientsValue.toLowerCase()) ||
-            client.preferred_name
-              .toLowerCase()
-              .includes(filterClientsValue.toLowerCase()) ||
-            client.contact_number
-              .toLowerCase()
-              .includes(filterClientsValue.toLowerCase()) ||
-            client.contact_email
-              .toLowerCase()
-              .includes(filterClientsValue.toLowerCase())
-          );
-        })
-      );
-    } else {
-      setFilteredClients(clients);
-    }
-  };
+  const [usersCaseOfficeId, setUsersCaseOfficeId] = React.useState<number>();
+  const [checked, setChecked] = React.useState<boolean>(false);
+  const [contextOffices] = useContext(CaseOfficesContext);
 
   useEffect(() => {
     async function fetchData() {
       try {
         setIsLoading(true);
         const data = await getClients();
-        setClients(data);
-        setFilteredClients(data);
+        const filteredDataForCaseWorker = data.filter(
+          (client: any) =>
+            client.updates[client.updates.length - 1].user ===
+            Number(UserInfo.getInstance().getUserId())
+        );
+        setCaseWorkersClients(filteredDataForCaseWorker);
+
+        const userInfo = UserInfo.getInstance();
+        const usersCaseOffice = Number(userInfo.getCaseOffice());
+        setUsersCaseOfficeId(usersCaseOffice);
+
+        const data2 = await getClientsForCaseOffice(usersCaseOffice);
+        setCaseOfficeClients(data2);
+        setFilteredClients(data2);
         setIsLoading(false);
       } catch (e) {
         setIsLoading(false);
@@ -96,6 +90,13 @@ const Page = () => {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    !checked
+      ? setFilteredClients(caseOfficeClients)
+      : setFilteredClients(caseWorkersClients);
+    setFilterClientsValue("");
+  }, [checked, caseOfficeClients, caseWorkersClients]);
 
   // set location.state?.open! to false on page load
   useEffect(() => {
@@ -115,6 +116,36 @@ const Page = () => {
     resetState();
   }, [showSnackbar.open]);
 
+  const filterClients = (list: IClient[] | undefined) => {
+    if (filterClientsValue) {
+      setFilteredClients(
+        list?.filter((client) => {
+          return (
+            client.name
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.preferred_name
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.contact_number
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.contact_email
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase())
+          );
+        })
+      );
+    } else {
+      setFilteredClients(list);
+    }
+  };
+
+  const filteredCaseOffice = contextOffices
+    ?.filter((caseOffice: ICaseOffice) => usersCaseOfficeId === caseOffice.id)
+    .map((caseOffice: ICaseOffice) => caseOffice.name)
+    .join(", ");
+
   return (
     <Layout>
       <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
@@ -131,10 +162,21 @@ const Page = () => {
           <Grid item>
             <PeopleIcon color="primary" style={{ display: "flex" }} />
           </Grid>
-          <Grid item style={{ flexGrow: 1 }}>
+          <Grid
+            item
+            style={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+          >
             <Typography variant="h6">
-              <strong>{i18n.t("Client list")}</strong>
+              <strong>
+                {!checked
+                  ? filteredCaseOffice &&
+                    `${filteredCaseOffice}'s ${i18n.t("client list")}`
+                  : `${UserInfo.getInstance().getName()}'s ${i18n.t(
+                      "client list"
+                    )}`}
+              </strong>
             </Typography>
+            <Toggle checked={checked} setChecked={setChecked} />
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>
             <Button
@@ -195,7 +237,11 @@ const Page = () => {
               aria-describedby="my-helper-text"
               value={filterClientsValue}
               onChange={(e) => setFilterClientsValue(e.target.value)}
-              onKeyUp={filterClients}
+              onKeyUp={() =>
+                !checked
+                  ? filterClients(caseOfficeClients)
+                  : filterClients(caseWorkersClients)
+              }
             />
           </Grid>
         </Grid>

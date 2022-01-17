@@ -1,6 +1,6 @@
 import logo from "../logo-small.svg";
 import userDefaultAvatar from "../user-default-avatar.jpeg";
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { IconButton } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
@@ -27,6 +27,7 @@ import { UserInfo } from "../auth";
 import { useStyles } from "../utils";
 import { ICaseOffice } from "../types";
 import { getCaseOffices } from "../api";
+import { CaseOfficesContext } from "../contexts/caseOfficesContext";
 
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -38,15 +39,15 @@ const Component = () => {
   useEffect(() => {
     async function fetchData() {
       const dataCaseOffices = await getCaseOffices();
-      setCaseOffices(dataCaseOffices);
+      setContextOffices(dataCaseOffices);
     }
     fetchData();
-  }, []);
+  });
 
   const history = useHistory();
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [caseOffices, setCaseOffices] = React.useState<ICaseOffice[]>();
+  const [contextOffices, setContextOffices] = useContext(CaseOfficesContext);
 
   const userInfo = UserInfo.getInstance();
   const userId = Number(userInfo.getUserId());
@@ -54,9 +55,9 @@ const Component = () => {
   const email = userInfo.getEmail();
   const case_office = Number(userInfo.getCaseOffice());
 
-  const filteredCaseOffice = caseOffices
-    ?.filter((caseOffice) => case_office === caseOffice.id)
-    .map((caseOffice) => caseOffice.name)
+  const filteredCaseOffice = contextOffices
+    ?.filter((caseOffice: ICaseOffice) => case_office === caseOffice.id)
+    .map((caseOffice: ICaseOffice) => caseOffice.name)
     .join(", ");
 
   const toggleDrawer = () => {

@@ -2,13 +2,16 @@ import { Component } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Routes from "./routes";
 import "@fontsource/roboto";
+import { CaseOfficesProvider } from "./contexts/caseOfficesContext";
 
 class App extends Component {
   render() {
     return (
-      <Router>
-        <Routes />
-      </Router>
+      <CaseOfficesProvider>
+        <Router>
+          <Routes />
+        </Router>
+      </CaseOfficesProvider>
     );
   }
 }
