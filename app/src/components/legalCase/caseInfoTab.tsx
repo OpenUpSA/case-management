@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Box from "@material-ui/core/Box";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
@@ -21,11 +21,13 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import LockIcon from "@mui/icons-material/Lock";
+import CircularProgress from "@mui/material/CircularProgress";
+
 import { BlackTooltip } from "../general/tooltip";
 import { useStyles } from "../../utils";
 import SnackbarAlert from "../../components/general/snackBar";
-import CircularProgress from "@mui/material/CircularProgress";
-
+import { format } from "date-fns";
+import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import {
   ILegalCase,
   ICaseType,
@@ -35,11 +37,9 @@ import {
   ILog,
   LocationState,
 } from "../../types";
-import { format } from "date-fns";
 import {
   updateLegalCase,
   getCaseTypes,
-  getCaseOffices,
   getClient,
   getUser,
   getLogs,
@@ -70,7 +70,6 @@ export default function CaseInfoTab(props: Props) {
   const classes = useStyles();
   const [caseSummary, setCaseSummary] = React.useState<string | undefined>("");
   const [caseTypes, setCaseTypes] = React.useState<ICaseType[]>();
-  const [caseOffices, setCaseOffices] = React.useState<ICaseOffice[]>();
   const [caseWorker, setCaseWorker] = React.useState<IUser | undefined>();
   const [client, setClient] = React.useState<IClient>();
   const [selectCaseType, setSelectCaseType] = React.useState<
@@ -93,6 +92,7 @@ export default function CaseInfoTab(props: Props) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [updateLoader, setUpdateLoader] = React.useState<boolean>(false);
   const [summaryLoader, setSummaryLoader] = React.useState<boolean>(false);
+  const [contextOffices] = useContext(CaseOfficesContext);
 
   React.useEffect(() => {
     setIsLoading(true);
@@ -104,7 +104,6 @@ export default function CaseInfoTab(props: Props) {
     async function fetchData() {
       try {
         const dataCaseTypes = await getCaseTypes();
-        const dataCaseOffices = await getCaseOffices();
         const clientInfo = await getClient(props.legalCase?.client);
         const userNumber = Number(props.legalCase?.users?.join());
         const userInfo = await getUser(userNumber);
@@ -113,7 +112,6 @@ export default function CaseInfoTab(props: Props) {
         setClient(clientInfo);
         setCaseWorker(userInfo);
         setCaseTypes(dataCaseTypes);
-        setCaseOffices(dataCaseOffices);
         setCaseHistory(historyData);
         setIsLoading(false);
       } catch (e: any) {
@@ -529,6 +527,7 @@ export default function CaseInfoTab(props: Props) {
             className={classes.caseSelect}
             input={<Input />}
             value={selectCaseType}
+            defaultValue={[0]}
             onChange={(event: SelectChangeEvent<number[]>) => {
               setSelectCaseType([event.target.value as any]);
               caseTypePatch([event.target.value as any]);
@@ -602,16 +601,17 @@ export default function CaseInfoTab(props: Props) {
             }}
             input={<Input />}
             value={selectCaseOffice}
+            defaultValue={[0]}
             renderValue={() => {
-              return caseOffices
+              return contextOffices
                 ?.filter(
-                  (caseOffice) => selectCaseOffice!.indexOf(caseOffice.id) > -1
+                  (caseOffice: ICaseOffice) => selectCaseOffice!.indexOf(caseOffice.id) > -1
                 )
-                .map((caseOffice) => caseOffice.name)
+                .map((caseOffice: ICaseOffice) => caseOffice.name)
                 .join(", ");
             }}
           >
-            {caseOffices?.map(({ id, name }) => (
+            {contextOffices?.map(({ id, name }: any) => (
               <MenuItem
                 className={classes.caseSelectMenuItem}
                 key={id}

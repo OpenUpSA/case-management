@@ -11,7 +11,6 @@ import ClientLegalCasesPage from "./pages/clients/cases";
 
 import LegalCasesPage from "./pages/legalCases/list";
 import LegalCasePage from "./pages/legalCases/show";
-import LegalCaseNewPage from "./pages/legalCases/new";
 
 import MeetingsPage from "./pages/meetings/list";
 import MeetingPage from "./pages/meetings/show";
@@ -69,11 +68,6 @@ function Routes() {
 
         <Route exact path="/cases" component={LegalCasesPage} />
         <Route exact path="/cases/:id" component={LegalCasePage} />
-        <Route
-          exact
-          path="/clients/:id/cases/new"
-          component={LegalCaseNewPage}
-        />
 
         <Route exact path="/meetings" component={MeetingsPage} />
         <Route exact path="/meetings/:id" component={MeetingPage} />

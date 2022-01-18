@@ -1,15 +1,13 @@
+import React, { useEffect, useState, useContext } from "react";
 import { Grid, MenuItem, Select } from "@material-ui/core";
-
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 
-import { useEffect, useState } from "react";
 import i18n from "../../i18n";
 import { IUser, ICaseOffice } from "../../types";
 import { useStyles } from "../../utils";
-import { getCaseOffices } from "../../api";
-import React from "react";
+import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 
 type Props = {
   user?: IUser;
@@ -20,7 +18,7 @@ type Props = {
 
 const Component = (props: Props) => {
   const classes = useStyles();
-  const [caseOffices, setCaseOffices] = React.useState<ICaseOffice[]>();
+  const [contextOffices] = useContext(CaseOfficesContext);
   const [user, setUser] = useState<IUser>({
     name: "",
     membership_number: "",
@@ -33,11 +31,6 @@ const Component = (props: Props) => {
     if (props.user) {
       setUser(props.user);
     }
-    async function fetchData() {
-      const dataCaseOffices = await getCaseOffices();
-      setCaseOffices(dataCaseOffices);
-    }
-    fetchData();
   }, [props.user]);
 
   return (
@@ -185,16 +178,16 @@ const Component = (props: Props) => {
               input={<Input id="select-multiple-chip" />}
               value={user.case_office || ""}
               renderValue={() => {
-                return caseOffices
-                  ?.filter((caseOffice) => user.case_office === caseOffice.id)
-                  .map((caseOffice) => caseOffice.name)
+                return contextOffices
+                  ?.filter((caseOffice: ICaseOffice) => user.case_office === caseOffice.id)
+                  .map((caseOffice: ICaseOffice) => caseOffice.name)
                   .join(", ");
               }}
             >
               <MenuItem key={0} value={0}>
                 {i18n.t("No case office")}
               </MenuItem>
-              {caseOffices?.map(({ id, name }) => (
+              {contextOffices?.map(({ id, name }: any) => (
                 <MenuItem key={id} value={id}>
                   {name}
                 </MenuItem>
