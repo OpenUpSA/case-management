@@ -26,8 +26,9 @@ import i18n from "../i18n";
 import { UserInfo } from "../auth";
 import { useStyles } from "../utils";
 import { ICaseOffice } from "../types";
-import { getCaseOffices } from "../api";
+import { getCaseOffices, getCaseTypes } from "../api";
 import { CaseOfficesContext } from "../contexts/caseOfficesContext";
+import { CaseTypesContext } from "../contexts/caseTypesContext";
 
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -39,7 +40,9 @@ const Component = () => {
   useEffect(() => {
     async function fetchData() {
       const dataCaseOffices = await getCaseOffices();
+      const dataCaseTypes = await getCaseTypes();
       setContextOffices(dataCaseOffices);
+      setContextCaseTypes(dataCaseTypes);
     }
     fetchData();
   });
@@ -48,6 +51,8 @@ const Component = () => {
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [contextOffices, setContextOffices] = useContext(CaseOfficesContext);
+  // eslint-disable-next-line
+  const [contextCaseTypes, setContextCaseTypes] = useContext(CaseTypesContext);
 
   const userInfo = UserInfo.getInstance();
   const userId = Number(userInfo.getUserId());

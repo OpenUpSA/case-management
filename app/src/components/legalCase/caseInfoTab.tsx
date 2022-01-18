@@ -28,6 +28,7 @@ import { useStyles } from "../../utils";
 import SnackbarAlert from "../../components/general/snackBar";
 import { format } from "date-fns";
 import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
+import { CaseTypesContext } from "../../contexts/caseTypesContext";
 import {
   ILegalCase,
   ICaseType,
@@ -39,7 +40,6 @@ import {
 } from "../../types";
 import {
   updateLegalCase,
-  getCaseTypes,
   getClient,
   getUser,
   getLogs,
@@ -68,8 +68,9 @@ type Props = {
 
 export default function CaseInfoTab(props: Props) {
   const classes = useStyles();
+  const [contextOffices] = useContext(CaseOfficesContext);
+  const [contextCaseTypes] = useContext(CaseTypesContext);
   const [caseSummary, setCaseSummary] = React.useState<string | undefined>("");
-  const [caseTypes, setCaseTypes] = React.useState<ICaseType[]>();
   const [caseWorker, setCaseWorker] = React.useState<IUser | undefined>();
   const [client, setClient] = React.useState<IClient>();
   const [selectCaseType, setSelectCaseType] = React.useState<
@@ -92,7 +93,6 @@ export default function CaseInfoTab(props: Props) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [updateLoader, setUpdateLoader] = React.useState<boolean>(false);
   const [summaryLoader, setSummaryLoader] = React.useState<boolean>(false);
-  const [contextOffices] = useContext(CaseOfficesContext);
 
   React.useEffect(() => {
     setIsLoading(true);
@@ -103,7 +103,6 @@ export default function CaseInfoTab(props: Props) {
 
     async function fetchData() {
       try {
-        const dataCaseTypes = await getCaseTypes();
         const clientInfo = await getClient(props.legalCase?.client);
         const userNumber = Number(props.legalCase?.users?.join());
         const userInfo = await getUser(userNumber);
@@ -111,7 +110,6 @@ export default function CaseInfoTab(props: Props) {
 
         setClient(clientInfo);
         setCaseWorker(userInfo);
-        setCaseTypes(dataCaseTypes);
         setCaseHistory(historyData);
         setIsLoading(false);
       } catch (e: any) {
@@ -533,15 +531,16 @@ export default function CaseInfoTab(props: Props) {
               caseTypePatch([event.target.value as any]);
             }}
             renderValue={() => {
-              return caseTypes
+              return contextCaseTypes
                 ?.filter(
-                  (caseType) => selectCaseType!.indexOf(caseType.id) > -1
+                  (caseType: ICaseType) =>
+                    selectCaseType!.indexOf(caseType.id) > -1
                 )
-                .map((caseType) => caseType.title)
+                .map((caseType: ICaseType) => caseType.title)
                 .join(", ");
             }}
           >
-            {caseTypes?.map(({ id, title }) => (
+            {contextCaseTypes?.map(({ id, title }: any) => (
               <MenuItem key={id} value={id}>
                 {title}
               </MenuItem>
@@ -605,7 +604,8 @@ export default function CaseInfoTab(props: Props) {
             renderValue={() => {
               return contextOffices
                 ?.filter(
-                  (caseOffice: ICaseOffice) => selectCaseOffice!.indexOf(caseOffice.id) > -1
+                  (caseOffice: ICaseOffice) =>
+                    selectCaseOffice!.indexOf(caseOffice.id) > -1
                 )
                 .map((caseOffice: ICaseOffice) => caseOffice.name)
                 .join(", ");
