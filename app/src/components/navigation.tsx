@@ -45,7 +45,7 @@ const Component = () => {
       setContextCaseTypes(dataCaseTypes);
     }
     fetchData();
-  });
+  },[]);
 
   const history = useHistory();
   const classes = useStyles();

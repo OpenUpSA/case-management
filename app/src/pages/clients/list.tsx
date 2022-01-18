@@ -167,7 +167,7 @@ const Page = () => {
             style={{ flexGrow: 1, display: "flex", alignItems: "center" }}
           >
             <Typography variant="h6">
-              <strong>
+              <strong style={{ textTransform: "capitalize"}}>
                 {!checked
                   ? filteredCaseOffice &&
                     `${filteredCaseOffice}'s ${i18n.t("client list")}`
