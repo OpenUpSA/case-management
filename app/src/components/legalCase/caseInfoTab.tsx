@@ -25,6 +25,8 @@ import { BlackTooltip } from "../general/tooltip";
 import { useStyles } from "../../utils";
 import SnackbarAlert from "../../components/general/snackBar";
 import CircularProgress from "@mui/material/CircularProgress";
+import FormHelperText from '@mui/material/FormHelperText';
+
 
 import {
   ILegalCase,
@@ -548,6 +550,11 @@ export default function CaseInfoTab(props: Props) {
               </MenuItem>
             ))}
           </Select>
+
+          <FormHelperText>
+            If you chose <em>Other</em>, please use the blue feedback tab to suggest a new case type.
+          </FormHelperText>
+
 
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
             Client name:
