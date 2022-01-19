@@ -31,7 +31,7 @@ def trigger_error(request):
 router = DefaultRouter()
 router.register(r'api/v1/meetings', MeetingViewSet)
 router.register(r'api/v1/cases', LegalCaseViewSet)
-router.register(r'api/v1/clients', ClientViewSet)
+router.register(r'api/v1/clients', ClientViewSet, basename='Client')
 router.register(r'api/v1/case-offices', CaseOfficeViewSet)
 router.register(r'api/v1/case-types', CaseTypeViewSet)
 router.register(r'api/v1/users', UserViewSet)
