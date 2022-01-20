@@ -26,10 +26,16 @@ import Navigation from "./components/navigation";
 import LogsPage from "./pages/logs/list";
 
 import ReactGA from "react-ga4";
+import { hotjar } from 'react-hotjar';
 import { UserInfo } from "./auth";
 
 if (process.env.REACT_APP_GA_ID) {
   ReactGA.initialize(process.env.REACT_APP_GA_ID!);
+}
+
+if (process.env.REACT_APP_HOTJAR_ID && process.env.REACT_APP_HOTJAR_SV) {
+  console.log(process.env.REACT_APP_HOTJAR_ID + ' ' + process.env.REACT_APP_HOTJAR_SV);
+  hotjar.initialize(Number(process.env.REACT_APP_HOTJAR_ID), Number(process.env.REACT_APP_HOTJAR_SV));
 }
 
 function Routes() {

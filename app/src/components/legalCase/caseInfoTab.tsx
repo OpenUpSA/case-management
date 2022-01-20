@@ -552,7 +552,7 @@ export default function CaseInfoTab(props: Props) {
           </Select>
 
           <FormHelperText>
-            If you chose <em>Other</em>, please use the blue feedback tab to suggest a new case type.
+            If you chose <em>Other</em>, please use the feedback tab to suggest a new case type.
           </FormHelperText>
 
 
