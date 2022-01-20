@@ -31,7 +31,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import Layout from "../../components/layout";
 import Toggle from "../../components/general/toggle";
-import { getClients, getClientsForCaseOffice } from "../../api";
+import { getClientsForCaseOffice, getClientsForUser } from "../../api";
 import { IClient, LocationState, ICaseOffice } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
@@ -45,8 +45,7 @@ const Page = () => {
   const location = useLocation<LocationState>();
 
   const [caseOfficeClients, setCaseOfficeClients] = React.useState<IClient[]>();
-  const [caseWorkersClients, setCaseWorkersClients] =
-    React.useState<IClient[]>();
+  const [userClients, setUserClients] = React.useState<IClient[]>();
   const [filteredClients, setFilteredClients] = React.useState<IClient[]>();
   const [filterClientsValue, setFilterClientsValue] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -55,7 +54,7 @@ const Page = () => {
     message: location.state?.message!,
     severity: location.state?.severity!,
   });
-  const [usersCaseOfficeId, setUsersCaseOfficeId] = React.useState<number>();
+  const [usersCaseOfficeId, setUsersCaseOfficeId] = React.useState<number>(0);
   const [checked, setChecked] = React.useState<boolean>(false);
   const [contextOffices] = useContext(CaseOfficesContext);
 
@@ -63,21 +62,16 @@ const Page = () => {
     async function fetchData() {
       try {
         setIsLoading(true);
-        const data = await getClients();
-        const filteredDataForCaseWorker = data.filter(
-          (client: any) =>
-            client.updates[client.updates.length - 1].user ===
-            Number(UserInfo.getInstance().getUserId())
-        );
-        setCaseWorkersClients(filteredDataForCaseWorker);
-
         const userInfo = UserInfo.getInstance();
         const usersCaseOffice = Number(userInfo.getCaseOffice());
         setUsersCaseOfficeId(usersCaseOffice);
+        const id = Number(userInfo.getUserId());
 
-        const data2 = await getClientsForCaseOffice(usersCaseOffice);
+        const data = await getClientsForUser(id);
+        setUserClients(data);
+
+        const data2 = await getClientsForCaseOffice(usersCaseOfficeId);
         setCaseOfficeClients(data2);
-        setFilteredClients(data2);
         setIsLoading(false);
       } catch (e) {
         setIsLoading(false);
@@ -89,14 +83,14 @@ const Page = () => {
       }
     }
     fetchData();
-  }, []);
+  }, [usersCaseOfficeId]);
 
   useEffect(() => {
     !checked
       ? setFilteredClients(caseOfficeClients)
-      : setFilteredClients(caseWorkersClients);
+      : setFilteredClients(userClients);
     setFilterClientsValue("");
-  }, [checked, caseOfficeClients, caseWorkersClients]);
+  }, [checked, caseOfficeClients, userClients]);
 
   // set location.state?.open! to false on page load
   useEffect(() => {
@@ -167,11 +161,12 @@ const Page = () => {
             style={{ flexGrow: 1, display: "flex", alignItems: "center" }}
           >
             <Typography variant="h6">
-              <strong style={{ textTransform: "capitalize"}}>
+              <strong style={{ textTransform: "capitalize" }}>
                 {!checked
                   ? filteredCaseOffice &&
                     `${filteredCaseOffice}'s ${i18n.t("client list")}`
-                  : `${UserInfo.getInstance().getName()}'s ${i18n.t(
+                  : UserInfo.getInstance().getName() &&
+                    `${UserInfo.getInstance().getName()}'s ${i18n.t(
                       "client list"
                     )}`}
               </strong>
@@ -240,7 +235,7 @@ const Page = () => {
               onKeyUp={() =>
                 !checked
                   ? filterClients(caseOfficeClients)
-                  : filterClients(caseWorkersClients)
+                  : filterClients(userClients)
               }
             />
           </Grid>

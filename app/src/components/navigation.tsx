@@ -45,7 +45,8 @@ const Component = () => {
       setContextCaseTypes(dataCaseTypes);
     }
     fetchData();
-  },[]);
+    // eslint-disable-next-line
+  }, []);
 
   const history = useHistory();
   const classes = useStyles();
