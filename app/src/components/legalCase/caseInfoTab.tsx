@@ -155,28 +155,17 @@ export default function CaseInfoTab(props: Props) {
     setManualUpdateValue("");
   };
 
-  const addUpdateHandler = async (
-    parent_id: number | undefined,
-    parent_type: string,
-    target_id: number | undefined,
-    target_type: string,
-    action: string,
-    user: number,
-    note: string
-  ) => {
+  const addUpdateHandler = async () => {
     try {
       setUpdateLoader(true);
-      const caseHistory: ILog = {
-        id: 0,
-        created_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
-        updated_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
-        parent_id: parent_id,
-        parent_type: parent_type,
-        target_id: target_id,
-        target_type: target_type,
-        action: action,
-        user: user,
-        note: note,
+      const caseHistory: any = {
+        parent_id: props.legalCase?.id,
+        target_type: "LegalCase",
+        target_id: props.legalCase?.id,
+        parent_type: "LegalCase",
+        action: "Update",
+        user: Number(props.legalCase?.users?.join()),
+        note: manualUpdateValue,
       };
       const { id } = await createLog(caseHistory);
       setUpdateLoader(false);
@@ -406,17 +395,7 @@ export default function CaseInfoTab(props: Props) {
                     color="primary"
                     variant="contained"
                     disabled={manualUpdateValue.length === 0 || updateLoader}
-                    onClick={(e) =>
-                      addUpdateHandler(
-                        props.legalCase?.id,
-                        "LegalCase",
-                        props.legalCase?.id,
-                        "LegalCase",
-                        "Update",
-                        Number(props.legalCase?.users?.join()),
-                        manualUpdateValue
-                      )
-                    }
+                    onClick={(e) => addUpdateHandler()}
                   >
                     Submit
                     {updateLoader && (
@@ -454,11 +433,18 @@ export default function CaseInfoTab(props: Props) {
                         />
                         <ListItemText
                           primary={
+                              item?.changes?.length > 0 ? (
                             <Typography variant="caption">
-                              {item.note.length > 12 && width <= 500
-                                ? item.note.slice(0, 10) + "..."
-                                : item.note}
+                              {item.changes && item.changes?.[0].field.length > 12 &&
+                              width <= 500
+                                ? item?.changes?.[0].field.slice(0, 10) + "..."
+                                : item?.changes?.[0].field}
                             </Typography>
+                            ) : (
+                            <Typography variant="caption">
+                                {item.action}
+                            </Typography>
+                            )
                           }
                           className={classes.caseHistoryText}
                         />
