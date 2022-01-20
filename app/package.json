@@ -44,7 +44,7 @@
     "build": "react-scripts build; echo '/* /index.html 200' > build/_redirects",
     "test": "yarn cypress run",
     "eject": "react-scripts eject",
-    "deploy": "netlify deploy --prod -d=./build",
+    "deploy": "netlify deploy --prod -d ./build",
     "serve": "serve -s build"
   },
   "eslintConfig": {
