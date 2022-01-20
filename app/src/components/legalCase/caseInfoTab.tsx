@@ -29,6 +29,9 @@ import SnackbarAlert from "../../components/general/snackBar";
 import { format } from "date-fns";
 import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
+import FormHelperText from '@mui/material/FormHelperText';
+
+
 import {
   ILegalCase,
   ICaseType,
@@ -546,6 +549,11 @@ export default function CaseInfoTab(props: Props) {
               </MenuItem>
             ))}
           </Select>
+
+          <FormHelperText>
+            If you chose <em>Other</em>, please use the feedback tab to suggest a new case type.
+          </FormHelperText>
+
 
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
             Client name:
