@@ -29,8 +29,7 @@ import SnackbarAlert from "../../components/general/snackBar";
 import { format } from "date-fns";
 import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
-import FormHelperText from '@mui/material/FormHelperText';
-
+import FormHelperText from "@mui/material/FormHelperText";
 
 import {
   ILegalCase,
@@ -551,9 +550,9 @@ export default function CaseInfoTab(props: Props) {
           </Select>
 
           <FormHelperText>
-            If you chose <em>Other</em>, please use the feedback tab to suggest a new case type.
+            If you chose <em>Other</em>, please use the feedback tab to suggest
+            a new case type.
           </FormHelperText>
-
 
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
             Client name:
@@ -598,37 +597,28 @@ export default function CaseInfoTab(props: Props) {
             Case office:
           </InputLabel>
 
-          <Select
-            id="case_offices_select"
-            className={classes.caseSelect}
-            disableUnderline
-            onChange={(event: SelectChangeEvent<number[]>) => {
-              setSelectCaseOffice([event.target.value as any]);
-              caseOfficePatch([event.target.value as any]);
+          <TextField
+            variant="standard"
+            value={contextOffices
+              ?.filter(
+                (caseOffice: ICaseOffice) =>
+                  selectCaseOffice!.indexOf(caseOffice.id) > -1
+              )
+              .map((caseOffice: ICaseOffice) => caseOffice.name)
+              .join(", ")}
+            fullWidth
+            className={classes.smallTextField}
+            InputProps={{
+              readOnly: true,
+              disableUnderline: true,
+              style: { fontSize: 13 },
+              endAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+                </InputAdornment>
+              ),
             }}
-            input={<Input />}
-            value={selectCaseOffice}
-            defaultValue={[0]}
-            renderValue={() => {
-              return contextOffices
-                ?.filter(
-                  (caseOffice: ICaseOffice) =>
-                    selectCaseOffice!.indexOf(caseOffice.id) > -1
-                )
-                .map((caseOffice: ICaseOffice) => caseOffice.name)
-                .join(", ");
-            }}
-          >
-            {contextOffices?.map(({ id, name }: any) => (
-              <MenuItem
-                className={classes.caseSelectMenuItem}
-                key={id}
-                value={id}
-              >
-                {name}
-              </MenuItem>
-            ))}
-          </Select>
+          />
 
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
             Date created:
