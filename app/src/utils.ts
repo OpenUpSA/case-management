@@ -345,7 +345,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "8px!important" as any,
       position: "relative",
       "&.Mui-disabled": {
-        backgroundColor:  "#dadada!important" as any,
+        backgroundColor: "#dadada!important" as any,
       },
     },
     plainLabel: {
@@ -505,8 +505,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       transition: "all 0.3s ease-in-out",
     },
     meetingFileButton: {
-        width: "100%",
-        marginTop: "23px"
-    }
+      width: "100%",
+    },
   })
 );

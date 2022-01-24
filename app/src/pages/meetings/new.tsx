@@ -24,7 +24,7 @@ import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import SnackbarAlert from "../../components/general/snackBar";
-import { getLegalCaseFiles, createLegalCaseFile } from "../../api";
+import { createLegalCaseFile } from "../../api";
 
 type RouteParams = { id: string };
 
@@ -50,6 +50,7 @@ const Page = () => {
   const [notesError, setNotesError] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [progress, setProgress] = React.useState<number>(0);
   const [meetingFileData, setMeetingFileData] = React.useState<any>({
     file: null,
     description: "",
@@ -65,13 +66,12 @@ const Page = () => {
         (e: any) => {
           const { loaded, total } = e;
           const percent = Math.floor((loaded * 100) / total);
-          // setProgress(percent);
-          // if (percent === 100) {
-          //   setTimeout(() => {
-          //     setProgress(0);
-
-          //   }, 1000);
-          // }
+          setProgress(percent);
+          if (percent === 100) {
+            setTimeout(() => {
+              setProgress(0);
+            }, 1000);
+          }
         }
       )
         .then((res: any) => {
@@ -287,6 +287,7 @@ const Page = () => {
             meetingTypeError={meetingTypeError}
             showUploadButton={true}
             onFileChange={onFileChange}
+            progress={progress}
           />
         </form>
       </Container>

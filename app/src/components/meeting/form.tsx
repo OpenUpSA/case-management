@@ -14,8 +14,9 @@ import TextField from "@mui/material/TextField";
 import UploadIcon from "@mui/icons-material/Upload";
 
 import i18n from "../../i18n";
-import { IMeeting, LocationState } from "../../types";
+import { IMeeting } from "../../types";
 import { useStyles } from "../../utils";
+import ProgressBar from "../progressBar/progressBar";
 
 type Props = {
   meeting?: IMeeting;
@@ -27,6 +28,7 @@ type Props = {
   meetingTypeError?: boolean;
   showUploadButton: boolean;
   onFileChange?: (event: any, fileDescription: string) => Promise<void>;
+  progress?: number;
 };
 
 const Component = (props: Props) => {
@@ -34,12 +36,7 @@ const Component = (props: Props) => {
   const uploadFileRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [fileDescription, setFileDescription] = useState("");
-  const [progress, setProgress] = useState<number>(0);
-  const [showSnackbar, setShowSnackbar] = useState<LocationState>({
-    open: false,
-    message: "",
-    severity: undefined,
-  });
+  const [fileName, setFileName] = useState<string>("");
   const [meeting, setMeeting] = useState<IMeeting>({
     location: "",
     meeting_date: new Date().toISOString().slice(0, 16),
@@ -74,11 +71,7 @@ const Component = (props: Props) => {
         spacing={2}
         alignItems="center"
       >
-        <Grid
-          item
-          xs={props.showUploadButton ? 9 : 12}
-          md={props.showUploadButton ? 9 : 12}
-        >
+        <Grid item xs={12} md={props.showUploadButton ? 9 : 12}>
           <FormControl fullWidth size="small">
             <InputLabel
               className={classes.inputLabel}
@@ -105,17 +98,33 @@ const Component = (props: Props) => {
           </FormControl>
         </Grid>
         {props.showUploadButton && (
-          <Grid item className={classes.zeroWidthOnMobile} xs={3} md={3}>
+          <Grid item className={classes.zeroWidthOnMobile} xs={12} md={3}>
             <input
               ref={uploadFileRef}
               type="file"
-              onChange={(event) =>
-                props.onFileChange
-                  ? props.onFileChange(event, fileDescription)
-                  : null
-              }
+              onChange={(event) => {
+                if (props.onFileChange) {
+                  props.onFileChange(event, fileDescription);
+                }
+
+                if (event.target.files) {
+                  setFileName(
+                    fileDescription.length > 0
+                      ? fileDescription
+                      : event.target.files[0].name
+                  );
+                }
+              }}
               hidden
             />
+
+            <InputLabel
+              className={classes.inputLabel}
+              htmlFor="name"
+              shrink={true}
+            >
+              {i18n.t("File")}:
+            </InputLabel>
             <Button
               color="primary"
               variant="contained"
@@ -126,6 +135,17 @@ const Component = (props: Props) => {
             >
               {i18n.t("Upload file")}
             </Button>
+            {props.progress
+              ? props.progress > 0 && <ProgressBar progress={props.progress} />
+              : null}
+            {fileName.length > 0 && (
+              <FormHelperText id="file-selected">
+                File selected:{" "}
+                {fileName.length > 28
+                  ? fileName.slice(0, 26) + "..."
+                  : fileName}
+              </FormHelperText>
+            )}
             <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
               <DialogContent>
                 <TextField
