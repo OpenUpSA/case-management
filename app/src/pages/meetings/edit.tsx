@@ -230,6 +230,7 @@ const Page = () => {
             locationError={locationError}
             notesError={notesError}
             meetingTypeError={meetingTypeError}
+            showUploadButton={true}
           />
         </form>
       </Container>

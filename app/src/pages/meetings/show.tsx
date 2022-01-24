@@ -193,7 +193,7 @@ const Page = () => {
             </Grid>
           </Grid>
 
-          <MeetingForm meeting={meeting} />
+          <MeetingForm meeting={meeting} showUploadButton={false}/>
         </form>
         {isLoading && (
           <Grid container justify="center">

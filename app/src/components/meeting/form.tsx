@@ -1,13 +1,20 @@
+import { useEffect, useState, useRef } from "react";
 import {
   FormControl,
   Grid,
   Input,
   InputLabel,
   FormHelperText,
+  Button,
 } from "@material-ui/core";
-import { useEffect, useState } from "react";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import TextField from "@mui/material/TextField";
+import UploadIcon from "@mui/icons-material/Upload";
+
 import i18n from "../../i18n";
-import { IMeeting } from "../../types";
+import { IMeeting, LocationState } from "../../types";
 import { useStyles } from "../../utils";
 
 type Props = {
@@ -18,10 +25,21 @@ type Props = {
   locationError?: boolean;
   notesError?: boolean;
   meetingTypeError?: boolean;
+  showUploadButton: boolean;
+  onFileChange?: (event: any, fileDescription: string) => Promise<void>;
 };
 
 const Component = (props: Props) => {
   const classes = useStyles();
+  const uploadFileRef = useRef<HTMLInputElement>(null);
+  const [open, setOpen] = useState(false);
+  const [fileDescription, setFileDescription] = useState("");
+  const [progress, setProgress] = useState<number>(0);
+  const [showSnackbar, setShowSnackbar] = useState<LocationState>({
+    open: false,
+    message: "",
+    severity: undefined,
+  });
   const [meeting, setMeeting] = useState<IMeeting>({
     location: "",
     meeting_date: new Date().toISOString().slice(0, 16),
@@ -37,6 +55,16 @@ const Component = (props: Props) => {
     }
   }, [props.meeting]);
 
+  const showOpenFileDialog = () => {
+    if (!uploadFileRef.current) throw Error("uploadFileRef is not assigned");
+    uploadFileRef.current.click();
+  };
+
+  const dialogClose = () => {
+    setOpen(false);
+    setFileDescription("");
+  };
+
   return (
     <div>
       <Grid
@@ -46,7 +74,11 @@ const Component = (props: Props) => {
         spacing={2}
         alignItems="center"
       >
-        <Grid item xs={12} md={12}>
+        <Grid
+          item
+          xs={props.showUploadButton ? 9 : 12}
+          md={props.showUploadButton ? 9 : 12}
+        >
           <FormControl fullWidth size="small">
             <InputLabel
               className={classes.inputLabel}
@@ -72,6 +104,61 @@ const Component = (props: Props) => {
             />
           </FormControl>
         </Grid>
+        {props.showUploadButton && (
+          <Grid item className={classes.zeroWidthOnMobile} xs={3} md={3}>
+            <input
+              ref={uploadFileRef}
+              type="file"
+              onChange={(event) =>
+                props.onFileChange
+                  ? props.onFileChange(event, fileDescription)
+                  : null
+              }
+              hidden
+            />
+            <Button
+              color="primary"
+              variant="contained"
+              className={classes.meetingFileButton}
+              startIcon={<UploadIcon />}
+              style={{ textTransform: "none" }}
+              onClick={() => setOpen(true)}
+            >
+              {i18n.t("Upload file")}
+            </Button>
+            <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
+              <DialogContent>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="File description"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                  value={fileDescription}
+                  onChange={(e: React.ChangeEvent<{ value: any }>) => {
+                    setFileDescription(e.target.value);
+                  }}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={dialogClose}>Cancel</Button>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  startIcon={<UploadIcon />}
+                  onClick={() => {
+                    showOpenFileDialog();
+                    setOpen(false);
+                  }}
+                >
+                  {i18n.t("Choose file")}
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Grid>
+        )}
         <Grid item xs={12} md={4}>
           <FormControl fullWidth size="small">
             <InputLabel

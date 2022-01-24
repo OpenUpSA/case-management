@@ -504,5 +504,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       position: "relative",
       transition: "all 0.3s ease-in-out",
     },
+    meetingFileButton: {
+        width: "100%",
+        marginTop: "23px"
+    }
   })
 );
