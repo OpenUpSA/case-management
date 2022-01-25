@@ -507,5 +507,23 @@ export const useStyles = makeStyles((theme: Theme) =>
     meetingFileButton: {
       width: "100%",
     },
+    meetingCaseFile: {
+      backgroundColor: "#f2f2f2",
+      display: "flex",
+      height: "42px",
+      marginTop: "4px",
+      marginLeft: "10px",
+      marginRight: "10px",
+      alignItems: "center",
+      borderRadius: "4px",
+      cursor: "pointer",
+      "& p": {
+        fontSize: "13px",
+        fontWeight: 600,
+      },
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
+      },
+    },
   })
 );

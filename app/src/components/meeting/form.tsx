@@ -6,12 +6,14 @@ import {
   InputLabel,
   FormHelperText,
   Button,
+  Typography,
 } from "@material-ui/core";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 import UploadIcon from "@mui/icons-material/Upload";
+import DescriptionIcon from "@mui/icons-material/Description";
 
 import i18n from "../../i18n";
 import { IMeeting } from "../../types";
@@ -26,9 +28,10 @@ type Props = {
   locationError?: boolean;
   notesError?: boolean;
   meetingTypeError?: boolean;
-  showUploadButton: boolean;
+  showUploadButton?: boolean;
   onFileChange?: (event: any, fileDescription: string) => Promise<void>;
   progress?: number;
+  showFile?: boolean;
 };
 
 const Component = (props: Props) => {
@@ -44,7 +47,9 @@ const Component = (props: Props) => {
     legal_case: 0,
     notes: "",
     name: "",
+    legal_case_file: null
   });
+  console.log(meeting.legal_case_file)
 
   useEffect(() => {
     if (props.meeting) {
@@ -71,7 +76,7 @@ const Component = (props: Props) => {
         spacing={2}
         alignItems="center"
       >
-        <Grid item xs={12} md={props.showUploadButton ? 9 : 12}>
+        <Grid item xs={12} md={9}>
           <FormControl fullWidth size="small">
             <InputLabel
               className={classes.inputLabel}
@@ -179,6 +184,28 @@ const Component = (props: Props) => {
             </Dialog>
           </Grid>
         )}
+
+        {props.showFile && (
+          <Grid xs={12} md={3} >
+            <InputLabel
+              className={classes.inputLabel}
+              htmlFor="name"
+              shrink={true}
+              style={{paddingLeft:"12px"}}
+            >
+              {i18n.t("File")}:
+            </InputLabel>
+            <Grid className={classes.meetingCaseFile}>
+              <DescriptionIcon style={{ margin: "0px 15px 0px 10px" }} />
+              <Typography>
+                <a href={"https://google.com"} target="_blank" rel="noreferrer">
+                  {"xxdescription"}
+                </a>
+              </Typography>
+            </Grid>
+          </Grid>
+        )}
+
         <Grid item xs={12} md={4}>
           <FormControl fullWidth size="small">
             <InputLabel
