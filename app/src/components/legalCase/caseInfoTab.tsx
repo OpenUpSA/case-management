@@ -266,36 +266,6 @@ export default function CaseInfoTab(props: Props) {
     }
   };
 
-  const caseOfficePatch = async (arg: any) => {
-    try {
-      setIsLoading(true);
-      const updatedSummary: ILegalCase = {
-        id: props.legalCase.id,
-        summary: props.legalCase.summary,
-        case_number: props.legalCase.case_number,
-        state: props.legalCase.state,
-        client: props.legalCase.client,
-        case_types: props.legalCase.case_types,
-        case_offices: arg,
-      };
-      const { id } = await updateLegalCase(updatedSummary);
-      setIsLoading(false);
-      id &&
-        setShowSnackbar({
-          open: true,
-          message: "Case edit successful",
-          severity: "success",
-        });
-    } catch (e) {
-      setIsLoading(false);
-      setShowSnackbar({
-        open: true,
-        message: "Case edit failed",
-        severity: "error",
-      });
-    }
-  };
-
   return (
     <>
       <Grid container spacing={3} className={classes.caseInfoContainer}>
@@ -599,35 +569,28 @@ export default function CaseInfoTab(props: Props) {
             Case office:
           </InputLabel>
 
-          <Select
-            id="case_offices_select"
-            className={classes.caseSelect}
-            disableUnderline
-            onChange={(event: SelectChangeEvent<number[]>) => {
-              setSelectCaseOffice([event.target.value as any]);
-              caseOfficePatch([event.target.value as any]);
+          <TextField
+            variant="standard"
+            value={caseOffices
+              ?.filter(
+                (caseOffice: ICaseOffice) =>
+                  selectCaseOffice!.indexOf(caseOffice.id) > -1
+              )
+              .map((caseOffice: ICaseOffice) => caseOffice.name)
+              .join(", ")}
+            fullWidth
+            className={classes.smallTextField}
+            InputProps={{
+              readOnly: true,
+              disableUnderline: true,
+              style: { fontSize: 13 },
+              endAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+                </InputAdornment>
+              ),
             }}
-            input={<Input />}
-            value={selectCaseOffice}
-            renderValue={() => {
-              return caseOffices
-                ?.filter(
-                  (caseOffice) => selectCaseOffice!.indexOf(caseOffice.id) > -1
-                )
-                .map((caseOffice) => caseOffice.name)
-                .join(", ");
-            }}
-          >
-            {caseOffices?.map(({ id, name }) => (
-              <MenuItem
-                className={classes.caseSelectMenuItem}
-                key={id}
-                value={id}
-              >
-                {name}
-              </MenuItem>
-            ))}
-          </Select>
+          />
 
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
             Date created:
