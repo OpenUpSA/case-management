@@ -34,7 +34,6 @@ if (process.env.REACT_APP_GA_ID) {
 }
 
 if (process.env.REACT_APP_HOTJAR_ID && process.env.REACT_APP_HOTJAR_SV) {
-  console.log(process.env.REACT_APP_HOTJAR_ID + ' ' + process.env.REACT_APP_HOTJAR_SV);
   hotjar.initialize(Number(process.env.REACT_APP_HOTJAR_ID), Number(process.env.REACT_APP_HOTJAR_SV));
 }
 
