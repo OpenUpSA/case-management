@@ -288,6 +288,7 @@ const Page = () => {
             showUploadButton={true}
             onFileChange={onFileChange}
             progress={progress}
+            buttonText={"Upload file"}
           />
         </form>
       </Container>

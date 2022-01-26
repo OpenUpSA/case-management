@@ -4,8 +4,20 @@ import Typography from "@material-ui/core/Typography";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
-import { getClient, getLegalCase, getMeeting, deleteMeeting } from "../../api";
-import { ILegalCase, IClient, IMeeting, LocationState } from "../../types";
+import {
+  getClient,
+  getLegalCase,
+  getMeeting,
+  deleteMeeting,
+  getLegalCaseFile,
+} from "../../api";
+import {
+  ILegalCase,
+  IClient,
+  IMeeting,
+  LocationState,
+  ILegalCaseFile,
+} from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import {
   Breadcrumbs,
@@ -37,6 +49,7 @@ const Page = () => {
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meeting, setMeeting] = React.useState<IMeeting>();
+  const [meetingFile, setMeetingFile] = React.useState<ILegalCaseFile>();
 
   const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
     open: location.state?.open!,
@@ -80,6 +93,12 @@ const Page = () => {
         const meetingId = parseInt(params.id);
         const dataMeeting = await getMeeting(meetingId);
         const dataLegalCase = await getLegalCase(dataMeeting.legal_case);
+        if (dataMeeting.legal_case_file) {
+          const dataMeetingFile = await getLegalCaseFile(
+            dataMeeting.legal_case_file
+          );
+          setMeetingFile(dataMeetingFile);
+        }
         setMeeting(dataMeeting);
         setLegalCase(dataLegalCase);
         setClient(await getClient(dataLegalCase.client));
@@ -193,7 +212,11 @@ const Page = () => {
             </Grid>
           </Grid>
 
-          <MeetingForm meeting={meeting} showFile={true}/>
+          <MeetingForm
+            meeting={meeting}
+            showFile={true}
+            meetingFile={meetingFile}
+          />
         </form>
         {isLoading && (
           <Grid container justify="center">

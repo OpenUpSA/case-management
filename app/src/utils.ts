@@ -517,6 +517,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       borderRadius: "4px",
       cursor: "pointer",
+      [theme.breakpoints.up("md")]: {
+        justifyContent: "center",
+      },
       "& p": {
         fontSize: "13px",
         fontWeight: 600,

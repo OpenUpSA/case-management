@@ -16,7 +16,7 @@ import UploadIcon from "@mui/icons-material/Upload";
 import DescriptionIcon from "@mui/icons-material/Description";
 
 import i18n from "../../i18n";
-import { IMeeting } from "../../types";
+import { ILegalCaseFile, IMeeting } from "../../types";
 import { useStyles } from "../../utils";
 import ProgressBar from "../progressBar/progressBar";
 
@@ -32,6 +32,8 @@ type Props = {
   onFileChange?: (event: any, fileDescription: string) => Promise<void>;
   progress?: number;
   showFile?: boolean;
+  meetingFile?: ILegalCaseFile | null;
+  buttonText?: string;
 };
 
 const Component = (props: Props) => {
@@ -39,7 +41,7 @@ const Component = (props: Props) => {
   const uploadFileRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [fileDescription, setFileDescription] = useState("");
-  const [fileName, setFileName] = useState<string>("");
+  const [stagedFileName, setStagedFileName] = useState<string>("");
   const [meeting, setMeeting] = useState<IMeeting>({
     location: "",
     meeting_date: new Date().toISOString().slice(0, 16),
@@ -47,9 +49,8 @@ const Component = (props: Props) => {
     legal_case: 0,
     notes: "",
     name: "",
-    legal_case_file: null
+    legal_case_file: null,
   });
-  console.log(meeting.legal_case_file)
 
   useEffect(() => {
     if (props.meeting) {
@@ -113,7 +114,7 @@ const Component = (props: Props) => {
                 }
 
                 if (event.target.files) {
-                  setFileName(
+                  setStagedFileName(
                     fileDescription.length > 0
                       ? fileDescription
                       : event.target.files[0].name
@@ -138,17 +139,25 @@ const Component = (props: Props) => {
               style={{ textTransform: "none" }}
               onClick={() => setOpen(true)}
             >
-              {i18n.t("Upload file")}
+              {i18n.t(props.buttonText || "")}
             </Button>
             {props.progress
               ? props.progress > 0 && <ProgressBar progress={props.progress} />
               : null}
-            {fileName.length > 0 && (
+            {stagedFileName.length > 0 && (
               <FormHelperText id="file-selected">
                 File selected:{" "}
-                {fileName.length > 28
-                  ? fileName.slice(0, 26) + "..."
-                  : fileName}
+                {stagedFileName.length > 15
+                  ? stagedFileName.slice(0, 13) + "..."
+                  : stagedFileName}
+              </FormHelperText>
+            )}
+            {props.meetingFile?.description && stagedFileName.length === 0 && (
+              <FormHelperText id="file-description">
+                Current file:{" "}
+                {props.meetingFile?.description.length > 15
+                  ? props.meetingFile?.description.slice(0, 13) + "..."
+                  : props.meetingFile?.description}
               </FormHelperText>
             )}
             <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
@@ -186,22 +195,32 @@ const Component = (props: Props) => {
         )}
 
         {props.showFile && (
-          <Grid xs={12} md={3} >
+          <Grid xs={12} md={3}>
             <InputLabel
               className={classes.inputLabel}
               htmlFor="name"
               shrink={true}
-              style={{paddingLeft:"12px"}}
+              style={{ paddingLeft: "12px" }}
             >
               {i18n.t("File")}:
             </InputLabel>
             <Grid className={classes.meetingCaseFile}>
-              <DescriptionIcon style={{ margin: "0px 15px 0px 10px" }} />
-              <Typography>
-                <a href={"https://google.com"} target="_blank" rel="noreferrer">
-                  {"xxdescription"}
-                </a>
-              </Typography>
+              {props.meetingFile ? (
+                <>
+                  <DescriptionIcon style={{ margin: "0px 15px 0px 10px" }} />
+                  <Typography>
+                    <a
+                      href={props.meetingFile.upload}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {props.meetingFile.description}
+                    </a>
+                  </Typography>
+                </>
+              ) : (
+                <Typography>{i18n.t("No file")}</Typography>
+              )}
             </Grid>
           </Grid>
         )}

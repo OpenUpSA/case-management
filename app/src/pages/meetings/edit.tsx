@@ -5,8 +5,21 @@ import MoreMenu from "../../components/moreMenu";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
-import { getClient, getLegalCase, getMeeting, updateMeeting } from "../../api";
-import { ILegalCase, IClient, IMeeting, LocationState } from "../../types";
+import {
+  getClient,
+  getLegalCase,
+  getLegalCaseFile,
+  createLegalCaseFile,
+  getMeeting,
+  updateMeeting,
+} from "../../api";
+import {
+  ILegalCase,
+  IClient,
+  IMeeting,
+  LocationState,
+  ILegalCaseFile,
+} from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import {
   Breadcrumbs,
@@ -37,6 +50,7 @@ const Page = () => {
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meeting, setMeeting] = React.useState<IMeeting>();
+  const [meetingFile, setMeetingFile] = React.useState<ILegalCaseFile>();
   const [changed, setChanged] = React.useState<boolean>(false);
   const [locationError, setLocationError] = React.useState<boolean>(false);
   const [meetingTypeError, setMeetingTypeError] =
@@ -48,57 +62,23 @@ const Page = () => {
     severity: undefined,
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
-  const saveMeeting = async (saveMeeting: IMeeting  ) => {
-    try {
-      setIsLoading(true)
-      const { id, location, meeting_type, notes } = await updateMeeting({...saveMeeting, id: parseInt(params.id)});
-      setIsLoading(false)
-      if (typeof location === "object") {
-        setLocationError(true);
-        setMeetingTypeError(false);
-        setNotesError(false);
-        return false;
-      } else if (typeof meeting_type === "object") {
-        setMeetingTypeError(true);
-        setLocationError(false);
-        setNotesError(false);
-        return false;
-      } else if (typeof notes === "object") {
-        setNotesError(true);
-        setLocationError(false);
-        setMeetingTypeError(false);
-        return false;
-      } else {
-        setNotesError(false);
-        setLocationError(false);
-        setMeetingTypeError(false);
-      }
-
-      id &&
-        history.push({
-          pathname: `/meetings/${id}`,
-          state: {
-            open: true,
-            message: "Meeting edit successful",
-            severity: "success",
-          },
-        });
-    } catch (e) {
-      setIsLoading(false)
-      setShowSnackbar({
-        open: true,
-        message: "Meeting edit failed",
-        severity: "error",
-      });
-    }
-  };
+  const [meetingFileData, setMeetingFileData] = React.useState<any>({
+    file: null,
+    description: "",
+  });
+  const [progress, setProgress] = React.useState<number>(0);
 
   useEffect(() => {
     async function fetchData() {
       const meetingId = parseInt(params.id);
       const dataMeeting = await getMeeting(meetingId);
       const dataLegalCase = await getLegalCase(dataMeeting.legal_case);
+      if (dataMeeting.legal_case_file) {
+        const dataMeetingFile = await getLegalCaseFile(
+          dataMeeting.legal_case_file
+        );
+        setMeetingFile(dataMeetingFile);
+      }
       setMeeting(dataMeeting);
       setLegalCase(dataLegalCase);
       setClient(await getClient(dataLegalCase.client));
@@ -118,6 +98,116 @@ const Page = () => {
     };
     resetState();
   }, [showSnackbar.open]);
+
+  const saveMeeting = async (saveMeeting: IMeeting) => {
+    const upLoadFile = async () => {
+      setIsLoading(true);
+      createLegalCaseFile(
+        legalCase?.id,
+        meetingFileData.file,
+        meetingFileData.description,
+        (e: any) => {
+          const { loaded, total } = e;
+          const percent = Math.floor((loaded * 100) / total);
+          setProgress(percent);
+          if (percent === 100) {
+            setTimeout(() => {
+              setProgress(0);
+            }, 1000);
+          }
+        }
+      )
+        .then((res: any) => {
+          setIsLoading(false);
+          if (res.id) {
+            updateCaseMeeting(saveMeeting, res.id);
+          }
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          setShowSnackbar({
+            open: true,
+            message: "Meeting edit failed",
+            severity: "error",
+          });
+        });
+    };
+
+    const updateCaseMeeting = async (
+      saveMeeting: IMeeting,
+      meetingFileId: number | null | undefined
+    ) => {
+      setIsLoading(true);
+      await updateMeeting({
+        ...saveMeeting,
+        id: parseInt(params.id),
+        legal_case_file: meetingFileId,
+      })
+        .then((response: any) => {
+          setIsLoading(false);
+          if (typeof response.location === "object") {
+            setLocationError(true);
+            setMeetingTypeError(false);
+            setNotesError(false);
+            return false;
+          } else if (typeof response.meeting_type === "object") {
+            setMeetingTypeError(true);
+            setLocationError(false);
+            setNotesError(false);
+            return false;
+          } else if (typeof response.notes === "object") {
+            setNotesError(true);
+            setLocationError(false);
+            setMeetingTypeError(false);
+            return false;
+          } else {
+            setNotesError(false);
+            setLocationError(false);
+            setMeetingTypeError(false);
+          }
+
+          response.id &&
+            history.push({
+              pathname: `/meetings/${response.id}`,
+              state: {
+                open: true,
+                message: "Meeting edit successful",
+                severity: "success",
+              },
+            });
+        })
+        .catch(() => {
+          setIsLoading(false);
+          setShowSnackbar({
+            open: true,
+            message: "Meeting edit failed",
+            severity: "error",
+          });
+        });
+    };
+
+    try {
+      if (meetingFileData.file) {
+        await upLoadFile();
+      } else {
+        await updateCaseMeeting(saveMeeting, meetingFile?.id);
+      }
+    } catch (e) {
+      setIsLoading(false);
+      setShowSnackbar({
+        open: true,
+        message: "Meeting edit failed",
+        severity: "error",
+      });
+    }
+  };
+
+  const onFileChange = async (event: any, fileDescription: string) => {
+    setMeetingFileData({
+      file: event.target.files[0],
+      description: fileDescription,
+    });
+  };
 
   return (
     <Layout>
@@ -158,7 +248,7 @@ const Page = () => {
               meeting_date: target.meeting_date.value,
               meeting_type: target.meeting_type.value,
               name: target.name.value,
-            } );
+            });
           }}
         >
           <Grid
@@ -190,7 +280,11 @@ const Page = () => {
                 </MenuItem>
               </MoreMenu>
             </Grid>
-            <Grid style={{ position: "relative" }} item className={classes.zeroWidthOnMobile}>
+            <Grid
+              style={{ position: "relative" }}
+              item
+              className={classes.zeroWidthOnMobile}
+            >
               <Button
                 className={classes.canBeFab}
                 color="primary"
@@ -203,17 +297,17 @@ const Page = () => {
                 {i18n.t("Save meeting")}
               </Button>
               {isLoading && (
-              <CircularProgress
-                size={24}
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  marginTop: "-12px",
-                  marginLeft: "-12px",
-                }}
-              />
-            )}
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              )}
             </Grid>
           </Grid>
           <Prompt
@@ -224,6 +318,7 @@ const Page = () => {
           />
           <MeetingForm
             meeting={meeting}
+            meetingFile={meetingFile}
             readOnly={false}
             changed={changed}
             setChanged={setChanged}
@@ -231,6 +326,9 @@ const Page = () => {
             notesError={notesError}
             meetingTypeError={meetingTypeError}
             showUploadButton={true}
+            buttonText={meetingFile ? "Edit file" : "Upload file"}
+            onFileChange={onFileChange}
+            progress={progress}
           />
         </form>
       </Container>
