@@ -99,8 +99,15 @@ class LogChange(models.Model):
     log = models.ForeignKey(Log, related_name='changes', on_delete=models.CASCADE)
 
     field = models.CharField(max_length=255)
-    value = models.TextField()
+    value = models.TextField(null=True)
     action = models.CharField(max_length=10, choices=LogChangeTypes.choices)
+
+
+def _logChange(log_id, field, value, action):
+    log_change = LogChange(
+        log=log_id, field=field, value=value, action=action
+    )
+    log_change.save()
 
 
 def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
@@ -131,12 +138,12 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
         note=note,
     )
     self.log.save()
-    for field, value in self.__dict__.items():
-        if field not in LOG_CHANGE_EXCLUDED_FIELDS and self.has_changed(field) is True:
-            log_change = LogChange(
-                log=self.log, field=field, value=value, action=LogChangeTypes.CHANGE
-            )
-            log_change.save()
+    for field in self._meta.get_fields():
+        value = getattr(self, field.name)
+        if field.name not in LOG_CHANGE_EXCLUDED_FIELDS and (
+            action == 'Create' or self.has_changed(field.name)
+        ):
+            _logChange(self.log, field.name, value, LogChangeTypes.CHANGE)
 
 
 @receiver(m2m_changed)
@@ -150,10 +157,7 @@ def logManyToManyChange(
             change_action = LogChangeTypes.REMOVE
         _, field = sender.__name__.split('_', 1)
         value = list(pk_set)
-        log_change = LogChange(
-            log=instance.log, field=field, value=value, action=change_action
-        )
-        log_change.save()
+        _logChange(instance.log, field, value, change_action)
 
 
 class LoggedModel(LifecycleModel, models.Model):
@@ -302,11 +306,15 @@ class Meeting(LoggedModel):
 
     @hook(AFTER_CREATE)
     def log_create(self):
-        logIt(self, 'Create', parent_id=self.legal_case.id, parent_type='LegalCase')
+        logIt(self, 'Create', user=self.created_by, parent_id=self.legal_case.id, parent_type='LegalCase')
 
     @hook(AFTER_UPDATE)
     def log_update(self):
-        logIt(self, 'Update', parent_id=self.legal_case.id, parent_type='LegalCase')
+        logIt(self, 'Update', user=self.updated_by, parent_id=self.legal_case.id, parent_type='LegalCase')
+
+    @hook(BEFORE_DELETE)
+    def log_delete(self):
+        logIt(self, 'Delete', user=self.updated_by, parent_id=self.legal_case.id, parent_type='LegalCase')
 
     def __str__(self):
         return self.name
@@ -326,11 +334,11 @@ class LegalCaseFile(LoggedModel):
 
     @hook(AFTER_CREATE)
     def log_create(self):
-        logIt(self, 'Create', parent_id=self.legal_case.id, parent_type='LegalCase')
+        logIt(self, 'Create', user=self.created_by, parent_id=self.legal_case.id, parent_type='LegalCase')
 
     @hook(AFTER_UPDATE)
     def log_update(self):
-        logIt(self, 'Update', parent_id=self.legal_case.id, parent_type='LegalCase')
+        logIt(self, 'Update', user=self.updated_by, parent_id=self.legal_case.id, parent_type='LegalCase')
 
     def __str__(self):
         return self.upload_file_name()
