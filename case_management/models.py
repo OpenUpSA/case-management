@@ -21,7 +21,7 @@ from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from case_management.managers import UserManager
-from django_lifecycle import LifecycleModel, hook, AFTER_CREATE, AFTER_UPDATE
+from django_lifecycle import LifecycleModel, hook, AFTER_CREATE, AFTER_UPDATE, BEFORE_DELETE
 from django.apps import apps
 
 
