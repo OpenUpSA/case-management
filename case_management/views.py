@@ -219,8 +219,8 @@ WITH
 	days AS (
 		SELECT DATE_TRUNC('day', days_series)::date AS day
 		FROM generate_series(
-			'2021-01-01'::timestamp,
-			'2021-12-31'::timestamp,
+			'{start_month}'::timestamp,
+			'{end_month}'::timestamp + '1 month - 1 day',
 			'1 day'::interval
 		) days_series
 	),
