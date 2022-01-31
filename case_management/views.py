@@ -132,7 +132,7 @@ class ClientViewSet(LoggedModelViewSet):
             ).distinct('id')
         if user is not None:
             queryset = Client.objects.filter(
-                legal_cases__case_offices__users__id=user
+                users__id=user
             ).distinct('id')
         return queryset
 
