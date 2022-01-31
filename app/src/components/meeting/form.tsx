@@ -150,11 +150,14 @@ const Component = (props: Props) => {
               </Button>
               {props.meetingFile?.description && (
                 <Button
-                  color="secondary"
                   size="small"
                   variant="contained"
                   startIcon={<DeleteIcon />}
-                  style={{ textTransform: "none" }}
+                  style={{
+                    textTransform: "none",
+                    backgroundColor: "maroon",
+                    color: "white",
+                  }}
                   onClick={() => {
                     if (props.deleteFile && props.meetingFile) {
                       props.deleteFile();
