@@ -13,15 +13,19 @@ from case_management.enums import (
     CivilMarriageTypes,
     Languages,
     Provinces,
+    LogChangeTypes,
 )
 from django_countries.fields import CountryField
 from django.conf import settings
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from case_management.managers import UserManager
 from django_lifecycle import LifecycleModel, hook, AFTER_CREATE, AFTER_UPDATE
 from django.apps import apps
+
+
+LOG_CHANGE_EXCLUDED_FIELDS = ('id', 'created_at', 'updated_at')
 
 
 class User(AbstractUser):
@@ -75,7 +79,9 @@ class Log(models.Model):
     target_type = models.CharField(max_length=255, null=False, blank=False)
 
     action = models.CharField(max_length=255, null=False, blank=False)
-    user = models.ForeignKey(User, related_name='logs', on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, related_name='logs', null=True, on_delete=models.CASCADE
+    )
 
     note = models.CharField(max_length=500, null=True, blank=True)
 
@@ -88,12 +94,18 @@ class Log(models.Model):
         return info
 
 
+class LogChange(models.Model):
+    id = models.AutoField(primary_key=True)
+    log = models.ForeignKey(Log, related_name='changes', on_delete=models.CASCADE)
+
+    field = models.CharField(max_length=255)
+    value = models.TextField()
+    action = models.CharField(max_length=10, choices=LogChangeTypes.choices)
+
+
 def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
     target_type = self.__class__.__name__
     target_id = self.id
-
-    if user is None:
-        user = User.objects.first()
 
     if parent_id is None:
         parent_id = self.id
@@ -109,7 +121,7 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
         else:
             note = target_type
 
-    log = Log(
+    self.log = Log(
         parent_id=parent_id,
         parent_type=parent_type,
         target_id=target_id,
@@ -118,56 +130,73 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
         user=user,
         note=note,
     )
-    log.save()
+    self.log.save()
+    for field, value in self.__dict__.items():
+        if field not in LOG_CHANGE_EXCLUDED_FIELDS and self.has_changed(field) is True:
+            log_change = LogChange(
+                log=self.log, field=field, value=value, action=LogChangeTypes.CHANGE
+            )
+            log_change.save()
 
 
-class CaseOffice(LifecycleModel, models.Model):
+@receiver(m2m_changed)
+def logManyToManyChange(
+    sender, instance=None, action=None, model=None, pk_set=None, **kwargs
+):
+    if action in ('post_add', 'post_remove'):
+        if action == 'post_add':
+            change_action = LogChangeTypes.ADD
+        elif action == 'post_remove':
+            change_action = LogChangeTypes.REMOVE
+        _, field = sender.__name__.split('_', 1)
+        value = list(pk_set)
+        log_change = LogChange(
+            log=instance.log, field=field, value=value, action=change_action
+        )
+        log_change.save()
+
+
+class LoggedModel(LifecycleModel, models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    name = models.CharField(max_length=500, unique=True)
-    description = models.TextField()
-
-    case_office_code = models.CharField(max_length=3, default="D00")
+    created_by = models.ForeignKey(
+        User, related_name='+', on_delete=models.CASCADE, null=True, editable=False
+    )
+    updated_by = models.ForeignKey(
+        User, related_name='+', on_delete=models.CASCADE, null=True, editable=False
+    )
 
     @hook(AFTER_CREATE)
     def log_create(self):
-        logIt(self, 'Create')
+        logIt(self, 'Create', user=self.created_by)
 
     @hook(AFTER_UPDATE)
     def log_update(self):
-        logIt(self, 'Update')
+        logIt(self, 'Update', user=self.updated_by)
+
+    class Meta:
+        abstract = True
+
+
+class CaseOffice(LoggedModel):
+    name = models.CharField(max_length=500, unique=True)
+    description = models.TextField()
+    case_office_code = models.CharField(max_length=3, default="D00")
 
     def __str__(self):
         return self.name
 
 
-class CaseType(LifecycleModel, models.Model):
-    id = models.AutoField(primary_key=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
+class CaseType(LoggedModel):
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-
-    @hook(AFTER_CREATE)
-    def log_create(self):
-        logIt(self, 'Create')
-
-    @hook(AFTER_UPDATE)
-    def log_update(self):
-        logIt(self, 'Update')
 
     def __str__(self):
         return self.title
 
 
-class Client(LifecycleModel, models.Model):
-    id = models.AutoField(primary_key=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
+class Client(LoggedModel):
     name = models.CharField(max_length=255, null=False, blank=False)
     preferred_name = models.CharField(max_length=128, blank=True)
     official_identifier = models.CharField(max_length=64, null=True, blank=True)
@@ -213,14 +242,6 @@ class Client(LifecycleModel, models.Model):
             self.preferred_name = self.name
         super().save(*args, **kwargs)
 
-    @hook(AFTER_CREATE)
-    def log_create(self):
-        logIt(self, 'Create')
-
-    @hook(AFTER_UPDATE)
-    def log_update(self):
-        logIt(self, 'Update')
-
     class Meta:
         unique_together = [['official_identifier', 'official_identifier_type']]
 
@@ -238,18 +259,15 @@ class Client(LifecycleModel, models.Model):
         return updates
 
 
-class LegalCase(LifecycleModel, models.Model):
-    id = models.AutoField(primary_key=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    case_number = models.CharField(
-        max_length=32, null=False, blank=False, unique=True)
-    state = models.CharField(max_length=10,
-                             choices=CaseStates.choices, default=CaseStates.OPENED)
+class LegalCase(LoggedModel):
+    case_number = models.CharField(max_length=32, null=False, blank=False, unique=True)
+    state = models.CharField(
+        max_length=10, choices=CaseStates.choices, default=CaseStates.OPENED
+    )
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     client = models.ForeignKey(
-        Client, related_name='legal_cases', on_delete=models.CASCADE)
+        Client, related_name='legal_cases', on_delete=models.CASCADE
+    )
     case_types = models.ManyToManyField(CaseType, blank=True)
     case_offices = models.ManyToManyField(CaseOffice)
 
@@ -259,23 +277,11 @@ class LegalCase(LifecycleModel, models.Model):
     respondent_name = models.CharField(max_length=255, blank=True)
     respondent_contact_number = PhoneNumberField(blank=True)
 
-    @hook(AFTER_CREATE)
-    def log_create(self):
-        logIt(self, 'Create')
-
-    @hook(AFTER_UPDATE)
-    def log_update(self):
-        logIt(self, 'Update')
-
     def __str__(self):
         return self.case_number
 
 
-class Meeting(LifecycleModel, models.Model):
-    id = models.AutoField(primary_key=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
+class Meeting(LoggedModel):
     legal_case = models.ForeignKey(
         LegalCase, related_name='meetings', on_delete=models.CASCADE
     )
@@ -306,16 +312,12 @@ class Meeting(LifecycleModel, models.Model):
         return self.name
 
 
-class LegalCaseFile(LifecycleModel, models.Model):
-    id = models.AutoField(primary_key=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
+class LegalCaseFile(LoggedModel):
     legal_case = models.ForeignKey(
-        LegalCase, related_name='files', on_delete=models.CASCADE)
+        LegalCase, related_name='files', on_delete=models.CASCADE
+    )
     upload = models.FileField(upload_to='uploads/')
-    description = models.CharField(
-        max_length=255, null=False, blank=True, default='')
+    description = models.CharField(max_length=255, null=False, blank=True, default='')
 
     def save(self, *args, **kwargs):
         if self.description == '':

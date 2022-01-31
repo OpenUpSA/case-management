@@ -8,12 +8,21 @@ from case_management.models import (
     Meeting,
     User,
     Log,
+    LogChange,
     LegalCaseFile,
 )
 from case_management.enums import MaritalStatuses
 
 
+class LogChangeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LogChange
+        fields = '__all__'
+
+
 class LogSerializer(serializers.ModelSerializer):
+    changes = LogChangeSerializer(many=True, read_only=True)
     extra = serializers.ReadOnlyField()
 
     class Meta:
@@ -110,4 +119,13 @@ class UserSerializer(serializers.ModelSerializer):
 class LegalCaseFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = LegalCaseFile
-        fields = ['id', 'legal_case', 'upload', 'upload_file_name', 'upload_file_extension', 'description', 'created_at', 'updated_at']
+        fields = [
+            'id',
+            'legal_case',
+            'upload',
+            'upload_file_name',
+            'upload_file_extension',
+            'description',
+            'created_at',
+            'updated_at',
+        ]

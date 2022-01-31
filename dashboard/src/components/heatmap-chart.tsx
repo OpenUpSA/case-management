@@ -20,10 +20,10 @@ const useStyles = makeStyles((theme: Theme) =>
     dayGrid: {
       textAlign: "center",
       fontSize: "12px",
-      verticalAlign: "middle"
+      verticalAlign: "middle",
     },
     dayLabel: {
-      backgroundColor: theme.palette.background.default
+      backgroundColor: theme.palette.background.default,
     },
     dayValue: {
       backgroundColor: theme.palette.primary.main,
@@ -33,10 +33,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IProps {
-  selectedOffice: string
-  data: IDbDataDailyPerMonth
-  metrics: string[]
-};
+  selectedOffice: string;
+  data: IDbDataDailyPerMonth;
+  metrics: string[];
+}
 
 export default function HeatmapChart(props: IProps) {
   const classes = useStyles();
@@ -48,37 +48,44 @@ export default function HeatmapChart(props: IProps) {
   const selectedMonth = months[0];
 
   const generateChartData = () => {
-    const chartData: {[metric: string]: {[month: string]: {max: number, data7x5: any[]}}} = {}
+    const chartData: {
+      [metric: string]: { [month: string]: { max: number; data7x5: any[] } };
+    } = {};
     Object.keys(selectedOfficeData).forEach((metric: string) => {
-      chartData[metric] = {}
-      Object.keys(selectedMetricData).forEach((month: string) => {
-        const data = selectedMetricData[month]
-        const flatGrid = []
-        const weeklyGrid = []
-        const firstPosition = new Date(data[0].date).getDay()
-        for (let i=0; i < 35; i++) {
-          if (i < firstPosition) {
+      chartData[metric] = {};
+      Object.keys(selectedOfficeData[metric]).forEach((month: string) => {
+        const data = selectedOfficeData[metric][month];
+        if (data) {
+          const flatGrid = [];
+          const weeklyGrid = [];
+          const firstPosition = new Date(data[0].date).getDay();
+          for (let i = 0; i < 35; i++) {
+            if (i < firstPosition) {
               flatGrid.push(null);
-          } else if (i < data.length + firstPosition) {
+            } else if (i < data.length + firstPosition) {
               flatGrid.push({
                 day: i - firstPosition + 1,
-                value: data[i - firstPosition].value
+                value: data[i - firstPosition].value || 0,
               });
-          } else {
+            } else {
               flatGrid.push(null);
+            }
           }
+          for (let i = 0; i < 35; i += 7) {
+            weeklyGrid.push(flatGrid.slice(i, i + 7));
+          }
+          chartData[metric][month] = {
+            max: data.reduce(
+              (max, dataPoint) => Math.max(max, dataPoint.value),
+              0
+            ),
+            data7x5: weeklyGrid,
+          };
         }
-        for (let i=0; i < 35; i+=7) {
-          weeklyGrid.push(flatGrid.slice(i, i+7));
-        }
-        chartData[metric][month] = {
-          max: data.reduce((max, dataPoint) => Math.max(max, dataPoint.value), 0),
-          data7x5: weeklyGrid
-        }
-      })
-    })
+      });
+    });
     return chartData;
-  }
+  };
 
   const chartData = generateChartData();
 
@@ -88,13 +95,12 @@ export default function HeatmapChart(props: IProps) {
     chartData: chartData,
   });
 
-
   if (!Object.keys(state.chartData).length && Object.keys(chartData).length) {
     setState({
       ...state,
       chartData,
       selectedMonth,
-    })
+    });
   }
 
   const handleSelect = (event: React.ChangeEvent<any>) => {
@@ -108,7 +114,12 @@ export default function HeatmapChart(props: IProps) {
 
   return (
     <LayoutChart title={i18next.t("Data heatmap")}>
-      <Grid container justifyContent="space-between" alignItems="center" className={classes.form}>
+      <Grid
+        container
+        justifyContent="space-between"
+        alignItems="center"
+        className={classes.form}
+      >
         <FormControl>
           <Select
             native
@@ -120,7 +131,9 @@ export default function HeatmapChart(props: IProps) {
             }}
           >
             {props.metrics.map((metric: string) => (
-              <option key={metric} value={metric}>{metric}</option>
+              <option key={metric} value={metric}>
+                {metric}
+              </option>
             ))}
           </Select>
         </FormControl>
@@ -135,42 +148,81 @@ export default function HeatmapChart(props: IProps) {
             }}
           >
             {months.map((month: string) => (
-              <option key={month} value={month}>{yearMonthLabel(new Date(month))}</option>
+              <option key={month} value={month}>
+                {yearMonthLabel(new Date(month))}
+              </option>
             ))}
           </Select>
         </FormControl>
       </Grid>
-      {state.chartData.hasOwnProperty(state.selectedMetric) && state.chartData[state.selectedMetric].hasOwnProperty(state.selectedMonth) ? (
+      {state.chartData.hasOwnProperty(state.selectedMetric) &&
+      state.chartData[state.selectedMetric].hasOwnProperty(
+        state.selectedMonth
+      ) ? (
         <div>
-        <div>
-          <Grid container spacing={1} direction="column" className={classes.dayGrid}>
-            <Grid container item xs spacing={1} direction="row">
-              {["S", "M", "T", "W", "T", "F", "S"].map((day, j) => (
-                <Grid key={j} item xs>
-                  <Box className={classes.dayLabel}>
-                    {day}
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-            {state.chartData[state.selectedMetric][state.selectedMonth].data7x5.map((week: Array<{day: number, value: number}>, i: number) => (
-              <Grid key={i} container item xs spacing={1} direction="row">
-                {week.map((dayData: {day: number, value: number}, j: number) => (
+          <div>
+            <Grid
+              container
+              spacing={1}
+              direction="column"
+              className={classes.dayGrid}
+            >
+              <Grid container item xs spacing={1} direction="row">
+                {["S", "M", "T", "W", "T", "F", "S"].map((day, j) => (
                   <Grid key={j} item xs>
-                  <Tooltip title={dayData === null ? "" : `${dayData.day} ${yearMonthLabel(new Date(state.selectedMonth))}: ${dayData.value} ${state.selectedMetric}`} arrow>
-                    <Box className={classes.dayValue} style={dayData === null ? {opacity: 0.2, backgroundColor: "grey"} : {opacity: 0.2 + (dayData.value / state.chartData[state.selectedMetric][state.selectedMonth].max) * 0.8, color: "white"}}>
-                      {dayData === null ? "-" : dayData.value}
-                    </Box>
-                  </Tooltip>
+                    <Box className={classes.dayLabel}>{day}</Box>
                   </Grid>
                 ))}
+              </Grid>
+              {state.chartData[state.selectedMetric][
+                state.selectedMonth
+              ].data7x5.map(
+                (week: Array<{ day: number; value: number }>, i: number) => (
+                  <Grid key={i} container item xs spacing={1} direction="row">
+                    {week.map(
+                      (dayData: { day: number; value: number }, j: number) => (
+                        <Grid key={j} item xs>
+                          <Tooltip
+                            title={
+                              dayData === null
+                                ? ""
+                                : `${dayData.day} ${yearMonthLabel(
+                                    new Date(state.selectedMonth)
+                                  )}: ${dayData.value} ${state.selectedMetric}`
+                            }
+                            arrow
+                          >
+                            <Box
+                              className={classes.dayValue}
+                              style={
+                                dayData === null
+                                  ? { opacity: 0.2, backgroundColor: "grey" }
+                                  : {
+                                      opacity:
+                                        0.2 +
+                                        (dayData.value /
+                                          (state.chartData[
+                                            state.selectedMetric
+                                          ][state.selectedMonth].max || 1)) *
+                                          0.8,
+                                      color: "white",
+                                    }
+                              }
+                            >
+                              {dayData === null ? "-" : dayData.value}
+                            </Box>
+                          </Tooltip>
+                        </Grid>
+                      )
+                    )}
+                  </Grid>
+                )
+              )}
             </Grid>
-          ))}
-          </Grid>
-        </div>
+          </div>
         </div>
       ) : (
-        <NoData/>
+        <NoData />
       )}
     </LayoutChart>
   );

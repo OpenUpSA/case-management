@@ -11,7 +11,6 @@ import ClientLegalCasesPage from "./pages/clients/cases";
 
 import LegalCasesPage from "./pages/legalCases/list";
 import LegalCasePage from "./pages/legalCases/show";
-import LegalCaseNewPage from "./pages/legalCases/new";
 
 import MeetingsPage from "./pages/meetings/list";
 import MeetingPage from "./pages/meetings/show";
@@ -34,7 +33,6 @@ if (process.env.REACT_APP_GA_ID) {
 }
 
 if (process.env.REACT_APP_HOTJAR_ID && process.env.REACT_APP_HOTJAR_SV) {
-  console.log(process.env.REACT_APP_HOTJAR_ID + ' ' + process.env.REACT_APP_HOTJAR_SV);
   hotjar.initialize(Number(process.env.REACT_APP_HOTJAR_ID), Number(process.env.REACT_APP_HOTJAR_SV));
 }
 
@@ -75,11 +73,6 @@ function Routes() {
 
         <Route exact path="/cases" component={LegalCasesPage} />
         <Route exact path="/cases/:id" component={LegalCasePage} />
-        <Route
-          exact
-          path="/clients/:id/cases/new"
-          component={LegalCaseNewPage}
-        />
 
         <Route exact path="/meetings" component={MeetingsPage} />
         <Route exact path="/meetings/:id" component={MeetingPage} />

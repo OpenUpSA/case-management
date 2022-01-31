@@ -30,6 +30,8 @@ services:
       - POSTGRES_USER=case_management
       - POSTGRES_PASSWORD=devpassword
       - POSTGRES_DB=case_management
+    ports:
+      - "5433:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
     command: ["postgres", "-c", "log_statement=all"]
