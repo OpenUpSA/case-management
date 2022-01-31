@@ -64,7 +64,7 @@ const Component = (props: Props) => {
                   ...user,
                   name: e.target.value,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -91,7 +91,7 @@ const Component = (props: Props) => {
                   ...user,
                   membership_number: e.target.value,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -118,7 +118,7 @@ const Component = (props: Props) => {
                   ...user,
                   email: e.target.value,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -144,7 +144,7 @@ const Component = (props: Props) => {
                   ...user,
                   contact_number: e.target.value,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -173,13 +173,16 @@ const Component = (props: Props) => {
                   ...user,
                   case_office: e.target.value as number,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
               input={<Input id="select-multiple-chip" />}
               value={user.case_office || ""}
               renderValue={() => {
                 return contextOffices
-                  ?.filter((caseOffice: ICaseOffice) => user.case_office === caseOffice.id)
+                  ?.filter(
+                    (caseOffice: ICaseOffice) =>
+                      user.case_office === caseOffice.id
+                  )
                   .map((caseOffice: ICaseOffice) => caseOffice.name)
                   .join(", ");
               }}

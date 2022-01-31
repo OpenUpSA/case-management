@@ -35,8 +35,8 @@ import {
   ILegalCase,
   ICaseType,
   ICaseOffice,
-  IUser,
   IClient,
+  IUser,
   ILog,
   LocationState,
 } from "../../types";
@@ -243,36 +243,6 @@ export default function CaseInfoTab(props: Props) {
         client: props.legalCase.client,
         case_types: arg,
         case_offices: props.legalCase.case_offices,
-      };
-      const { id } = await updateLegalCase(updatedSummary);
-      setIsLoading(false);
-      id &&
-        setShowSnackbar({
-          open: true,
-          message: "Case edit successful",
-          severity: "success",
-        });
-    } catch (e) {
-      setIsLoading(false);
-      setShowSnackbar({
-        open: true,
-        message: "Case edit failed",
-        severity: "error",
-      });
-    }
-  };
-
-  const caseOfficePatch = async (arg: any) => {
-    try {
-      setIsLoading(true);
-      const updatedSummary: ILegalCase = {
-        id: props.legalCase.id,
-        summary: props.legalCase.summary,
-        case_number: props.legalCase.case_number,
-        state: props.legalCase.state,
-        client: props.legalCase.client,
-        case_types: props.legalCase.case_types,
-        case_offices: arg,
       };
       const { id } = await updateLegalCase(updatedSummary);
       setIsLoading(false);
