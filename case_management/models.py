@@ -139,10 +139,12 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
     )
     self.log.save()
     for field in self._meta.get_fields():
-        value = getattr(self, field.name)
-        if field.name not in LOG_CHANGE_EXCLUDED_FIELDS and (
-            action == 'Create' or self.has_changed(field.name)
+        if (
+            hasattr(self, field.name)
+            and field.name not in LOG_CHANGE_EXCLUDED_FIELDS
+            and (action == 'Create' or self.has_changed(field.name))
         ):
+            value = getattr(self, field.name)
             _logChange(self.log, field.name, value, LogChangeTypes.CHANGE)
 
 
