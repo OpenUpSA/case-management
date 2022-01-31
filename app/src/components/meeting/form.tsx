@@ -14,6 +14,8 @@ import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 import UploadIcon from "@mui/icons-material/Upload";
 import DescriptionIcon from "@mui/icons-material/Description";
+import DeleteIcon from "@material-ui/icons/Delete";
+import Stack from "@mui/material/Stack";
 
 import i18n from "../../i18n";
 import { ILegalCaseFile, IMeeting } from "../../types";
@@ -34,6 +36,8 @@ type Props = {
   showFile?: boolean;
   meetingFile?: ILegalCaseFile | null;
   buttonText?: string;
+  deleteFile?: () => void;
+  fileToDelete?: boolean;
 };
 
 const Component = (props: Props) => {
@@ -131,35 +135,66 @@ const Component = (props: Props) => {
             >
               {i18n.t("File")}:
             </InputLabel>
-            <Button
-              color="primary"
-              variant="contained"
-              className={classes.meetingFileButton}
-              startIcon={<UploadIcon />}
-              style={{ textTransform: "none" }}
-              onClick={() => setOpen(true)}
-            >
-              {i18n.t(props.buttonText || "")}
-            </Button>
+
+            <Stack direction="row" spacing={1} style={{ maxHeight: "40px" }}>
+              <Button
+                color="primary"
+                size="small"
+                variant="contained"
+                className={classes.meetingFileButton}
+                startIcon={<UploadIcon />}
+                style={{ textTransform: "none" }}
+                onClick={() => setOpen(true)}
+              >
+                {i18n.t(props.buttonText || "")}
+              </Button>
+              {props.meetingFile?.description && (
+                <Button
+                  color="secondary"
+                  size="small"
+                  variant="contained"
+                  startIcon={<DeleteIcon />}
+                  style={{ textTransform: "none" }}
+                  onClick={() => {
+                    if (props.deleteFile && props.meetingFile) {
+                      props.deleteFile();
+                    }
+                  }}
+                >
+                  {i18n.t("Delete file")}
+                </Button>
+              )}
+            </Stack>
             {props.progress
               ? props.progress > 0 && <ProgressBar progress={props.progress} />
               : null}
             {stagedFileName.length > 0 && (
               <FormHelperText id="file-selected">
-                File selected:{" "}
+                New file:{" "}
                 {stagedFileName.length > 15
                   ? stagedFileName.slice(0, 13) + "..."
                   : stagedFileName}
               </FormHelperText>
             )}
-            {props.meetingFile?.description && stagedFileName.length === 0 && (
-              <FormHelperText id="file-description">
-                Current file:{" "}
-                {props.meetingFile?.description.length > 15
-                  ? props.meetingFile?.description.slice(0, 13) + "..."
-                  : props.meetingFile?.description}
-              </FormHelperText>
-            )}
+            {props.meetingFile?.description &&
+              stagedFileName.length === 0 &&
+              !props.fileToDelete && (
+                <FormHelperText id="file-description">
+                  Current file:{" "}
+                  {props.meetingFile?.description.length > 15
+                    ? props.meetingFile?.description.slice(0, 13) + "..."
+                    : props.meetingFile?.description}
+                </FormHelperText>
+              )}
+            {props.meetingFile?.description &&
+              (props.fileToDelete || stagedFileName.length > 0) && (
+                <FormHelperText id="file-description">
+                  Save meeting to delete{" "}
+                  {props.meetingFile?.description.length > 15
+                    ? props.meetingFile?.description.slice(0, 13) + "..."
+                    : props.meetingFile?.description}
+                </FormHelperText>
+              )}
             <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
               <DialogContent>
                 <TextField
@@ -214,7 +249,10 @@ const Component = (props: Props) => {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {props.meetingFile.description}
+                      {props.meetingFile?.description &&
+                      props.meetingFile?.description?.length > 15
+                        ? props.meetingFile?.description?.slice(0, 13) + "..."
+                        : props.meetingFile?.description}
                     </a>
                   </Typography>
                 </>

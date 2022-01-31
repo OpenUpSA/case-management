@@ -10,6 +10,7 @@ import {
   getLegalCase,
   getLegalCaseFile,
   createLegalCaseFile,
+  deleteLegalCaseFile,
   getMeeting,
   updateMeeting,
 } from "../../api";
@@ -67,6 +68,7 @@ const Page = () => {
     description: "",
   });
   const [progress, setProgress] = React.useState<number>(0);
+  const [fileToDelete, setFileToDelete] = React.useState<boolean>(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -101,6 +103,9 @@ const Page = () => {
 
   const saveMeeting = async (saveMeeting: IMeeting) => {
     const upLoadFile = async () => {
+      if (!fileToDelete && meeting?.legal_case_file) {
+        await deleteLegalCaseFile(meeting?.legal_case_file as number);
+      }
       setIsLoading(true);
       createLegalCaseFile(
         legalCase?.id,
@@ -187,10 +192,16 @@ const Page = () => {
     };
 
     try {
+      if (fileToDelete) {
+        await deleteLegalCaseFile(meeting?.legal_case_file as number);
+      }
       if (meetingFileData.file) {
         await upLoadFile();
       } else {
-        await updateCaseMeeting(saveMeeting, meetingFile?.id);
+        await updateCaseMeeting(
+          saveMeeting,
+          fileToDelete ? null : meetingFile?.id
+        );
       }
     } catch (e) {
       setIsLoading(false);
@@ -209,6 +220,13 @@ const Page = () => {
     });
   };
 
+  const deleteFile = async () => {
+    if (window.confirm("Are you sure you want to delete this file?")) {
+      setFileToDelete(true);
+    } else {
+      return;
+    }
+  };
   return (
     <Layout>
       <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
@@ -326,9 +344,11 @@ const Page = () => {
             notesError={notesError}
             meetingTypeError={meetingTypeError}
             showUploadButton={true}
-            buttonText={meetingFile ? "Edit file" : "Upload file"}
+            buttonText={meetingFile ? "Change file" : "Upload file"}
             onFileChange={onFileChange}
             progress={progress}
+            deleteFile={deleteFile}
+            fileToDelete={fileToDelete}
           />
         </form>
       </Container>
