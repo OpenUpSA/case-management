@@ -12,6 +12,7 @@ import Layout from "../components/layout";
 import BarChart from "../components/bar-chart";
 import HeatmapChart from "../components/heatmap-chart";
 import {
+  IDbDataByRange,
   IDbDataMonthly,
   IDbDataDailyPerMonth,
   IBarChart,
@@ -39,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IProps {
+  dataByRange: IDbDataByRange;
   dataMonthly: IDbDataMonthly;
   dataDaily: IDbDataDailyPerMonth;
 }
@@ -60,7 +62,8 @@ export default function Dashboard(props: IProps) {
       charts.push({
         type: "bar",
         metric: name,
-        data: props.dataMonthly,
+        dataMonthly: props.dataMonthly,
+        dataByRange: props.dataByRange
       });
     });
     charts.push({
@@ -85,7 +88,7 @@ export default function Dashboard(props: IProps) {
     });
   };
 
-  const offices = Object.keys({ ...props.dataMonthly, ...props.dataDaily });
+  const offices = Object.keys({ ...props.dataMonthly.dataPerCaseOffice, ...props.dataDaily.dataPerCaseOffice });
 
   if (state.selectedOffice === "" && offices.length) {
     updateOffice(offices[0]);
@@ -103,7 +106,8 @@ export default function Dashboard(props: IProps) {
           <BarChart
             selectedOffice={state.selectedOffice}
             metric={chart.metric}
-            data={chart.data}
+            dataMonthly={chart.dataMonthly}
+            dataByRange={chart.dataByRange}
           ></BarChart>
         );
       case "heatmap":
