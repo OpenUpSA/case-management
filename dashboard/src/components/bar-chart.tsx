@@ -4,7 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import LayoutChart from "./layout-chart";
 import NoData from "./no-data";
-import { IDbDataMonthly, IChartDataPoint } from "../types";
+import { IDbDataByRange, IDbDataMonthly, IChartDataPoint } from "../types";
 import { monthLabel } from "../utils";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -37,30 +37,30 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IProps {
-  selectedOffice: string;
-  metric: string;
-  data: IDbDataMonthly;
-}
+  selectedOffice: string
+  metric: string
+  dataMonthly: IDbDataMonthly
+  dataByRange: IDbDataByRange
+};
 
 export default function BarChart(props: IProps) {
   const classes = useStyles();
-  const selectedOfficeData = props.data[props.selectedOffice] || {};
+  const selectedOfficeData = (props.dataMonthly.dataPerCaseOffice || {})[props.selectedOffice] || {};
   const selectedMetricData = selectedOfficeData[props.metric] || [];
-  const hasData = selectedMetricData.length > 0;
-  const max = selectedMetricData.reduce(
-    (max, dataPoint) => Math.max(max, dataPoint.value),
-    0
-  );
-  const avg = Math.round(max / Math.max(selectedMetricData.length, 1));
+  const hasData = selectedMetricData.reduce((has, current) => current.value !== null || has, false);
+  const max = selectedMetricData.reduce((max, dataPoint) => Math.max(max, dataPoint.value), 0);
+  const rangeValue = ((props.dataByRange.dataPerCaseOffice || {})[props.selectedOffice] || {})[props.metric];
   const data: IChartDataPoint[] = selectedMetricData.map((dataPoint) => ({
     label: monthLabel(new Date(dataPoint.date)),
     value: dataPoint.value,
   }));
   return (
     <LayoutChart title={props.metric}>
-      {hasData ? (
-        <div>
-          <Typography className={classes.value}>{avg}</Typography>
+        {hasData ? (
+          <div>
+          <Typography className={classes.value}>
+            {rangeValue ? rangeValue : 'no value'}
+          </Typography>
           <div>
             <Grid
               container

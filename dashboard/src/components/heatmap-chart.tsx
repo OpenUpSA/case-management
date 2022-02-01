@@ -63,7 +63,7 @@ interface IProps {
 export default function HeatmapChart(props: IProps) {
   const classes = useStyles();
 
-  const selectedOfficeData = props.data[props.selectedOffice] || {};
+  const selectedOfficeData = (props.data.dataPerCaseOffice || {})[props.selectedOffice] || {};
   const selectedMetric = props.metrics[0];
   const selectedMetricData = selectedOfficeData[selectedMetric] || {};
   const months = Object.keys(selectedMetricData);
