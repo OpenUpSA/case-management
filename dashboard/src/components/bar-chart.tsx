@@ -42,7 +42,6 @@ export default function BarChart(props: IProps) {
   const selectedOfficeData = (props.dataMonthly.dataPerCaseOffice || {})[props.selectedOffice] || {};
   const selectedMetricData = selectedOfficeData[props.metric] || [];
   const hasData = selectedMetricData.reduce((has, current) => current.value !== null || has, false);
-  debugger;
   const max = selectedMetricData.reduce((max, dataPoint) => Math.max(max, dataPoint.value), 0);
   const rangeValue = ((props.dataByRange.dataPerCaseOffice || {})[props.selectedOffice] || {})[props.metric];
   const data: IChartDataPoint[] = selectedMetricData.map((dataPoint) => ({
