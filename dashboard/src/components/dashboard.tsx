@@ -3,11 +3,13 @@ import React from "react";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 
 import Grid from "@material-ui/core/Grid";
-
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+
 import Layout from "../components/layout";
 import BarChart from "../components/bar-chart";
 import HeatmapChart from "../components/heatmap-chart";
@@ -24,16 +26,39 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.secondary.main,
       padding: "1rem",
+      borderRadius: "10px",
     },
     title: {
       fontSize: "1.5rem",
+      paddingLeft: "0.6rem",
     },
     select: {
-      backgroundColor: theme.palette.secondary.main,
-      paddingLeft: "1rem",
+      minWidth: "10rem",
+      backgroundColor: "#ffffff",
+      border: "solid 1px #f2f2f2",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      "&.Mui-disabled": {
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
+        color: "#000000",
+        "&>.MuiSelect-icon": {
+          display: "none",
+        },
+      },
+      "&.Mui-focused": {
+        backgroundColor: "#fcfcfc",
+        borderColor: "#e5e5e5",
+      },
+      "&:hover": {
+        backgroundColor: "#e5e5e5",
+      },
     },
     chartContainer: {
       marginTop: "1rem",
+    },
+    iconAndTitle: { display: "flex", flexDirection: "row" },
+    dropdownStyle: {
+      marginTop: "3rem",
     },
   })
 );
@@ -127,24 +152,29 @@ export default function Dashboard(props: IProps) {
           alignItems="center"
           className={classes.header}
         >
-          <Typography variant="h1" className={classes.title}>
-            {i18next.t("Reporting Dashboard")}
-          </Typography>
+          <div className={classes.iconAndTitle}>
+            <AssessmentIcon />
+            <Typography variant="h1" className={classes.title}>
+              {i18next.t("Reporting Dashboard")}
+            </Typography>
+          </div>
+
           <FormControl>
             <Select
-              native
+              className={classes.select}
+              disableUnderline
               value={state.selectedOffice}
               onChange={handleOfficeSelect}
               inputProps={{
                 name: "office",
                 id: "office-select",
               }}
-              className={classes.select}
+              MenuProps={{ classes: { paper: classes.dropdownStyle } }}
             >
               {offices.map((office) => (
-                <option key={office} value={office}>
+                <MenuItem key={office} value={office}>
                   {office}
-                </option>
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
