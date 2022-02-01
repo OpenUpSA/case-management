@@ -5,7 +5,10 @@ import Box from "@material-ui/core/Box";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     noData: {
-      padding: "3rem",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: 220,
     },
   })
 );
@@ -13,7 +16,5 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function NoData() {
   const classes = useStyles();
 
-  return (
-    <Box className={classes.noData}>{i18next.t("No data")}</Box>
-  );
+  return <Box className={classes.noData}>{i18next.t("No data")}</Box>;
 }
