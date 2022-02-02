@@ -54,6 +54,7 @@ const Page = () => {
     message: location.state?.message!,
     severity: location.state?.severity!,
   });
+  const [usersId, setUsersId] = React.useState<number>(0);
   const [usersCaseOfficeId, setUsersCaseOfficeId] = React.useState<number>(0);
   const [checked, setChecked] = React.useState<boolean>(false);
   const [contextOffices] = useContext(CaseOfficesContext);
@@ -63,15 +64,20 @@ const Page = () => {
       try {
         setIsLoading(true);
         const userInfo = UserInfo.getInstance();
+        const id = Number(userInfo.getUserId());
+        setUsersId(id);
         const usersCaseOffice = Number(userInfo.getCaseOffice());
         setUsersCaseOfficeId(usersCaseOffice);
-        const id = Number(userInfo.getUserId());
 
-        const data = await getClientsForUser(id);
-        setUserClients(data);
+        if (usersId) {
+          const data = await getClientsForUser(usersId);
+          setUserClients(data);
+        }
 
-        const data2 = await getClientsForCaseOffice(usersCaseOfficeId);
-        setCaseOfficeClients(data2);
+        if (usersCaseOfficeId) {
+          const data2 = await getClientsForCaseOffice(usersCaseOfficeId);
+          setCaseOfficeClients(data2);
+        }
         setIsLoading(false);
       } catch (e) {
         setIsLoading(false);
@@ -83,7 +89,7 @@ const Page = () => {
       }
     }
     fetchData();
-  }, [usersCaseOfficeId]);
+  }, [usersCaseOfficeId, usersId]);
 
   useEffect(() => {
     !checked
