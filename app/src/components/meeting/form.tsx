@@ -162,6 +162,7 @@ const Component = (props: Props) => {
                       : event.target.files[0].name
                   );
                 }
+                props.setChanged(true);
               }}
               hidden
             />
@@ -200,6 +201,7 @@ const Component = (props: Props) => {
                   onClick={() => {
                     if (props.deleteFile && props.meetingFile) {
                       props.deleteFile();
+                      props.setChanged(true);
                     }
                   }}
                 >
@@ -270,7 +272,7 @@ const Component = (props: Props) => {
                   </Typography>
                 </>
               ) : (
-                <Typography>{i18n.t("No file")}</Typography>
+                <Typography style={{cursor: "default"}}>{i18n.t("No file")}</Typography>
               )}
             </Grid>
           </Grid>
