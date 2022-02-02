@@ -7,6 +7,7 @@ import {
   FormHelperText,
   Button,
   Typography,
+  Box,
 } from "@material-ui/core";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -108,7 +109,44 @@ const Component = (props: Props) => {
           </FormControl>
         </Grid>
         {props.showUploadButton && (
-          <Grid item className={classes.zeroWidthOnMobile} xs={12} md={3}>
+          <Grid item xs={12} md={3} style={{ position: "relative" }}>
+            <Box className={classes.helpersBox}>
+              {props.meetingFile?.description &&
+                (props.fileToDelete || stagedFileName.length > 0) && (
+                  <FormHelperText
+                    id="file-description"
+                    style={{ color: "maroon" }}
+                  >
+                    Save meeting to delete:{" "}
+                    {props.meetingFile?.description.length > 12
+                      ? props.meetingFile?.description.slice(0, 10) + "..."
+                      : props.meetingFile?.description}
+                  </FormHelperText>
+                )}
+              {stagedFileName.length > 0 && (
+                <FormHelperText id="file-selected">
+                  New file:{" "}
+                  {stagedFileName.length > 24
+                    ? stagedFileName.slice(0, 22) + "..."
+                    : stagedFileName}
+                </FormHelperText>
+              )}
+              {props.meetingFile?.description &&
+                stagedFileName.length === 0 &&
+                !props.fileToDelete && (
+                  <FormHelperText id="file-description">
+                    Current file:{" "}
+                    {props.meetingFile?.description.length > 22
+                      ? props.meetingFile?.description.slice(0, 20) + "..."
+                      : props.meetingFile?.description}
+                  </FormHelperText>
+                )}
+              {props.progress
+                ? props.progress > 0 && (
+                    <ProgressBar progress={props.progress} />
+                  )
+                : null}
+            </Box>
             <input
               ref={uploadFileRef}
               type="file"
@@ -136,7 +174,11 @@ const Component = (props: Props) => {
               {i18n.t("File")}:
             </InputLabel>
 
-            <Stack direction="row" spacing={1} style={{ maxHeight: "40px" }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              style={{ minHeight: "40px", marginTop: "5px" }}
+            >
               <Button
                 color="primary"
                 size="small"
@@ -153,11 +195,8 @@ const Component = (props: Props) => {
                   size="small"
                   variant="contained"
                   startIcon={<DeleteIcon />}
-                  style={{
-                    textTransform: "none",
-                    backgroundColor: "maroon",
-                    color: "white",
-                  }}
+                  className={classes.deleteMeetingFile}
+                  disabled={props.fileToDelete}
                   onClick={() => {
                     if (props.deleteFile && props.meetingFile) {
                       props.deleteFile();
@@ -168,36 +207,7 @@ const Component = (props: Props) => {
                 </Button>
               )}
             </Stack>
-            {props.progress
-              ? props.progress > 0 && <ProgressBar progress={props.progress} />
-              : null}
-            {stagedFileName.length > 0 && (
-              <FormHelperText id="file-selected">
-                New file:{" "}
-                {stagedFileName.length > 15
-                  ? stagedFileName.slice(0, 13) + "..."
-                  : stagedFileName}
-              </FormHelperText>
-            )}
-            {props.meetingFile?.description &&
-              stagedFileName.length === 0 &&
-              !props.fileToDelete && (
-                <FormHelperText id="file-description">
-                  Current file:{" "}
-                  {props.meetingFile?.description.length > 15
-                    ? props.meetingFile?.description.slice(0, 13) + "..."
-                    : props.meetingFile?.description}
-                </FormHelperText>
-              )}
-            {props.meetingFile?.description &&
-              (props.fileToDelete || stagedFileName.length > 0) && (
-                <FormHelperText id="file-description">
-                  Save meeting to delete{" "}
-                  {props.meetingFile?.description.length > 15
-                    ? props.meetingFile?.description.slice(0, 13) + "..."
-                    : props.meetingFile?.description}
-                </FormHelperText>
-              )}
+
             <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
               <DialogContent>
                 <TextField
@@ -253,8 +263,8 @@ const Component = (props: Props) => {
                       rel="noreferrer"
                     >
                       {props.meetingFile?.description &&
-                      props.meetingFile?.description?.length > 15
-                        ? props.meetingFile?.description?.slice(0, 13) + "..."
+                      props.meetingFile?.description?.length > 53
+                        ? props.meetingFile?.description?.slice(0, 51) + "..."
                         : props.meetingFile?.description}
                     </a>
                   </Typography>

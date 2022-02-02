@@ -528,5 +528,17 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0, 0, 0, 0.1)",
       },
     },
+    helpersBox: {
+      bottom: 70,
+      [theme.breakpoints.up("md")]: {
+        position: "absolute",
+      },
+    },
+    deleteMeetingFile: {
+      textTransform: "none",
+      backgroundColor: "maroon",
+      color: "white",
+      lineHeight: 1,
+    },
   })
 );
