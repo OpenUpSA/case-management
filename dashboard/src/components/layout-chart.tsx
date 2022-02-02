@@ -8,21 +8,25 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       fontSize: "1.2rem",
+      color: "black",
+      fontWeight: "bold",
     },
-
+    card: {
+      borderRadius: "10px",
+    },
   })
 );
 
 interface IProps {
-  title: string
+  title: string;
   children: ReactNode;
-};
+}
 
 export default function LayoutChart(props: IProps) {
   const classes = useStyles();
 
   return (
-    <Card>
+    <Card className={classes.card}>
       <CardContent>
         <Typography className={classes.title} color="textSecondary">
           {props.title}
