@@ -202,6 +202,14 @@ export const getLegalCaseFiles = async (legal_case?: number) => {
   );
 };
 
+export const getLegalCaseFile = async (file_id: number) => {
+  return await httpGet<ILegalCaseFile>(`/files/${file_id}/`);
+};
+
+export const deleteLegalCaseFile = async (file_id: number) => {
+  return await httpDelete<ILegalCaseFile>(`/files/${file_id}/`);
+};
+
 type optionsType = {
   method: string | any;
   body: any;

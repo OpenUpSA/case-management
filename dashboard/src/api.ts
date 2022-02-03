@@ -1,5 +1,6 @@
 import {
   ICaseOffice,
+  IDbDataByRange,
   IDbDataMonthly,
   IDbDataDailyPerMonth,
   IUser,
@@ -70,6 +71,10 @@ export async function httpGet<T>(
 
 export const getCaseOffices = async () => {
   return await httpGet<ICaseOffice[]>(`/case-offices/`);
+};
+
+export const getRangeSummary = async () => {
+  return await httpGet<IDbDataByRange>("/reports/range-summary");
 };
 
 export const getMonthlySummary = async () => {

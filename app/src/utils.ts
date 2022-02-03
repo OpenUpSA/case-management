@@ -345,7 +345,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "8px!important" as any,
       position: "relative",
       "&.Mui-disabled": {
-        backgroundColor:  "#dadada!important" as any,
+        backgroundColor: "#dadada!important" as any,
       },
     },
     plainLabel: {
@@ -503,6 +503,42 @@ export const useStyles = makeStyles((theme: Theme) =>
       zIndex: 2,
       position: "relative",
       transition: "all 0.3s ease-in-out",
+    },
+    meetingFileButton: {
+      width: "50%",
+    },
+    meetingCaseFile: {
+      backgroundColor: "#f2f2f2",
+      display: "flex",
+      height: "42px",
+      marginTop: "4px",
+      marginLeft: "10px",
+      marginRight: "10px",
+      alignItems: "center",
+      borderRadius: "4px",
+      [theme.breakpoints.up("md")]: {
+        justifyContent: "center",
+      },
+      "& p": {
+        fontSize: "13px",
+        fontWeight: 600,
+      },
+    },
+    helpersBox: {
+      bottom: 70,
+      [theme.breakpoints.up("md")]: {
+        position: "absolute",
+      },
+    },
+    deleteMeetingFile: {
+      width: "50%",
+      textTransform: "none",
+      backgroundColor: "maroon",
+      color: "white",
+      lineHeight: 1,
+      "&:hover": {
+        backgroundColor: "#b30900",
+      },
     },
   })
 );

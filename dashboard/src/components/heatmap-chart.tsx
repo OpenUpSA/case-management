@@ -6,6 +6,7 @@ import Select from "@material-ui/core/Select";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Tooltip from "@material-ui/core/Tooltip";
+import MenuItem from "@material-ui/core/MenuItem";
 import LayoutChart from "./layout-chart";
 import NoData from "./no-data";
 import { IDbDataDailyPerMonth } from "../types";
@@ -29,6 +30,27 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.main,
       borderRadius: "3px",
     },
+    select: {
+      minWidth: "10rem",
+      backgroundColor: "#ffffff",
+      border: "solid 1px #f2f2f2",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      "&.Mui-disabled": {
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
+        color: "#000000",
+        "&>.MuiSelect-icon": {
+          display: "none",
+        },
+      },
+      "&.Mui-focused": {
+        backgroundColor: "#fcfcfc",
+        borderColor: "#e5e5e5",
+      },
+      "&:hover": {
+        backgroundColor: "#e5e5e5",
+      },
+    },
   })
 );
 
@@ -41,7 +63,7 @@ interface IProps {
 export default function HeatmapChart(props: IProps) {
   const classes = useStyles();
 
-  const selectedOfficeData = props.data[props.selectedOffice] || {};
+  const selectedOfficeData = (props.data.dataPerCaseOffice || {})[props.selectedOffice] || {};
   const selectedMetric = props.metrics[0];
   const selectedMetricData = selectedOfficeData[selectedMetric] || {};
   const months = Object.keys(selectedMetricData);
@@ -122,7 +144,8 @@ export default function HeatmapChart(props: IProps) {
       >
         <FormControl>
           <Select
-            native
+            disableUnderline
+            className={classes.select}
             value={state.selectedMetric}
             onChange={handleSelect}
             inputProps={{
@@ -131,15 +154,16 @@ export default function HeatmapChart(props: IProps) {
             }}
           >
             {props.metrics.map((metric: string) => (
-              <option key={metric} value={metric}>
+              <MenuItem key={metric} value={metric}>
                 {metric}
-              </option>
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
         <FormControl>
           <Select
-            native
+            disableUnderline
+            className={classes.select}
             value={state.selectedMonth}
             onChange={handleSelect}
             inputProps={{
@@ -148,9 +172,9 @@ export default function HeatmapChart(props: IProps) {
             }}
           >
             {months.map((month: string) => (
-              <option key={month} value={month}>
+              <MenuItem key={month} value={month}>
                 {yearMonthLabel(new Date(month))}
-              </option>
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
