@@ -505,7 +505,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       transition: "all 0.3s ease-in-out",
     },
     meetingFileButton: {
-      width: "100%",
+      width: "50%",
     },
     meetingCaseFile: {
       backgroundColor: "#f2f2f2",
@@ -531,6 +531,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     deleteMeetingFile: {
+      width: "50%",
       textTransform: "none",
       backgroundColor: "maroon",
       color: "white",

@@ -82,7 +82,7 @@ const Component = (props: Props) => {
         spacing={2}
         alignItems="center"
       >
-        <Grid item xs={12} md={9}>
+        <Grid item xs={12} md={8}>
           <FormControl fullWidth size="small">
             <InputLabel
               className={classes.inputLabel}
@@ -109,7 +109,7 @@ const Component = (props: Props) => {
           </FormControl>
         </Grid>
         {props.showUploadButton && (
-          <Grid item xs={12} md={3} style={{ position: "relative" }}>
+          <Grid item xs={12} md={4} style={{ position: "relative" }}>
             <Box className={classes.helpersBox}>
               {props.meetingFile?.description &&
                 (props.fileToDelete || stagedFileName.length > 0) && (
@@ -245,7 +245,7 @@ const Component = (props: Props) => {
         )}
 
         {props.showFile && (
-          <Grid xs={12} md={3}>
+          <Grid xs={12} md={4}>
             <InputLabel
               className={classes.inputLabel}
               htmlFor="name"
