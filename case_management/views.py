@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -121,9 +122,18 @@ class ClientViewSet(LoggedModelViewSet):
     def get_queryset(self):
         queryset = Client.objects.all()
         case_office = self.request.query_params.get('caseOffice')
+        user = self.request.query_params.get('user')
+        if case_office is not None and user is not None:
+            raise ValidationError(
+                'Query parameters "caseOffice" and "user" cannot be used together'
+            )
         if case_office is not None:
             queryset = Client.objects.filter(
                 legal_cases__case_offices__id=case_office
+            ).distinct('id')
+        if user is not None:
+            queryset = Client.objects.filter(
+                users__id=user
             ).distinct('id')
         return queryset
 

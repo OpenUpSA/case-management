@@ -117,6 +117,14 @@ export const getClients = async () => {
   return await httpGet<IClient[]>(`/clients/`);
 };
 
+export const getClientsForCaseOffice = async (id: number) => {
+  return await httpGet<IClient[]>(`/clients/?caseOffice=${id}`);
+};
+
+export const getClientsForUser = async (id: number) => {
+  return await httpGet<IClient[]>(`/clients/?user=${id}`);
+};
+
 export const getClient = async (id: number) => {
   return await httpGet<IClient>(`/clients/${id}/`);
 };

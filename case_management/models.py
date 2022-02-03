@@ -237,6 +237,8 @@ class Client(LoggedModel):
     has_disability = models.BooleanField(blank=True, null=True)
     disabilities = models.CharField(max_length=255, blank=True)
 
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+
     def save(self, *args, **kwargs):
         if self.preferred_name == '':
             self.preferred_name = self.name
