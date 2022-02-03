@@ -15,7 +15,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
 import CircularProgress from "@mui/material/CircularProgress";
 
-
 import MeetingForm from "../../components/meeting/form";
 import MoreMenu from "../../components/moreMenu";
 import i18n from "../../i18n";
@@ -25,6 +24,7 @@ import { ILegalCase, IClient, IMeeting } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import SnackbarAlert from "../../components/general/snackBar";
+import { createLegalCaseFile } from "../../api";
 
 type RouteParams = { id: string };
 
@@ -50,51 +50,108 @@ const Page = () => {
   const [notesError, setNotesError] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
+  const [progress, setProgress] = React.useState<number>(0);
+  const [meetingFileData, setMeetingFileData] = React.useState<any>({
+    file: null,
+    description: "",
+  });
 
   const newMeeting = async (newMeeting: IMeeting) => {
-    try {
+    const upLoadFile = async () => {
       setIsLoading(true);
-      const { id, location, meeting_type, notes } = await createMeeting({
+      createLegalCaseFile(
+        legalCase?.id,
+        meetingFileData.file,
+        meetingFileData.description,
+        (e: any) => {
+          const { loaded, total } = e;
+          const percent = Math.floor((loaded * 100) / total);
+          setProgress(percent);
+          if (percent === 100) {
+            setTimeout(() => {
+              setProgress(0);
+            }, 1000);
+          }
+        }
+      )
+        .then((res: any) => {
+          setIsLoading(false);
+          if (res.id) {
+            createNewMeeting(newMeeting, res.id);
+          }
+        })
+        .catch((err: any) => {
+          setIsLoading(false);
+          setShowSnackbar(true);
+        });
+    };
+
+    const createNewMeeting = async (
+      newMeeting: IMeeting,
+      meetingFileId: number | null
+    ) => {
+      setIsLoading(true);
+      await createMeeting({
         ...newMeeting,
         legal_case: parseInt(params.id),
-      });
-      setIsLoading(false);
+        legal_case_file: meetingFileId,
+      })
+        .then((response: any) => {
+          setIsLoading(false);
+          if (typeof response.location === "object") {
+            setLocationError(true);
+            setMeetingTypeError(false);
+            setNotesError(false);
+            return false;
+          } else if (typeof response.meeting_type === "object") {
+            setMeetingTypeError(true);
+            setLocationError(false);
+            setNotesError(false);
+            return false;
+          } else if (typeof response.notes === "object") {
+            setNotesError(true);
+            setLocationError(false);
+            setMeetingTypeError(false);
+            return false;
+          } else {
+            setNotesError(false);
+            setLocationError(false);
+            setMeetingTypeError(false);
+          }
 
-      if (typeof location === "object") {
-        setLocationError(true);
-        setMeetingTypeError(false);
-        setNotesError(false);
-        return false;
-      } else if (typeof meeting_type === "object") {
-        setMeetingTypeError(true);
-        setLocationError(false);
-        setNotesError(false);
-        return false;
-      } else if (typeof notes === "object") {
-        setNotesError(true);
-        setLocationError(false);
-        setMeetingTypeError(false);
-        return false;
-      } else {
-        setNotesError(false);
-        setLocationError(false);
-        setMeetingTypeError(false);
-      }
-
-      id &&
-        history.push({
-          pathname: `/meetings/${id}`,
-          state: {
-            open: true,
-            message: "New meeting created",
-            severity: "success",
-          },
+          response.id &&
+            history.push({
+              pathname: `/meetings/${response.id}`,
+              state: {
+                open: true,
+                message: "New meeting created",
+                severity: "success",
+              },
+            });
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          setShowSnackbar(true);
         });
+    };
+
+    try {
+      if (meetingFileData.file) {
+        await upLoadFile();
+      } else {
+        await createNewMeeting(newMeeting, null);
+      }
     } catch (e) {
       setIsLoading(false);
       setShowSnackbar(true);
     }
+  };
+
+  const onFileChange = async (event: any, fileDescription: string) => {
+    setMeetingFileData({
+      file: event.target.files[0],
+      description: fileDescription,
+    });
   };
 
   useEffect(() => {
@@ -184,7 +241,11 @@ const Page = () => {
                 </MenuItem>
               </MoreMenu>
             </Grid>
-            <Grid style={{ position: "relative" }} item className={classes.zeroWidthOnMobile}>
+            <Grid
+              style={{ position: "relative" }}
+              item
+              className={classes.zeroWidthOnMobile}
+            >
               <Button
                 className={classes.canBeFab}
                 color="primary"
@@ -224,6 +285,10 @@ const Page = () => {
             locationError={locationError}
             notesError={notesError}
             meetingTypeError={meetingTypeError}
+            showUploadButton={true}
+            onFileChange={onFileChange}
+            progress={progress}
+            buttonText={"Upload file"}
           />
         </form>
       </Container>

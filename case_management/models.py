@@ -295,7 +295,7 @@ class Meeting(LoggedModel):
     legal_case_file = models.ForeignKey(
         'LegalCaseFile',
         related_name='legal_case_files',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
