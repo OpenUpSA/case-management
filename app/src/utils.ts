@@ -35,6 +35,16 @@ export const useStyles = makeStyles((theme: Theme) =>
         zIndex: "1300!important" as any,
       },
     },
+    bigCanBeFab: {
+      [theme.breakpoints.down("xs")]: {
+        width: "90%",
+        margin: "0px",
+        right: "16px",
+        bottom: "20px",
+        position: "fixed",
+        zIndex: "1300!important" as any,
+      },
+    },
     customAppBar: {
       zIndex: "100000!important" as any,
     },
@@ -422,19 +432,23 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0, 0, 0, 0.1)",
       },
     },
-
     caseFilesItem: {
       display: "flex",
       alignItems: "center",
     },
-
     caseFileLabel: {
       color: "#000",
       fontSize: "13px",
       fontWeight: 600,
       paddingBottom: "20px",
     },
-    tabButton: {
+    caseTabButton: {
+      "& p": {
+        padding: "4px 12px 4px 0px!important" as any,
+        textTransform: "none",
+        color: "black",
+        fontWeight: 700,
+      },
       "&.Mui-selected": {
         backgroundColor: "#f4f7fe",
       },
@@ -539,6 +553,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       "&:hover": {
         backgroundColor: "#b30900",
       },
+    },
+    noIndicator: {
+      display: "none"
     },
   })
 );

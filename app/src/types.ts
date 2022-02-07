@@ -132,3 +132,9 @@ export interface LocationState {
   message?: string;
   severity?: "success" | "error" | undefined;
 }
+
+export interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}

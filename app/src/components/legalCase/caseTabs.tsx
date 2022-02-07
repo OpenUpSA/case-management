@@ -1,21 +1,22 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
-import NewMeetingsTable from "../meeting/newTable";
 import Typography from "@mui/material/Typography";
+
 import CaseFileTab from "./caseFileTab";
 import CaseInfoTab from "./caseInfoTab";
-import { IMeeting, ILegalCase, ILegalCaseFile } from "../../types";
+import CaseUpdateTab from "./caseUpdateTab";
+import {
+  IMeeting,
+  ILegalCase,
+  ILegalCaseFile,
+  TabPanelProps,
+} from "../../types";
 import { useStyles } from "../../utils";
 import { getLegalCaseFiles } from "../../api";
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
+import i18n from "../../i18n";
 
 type Props = {
   meetings: IMeeting[];
@@ -46,14 +47,14 @@ function a11yProps(index: number) {
   };
 }
 
-export default function BasicTabs(props: Props) {
+export default function CaseTabs(props: Props) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
-  const [legalCaseFiles, setLegalCaseFiles] = React.useState<
+  const [value, setValue] = useState(0);
+  const [legalCaseFiles, setLegalCaseFiles] = useState<
     ILegalCaseFile[] | undefined
   >();
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchData() {
       if (props.legalCase?.id) {
         const dataLegalCaseFiles = await getLegalCaseFiles(props.legalCase?.id);
@@ -68,7 +69,7 @@ export default function BasicTabs(props: Props) {
   };
 
   return (
-    <div>
+    <>
       <Box
         sx={{
           borderBottom: 1,
@@ -87,58 +88,26 @@ export default function BasicTabs(props: Props) {
         >
           <Tab
             key="caseInfo"
-            className={classes.tabButton}
-            label={
-              <Typography
-                sx={{
-                  paddingTop: 1,
-                  paddingRight: 2,
-                  textTransform: "none",
-                  color: "black",
-                  fontWeight: 700,
-                }}
-              >
-                Case info
-              </Typography>
-            }
+            className={classes.caseTabButton}
+            label={<Typography>{i18n.t("Case info")}</Typography>}
             {...a11yProps(0)}
           />
           <Tab
             key="meetings"
-            className={classes.tabButton}
+            className={classes.caseTabButton}
             label={
-              <Badge badgeContent={props.meetings.length} color="primary">
-                <Typography
-                  sx={{
-                    paddingTop: 1,
-                    paddingRight: 2,
-                    textTransform: "none",
-                    color: "black",
-                    fontWeight: 700,
-                  }}
-                >
-                  Meetings
-                </Typography>
+              <Badge badgeContent={0} color="primary">
+                <Typography>{i18n.t("Case updates")}</Typography>
               </Badge>
             }
             {...a11yProps(1)}
           />
           <Tab
             key="caseFiles"
-            className={classes.tabButton}
+            className={classes.caseTabButton}
             label={
               <Badge badgeContent={legalCaseFiles?.length} color="primary">
-                <Typography
-                  sx={{
-                    paddingTop: 1,
-                    paddingRight: 2,
-                    textTransform: "none",
-                    color: "black",
-                    fontWeight: 700,
-                  }}
-                >
-                  Case files
-                </Typography>
+                <Typography>{i18n.t("Case files")}</Typography>
               </Badge>
             }
             {...a11yProps(2)}
@@ -149,13 +118,7 @@ export default function BasicTabs(props: Props) {
         {props.legalCase ? <CaseInfoTab legalCase={props.legalCase} /> : null}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {props.meetings && props.legalCase ? (
-          <NewMeetingsTable
-            meetings={props.meetings ? props.meetings : []}
-            standalone={false}
-            legalCase={props.legalCase}
-          />
-        ) : null}
+        <CaseUpdateTab />
       </TabPanel>
       <TabPanel value={value} index={2}>
         {legalCaseFiles && props.legalCase ? (
@@ -166,6 +129,6 @@ export default function BasicTabs(props: Props) {
           />
         ) : null}
       </TabPanel>
-    </div>
+    </>
   );
 }
