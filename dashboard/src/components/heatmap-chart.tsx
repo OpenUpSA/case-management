@@ -5,12 +5,13 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
-import Tooltip from "@material-ui/core/Tooltip";
 import MenuItem from "@material-ui/core/MenuItem";
+
 import LayoutChart from "./layout-chart";
 import NoData from "./no-data";
 import { IDbDataDailyPerMonth } from "../types";
 import { yearMonthLabel } from "../utils";
+import { BlackTooltip } from "./general/tooltip";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +30,15 @@ const useStyles = makeStyles((theme: Theme) =>
     dayValue: {
       backgroundColor: theme.palette.primary.main,
       borderRadius: "3px",
+      width: "100%",
+      height: "20px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      boxSizing: "border-box",
+      "&:hover": {
+        border: " 1px solid black",
+      },
     },
     select: {
       minWidth: "10rem",
@@ -63,7 +73,8 @@ interface IProps {
 export default function HeatmapChart(props: IProps) {
   const classes = useStyles();
 
-  const selectedOfficeData = (props.data.dataPerCaseOffice || {})[props.selectedOffice] || {};
+  const selectedOfficeData =
+    (props.data.dataPerCaseOffice || {})[props.selectedOffice] || {};
   const selectedMetric = props.metrics[0];
   const selectedMetricData = selectedOfficeData[selectedMetric] || {};
   const months = Object.keys(selectedMetricData);
@@ -206,7 +217,7 @@ export default function HeatmapChart(props: IProps) {
                     {week.map(
                       (dayData: { day: number; value: number }, j: number) => (
                         <Grid key={j} item xs>
-                          <Tooltip
+                          <BlackTooltip
                             title={
                               dayData === null
                                 ? ""
@@ -215,6 +226,7 @@ export default function HeatmapChart(props: IProps) {
                                   )}: ${dayData.value} ${state.selectedMetric}`
                             }
                             arrow
+                            placement="top"
                           >
                             <Box
                               className={classes.dayValue}
@@ -235,7 +247,7 @@ export default function HeatmapChart(props: IProps) {
                             >
                               {dayData === null ? "-" : dayData.value}
                             </Box>
-                          </Tooltip>
+                          </BlackTooltip>
                         </Grid>
                       )
                     )}
