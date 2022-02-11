@@ -146,7 +146,12 @@ export default function HeatmapChart(props: IProps) {
   };
 
   return (
-    <LayoutChart title={i18next.t("Data heatmap")}>
+    <LayoutChart
+      title={i18next.t("Data heatmap")}
+      info={i18next.t(
+        "The Data Heatmap shows cases; opened, closed and activity (by day of the month)."
+      )}
+    >
       <Grid
         container
         justifyContent="space-between"

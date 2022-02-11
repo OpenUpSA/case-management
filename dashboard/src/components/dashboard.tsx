@@ -107,17 +107,36 @@ export default function Dashboard(props: IProps) {
   const generateChartData = (): Array<IBarChart | IHeatmapChart> => {
     const charts: Array<IBarChart | IHeatmapChart> = [];
     const barChartMetrics = [
-      "Active case officers",
-      "Total cases",
-      "Average cases per officer",
-      "Average days per case",
-      "Cases opened",
-      "Cases closed",
+      {
+        name: "Active case officers",
+        info: "This graph shows the number of active case officers by month.",
+      },
+      {
+        name: "Total cases",
+        info: "This graph shows  the total number of cases that remain open during the month.",
+      },
+      {
+        name: "Average cases per officer",
+        info: "This graph shows the average number of cases open per case officer.",
+      },
+      {
+        name: "Average days per case",
+        info: "This graph shows the average number of days that a case is in an open state.",
+      },
+      {
+        name: "Cases opened",
+        info: "This graph shows the total amount of cases opened in the month",
+      },
+      {
+        name: "Cases closed",
+        info: "This graph shows the total number of cases closed in the month.",
+      },
     ];
-    barChartMetrics.forEach((name: string) => {
+    barChartMetrics.forEach((instance: { name: string; info: string }) => {
       charts.push({
         type: "bar",
-        metric: name,
+        metric: instance.name,
+        info: instance.info,
         dataMonthly: props.dataMonthly,
         dataByRange: props.dataByRange,
       });
@@ -165,6 +184,7 @@ export default function Dashboard(props: IProps) {
           <BarChart
             selectedOffice={state.selectedOffice}
             metric={chart.metric}
+            info={chart.info}
             dataMonthly={chart.dataMonthly}
             dataByRange={chart.dataByRange}
           ></BarChart>

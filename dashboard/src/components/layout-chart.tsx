@@ -3,6 +3,9 @@ import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
+import InfoIcon from "@mui/icons-material/Info";
+import Box from "@mui/material/Box";
+import { BlackTooltip } from "./general/tooltip";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IProps {
   title: string;
   children: ReactNode;
+  info: string;
 }
 
 export default function LayoutChart(props: IProps) {
@@ -29,9 +33,14 @@ export default function LayoutChart(props: IProps) {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Typography className={classes.title} color="textSecondary">
-          {props.title}
-        </Typography>
+        <Box style={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography className={classes.title} color="textSecondary">
+            {props.title}
+          </Typography>
+          <BlackTooltip title={props.info} arrow placement="top">
+            <InfoIcon />
+          </BlackTooltip>
+        </Box>
         {props.children}
       </CardContent>
     </Card>
