@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      minHeight: 220,
+      minHeight: 232,
     },
   })
 );
