@@ -66,7 +66,7 @@ const CaseUpdateTab = () => {
               </Grid>
               <Grid item>
                 <IconButton
-                  style={{ borderRadius: "8px", backgroundColor: "#f2f2f2" }}
+                  className={classes.closeButton}
                   size={"small"}
                   onClick={dialogClose}
                 >
@@ -75,11 +75,16 @@ const CaseUpdateTab = () => {
               </Grid>
             </Grid>
             <UpdateDialogContent />
-            <DialogActions style={{ padding: 0 }}>
+            <DialogActions
+              style={{
+                padding: "10px 0px 0px 0px",
+                borderTop: "1px solid rgb(0,0,0,0.2)",
+              }}
+            >
               <Button
                 fullWidth
                 onClick={dialogClose}
-                style={{ backgroundColor: "#f2f2f2", textTransform: "none" }}
+                className={classes.dialogCancel}
               >
                 {i18n.t("Cancel")}
               </Button>

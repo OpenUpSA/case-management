@@ -453,6 +453,44 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "#f4f7fe",
       },
     },
+    dialogTabButton: {
+      height: "45px!important" as any,
+      minHeight: "45px!important" as any,
+      display: "flex!important" as any,
+      flexDirection: "row!important" as any,
+      alignItems: "center!important" as any,
+      justifyContent: "space-around!important" as any,
+      margin: "0px 8px 16px 8px!important" as any,
+      borderRadius: "6px!important" as any,
+      backgroundColor: "#e5e5e5!important" as any,
+      transition: "all 0.3s ease-in-out!important" as any,
+      "& p": {
+        padding: "2px 4px!important" as any,
+        textTransform: "none",
+        color: "#000!important" as any,
+        fontSize: "13px!important" as any,
+        fontWeight: 700,
+      },
+      "&>.MuiSvgIcon-root": {
+        marginBottom: "0px!important" as any,
+        color: "#000!important" as any,
+      },
+      "&.Mui-selected": {
+        backgroundColor: "#2b61f0!important" as any,
+        "&:hover": {
+          backgroundColor: "#043ed9!important" as any,
+        },
+        "& p": {
+          color: "#fff!important" as any,
+        },
+        "&>.MuiSvgIcon-root": {
+          color: "#fff!important" as any,
+        },
+      },
+      "&:hover": {
+        backgroundColor: "#cccccc!important" as any,
+      },
+    },
     clientDetailLabel: {
       color: "#000",
       fontSize: "1.2em",
@@ -555,7 +593,58 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     noIndicator: {
-      display: "none"
+      display: "none",
+    },
+    closeButton: {
+      borderRadius: "8px",
+      backgroundColor: "#f2f2f2",
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
+      },
+    },
+    dialogCancel: {
+      backgroundColor: "#f2f2f2",
+      textTransform: "none",
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
+      },
+    },
+    updateAlert: {
+      margin: "20px 0px",
+      borderRadius: "6px!important" as any,
+      backgroundColor: "#e9f0fe!important" as any,
+      "&>.MuiAlert-icon": {
+        alignItems: "center",
+      },
+      "& svg": {
+        color: "#2b61f0",
+      },
+      "&>.MuiAlert-message": {
+        color: "#2b61f0",
+      },
+    },
+    dialogInput: {
+      fontSize: "13px",
+      backgroundColor: "rgba(0, 0, 0, 0.035)",
+      border: "solid 1px rgba(0, 0, 0, 0)",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      marginBottom: "20px",
+      "&.Mui-disabled": {
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
+        color: "#000000",
+      },
+      "&.Mui-focused": {
+        backgroundColor: "rgba(0, 0, 0, 0.01)",
+        borderColor: "rgba(0, 0, 0, 0.1)",
+      },
+      "& textarea": {
+        paddingTop: "8px",
+        paddingBottom: "8px",
+      },
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.07)",
+      },
     },
   })
 );
