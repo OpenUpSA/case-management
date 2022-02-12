@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "1rem",
       paddingBottom: "1rem",
       borderRadius: "10px",
+      justifyContent: "center",
     },
   })
 );
