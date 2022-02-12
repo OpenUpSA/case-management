@@ -22,20 +22,24 @@ from case_management.serializers import (
     CaseTypeSerializer,
     ClientSerializer,
     LegalCaseSerializer,
+    CaseUpdateSerializer,
+    FileSerializer,
     MeetingSerializer,
+    NoteSerializer,
     UserSerializer,
     LogSerializer,
-    LegalCaseFileSerializer,
 )
 from case_management.models import (
     CaseOffice,
     CaseType,
     Client,
     LegalCase,
+    CaseUpdate,
+    File,
     Meeting,
+    Note,
     User,
     Log,
-    LegalCaseFile,
 )
 
 import time
@@ -146,6 +150,21 @@ class LegalCaseViewSet(LoggedModelViewSet):
         serializer.save(case_number=generated_case_number)
 
 
+class CaseUpdateViewSet(LoggedModelViewSet):
+    queryset = CaseUpdate.objects.all()
+    serializer_class = CaseUpdateSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['legal_case']
+
+
+class FileViewSet(LoggedModelViewSet):
+    parser_classes = (MultiPartParser, FormParser)
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['legal_case']
+
+
 class MeetingViewSet(LoggedModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
@@ -153,10 +172,9 @@ class MeetingViewSet(LoggedModelViewSet):
     filterset_fields = ['legal_case']
 
 
-class LegalCaseFileViewSet(LoggedModelViewSet):
-    parser_classes = (MultiPartParser, FormParser)
-    queryset = LegalCaseFile.objects.all()
-    serializer_class = LegalCaseFileSerializer
+class NoteViewSet(LoggedModelViewSet):
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['legal_case']
 

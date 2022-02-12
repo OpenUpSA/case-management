@@ -6,10 +6,12 @@ from case_management.models import (
     CaseOffice,
     CaseType,
     Client,
-    User,
+    CaseUpdate,
+    File,
     Meeting,
+    Note,
+    User,
     Log,
-    LegalCaseFile,
 )
 from case_management.forms import UserCreationForm, UserChangeForm
 
@@ -101,10 +103,25 @@ class LegalCaseAdmin(DefaultAdmin):
     list_filter = ['case_number']
 
 
+class CaseUpdateAdmin(DefaultAdmin):
+    model = CaseUpdate
+    list_display = ['legal_case', 'files', 'meeting', 'note']
+
+
+class FileAdmin(DefaultAdmin):
+    model = File
+    list_display = ['legal_case', 'upload']
+
+
 class MeetingAdmin(DefaultAdmin):
     model = Meeting
     list_display = ['location', 'legal_case']
     list_filter = ['location', 'legal_case']
+
+
+class NoteAdmin(DefaultAdmin):
+    model = Note
+    list_display = ['legal_case', 'title']
 
 
 class LogAdmin(DefaultAdmin):
@@ -112,16 +129,13 @@ class LogAdmin(DefaultAdmin):
     list_display = ['action', 'target_type']
 
 
-class LegalCaseFileAdmin(DefaultAdmin):
-    model = LegalCaseFile
-    list_display = ['legal_case', 'upload']
-
-
 admin.site.register(CaseType, CaseTypeAdmin)
 admin.site.register(CaseOffice, CaseOfficeAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(LegalCase, LegalCaseAdmin)
-admin.site.register(User, UserAdmin)
+admin.site.register(CaseUpdate, CaseUpdateAdmin)
+admin.site.register(File, FileAdmin)
 admin.site.register(Meeting, MeetingAdmin)
+admin.site.register(Note, NoteAdmin)
 admin.site.register(Log, LogAdmin)
-admin.site.register(LegalCaseFile, LegalCaseFileAdmin)
+admin.site.register(User, UserAdmin)

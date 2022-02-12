@@ -5,17 +5,18 @@ from case_management.models import (
     CaseType,
     Client,
     LegalCase,
+    CaseUpdate,
+    File,
     Meeting,
+    Note,
     User,
     Log,
     LogChange,
-    LegalCaseFile,
 )
 from case_management.enums import MaritalStatuses
 
 
 class LogChangeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = LogChange
         fields = '__all__'
@@ -97,9 +98,81 @@ class CaseOfficeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = File
+        fields = [
+            'id',
+            'legal_case',
+            'upload',
+            'upload_file_name',
+            'upload_file_extension',
+            'description',
+            'created_at',
+            'updated_at',
+        ]
+
+
 class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
+        fields = '__all__'
+
+
+class NoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = '__all__'
+
+
+class CaseUpdateSerializer(serializers.ModelSerializer):
+    files = serializers.PrimaryKeyRelatedField(
+        many=True, read_only=False, queryset=File.objects.all(), required=False
+    )
+    meeting = MeetingSerializer(many=False, read_only=False, required=False)
+    note = NoteSerializer(many=False, read_only=False, required=False)
+    update_types_list = ('files', 'meeting', 'notes')
+    nested_update_types = {
+        'files': {'action': 'assign'},
+        'meeting': {'action': 'create', 'model': Meeting},
+        'note': {'action': 'create', 'model': Note},
+    }
+
+    def validate(self, data):
+        update_type_count = 0
+        for update_type in self.update_types_list:
+            update_type_count += update_type in data
+        if update_type_count == 0:
+            raise serializers.ValidationError(
+                f'Provide one of {self.update_types_list}'
+            )
+        if update_type_count > 1:
+            raise serializers.ValidationError(
+                f'Provide only one of {self.update_types_list}'
+            )
+        return data
+
+    def create(self, validated_data):
+        for update_type, update_type_details in self.nested_update_types.items():
+            if update_type in validated_data:
+                update_type_details['data'] = validated_data.pop(update_type)
+        case_update = CaseUpdate.objects.create(**validated_data)
+        for update_type_name, update_type_details in self.nested_update_types.items():
+            if 'data' in update_type_details:
+                if update_type_details['action'] == 'create':
+                    update_type_details['model'].objects.create(
+                        **update_type_details['data'], case_update=case_update
+                    )
+                elif update_type_details['action'] == 'assign':
+                    getattr(case_update, update_type_name).set(
+                        update_type_details['data']
+                    )
+                else:
+                    raise Exception('Unknown case update action')
+        return case_update
+
+    class Meta:
+        model = CaseUpdate
         fields = '__all__'
 
 
@@ -113,19 +186,4 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'membership_number',
             'case_office',
-        ]
-
-
-class LegalCaseFileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LegalCaseFile
-        fields = [
-            'id',
-            'legal_case',
-            'upload',
-            'upload_file_name',
-            'upload_file_extension',
-            'description',
-            'created_at',
-            'updated_at',
         ]

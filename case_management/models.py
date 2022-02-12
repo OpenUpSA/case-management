@@ -179,6 +179,36 @@ class LoggedModel(LifecycleModel, models.Model):
         abstract = True
 
 
+class LoggedChildModel(LoggedModel):
+    """Child models must define case_update and legal_case fields"""
+
+    def save(self, *args, **kwargs):
+        if self.case_update is not None:
+            self.legal_case = self.case_update.legal_case
+        super().save(*args, **kwargs)
+
+    @hook(AFTER_CREATE)
+    def log_create(self):
+        if self.case_update is not None:
+            logIt(
+                self, 'Create', parent_id=self.case_update.id, parent_type='CaseUpdate'
+            )
+        else:
+            logIt(self, 'Create', parent_id=self.legal_case.id, parent_type='LegalCase')
+
+    @hook(AFTER_UPDATE)
+    def log_update(self):
+        if self.case_update is not None:
+            logIt(
+                self, 'Update', parent_id=self.case_update.id, parent_type='CaseUpdate'
+            )
+        else:
+            logIt(self, 'Update', parent_id=self.legal_case.id, parent_type='LegalCase')
+
+    class Meta:
+        abstract = True
+
+
 class CaseOffice(LoggedModel):
     name = models.CharField(max_length=500, unique=True)
     description = models.TextField()
@@ -281,9 +311,48 @@ class LegalCase(LoggedModel):
         return self.case_number
 
 
-class Meeting(LoggedModel):
+class CaseUpdate(LoggedModel):
     legal_case = models.ForeignKey(
-        LegalCase, related_name='meetings', on_delete=models.CASCADE
+        LegalCase, related_name='case_updates', on_delete=models.CASCADE
+    )
+
+    @hook(AFTER_CREATE)
+    def log_create(self):
+        logIt(self, 'Create', parent_id=self.legal_case.id, parent_type='LegalCase')
+
+    @hook(AFTER_UPDATE)
+    def log_update(self):
+        logIt(self, 'Update', parent_id=self.legal_case.id, parent_type='LegalCase')
+
+
+class Note(LoggedChildModel):
+    case_update = models.OneToOneField(
+        CaseUpdate, on_delete=models.CASCADE, related_name='note', null=True, blank=True
+    )
+    legal_case = models.ForeignKey(
+        LegalCase, related_name='notes', on_delete=models.CASCADE, null=True, blank=True
+    )
+    title = models.CharField(max_length=255, null=False, blank=False)
+    content = models.TextField(null=False, blank=False)
+
+    def __str__(self):
+        return self.title
+
+
+class Meeting(LoggedChildModel):
+    case_update = models.OneToOneField(
+        CaseUpdate,
+        on_delete=models.CASCADE,
+        related_name='meeting',
+        null=True,
+        blank=True,
+    )
+    legal_case = models.ForeignKey(
+        LegalCase,
+        related_name='meetings',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     location = models.CharField(max_length=255, null=False, blank=False)
     meeting_type = models.CharField(
@@ -293,28 +362,27 @@ class Meeting(LoggedModel):
     notes = models.TextField(null=False, blank=False)
     name = models.CharField(max_length=255, null=False, blank=True, default="")
     legal_case_file = models.ForeignKey(
-        'LegalCaseFile',
+        'File',
         related_name='legal_case_files',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
 
-    @hook(AFTER_CREATE)
-    def log_create(self):
-        logIt(self, 'Create', parent_id=self.legal_case.id, parent_type='LegalCase')
-
-    @hook(AFTER_UPDATE)
-    def log_update(self):
-        logIt(self, 'Update', parent_id=self.legal_case.id, parent_type='LegalCase')
-
     def __str__(self):
         return self.name
 
 
-class LegalCaseFile(LoggedModel):
+class File(LoggedChildModel):
+    case_update = models.ForeignKey(
+        CaseUpdate,
+        related_name='files',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     legal_case = models.ForeignKey(
-        LegalCase, related_name='files', on_delete=models.CASCADE
+        LegalCase, related_name='files', on_delete=models.CASCADE, null=True, blank=True
     )
     upload = models.FileField(upload_to='uploads/')
     description = models.CharField(max_length=255, null=False, blank=True, default='')
@@ -323,14 +391,6 @@ class LegalCaseFile(LoggedModel):
         if self.description == '':
             self.description = self.upload_file_name()
         super().save(*args, **kwargs)
-
-    @hook(AFTER_CREATE)
-    def log_create(self):
-        logIt(self, 'Create', parent_id=self.legal_case.id, parent_type='LegalCase')
-
-    @hook(AFTER_UPDATE)
-    def log_update(self):
-        logIt(self, 'Update', parent_id=self.legal_case.id, parent_type='LegalCase')
 
     def __str__(self):
         return self.upload_file_name()
