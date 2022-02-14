@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "1rem",
       paddingBottom: "1rem",
       borderRadius: "10px",
+      justifyContent: "center",
     },
   })
 );
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IProps {
   selectedOffice: string;
   metric: string;
+  info: string;
   dataMonthly: IDbDataMonthly;
   dataByRange: IDbDataByRange;
 }
@@ -69,7 +71,7 @@ export default function BarChart(props: IProps) {
     value: dataPoint.value,
   }));
   return (
-    <LayoutChart title={props.metric}>
+    <LayoutChart title={props.metric} info={props.info}>
       {hasData ? (
         <div>
           <Typography className={classes.value}>
@@ -95,6 +97,13 @@ export default function BarChart(props: IProps) {
                     title={dataPoint.value}
                     arrow
                     placement="right-start"
+                    componentsProps={{
+                      tooltip: {
+                        sx: {
+                          transform: "translate(0, -10px)!important" as any,
+                        },
+                      },
+                    }}
                   >
                     <Box
                       className={classes.bar}

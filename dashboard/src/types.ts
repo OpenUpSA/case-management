@@ -44,6 +44,7 @@ export interface IChartDataPoint {
 
 export interface IBarChart {
   metric: string;
+  info: string;
   type: "bar";
   dataMonthly: IDbDataMonthly;
   dataByRange: IDbDataByRange;
