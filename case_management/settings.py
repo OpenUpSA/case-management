@@ -52,11 +52,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3321",
     "http://localhost:3000",
     "http://localhost:3001",
-    "https://app.casefile.org.za",
-    "https://staging.app.casefile.org.za",
     "https://case-management.pages.dev",
+    "https://app.casefile.org.za",
+    "https://staging-app.casefile.org.za",
     "https://dashboard.casefile.org.za",
-    "https://staging.dashboard.casefile.org.za",
+    "https://staging-dashboard.casefile.org.za",
 ]
 
 # Application definition
