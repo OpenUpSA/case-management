@@ -621,6 +621,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       "&>.MuiAlert-message": {
         color: "#2b61f0",
+        "& a": {
+          color: "#2b61f0",
+        },
       },
     },
     dialogInput: {

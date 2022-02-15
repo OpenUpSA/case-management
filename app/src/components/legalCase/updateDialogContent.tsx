@@ -96,8 +96,9 @@ const UpdateDialogContent = () => {
           icon={<HelpOutlineOutlinedIcon fontSize="large" />}
         >
           {i18n.t(
-            "A note is the quickest way for a case worker to update a case with new information and ensure that anybody working on case is able to keep informed about its progress. Learn more"
+            "A note is the quickest way for a case worker to update a case with new information and ensure that anybody working on case is able to keep informed about its progress. "
           )}
+          <a href="#">Learn more</a>
         </Alert>
         <Input
           id="title"
