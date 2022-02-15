@@ -21,7 +21,7 @@ import Stack from "@mui/material/Stack";
 import i18n from "../../i18n";
 import { ILegalCaseFile, IMeeting } from "../../types";
 import { useStyles } from "../../utils";
-import ProgressBar from "../progressBar/progressBar";
+import ProgressBar from "../general/progressBar";
 
 type Props = {
   meeting?: IMeeting;

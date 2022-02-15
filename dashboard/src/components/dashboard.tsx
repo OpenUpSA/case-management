@@ -1,14 +1,14 @@
 import i18next from "i18next";
 import React from "react";
-import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
-
 import Grid from "@material-ui/core/Grid";
+import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import AssessmentIcon from "@mui/icons-material/Assessment";
+import Box from "@mui/material/Box";
+import BarChartIcon from "@mui/icons-material/BarChart";
 
 import Layout from "../components/layout";
 import BarChart from "../components/bar-chart";
@@ -26,14 +26,41 @@ const useStyles = makeStyles((theme: Theme) =>
     header: {
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.secondary.main,
-      padding: "1rem",
-      borderRadius: "10px",
+      padding: "1.5rem",
+    },
+    headerContainer: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      [theme.breakpoints.down("sm")]: {
+        flexDirection: "column",
+        alignItems: "flex-start",
+        padding: "0.5rem 0",
+      },
+    },
+    pageHeader: {
+      backgroundColor: "#ffffff",
+      padding: "1.5rem",
+      marginBottom: "16px",
+      boxShadow: "0px 4px 5px 0px rgba(0, 0, 0, 0.05)",
+      [theme.breakpoints.down("sm")]: {
+        padding: "1.5rem 0",
+      },
     },
     title: {
-      fontSize: "1.5rem",
-      paddingLeft: "0.6rem",
+      fontSize: "20px",
+      fontWeight: "bold",
+      [theme.breakpoints.down("sm")]: {
+        paddingBottom: "16px",
+      },
     },
-    select: {
+    secondTitle: {
+      fontSize: "20px",
+      fontWeight: "bold",
+      paddingLeft: "1rem",
+    },
+    headerSelect: {
       minWidth: "10rem",
       backgroundColor: "#ffffff",
       border: "solid 1px #f2f2f2",
@@ -54,12 +81,16 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "#e5e5e5",
       },
     },
-    chartContainer: {
-      marginTop: "1rem",
+    iconAndTitle: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
     },
-    iconAndTitle: { display: "flex", flexDirection: "row" },
     dropdownStyle: {
       marginTop: "3rem",
+    },
+    dataGrid: {
+      width: "inherit",
     },
   })
 );
@@ -76,19 +107,38 @@ export default function Dashboard(props: IProps) {
   const generateChartData = (): Array<IBarChart | IHeatmapChart> => {
     const charts: Array<IBarChart | IHeatmapChart> = [];
     const barChartMetrics = [
-      "Active case officers",
-      "Total cases",
-      "Average cases per officer",
-      "Average days per case",
-      "Cases opened",
-      "Cases closed",
+      {
+        name: "Active case officers",
+        info: "This graph shows the number of active case officers by month.",
+      },
+      {
+        name: "Total cases",
+        info: "This graph shows  the total number of cases that remain open during the month.",
+      },
+      {
+        name: "Average cases per officer",
+        info: "This graph shows the average number of cases open per case officer.",
+      },
+      {
+        name: "Average days per case",
+        info: "This graph shows the average number of days that a case is in an open state.",
+      },
+      {
+        name: "Cases opened",
+        info: "This graph shows the total amount of cases opened in the month",
+      },
+      {
+        name: "Cases closed",
+        info: "This graph shows the total number of cases closed in the month.",
+      },
     ];
-    barChartMetrics.forEach((name: string) => {
+    barChartMetrics.forEach((instance: { name: string; info: string }) => {
       charts.push({
         type: "bar",
-        metric: name,
+        metric: instance.name,
+        info: instance.info,
         dataMonthly: props.dataMonthly,
-        dataByRange: props.dataByRange
+        dataByRange: props.dataByRange,
       });
     });
     charts.push({
@@ -113,7 +163,10 @@ export default function Dashboard(props: IProps) {
     });
   };
 
-  const offices = Object.keys({ ...props.dataMonthly.dataPerCaseOffice, ...props.dataDaily.dataPerCaseOffice });
+  const offices = Object.keys({
+    ...props.dataMonthly.dataPerCaseOffice,
+    ...props.dataDaily.dataPerCaseOffice,
+  });
 
   if (state.selectedOffice === "" && offices.length) {
     updateOffice(offices[0]);
@@ -131,6 +184,7 @@ export default function Dashboard(props: IProps) {
           <BarChart
             selectedOffice={state.selectedOffice}
             metric={chart.metric}
+            info={chart.info}
             dataMonthly={chart.dataMonthly}
             dataByRange={chart.dataByRange}
           ></BarChart>
@@ -148,24 +202,14 @@ export default function Dashboard(props: IProps) {
 
   return (
     <Layout>
-      <Container className={classes.chartContainer}>
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          className={classes.header}
-        >
-          <div className={classes.iconAndTitle}>
-            <AssessmentIcon />
-            <Typography variant="h1" className={classes.title}>
-              {i18next.t("Reporting Dashboard")}
-            </Typography>
-          </div>
-
+      <Grid className={classes.header}>
+        <Container maxWidth="md" className={classes.headerContainer}>
+          <Typography variant="h1" className={classes.title}>
+            {i18next.t("Reporting Dashboard")}
+          </Typography>
           <FormControl>
             <Select
-              className={classes.select}
+              className={classes.headerSelect}
               disableUnderline
               value={state.selectedOffice}
               onChange={handleOfficeSelect}
@@ -182,11 +226,22 @@ export default function Dashboard(props: IProps) {
               ))}
             </Select>
           </FormControl>
-        </Grid>
-        <br />
+        </Container>
+      </Grid>
+      <Grid className={classes.pageHeader}>
+        <Container maxWidth="md">
+          <Box className={classes.iconAndTitle}>
+            <BarChartIcon color="primary" />
+            <Typography className={classes.secondTitle}>
+              {i18next.t(state.selectedOffice)}
+            </Typography>
+          </Box>
+        </Container>
+      </Grid>
+      <Container maxWidth="md">
         <Grid container spacing={3}>
           {state.charts.map((chart, i) => (
-            <Grid key={i} item sm={12} md={6}>
+            <Grid key={i} item sm={12} md={6} className={classes.dataGrid}>
               {renderChart(chart)}
             </Grid>
           ))}
