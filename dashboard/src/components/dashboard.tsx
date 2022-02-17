@@ -166,7 +166,7 @@ export default function Dashboard(props: IProps) {
   const offices = Object.keys({
     ...props.dataMonthly.dataPerCaseOffice,
     ...props.dataDaily.dataPerCaseOffice,
-  });
+  }).sort();
 
   if (state.selectedOffice === "" && offices.length) {
     updateOffice(offices[0]);
