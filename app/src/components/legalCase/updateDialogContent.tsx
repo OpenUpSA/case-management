@@ -3,6 +3,10 @@ import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import Input from "@material-ui/core/Input";
@@ -10,7 +14,9 @@ import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutl
 import ForumOutlinedIcon from "@mui/icons-material/ForumOutlined";
 import UploadIcon from "@mui/icons-material/Upload";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import AttachmentIcon from "@mui/icons-material/Attachment";
 
+import { LegalCaseStates } from "../../contexts/legalCaseStateConstants";
 import i18n from "../../i18n";
 import { TabPanelProps } from "../../types";
 import { useStyles } from "../../utils";
@@ -98,7 +104,7 @@ const UpdateDialogContent = () => {
           {i18n.t(
             "A note is the quickest way for a case worker to update a case with new information and ensure that anybody working on case is able to keep informed about its progress. "
           )}
-          <a href="#">Learn more</a>
+          <a href="www.google.com">{i18n.t("Learn more")}</a>
         </Alert>
         <Input
           id="title"
@@ -116,6 +122,48 @@ const UpdateDialogContent = () => {
           placeholder={i18n.t("Description of update")}
           className={classes.dialogInput}
         />
+        <Box className={classes.centerItems} sx={{ marginBottom: "20px" }}>
+          <InputLabel
+            className={classes.dialogLabel}
+            style={{ paddingRight: 10 }}
+            htmlFor="status"
+          >
+            {i18n.t("Update case status")}:
+          </InputLabel>
+          <Select
+            id="status"
+            className={classes.select}
+            style={{ flexGrow: 1 }}
+            disableUnderline
+            input={<Input />}
+            value={"Opened"}
+            renderValue={() => "Opened"}
+            onChange={(event: SelectChangeEvent<string>) => {}}
+          >
+            {LegalCaseStates?.map((value) => (
+              <MenuItem key={value} value={value}>
+                {value}
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
+        <Box
+          className={classes.centerItems}
+          sx={{ justifyContent: "space-between", marginBottom: "25px" }}
+        >
+          <Button
+            className={classes.attachmentButton}
+            startIcon={<AttachmentIcon className={classes.attachmentIcon} />}
+          >
+            {i18n.t("Attach files to note")}
+          </Button>
+          <Typography
+            className={classes.dialogLabel}
+            style={{ paddingLeft: "10px" }}
+          >
+            {i18n.t("Uploaded files will be added to the case file")}
+          </Typography>
+        </Box>
       </TabPanel>
       <TabPanel value={value} index={1}>
         yyy

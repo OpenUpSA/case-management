@@ -607,8 +607,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     dialogCancel: {
-      backgroundColor: "#f2f2f2",
-      textTransform: "none",
+      backgroundColor: "#f2f2f2!important" as any,
+      textTransform: "none!important" as any,
+      color: "#000000!important" as any,
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
       },
@@ -660,6 +661,25 @@ export const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down("xs")]: {
         width: "100%",
       },
+    },
+    dialogLabel: {
+      color: "#222222!important" as any,
+      fontSize: "14px!important" as any,
+    },
+    attachmentButton: {
+      padding: "7px 15px!important" as any,
+      fontSize: "13px!important" as any,
+      backgroundColor: "#f2f2f2!important" as any,
+      textTransform: "none!important" as any,
+      color: "#000000!important" as any,
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
+      },
+    },
+    attachmentIcon: {
+      transform: "rotate(135deg)",
+      color: "#797979!important" as any,
+      fontSize: "30px!important" as any,
     },
   })
 );
