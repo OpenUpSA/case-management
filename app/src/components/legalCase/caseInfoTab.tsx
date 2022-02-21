@@ -411,11 +411,8 @@ export default function CaseInfoTab(props: Props) {
                   ?.slice(0)
                   .reverse()
                   .map((item) => (
-                    <>
-                      <ListItem
-                        key={`caseHistory_${item.id}`}
-                        className={classes.caseHistoryList}
-                      >
+                    <React.Fragment key={`caseHistory_${item.id}`}>
+                      <ListItem className={classes.caseHistoryList}>
                         <Chip
                           label={logLabel(item.action, item.target_type)}
                           className={classes.chip}
@@ -450,7 +447,7 @@ export default function CaseInfoTab(props: Props) {
                         </Box>
                       </ListItem>
                       <Divider />
-                    </>
+                    </React.Fragment>
                   ))
               : ""}
           </List>
@@ -529,7 +526,7 @@ export default function CaseInfoTab(props: Props) {
           </InputLabel>
           <TextField
             variant="standard"
-            value={client?.preferred_name}
+            value={client?.preferred_name || ""}
             fullWidth
             className={classes.smallTextField}
             InputProps={{
@@ -549,7 +546,7 @@ export default function CaseInfoTab(props: Props) {
           </InputLabel>
           <TextField
             variant="standard"
-            value={caseWorker?.name}
+            value={caseWorker?.name || ""}
             fullWidth
             className={classes.smallTextField}
             InputProps={{

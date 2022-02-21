@@ -267,6 +267,8 @@ class Client(LoggedModel):
     has_disability = models.BooleanField(blank=True, null=True)
     disabilities = models.CharField(max_length=255, blank=True)
 
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+
     def save(self, *args, **kwargs):
         if self.preferred_name == '':
             self.preferred_name = self.name
@@ -364,7 +366,7 @@ class Meeting(LoggedChildModel):
     legal_case_file = models.ForeignKey(
         'File',
         related_name='legal_case_files',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )

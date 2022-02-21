@@ -19,6 +19,7 @@ from case_management.views import (
     CustomObtainAuthToken,
     UserViewSet,
     LogViewSet,
+    range_summary,
     monthly_summary,
     daily_summary,
 )
@@ -67,6 +68,7 @@ urlpatterns = [
         schema_view.without_ui(cache_timeout=0),
         name='schema-json',
     ),
+    path('api/v1/reports/range-summary', range_summary, name='range-summary'),
     path('api/v1/reports/monthly-summary', monthly_summary, name='monthly-summary'),
     path('api/v1/reports/daily-summary', daily_summary, name='daily-summary'),
     path(

@@ -89,7 +89,6 @@ class ClientSerializer(CountryFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = '__all__'
-        depth = 1
 
 
 class CaseOfficeSerializer(serializers.ModelSerializer):

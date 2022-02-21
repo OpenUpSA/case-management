@@ -47,6 +47,7 @@ export interface IClient {
   province?: string;
   translator_language?: string;
   translator_needed?: string;
+  users?: number[];
 }
 
 //Note: Cannot use Case so internally use LegalCase. User interface refers to Case.
@@ -73,6 +74,7 @@ export interface IMeeting {
   meeting_type: string;
   notes: string;
   name?: string | null;
+  legal_case_file?: number | null;
 }
 
 export interface IUserInfo {

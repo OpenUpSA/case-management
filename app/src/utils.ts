@@ -174,6 +174,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       border: "solid 1px rgba(0, 0, 0, 0)",
       borderRadius: "4px",
       padding: "8px 8px 4px 8px",
+      fontSize: "14px",
       "&.Mui-disabled": {
         backgroundColor: "rgba(0, 0, 0, 0.05)",
         color: "#000000",
@@ -218,24 +219,27 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0, 0, 0, 0.01)",
         borderColor: "rgba(0, 0, 0, 0.1)",
       },
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)",
+      },
       "& textarea": {
         paddingTop: "8px",
         paddingBottom: "8px",
       },
       "&.MuiInputBase-root": {
-        marginTop: "25px",
+        marginBottom: "25px",
       },
     },
     inputLabel: {
       color: "#000",
-      fontWeight: 700,
-      fontSize: "1.2em",
+      fontSize: "14px",
       "&.Mui-focused": {
         color: "unset",
       },
     },
     pageBar: {
       marginBottom: "50px",
+      marginTop: "50px",
       display: "flex",
       [theme.breakpoints.down("xs")]: {
         "&>:nth-child(3)": {
@@ -345,7 +349,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "8px!important" as any,
       position: "relative",
       "&.Mui-disabled": {
-        backgroundColor:  "#dadada!important" as any,
+        backgroundColor: "#dadada!important" as any,
       },
     },
     plainLabel: {
@@ -503,6 +507,50 @@ export const useStyles = makeStyles((theme: Theme) =>
       zIndex: 2,
       position: "relative",
       transition: "all 0.3s ease-in-out",
+    },
+    meetingFileButton: {
+      width: "50%",
+    },
+    meetingCaseFile: {
+      backgroundColor: "#f2f2f2",
+      display: "flex",
+      height: "42px",
+      marginTop: "4px",
+      marginLeft: "10px",
+      marginRight: "10px",
+      alignItems: "center",
+      borderRadius: "4px",
+      [theme.breakpoints.up("md")]: {
+        justifyContent: "center",
+      },
+      "& p": {
+        fontSize: "13px",
+        fontWeight: 600,
+      },
+    },
+    helpersBox: {
+      bottom: 70,
+      [theme.breakpoints.up("md")]: {
+        position: "absolute",
+      },
+    },
+    deleteMeetingFile: {
+      width: "50%",
+      textTransform: "none",
+      backgroundColor: "maroon",
+      color: "white",
+      lineHeight: 1,
+      "&:hover": {
+        backgroundColor: "#b30900",
+      },
+    },
+    centerItems: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      [theme.breakpoints.down("xs")]: {
+        width: "100%",
+      },
     },
   })
 );
