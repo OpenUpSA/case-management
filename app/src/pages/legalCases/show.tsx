@@ -28,22 +28,12 @@ import { ILegalCase, IClient, IMeeting, LocationState } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import DeleteIcon from "@material-ui/icons/Delete";
-import MuiTabs from "../../components/legalCase/muiTabs";
+import CaseTabs from "../../components/legalCase/caseTabs";
 import SnackbarAlert from "../../components/general/snackBar";
 import CircularProgress from "@mui/material/CircularProgress";
+import { LegalCaseStates } from "../../contexts/legalCaseStateConstants"; 
 
 type RouteParams = { id: string };
-
-const LegalCaseStates = [
-  "Opened",
-  "InProgress",
-  "Hanging",
-  "Pending",
-  "Referred",
-  "Resolved",
-  "Escalated",
-  "Closed",
-];
 
 const Page = () => {
   RedirectIfNotLoggedIn();
@@ -243,7 +233,7 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        <MuiTabs
+        <CaseTabs
           legalCase={legalCase!}
           meetings={meetings ? meetings : []}
           standalone={false}
