@@ -17,7 +17,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
-import UpdateDialogContent from "./updateDialogContent";
+import UpdateDialogTabs from "./updateDialogTabs";
 
 const CaseUpdateTab = () => {
   const classes = useStyles();
@@ -72,7 +72,7 @@ const CaseUpdateTab = () => {
                 </IconButton>
               </Grid>
             </Grid>
-            <UpdateDialogContent />
+            <UpdateDialogTabs />
             <DialogActions
               style={{
                 padding: "10px 0px 0px 0px",
@@ -112,7 +112,7 @@ const CaseUpdateTab = () => {
           htmlFor="sort_table"
           shrink={true}
           style={{ marginRight: "-20px" }}
-        >
+        > 
           {i18n.t("Sort")}:
         </InputLabel>
       </Grid>

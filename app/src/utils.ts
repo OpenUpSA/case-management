@@ -467,7 +467,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       margin: "0px 8px 16px 8px!important" as any,
       borderRadius: "6px!important" as any,
       backgroundColor: "#e5e5e5!important" as any,
-      transition: "all 0.3s ease-in-out!important" as any,
       "& p": {
         padding: "2px 4px!important" as any,
         textTransform: "none",

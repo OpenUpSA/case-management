@@ -44,7 +44,7 @@ function a11yProps(index: number) {
   };
 }
 
-const UpdateDialogContent = () => {
+const UpdateDialogTabs = () => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
@@ -175,4 +175,4 @@ const UpdateDialogContent = () => {
   );
 };
 
-export default UpdateDialogContent;
+export default UpdateDialogTabs;
