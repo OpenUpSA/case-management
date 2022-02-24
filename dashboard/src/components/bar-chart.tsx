@@ -6,6 +6,7 @@ import LayoutChart from "./layout-chart";
 import NoData from "./no-data";
 import { IDbDataByRange, IDbDataMonthly, IChartDataPoint } from "../types";
 import { monthLabel } from "../utils";
+import { BlackTooltip } from "./general/tooltip";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,57 +15,71 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     barWithLabels: {
       height: "100%",
+      borderRadius: "3px",
+      padding: "6px",
       "&:hover": {
-        backgroundColor: theme.palette.background.default,
-        borderRadius: "3px",
+        backgroundColor: "#f2f2f2",
       },
     },
     bar: {
       padding: 0,
       textAlign: "center",
       backgroundColor: theme.palette.primary.main,
+      borderRadius: "2px",
     },
     labels: {
       opacity: 0.7,
+      textTransform: "uppercase",
     },
     boxInsideLayoutChart: {
-      backgroundColor: "#f2f2f2",
+      backgroundColor: "#fafafa",
       minHeight: 180,
       marginTop: "1rem",
+      paddingBottom: "1rem",
       borderRadius: "10px",
+      justifyContent: "center",
     },
   })
 );
 
 interface IProps {
-  selectedOffice: string
-  metric: string
-  dataMonthly: IDbDataMonthly
-  dataByRange: IDbDataByRange
-};
+  selectedOffice: string;
+  metric: string;
+  info: string;
+  dataMonthly: IDbDataMonthly;
+  dataByRange: IDbDataByRange;
+}
 
 export default function BarChart(props: IProps) {
   const classes = useStyles();
-  const selectedOfficeData = (props.dataMonthly.dataPerCaseOffice || {})[props.selectedOffice] || {};
+  const selectedOfficeData =
+    (props.dataMonthly.dataPerCaseOffice || {})[props.selectedOffice] || {};
   const selectedMetricData = selectedOfficeData[props.metric] || [];
-  const hasData = selectedMetricData.reduce((has, current) => current.value !== null || has, false);
-  const max = selectedMetricData.reduce((max, dataPoint) => Math.max(max, dataPoint.value), 0);
-  const rangeValue = ((props.dataByRange.dataPerCaseOffice || {})[props.selectedOffice] || {})[props.metric];
+  const hasData = selectedMetricData.reduce(
+    (has, current) => current.value !== null || has,
+    false
+  );
+  const max = selectedMetricData.reduce(
+    (max, dataPoint) => Math.max(max, dataPoint.value),
+    0
+  );
+  const rangeValue = ((props.dataByRange.dataPerCaseOffice || {})[
+    props.selectedOffice
+  ] || {})[props.metric];
   const data: IChartDataPoint[] = selectedMetricData.map((dataPoint) => ({
     label: monthLabel(new Date(dataPoint.date)),
     value: dataPoint.value,
   }));
   return (
-    <LayoutChart title={props.metric}>
-        {hasData ? (
-          <div>
+    <LayoutChart title={props.metric} info={props.info}>
+      {hasData ? (
+        <div>
           <Typography className={classes.value}>
-            {rangeValue ? rangeValue : 'no value'}
+            {rangeValue ? rangeValue : "no value"}
           </Typography>
           <div>
             <Grid
               container
-              spacing={3}
               alignItems="flex-end"
               className={classes.boxInsideLayoutChart}
             >
@@ -78,10 +93,23 @@ export default function BarChart(props: IProps) {
                   <Box className={classes.labels} textAlign="center">
                     {dataPoint.value}
                   </Box>
-                  <Box
-                    className={classes.bar}
-                    height={`${(dataPoint.value / max) * 5}rem`}
-                  ></Box>
+                  <BlackTooltip
+                    title={dataPoint.value}
+                    arrow
+                    placement="right-start"
+                    componentsProps={{
+                      tooltip: {
+                        sx: {
+                          transform: "translate(0, -10px)!important" as any,
+                        },
+                      },
+                    }}
+                  >
+                    <Box
+                      className={classes.bar}
+                      height={`${(dataPoint.value / max) * 5}rem`}
+                    ></Box>
+                  </BlackTooltip>
                   <Box className={classes.labels} textAlign="center">
                     {dataPoint.label}
                   </Box>

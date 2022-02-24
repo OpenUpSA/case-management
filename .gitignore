@@ -262,3 +262,5 @@ app/.netlify
 .env
 
 uploads/
+
+.DS_Store
