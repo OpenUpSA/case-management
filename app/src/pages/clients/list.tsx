@@ -192,6 +192,7 @@ const Page = () => {
           <Grid item className={classes.centerItems}>
             <InputLabel
               className={classes.inputLabel}
+              shrink={true}
               htmlFor="filter"
             >
               {i18n.t("Filter")}:
@@ -218,6 +219,7 @@ const Page = () => {
           <Grid item className={classes.centerItems}>
             <InputLabel
               className={classes.inputLabel}
+              shrink={true}
               htmlFor="sort_table"
             >
               {i18n.t("Sort")}:
