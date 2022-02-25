@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  IconButton,
-  Input,
-  InputLabel,
-  MenuItem,
-  Select,
-  Button,
-} from "@material-ui/core";
+import { IconButton, Input, InputLabel, Button } from "@material-ui/core";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
@@ -14,7 +7,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import CloseIcon from "@mui/icons-material/Close";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
+import { LegalCaseStates } from "../../contexts/legalCaseStateConstants";
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
 import UpdateDialogTabs from "./updateDialogTabs";
@@ -42,12 +38,16 @@ const CaseUpdateTab = () => {
           color="primary"
           variant="contained"
           startIcon={<AddCommentIcon />}
-          style={{ textTransform: "none" }}
           onClick={() => setOpen(true)}
         >
           {i18n.t("Add new update")}
         </Button>
-        <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="md">
+        <Dialog
+          open={open}
+          onClose={dialogClose}
+          fullWidth
+          maxWidth="md"
+        >
           <Box style={{ margin: 20 }}>
             <Grid
               container
@@ -73,12 +73,39 @@ const CaseUpdateTab = () => {
               </Grid>
             </Grid>
             <UpdateDialogTabs />
-            <DialogActions
+            <Box
+              className={classes.centerItems}
               style={{
-                padding: "10px 0px 0px 0px",
                 borderTop: "1px solid rgb(0,0,0,0.2)",
+                paddingTop: "20px",
+                marginBottom: "20px",
               }}
             >
+              <InputLabel
+                className={classes.dialogLabel}
+                style={{ paddingRight: 15 }}
+                htmlFor="status"
+              >
+                {i18n.t("Also update case status")}:
+              </InputLabel>
+              <Select
+                id="status"
+                className={classes.select}
+                style={{ flexGrow: 1 }}
+                disableUnderline
+                input={<Input />}
+                value={"Opened"}
+                renderValue={() => "Opened"}
+                onChange={(event: SelectChangeEvent<string>) => {}}
+              >
+                {LegalCaseStates?.map((value) => (
+                  <MenuItem key={value} value={value}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
+            <DialogActions style={{ padding: 0 }}>
               <Button
                 fullWidth
                 onClick={dialogClose}
@@ -90,7 +117,7 @@ const CaseUpdateTab = () => {
                 fullWidth
                 color="primary"
                 variant="contained"
-                style={{ textTransform: "none" }}
+                className={classes.dialogSubmit}
                 onClick={() => {
                   setOpen(false);
                 }}
@@ -110,9 +137,8 @@ const CaseUpdateTab = () => {
         <InputLabel
           className={classes.inputLabel}
           htmlFor="sort_table"
-          shrink={true}
           style={{ marginRight: "-20px" }}
-        > 
+        >
           {i18n.t("Sort")}:
         </InputLabel>
       </Grid>

@@ -36,6 +36,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     bigCanBeFab: {
+      paddingTop: "10px",
+      paddingBottom: "10px",
+      textTransform: "none",
       [theme.breakpoints.down("xs")]: {
         width: "90%",
         margin: "0px",
@@ -609,11 +612,19 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#f2f2f2!important" as any,
       textTransform: "none!important" as any,
       color: "#000000!important" as any,
+      paddingTop: "10px!important" as any,
+      paddingBottom: "10px!important" as any,
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
       },
     },
+    dialogSubmit: {
+      paddingTop: "10px!important" as any,
+      paddingBottom: "10px!important" as any,
+      textTransform: "none!important" as any,
+    },
     updateAlert: {
+      height: "67px",
       margin: "20px 0px",
       borderRadius: "6px!important" as any,
       backgroundColor: "#e9f0fe!important" as any,
@@ -622,6 +633,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       "& svg": {
         color: "#2b61f0",
+      },
+      "& div": {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
       },
       "&>.MuiAlert-message": {
         color: "#2b61f0",
@@ -679,6 +695,12 @@ export const useStyles = makeStyles((theme: Theme) =>
       transform: "rotate(135deg)",
       color: "#797979!important" as any,
       fontSize: "30px!important" as any,
+    },
+    tabBox: {
+      width: "100%",
+      overflowY: "auto",
+      maxHeight: "300px",
+      minHeight: "300px",
     },
   })
 );
