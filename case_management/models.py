@@ -336,6 +336,13 @@ class Note(LoggedChildModel):
     )
     title = models.CharField(max_length=255, null=False, blank=False)
     content = models.TextField(null=False, blank=False)
+    file = models.ForeignKey(
+        'File',
+        related_name='notes',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return self.title
@@ -363,9 +370,9 @@ class Meeting(LoggedChildModel):
     meeting_date = models.DateTimeField(null=False, blank=False)
     notes = models.TextField(null=False, blank=False)
     name = models.CharField(max_length=255, null=False, blank=True, default="")
-    legal_case_file = models.ForeignKey(
+    file = models.ForeignKey(
         'File',
-        related_name='legal_case_files',
+        related_name='meetings',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
