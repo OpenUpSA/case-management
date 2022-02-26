@@ -130,12 +130,7 @@ class CaseUpdateSerializer(serializers.ModelSerializer):
     )
     meeting = MeetingSerializer(many=False, read_only=False, required=False)
     note = NoteSerializer(many=False, read_only=False, required=False)
-    update_types_list = ('files', 'meeting', 'notes')
-    nested_update_types = {
-        'files': {'action': 'assign'},
-        'meeting': {'action': 'create', 'model': Meeting},
-        'note': {'action': 'create', 'model': Note},
-    }
+    update_types_list = ('files', 'meeting', 'note')
 
     def validate(self, data):
         update_type_count = 0
@@ -152,11 +147,16 @@ class CaseUpdateSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        for update_type, update_type_details in self.nested_update_types.items():
+        nested_update_types = {
+            'files': {'action': 'assign'},
+            'meeting': {'action': 'create', 'model': Meeting},
+            'note': {'action': 'create', 'model': Note},
+        }
+        for update_type, update_type_details in nested_update_types.items():
             if update_type in validated_data:
                 update_type_details['data'] = validated_data.pop(update_type)
         case_update = CaseUpdate.objects.create(**validated_data)
-        for update_type_name, update_type_details in self.nested_update_types.items():
+        for update_type_name, update_type_details in nested_update_types.items():
             if 'data' in update_type_details:
                 if update_type_details['action'] == 'create':
                     update_type_details['model'].objects.create(
