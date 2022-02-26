@@ -2,9 +2,10 @@ import re
 from datetime import date, timedelta
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
@@ -50,6 +51,8 @@ def get_user(request):
 
 
 class LoggedModelViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+
     def perform_create(self, serializer):
         serializer.save(created_by=get_user(self.request))
 
@@ -66,8 +69,7 @@ class UpdateRetrieveViewSet(
     To use it, override the class and set the `.queryset` and
     `.serializer_class` attributes.
     """
-
-    pass
+    permission_classes = [IsAuthenticated]
 
 
 class CreateListRetrieveViewSet(
@@ -82,8 +84,7 @@ class CreateListRetrieveViewSet(
     To use it, override the class and set the `.queryset` and
     `.serializer_class` attributes.
     """
-
-    pass
+    permission_classes = [IsAuthenticated]
 
 
 class Index(generic.TemplateView):
@@ -183,7 +184,6 @@ class LogViewSet(CreateListRetrieveViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['parent_id', 'parent_type', 'target_id', 'target_type']
 
-
 def _get_summary_months_range(request):
     months = {'start': None, 'end': None}
     month_input_pattern = re.compile('^([0-9]{4})-(0[1-9]|1[0-2])$')
@@ -239,6 +239,7 @@ def _get_summary_date_range(request):
     return start_date, end_date
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def range_summary(request):
     start_date, end_date = _get_summary_date_range(request)
     with connection.cursor() as cursor:
@@ -252,6 +253,7 @@ def range_summary(request):
     return Response(response)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def daily_summary(request):
     start_month, end_month = _get_summary_months_range(request)
     with connection.cursor() as cursor:
@@ -266,6 +268,7 @@ def daily_summary(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def monthly_summary(request):
     start_month, end_month = _get_summary_months_range(request)
     with connection.cursor() as cursor:
