@@ -702,5 +702,73 @@ export const useStyles = makeStyles((theme: Theme) =>
       maxHeight: "300px",
       minHeight: "300px",
     },
+    dropzone: {
+      textAlign: "center",
+      padding: "30px",
+      border: "5px dotted #b2b2b2",
+      borderRadius: "10px",
+      backgroundColor: "#ffffff",
+      color: "#000000",
+      cursor: "pointer",
+      marginBottom: "20px",
+    },
+    dropzoneButton: {
+      backgroundColor: "#e9f0fe!important" as any,
+      color: "#2b61f0",
+      textTransform: "none!important" as any,
+      fontWeight: "600!important" as any,
+      fontSize: "16px!important" as any,
+      borderRadius: "6px!important" as any,
+    },
+    uploadProgressBox: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      backgroundColor: "#f2f2f2",
+      padding: "10px",
+      borderRadius: "6px",
+    },
+    deleteIcon: {
+      marginRight: 10,
+      marginLeft: 20,
+      borderRadius: "1px",
+      padding: "17px 10px",
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)!important" as any,
+      },
+    },
+    renameIcons: {
+      borderRadius: "8px",
+      padding: "3px",
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)!important" as any,
+      },
+    },
+    dialogFileInput: {
+      fontSize: "13px",
+      fontWeight: "bold",
+      backgroundColor: "#ffffff",
+      color: "#000000",
+      border: "solid 1px blue",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      marginRight: "10px",
+      "&.Mui-disabled": {
+        backgroundColor: "#f2f2f2",
+        border: "solid 1px #f2f2f2",
+        color: "#000000",
+      },
+      "& textarea": {
+        paddingTop: "8px",
+        paddingBottom: "8px",
+      },
+    },
+    renameFile: {
+      minWidth: "85px!important" as any,
+      fontSize: "14px!important" as any,
+      textDecorationLine: "underline!important" as any,
+      cursor: "pointer!important" as any,
+    },
   })
 );
