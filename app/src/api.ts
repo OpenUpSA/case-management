@@ -244,3 +244,11 @@ export const createLegalCaseFile = async (
   );
   return response.data;
 };
+
+export const getCaseUpdates = async (id: number) => {
+  return await httpGet<any>(`/case-updates/?legal_case=${id}/`);
+};
+
+export const createCaseUpdate = async (caseUpdate: any) => {
+  return await httpPost<any, any>(`/case-updates/`, caseUpdate);
+};

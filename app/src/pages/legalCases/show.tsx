@@ -235,6 +235,7 @@ const Page = () => {
 
         <CaseTabs
           legalCase={legalCase!}
+          setLegalCase={setLegalCase}
           meetings={meetings ? meetings : []}
           standalone={false}
         />

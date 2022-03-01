@@ -22,6 +22,7 @@ type Props = {
   meetings: IMeeting[];
   standalone: boolean;
   legalCase: ILegalCase;
+  setLegalCase: (legalCase: ILegalCase) => void;
 };
 
 function TabPanel(props: TabPanelProps) {
@@ -118,7 +119,12 @@ export default function CaseTabs(props: Props) {
         {props.legalCase ? <CaseInfoTab legalCase={props.legalCase} /> : null}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <CaseUpdateTab />
+        {props.legalCase ? (
+          <CaseUpdateTab
+            legalCase={props.legalCase}
+            setLegalCase={props.setLegalCase}
+          />
+        ) : null}
       </TabPanel>
       <TabPanel value={value} index={2}>
         {legalCaseFiles && props.legalCase ? (

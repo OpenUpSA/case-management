@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
@@ -6,10 +6,19 @@ import Tab from "@mui/material/Tab";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import { IconButton, Input, InputLabel } from "@material-ui/core";
+import {
+  IconButton,
+  Input,
+  InputLabel,
+  FormHelperText,
+  Grid,
+} from "@material-ui/core";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
 import ForumOutlinedIcon from "@mui/icons-material/ForumOutlined";
 import UploadIcon from "@mui/icons-material/Upload";
@@ -26,6 +35,19 @@ import { meetingTypes } from "../../contexts/meetingTypeConstants";
 import Dropzone from "react-dropzone";
 import ProgressBar from "../general/progressBar";
 import { BlackTooltip } from "../general/tooltip";
+
+type Props = {
+  onFileChange?: (event: any, fileDescription: string) => Promise<void>;
+  note: any;
+  setNote: (note: any) => void;
+  meeting: any;
+  setMeeting: (meeting: any) => void;
+  progress: number;
+  onDrop: (files: any) => void;
+  fileTabFileName: string;
+  setFileTabFileName: (fileTabFileName: string) => void;
+  selectedFiles: any;
+};
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -50,43 +72,27 @@ function a11yProps(index: number) {
   };
 }
 
-const UpdateDialogTabs = () => {
+const UpdateDialogTabs = (props: Props) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [selectedFiles, setSelectedFiles] = useState<any>(undefined);
-  const [currentFile, setCurrentFile] = useState(undefined);
+  const [open, setOpen] = useState(false);
+  const uploadFileRef = useRef<HTMLInputElement>(null);
+  const [fileDescription, setFileDescription] = useState("");
+  const [stagedFileName, setStagedFileName] = useState<string>("");
   const [showButtons, setShowButtons] = useState(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  const onDrop = (files: any) => {
-    if (files.length > 0) {
-      setSelectedFiles(files);
-    }
+  const dialogClose = () => {
+    setOpen(false);
+    setFileDescription("");
   };
 
-  const upload = () => {
-    // let currentFile = selectedFiles[0];
-    // setProgress(0);
-    // setCurrentFile(currentFile);
-    // uploadFile(currentFile, (event) => {
-    //   setProgress(Math.round((100 * event.loaded) / event.total));
-    // })
-    //   .then((response) => {
-    //     setMessage(response.data.message);
-    //     return getFiles();
-    //   })
-    //   .then((files) => {
-    //     setFileInfos(files.data);
-    //   })
-    //   .catch(() => {
-    //     setProgress(0);
-    //     setMessage("Could not upload the file!");
-    //     setCurrentFile(undefined);
-    //   });
-    // setSelectedFiles(undefined);
+  const showOpenFileDialog = () => {
+    if (!uploadFileRef.current) throw Error("uploadFileRef is not assigned");
+    uploadFileRef.current.click();
   };
 
   return (
@@ -152,16 +158,29 @@ const UpdateDialogTabs = () => {
             fullWidth
             placeholder={i18n.t("Note title")}
             className={classes.dialogInput}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              props.setNote({ ...props.note, title: e.target.value });
+            }}
           />
           <Input
-            id="description"
+            id="content"
             disableUnderline={true}
             fullWidth
             rows={4}
             multiline
             placeholder={i18n.t("Description of update")}
             className={classes.dialogInput}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              props.setNote({ ...props.note, content: e.target.value });
+            }}
           />
+          {props.progress
+            ? props.progress > 0 && (
+                <Grid>
+                  <ProgressBar progress={props.progress} />
+                </Grid>
+              )
+            : null}
           <Box
             className={classes.centerItems}
             sx={{ justifyContent: "space-between", marginBottom: "25px" }}
@@ -169,9 +188,67 @@ const UpdateDialogTabs = () => {
             <Button
               className={classes.attachmentButton}
               startIcon={<AttachmentIcon className={classes.attachmentIcon} />}
+              onClick={() => setOpen(true)}
             >
               {i18n.t("Attach files to note")}
             </Button>
+            {stagedFileName.length > 0 && (
+              <FormHelperText id="file-selected">
+                New file:{" "}
+                {stagedFileName.length > 24
+                  ? stagedFileName.slice(0, 22) + "..."
+                  : stagedFileName}
+              </FormHelperText>
+            )}
+
+            <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
+              <DialogContent>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="File description"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                  value={fileDescription}
+                  onChange={(e: React.ChangeEvent<{ value: any }>) => {
+                    setFileDescription(e.target.value);
+                  }}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={dialogClose}>Cancel</Button>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  startIcon={<UploadIcon />}
+                  onClick={() => {
+                    showOpenFileDialog();
+                    setOpen(false);
+                  }}
+                >
+                  {i18n.t("Choose file")}
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <input
+              ref={uploadFileRef}
+              type="file"
+              hidden
+              onChange={(event) => {
+                if (props.onFileChange) {
+                  props.onFileChange(event, fileDescription);
+                }
+                if (event.target.files) {
+                  setStagedFileName(
+                    fileDescription.length > 0
+                      ? fileDescription
+                      : event.target.files[0].name
+                  );
+                }
+              }}
+            />
             <Typography
               className={classes.dialogLabel}
               style={{ paddingLeft: "10px" }}
@@ -214,9 +291,13 @@ const UpdateDialogTabs = () => {
               style={{ flexGrow: 1 }}
               disableUnderline
               input={<Input />}
-              value={"In-person"}
-              renderValue={() => "In-person"}
-              onChange={(event: SelectChangeEvent<string>) => {}}
+              value={props.meeting.meeting_type}
+              onChange={(e: SelectChangeEvent<string>) => {
+                props.setMeeting({
+                  ...props.meeting,
+                  meeting_type: e.target.value,
+                });
+              }}
             >
               {meetingTypes?.map((value) => (
                 <MenuItem key={value} value={value}>
@@ -231,6 +312,12 @@ const UpdateDialogTabs = () => {
             fullWidth
             placeholder={i18n.t("Meeting location")}
             className={classes.dialogInput}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              props.setMeeting({
+                ...props.meeting,
+                location: e.target.value,
+              });
+            }}
           />
           <Input
             id="meeting-note"
@@ -240,6 +327,12 @@ const UpdateDialogTabs = () => {
             multiline
             placeholder={i18n.t("Notes from meeting")}
             className={classes.dialogInput}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              props.setMeeting({
+                ...props.meeting,
+                notes: e.target.value,
+              });
+            }}
           />
           <Box
             className={classes.centerItems}
@@ -249,29 +342,35 @@ const UpdateDialogTabs = () => {
           >
             <InputLabel
               className={classes.dialogLabel}
-              style={{ paddingRight: 15 }}
-              htmlFor="Advice-offered"
+              style={{ paddingRight: 15, width: 100 }}
+              htmlFor="Meeting-date"
             >
-              {i18n.t("Was advice offered?")}
+              {i18n.t("Meeting date")}
             </InputLabel>
-            <Select
-              id="Advice-offered"
-              className={classes.select}
-              style={{ flexGrow: 1 }}
-              disableUnderline
-              input={<Input />}
-              value={"Yes"}
-              renderValue={() => "Yes"}
-              onChange={(event: SelectChangeEvent<string>) => {}}
-            >
-              <MenuItem key={"Yes"} value={"Yes"}>
-                {i18n.t("Yes")}
-              </MenuItem>
-              <MenuItem key={"No"} value={"No"}>
-                {i18n.t("No")}
-              </MenuItem>
-            </Select>
+            <Input
+              fullWidth
+              id="meeting_date"
+              type="datetime-local"
+              disableUnderline={true}
+              className={classes.dialogInput}
+              style={{ marginBottom: 0 }}
+              aria-describedby="date-picker"
+              value={new Date().toISOString().slice(0, 16)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                props.setMeeting({
+                  ...props.meeting,
+                  meeting_date: e.target.value,
+                });
+              }}
+            />
           </Box>
+          {props.progress
+            ? props.progress > 0 && (
+                <Grid>
+                  <ProgressBar progress={props.progress} />
+                </Grid>
+              )
+            : null}
           <Box
             className={classes.centerItems}
             sx={{ justifyContent: "space-between", marginBottom: "25px" }}
@@ -279,9 +378,67 @@ const UpdateDialogTabs = () => {
             <Button
               className={classes.attachmentButton}
               startIcon={<AttachmentIcon className={classes.attachmentIcon} />}
+              onClick={() => setOpen(true)}
             >
               {i18n.t("Attach files to meeting")}
             </Button>
+            {stagedFileName.length > 0 && (
+              <FormHelperText id="file-selected">
+                New file:{" "}
+                {stagedFileName.length > 24
+                  ? stagedFileName.slice(0, 22) + "..."
+                  : stagedFileName}
+              </FormHelperText>
+            )}
+
+            <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
+              <DialogContent>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="File description"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                  value={fileDescription}
+                  onChange={(e: React.ChangeEvent<{ value: any }>) => {
+                    setFileDescription(e.target.value);
+                  }}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={dialogClose}>Cancel</Button>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  startIcon={<UploadIcon />}
+                  onClick={() => {
+                    showOpenFileDialog();
+                    setOpen(false);
+                  }}
+                >
+                  {i18n.t("Choose file")}
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <input
+              ref={uploadFileRef}
+              type="file"
+              hidden
+              onChange={(event) => {
+                if (props.onFileChange) {
+                  props.onFileChange(event, fileDescription);
+                }
+                if (event.target.files) {
+                  setStagedFileName(
+                    fileDescription.length > 0
+                      ? fileDescription
+                      : event.target.files[0].name
+                  );
+                }
+              }}
+            />
             <Typography
               className={classes.dialogLabel}
               style={{ paddingLeft: "10px" }}
@@ -305,12 +462,15 @@ const UpdateDialogTabs = () => {
               <a href="www.google.com">{i18n.t("Learn more")}</a>
             </p>
           </Alert>
-          <Dropzone onDrop={onDrop} multiple={false}>
+          <Dropzone onDrop={props.onDrop} multiple={false}>
             {({ getRootProps, getInputProps }) => (
               <div {...getRootProps({ className: classes.dropzone })}>
                 <input {...getInputProps()} />
-                {selectedFiles && selectedFiles[0].name ? (
-                  <Typography>{i18n.t("Submit to save file")}</Typography>
+                {props.selectedFiles && props.fileTabFileName.length > 0 ? (
+                  <Typography>
+                    {i18n.t("Submit to save ")}
+                    {props.fileTabFileName}
+                  </Typography>
                 ) : (
                   <Stack
                     direction="column"
@@ -332,7 +492,7 @@ const UpdateDialogTabs = () => {
               </div>
             )}
           </Dropzone>
-          {selectedFiles && (
+          {props.selectedFiles && (
             <Box style={{ width: "100%" }}>
               <InputLabel
                 className={classes.dialogLabel}
@@ -352,7 +512,11 @@ const UpdateDialogTabs = () => {
                       fullWidth
                       disabled={!showButtons}
                       placeholder={i18n.t("File name")}
+                      value={props.fileTabFileName}
                       className={classes.dialogFileInput}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        props.setFileTabFileName(e.target.value);
+                      }}
                     />
                     {showButtons ? (
                       <Box style={{ minWidth: 85 }}>
@@ -386,7 +550,9 @@ const UpdateDialogTabs = () => {
                       </Typography>
                     )}
                   </Box>
-                  <ProgressBar progress={30} />
+                  {props.progress
+                    ? props.progress > 0 && <ProgressBar progress={30} />
+                    : null}
                 </Box>
                 <BlackTooltip title="Delete file" arrow placement="top">
                   <IconButton className={classes.deleteIcon}>

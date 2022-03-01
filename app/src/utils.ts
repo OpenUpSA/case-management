@@ -721,6 +721,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       borderRadius: "6px!important" as any,
     },
     uploadProgressBox: {
+      height: "64px",
       display: "flex",
       flexDirection: "row",
       justifyContent: "space-between",
