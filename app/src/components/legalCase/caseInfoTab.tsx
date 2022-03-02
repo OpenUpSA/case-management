@@ -40,13 +40,7 @@ import {
   ILog,
   LocationState,
 } from "../../types";
-import {
-  updateLegalCase,
-  getClient,
-  getUser,
-  getLogs,
-  createLog,
-} from "../../api";
+import { updateLegalCase, getLogs, createLog } from "../../api";
 
 const LogLabels = new Map([
   ["LegalCase Create", "Case created"],
@@ -66,6 +60,10 @@ const logLabel = (
 
 type Props = {
   legalCase: ILegalCase;
+  client: IClient | undefined;
+  caseHistory: ILog[];
+  caseWorker: IUser | undefined;
+  setCaseHistory: (caseHistory: ILog[]) => void;
 };
 
 export default function CaseInfoTab(props: Props) {
@@ -73,15 +71,14 @@ export default function CaseInfoTab(props: Props) {
   const [contextOffices] = useContext(CaseOfficesContext);
   const [contextCaseTypes] = useContext(CaseTypesContext);
   const [caseSummary, setCaseSummary] = React.useState<string | undefined>("");
-  const [caseWorker, setCaseWorker] = React.useState<IUser | undefined>();
-  const [client, setClient] = React.useState<IClient>();
+
   const [selectCaseType, setSelectCaseType] = React.useState<
     number[] | undefined
   >([]);
   const [selectCaseOffice, setSelectCaseOffice] = React.useState<
     number[] | undefined
   >([]);
-  const [caseHistory, setCaseHistory] = React.useState<ILog[]>([]);
+
   const [open, setOpen] = React.useState(false);
   const [manualUpdateValue, setManualUpdateValue] = React.useState<string>("");
   const [showButton, setShowButton] = React.useState<boolean>(false);
@@ -103,28 +100,7 @@ export default function CaseInfoTab(props: Props) {
     setSelectCaseType(props.legalCase?.case_types);
     setWidth(window.innerWidth);
 
-    async function fetchData() {
-      try {
-        const clientInfo = await getClient(props.legalCase?.client);
-        const userNumber = Number(props.legalCase?.users?.join());
-        const userInfo = await getUser(userNumber);
-        const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
-
-        setClient(clientInfo);
-        setCaseWorker(userInfo);
-        setCaseHistory(historyData);
-        setIsLoading(false);
-      } catch (e: any) {
-        setIsLoading(false);
-        setShowSnackbar({
-          open: true,
-          message: e.message,
-          severity: "error",
-        });
-      }
-    }
-
-    fetchData();
+    setIsLoading(false);
   }, [props.legalCase]);
 
   React.useEffect(() => {
@@ -186,8 +162,7 @@ export default function CaseInfoTab(props: Props) {
           severity: "success",
         });
       }
-      const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
-      setCaseHistory(historyData);
+      updateHistory();
     } catch (e) {
       setUpdateLoader(false);
       handleClose();
@@ -222,6 +197,7 @@ export default function CaseInfoTab(props: Props) {
           severity: "success",
         });
       }
+      updateHistory();
     } catch (e) {
       setSummaryLoader(false);
       setShowSnackbar({
@@ -252,6 +228,7 @@ export default function CaseInfoTab(props: Props) {
           message: "Case edit successful",
           severity: "success",
         });
+      updateHistory();
     } catch (e) {
       setIsLoading(false);
       setShowSnackbar({
@@ -260,6 +237,11 @@ export default function CaseInfoTab(props: Props) {
         severity: "error",
       });
     }
+  };
+
+  const updateHistory = async () => {
+    const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
+    props.setCaseHistory(historyData);
   };
 
   return (
@@ -406,8 +388,8 @@ export default function CaseInfoTab(props: Props) {
           </Grid>
           <List sx={{ width: "100%", marginBottom: "26px" }}>
             <Divider />
-            {caseHistory.length > 0
-              ? caseHistory
+            {props.caseHistory.length > 0
+              ? props.caseHistory
                   ?.slice(0)
                   .reverse()
                   .map((item) => (
@@ -454,7 +436,8 @@ export default function CaseInfoTab(props: Props) {
           <Grid container justifyContent="space-between">
             <Grid item>
               <Typography variant="caption">
-                Showing {caseHistory?.length} of {caseHistory?.length} updates
+                Showing {props.caseHistory?.length} of{" "}
+                {props.caseHistory?.length} updates
               </Typography>
             </Grid>
             <Grid item>
@@ -526,7 +509,7 @@ export default function CaseInfoTab(props: Props) {
           </InputLabel>
           <TextField
             variant="standard"
-            value={client?.preferred_name || ""}
+            value={props.client?.preferred_name || ""}
             fullWidth
             className={classes.smallTextField}
             InputProps={{
@@ -546,7 +529,7 @@ export default function CaseInfoTab(props: Props) {
           </InputLabel>
           <TextField
             variant="standard"
-            value={caseWorker?.name || ""}
+            value={props.caseWorker?.name || ""}
             fullWidth
             className={classes.smallTextField}
             InputProps={{

@@ -23,15 +23,22 @@ import {
   getLegalCase,
   getMeetings,
   updateLegalCase,
+  getLogs,
 } from "../../api";
-import { ILegalCase, IClient, IMeeting, LocationState } from "../../types";
+import {
+  ILegalCase,
+  IClient,
+  IMeeting,
+  LocationState,
+  ILog,
+} from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CaseTabs from "../../components/legalCase/caseTabs";
 import SnackbarAlert from "../../components/general/snackBar";
 import CircularProgress from "@mui/material/CircularProgress";
-import { LegalCaseStates } from "../../contexts/legalCaseStateConstants"; 
+import { LegalCaseStates } from "../../contexts/legalCaseStateConstants";
 
 type RouteParams = { id: string };
 
@@ -47,6 +54,7 @@ const Page = () => {
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
   const [status, setStatus] = React.useState<string | undefined>("");
+  const [caseHistory, setCaseHistory] = React.useState<ILog[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
@@ -106,8 +114,12 @@ const Page = () => {
         setIsLoading(true);
         const dataLegalCase = await getLegalCase(caseId);
         const dataMeetings = await getMeetings(caseId);
+        const historyData = await getLogs(caseId, "LegalCase");
+        const dataClient = await getClient(dataLegalCase.client);
+
         setLegalCase(dataLegalCase);
-        setClient(await getClient(dataLegalCase.client));
+        setClient(dataClient);
+        setCaseHistory(historyData);
         setStatus(dataLegalCase.state);
         setMeetings(dataMeetings);
         setIsLoading(false);
@@ -126,7 +138,7 @@ const Page = () => {
   const statusPatch = async (arg: any) => {
     try {
       setIsLoading(true);
-      const updatedSummary: ILegalCase = {
+      const updatedStatus: ILegalCase = {
         id: legalCase!.id,
         summary: legalCase!.summary,
         case_number: legalCase!.case_number,
@@ -135,7 +147,7 @@ const Page = () => {
         case_types: legalCase!.case_types,
         case_offices: legalCase!.case_offices,
       };
-      const { id } = await updateLegalCase(updatedSummary);
+      const { id } = await updateLegalCase(updatedStatus);
       setIsLoading(false);
       id &&
         setShowSnackbar({
@@ -143,6 +155,7 @@ const Page = () => {
           message: "Case edit successful",
           severity: "success",
         });
+      updateHistory();
     } catch (e) {
       setIsLoading(false);
       setShowSnackbar({
@@ -151,6 +164,11 @@ const Page = () => {
         severity: "error",
       });
     }
+  };
+
+  const updateHistory = async () => {
+    const historyData = await getLogs(caseId, "LegalCase");
+    setCaseHistory(historyData);
   };
 
   return (
@@ -238,6 +256,11 @@ const Page = () => {
           setLegalCase={setLegalCase}
           meetings={meetings ? meetings : []}
           standalone={false}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          setShowSnackbar={setShowSnackbar}
+          caseHistory={caseHistory ? caseHistory : []}
+          setCaseHistory={setCaseHistory}
         />
 
         {isLoading && (

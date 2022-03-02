@@ -47,6 +47,8 @@ type Props = {
   fileTabFileName: string;
   setFileTabFileName: (fileTabFileName: string) => void;
   selectedFiles: any;
+  setSelectedFiles: (selectedFiles: any) => void;
+  setTabValue: (tabValue: number) => void;
 };
 
 function TabPanel(props: TabPanelProps) {
@@ -74,15 +76,18 @@ function a11yProps(index: number) {
 
 const UpdateDialogTabs = (props: Props) => {
   const classes = useStyles();
-  const [value, setValue] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState<number>(0);
+  const [open, setOpen] = useState<boolean>(false);
   const uploadFileRef = useRef<HTMLInputElement>(null);
-  const [fileDescription, setFileDescription] = useState("");
+  const [fileDescription, setFileDescription] = useState<string>("");
   const [stagedFileName, setStagedFileName] = useState<string>("");
-  const [showButtons, setShowButtons] = useState(false);
+  const [showButtons, setShowButtons] = useState<boolean>(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    props.setTabValue(newValue);
+    props.setFileTabFileName("");
+    props.setSelectedFiles(undefined);
   };
 
   const dialogClose = () => {
@@ -194,7 +199,7 @@ const UpdateDialogTabs = (props: Props) => {
             </Button>
             {stagedFileName.length > 0 && (
               <FormHelperText id="file-selected">
-                New file:{" "}
+                {i18n.t("New file")}:
                 {stagedFileName.length > 24
                   ? stagedFileName.slice(0, 22) + "..."
                   : stagedFileName}
@@ -355,7 +360,7 @@ const UpdateDialogTabs = (props: Props) => {
               className={classes.dialogInput}
               style={{ marginBottom: 0 }}
               aria-describedby="date-picker"
-              value={new Date().toISOString().slice(0, 16)}
+              value={props.meeting.meeting_date}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 props.setMeeting({
                   ...props.meeting,
@@ -468,8 +473,7 @@ const UpdateDialogTabs = (props: Props) => {
                 <input {...getInputProps()} />
                 {props.selectedFiles && props.fileTabFileName.length > 0 ? (
                   <Typography>
-                    {i18n.t("Submit to save ")}
-                    {props.fileTabFileName}
+                    {i18n.t("Submit update to file")}: {props.fileTabFileName}
                   </Typography>
                 ) : (
                   <Stack
@@ -492,7 +496,7 @@ const UpdateDialogTabs = (props: Props) => {
               </div>
             )}
           </Dropzone>
-          {props.selectedFiles && (
+          {props.selectedFiles !== undefined && (
             <Box style={{ width: "100%" }}>
               <InputLabel
                 className={classes.dialogLabel}
@@ -523,7 +527,12 @@ const UpdateDialogTabs = (props: Props) => {
                         <BlackTooltip title="Cancel" arrow placement="top">
                           <IconButton
                             className={classes.renameIcons}
-                            onClick={() => setShowButtons(false)}
+                            onClick={() => {
+                              props.setFileTabFileName(
+                                props.selectedFiles.name || ""
+                              );
+                              setShowButtons(false);
+                            }}
                           >
                             <CancelIcon style={{ fontSize: 30 }} />
                           </IconButton>
@@ -555,7 +564,10 @@ const UpdateDialogTabs = (props: Props) => {
                     : null}
                 </Box>
                 <BlackTooltip title="Delete file" arrow placement="top">
-                  <IconButton className={classes.deleteIcon}>
+                  <IconButton
+                    className={classes.deleteIcon}
+                    onClick={() => props.setSelectedFiles(undefined)}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 448 512"

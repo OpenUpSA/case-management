@@ -13,9 +13,13 @@ import {
   ILegalCase,
   ILegalCaseFile,
   TabPanelProps,
+  IUser,
+  ILog,
+  IClient,
+  LocationState,
 } from "../../types";
 import { useStyles } from "../../utils";
-import { getLegalCaseFiles } from "../../api";
+import { getLegalCaseFiles, getUser, getClient } from "../../api";
 import i18n from "../../i18n";
 
 type Props = {
@@ -23,6 +27,11 @@ type Props = {
   standalone: boolean;
   legalCase: ILegalCase;
   setLegalCase: (legalCase: ILegalCase) => void;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
+  setShowSnackbar: (showSnackbar: LocationState) => void;
+  caseHistory: ILog[];
+  setCaseHistory: (caseHistory: ILog[]) => void;
 };
 
 function TabPanel(props: TabPanelProps) {
@@ -54,15 +63,38 @@ export default function CaseTabs(props: Props) {
   const [legalCaseFiles, setLegalCaseFiles] = useState<
     ILegalCaseFile[] | undefined
   >();
+  const [caseWorker, setCaseWorker] = React.useState<IUser | undefined>();
+  const [client, setClient] = React.useState<IClient | undefined>();
 
   useEffect(() => {
     async function fetchData() {
-      if (props.legalCase?.id) {
-        const dataLegalCaseFiles = await getLegalCaseFiles(props.legalCase?.id);
-        setLegalCaseFiles(dataLegalCaseFiles);
+      try {
+        props.setIsLoading(true);
+        if (props.legalCase?.id) {
+          const dataLegalCaseFiles = await getLegalCaseFiles(
+            props.legalCase?.id
+          );
+          const clientInfo = await getClient(props.legalCase?.client);
+          const userNumber = Number(props.legalCase?.users?.join());
+          const userInfo = await getUser(userNumber);
+
+          setLegalCaseFiles(dataLegalCaseFiles);
+          setClient(clientInfo);
+          setCaseWorker(userInfo);
+
+          props.setIsLoading(false);
+        }
+      } catch (e: any) {
+        props.setIsLoading(false);
+        props.setShowSnackbar({
+          open: true,
+          message: e.message,
+          severity: "error",
+        });
       }
     }
     fetchData();
+    // eslint-disable-next-line
   }, [props.legalCase]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -116,7 +148,15 @@ export default function CaseTabs(props: Props) {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        {props.legalCase ? <CaseInfoTab legalCase={props.legalCase} /> : null}
+        {props.legalCase ? (
+          <CaseInfoTab
+            legalCase={props.legalCase}
+            client={client}
+            caseWorker={caseWorker}
+            caseHistory={props.caseHistory ? props.caseHistory : []}
+            setCaseHistory={props.setCaseHistory}
+          />
+        ) : null}
       </TabPanel>
       <TabPanel value={value} index={1}>
         {props.legalCase ? (

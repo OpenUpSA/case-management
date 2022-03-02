@@ -16,7 +16,6 @@ import { useStyles } from "../../utils";
 import {
   createLegalCaseFile,
   createCaseUpdate,
-  getLegalCase,
   updateLegalCase,
 } from "../../api";
 import { ILegalCase, LocationState } from "../../types";
@@ -39,14 +38,15 @@ const CaseUpdateTab = (props: Props) => {
     notes: "",
     meeting_date: new Date().toISOString().slice(0, 16),
   });
+  const [tabValue, setTabValue] = useState<number>(0);
   const [attachedFileData, setAttachedFileData] = useState<any>({
     file: null,
     description: "",
   });
   const [fileTabFileName, setFileTabFileName] = useState<string>("");
   const [selectedFiles, setSelectedFiles] = useState<any>(undefined);
-  const [currentFile, setCurrentFile] = useState(undefined);
   const [status, setStatus] = useState<string>(props.legalCase.state);
+  const [statusChanged, setStatusChanged] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = useState<LocationState>({
@@ -84,7 +84,6 @@ const CaseUpdateTab = (props: Props) => {
   const submitNoteUpdate = async () => {
     const upLoadFile = async () => {
       setIsLoading(true);
-      statusPatch();
       createLegalCaseFile(
         props.legalCase.id,
         attachedFileData.file,
@@ -110,7 +109,7 @@ const CaseUpdateTab = (props: Props) => {
           setIsLoading(false);
           setShowSnackbar({
             open: true,
-            message: "File upload failed",
+            message: "Note update failed",
             severity: "error",
           });
         });
@@ -126,15 +125,18 @@ const CaseUpdateTab = (props: Props) => {
         },
         legal_case: props.legalCase.id,
       })
-        .then((response: any) => {
+        .then((res: any) => {
           setIsLoading(false);
-          dialogClose();
-          refreshLegalCaseData();
-          setShowSnackbar({
-            open: true,
-            message: "Note update successful",
-            severity: "success",
-          });
+          if (res.id) {
+            dialogClose();
+            setShowSnackbar({
+              open: true,
+              message: "Note update successful",
+              severity: "success",
+            });
+          } else {
+            console.log("failed");
+          }
         })
         .catch((e) => {
           setIsLoading(false);
@@ -165,7 +167,6 @@ const CaseUpdateTab = (props: Props) => {
   const submitMeetingUpdate = async () => {
     const upLoadFile = async () => {
       setIsLoading(true);
-      statusPatch();
       createLegalCaseFile(
         props.legalCase.id,
         attachedFileData.file,
@@ -191,7 +192,7 @@ const CaseUpdateTab = (props: Props) => {
           setIsLoading(false);
           setShowSnackbar({
             open: true,
-            message: "File upload failed",
+            message: "Meeting update failed",
             severity: "error",
           });
         });
@@ -209,15 +210,16 @@ const CaseUpdateTab = (props: Props) => {
         },
         legal_case: props.legalCase.id,
       })
-        .then((response: any) => {
+        .then((res: any) => {
           setIsLoading(false);
-          dialogClose();
-          refreshLegalCaseData();
-          setShowSnackbar({
-            open: true,
-            message: "Meeting update successful",
-            severity: "success",
-          });
+          if (res.id) {
+            dialogClose();
+            setShowSnackbar({
+              open: true,
+              message: "Meeting update successful",
+              severity: "success",
+            });
+          }
         })
         .catch((e) => {
           setIsLoading(false);
@@ -248,7 +250,6 @@ const CaseUpdateTab = (props: Props) => {
   const submitFileUpdate = async () => {
     const upLoadFile = async () => {
       setIsLoading(true);
-      statusPatch();
       createLegalCaseFile(
         props.legalCase.id,
         selectedFiles,
@@ -286,15 +287,16 @@ const CaseUpdateTab = (props: Props) => {
         files: [meetingFileId],
         legal_case: props.legalCase.id,
       })
-        .then((response: any) => {
+        .then((res: any) => {
           setIsLoading(false);
-          dialogClose();
-          refreshLegalCaseData();
-          setShowSnackbar({
-            open: true,
-            message: "File update successful",
-            severity: "success",
-          });
+          if (res.id) {
+            dialogClose();
+            setShowSnackbar({
+              open: true,
+              message: "File update successful",
+              severity: "success",
+            });
+          }
         })
         .catch((e) => {
           setIsLoading(false);
@@ -321,20 +323,15 @@ const CaseUpdateTab = (props: Props) => {
   const statusPatch = async () => {
     try {
       setIsLoading(true);
-      const updatedSummary: ILegalCase = {
+      const updatedStatus: ILegalCase = {
         ...props.legalCase,
         state: status,
       };
-      await updateLegalCase(updatedSummary);
+      await updateLegalCase(updatedStatus);
       setIsLoading(false);
     } catch (e) {
       setIsLoading(false);
     }
-  };
-
-  const refreshLegalCaseData = async () => {
-    const dataLegalCase = await getLegalCase(props.legalCase.id as number);
-    props.setLegalCase(dataLegalCase);
   };
 
   const onDrop = (files: any) => {
@@ -342,6 +339,18 @@ const CaseUpdateTab = (props: Props) => {
       setSelectedFiles(files[0]);
       setFileTabFileName(files[0].name);
     }
+  };
+
+  const submitHandler = () => {
+    if (tabValue === 0) {
+      submitNoteUpdate();
+    } else if (tabValue === 1) {
+      submitMeetingUpdate();
+    } else if (tabValue === 2) {
+      submitFileUpdate();
+    }
+
+    statusChanged && statusPatch();
   };
 
   return (
@@ -397,8 +406,10 @@ const CaseUpdateTab = (props: Props) => {
               progress={progress}
               onDrop={onDrop}
               selectedFiles={selectedFiles}
+              setSelectedFiles={setSelectedFiles}
               fileTabFileName={fileTabFileName}
               setFileTabFileName={setFileTabFileName}
+              setTabValue={setTabValue}
             />
             <Box
               className={classes.centerItems}
@@ -425,6 +436,7 @@ const CaseUpdateTab = (props: Props) => {
                 renderValue={() => status}
                 onChange={(event: SelectChangeEvent<string>) => {
                   setStatus(event.target.value);
+                  setStatusChanged(true);
                 }}
               >
                 {LegalCaseStates?.map((value) => (
@@ -447,7 +459,7 @@ const CaseUpdateTab = (props: Props) => {
                 color="primary"
                 variant="contained"
                 className={classes.dialogSubmit}
-                onClick={() => submitFileUpdate()}
+                onClick={() => submitHandler()}
                 disabled={isLoading}
                 style={{ position: "relative" }}
               >

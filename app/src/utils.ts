@@ -703,6 +703,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       minHeight: "300px",
     },
     dropzone: {
+      height: 140,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "column",
       textAlign: "center",
       padding: "30px",
       border: "5px dotted #b2b2b2",
