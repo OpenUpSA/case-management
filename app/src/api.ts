@@ -246,7 +246,7 @@ export const createLegalCaseFile = async (
 };
 
 export const getCaseUpdates = async (id: number) => {
-  return await httpGet<any>(`/case-updates/?legal_case=${id}/`);
+  return await httpGet<any>(`/case-updates/?legal_case=${id}`);
 };
 
 export const createCaseUpdate = async (caseUpdate: any) => {

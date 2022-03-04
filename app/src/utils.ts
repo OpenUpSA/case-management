@@ -126,6 +126,8 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     tableHeadRow: {
       backgroundColor: "transparent",
+      boxShadow: "0px 4px 5px 0px rgba(0, 0, 0, 0.05)",
+      marginBottom: "20px!important" as any,
       "&>:last-child": {
         borderRight: "none",
       },
@@ -320,6 +322,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     caseHistoryAvatar: {
+      width: "28px!important" as any,
+      height: "28px!important" as any,
+      border: "0.5px solid transparent",
       "&:hover": {
         border: "0.5px solid blue",
       },
@@ -378,6 +383,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "5px!important" as any,
       fontSize: "12px!important" as any,
       height: "20px!important" as any,
+      minWidth: "68px!important" as any,
     },
     chipGrey: {
       backgroundColor: "#eee!important" as any,
@@ -775,6 +781,16 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontSize: "14px!important" as any,
       textDecorationLine: "underline!important" as any,
       cursor: "pointer!important" as any,
+    },
+    updateTableBodyCell: {
+      padding: "6px 10px!important" as any,
+      border: "none",
+      borderRight: "solid 1px rgba(0, 0, 0, 0.05)",
+      borderBottom: "solid 1px rgba(0, 0, 0, 0.05)",
+    },
+    blueText: {
+      color: "#2b61f0",
+      textDecorationLine: "underline",
     },
   })
 );

@@ -19,7 +19,12 @@ import {
   LocationState,
 } from "../../types";
 import { useStyles } from "../../utils";
-import { getLegalCaseFiles, getUser, getClient } from "../../api";
+import {
+  getLegalCaseFiles,
+  getUser,
+  getClient,
+  getCaseUpdates,
+} from "../../api";
 import i18n from "../../i18n";
 
 type Props = {
@@ -60,11 +65,10 @@ function a11yProps(index: number) {
 export default function CaseTabs(props: Props) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [legalCaseFiles, setLegalCaseFiles] = useState<
-    ILegalCaseFile[] | undefined
-  >();
-  const [caseWorker, setCaseWorker] = React.useState<IUser | undefined>();
-  const [client, setClient] = React.useState<IClient | undefined>();
+  const [legalCaseFiles, setLegalCaseFiles] = useState<ILegalCaseFile[]>([]);
+  const [caseWorker, setCaseWorker] = useState<IUser | undefined>();
+  const [client, setClient] = useState<IClient | undefined>();
+  const [caseUpdates, setCaseUpdates] = useState<any>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -77,10 +81,12 @@ export default function CaseTabs(props: Props) {
           const clientInfo = await getClient(props.legalCase?.client);
           const userNumber = Number(props.legalCase?.users?.join());
           const userInfo = await getUser(userNumber);
+          const updates = await getCaseUpdates(props.legalCase?.id);
 
           setLegalCaseFiles(dataLegalCaseFiles);
           setClient(clientInfo);
           setCaseWorker(userInfo);
+          setCaseUpdates(updates);
 
           props.setIsLoading(false);
         }
@@ -129,7 +135,7 @@ export default function CaseTabs(props: Props) {
             key="meetings"
             className={classes.caseTabButton}
             label={
-              <Badge badgeContent={0} color="primary">
+              <Badge badgeContent={caseUpdates.length} color="primary">
                 <Typography>{i18n.t("Case updates")}</Typography>
               </Badge>
             }
@@ -139,7 +145,7 @@ export default function CaseTabs(props: Props) {
             key="caseFiles"
             className={classes.caseTabButton}
             label={
-              <Badge badgeContent={legalCaseFiles?.length} color="primary">
+              <Badge badgeContent={legalCaseFiles.length} color="primary">
                 <Typography>{i18n.t("Case files")}</Typography>
               </Badge>
             }
@@ -163,6 +169,10 @@ export default function CaseTabs(props: Props) {
           <CaseUpdateTab
             legalCase={props.legalCase}
             setLegalCase={props.setLegalCase}
+            caseUpdates={caseUpdates}
+            setCaseUpdates={setCaseUpdates}
+            legalCaseFiles={legalCaseFiles ? legalCaseFiles : []}
+            setLegalCaseFiles={setLegalCaseFiles}
           />
         ) : null}
       </TabPanel>
@@ -170,7 +180,7 @@ export default function CaseTabs(props: Props) {
         {legalCaseFiles && props.legalCase ? (
           <CaseFileTab
             legalCase={props.legalCase}
-            legalCaseFiles={legalCaseFiles}
+            legalCaseFiles={legalCaseFiles ? legalCaseFiles : []}
             setLegalCaseFiles={setLegalCaseFiles}
           />
         ) : null}

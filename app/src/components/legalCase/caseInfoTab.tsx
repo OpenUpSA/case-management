@@ -415,7 +415,6 @@ export default function CaseInfoTab(props: Props) {
                               alt="Paul Watson"
                               src="/static/images/avatar/1.jpg"
                               className={classes.caseHistoryAvatar}
-                              sx={{ width: 28, height: 28 }}
                             />
                           </ListItemAvatar>
                           <Typography

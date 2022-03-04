@@ -39,10 +39,8 @@ import SnackbarAlert from "../../components/general/snackBar";
 
 type Props = {
   legalCase: ILegalCase;
-  legalCaseFiles: ILegalCaseFile[] | undefined;
-  setLegalCaseFiles: React.Dispatch<
-    React.SetStateAction<ILegalCaseFile[] | undefined>
-  >;
+  legalCaseFiles: ILegalCaseFile[];
+  setLegalCaseFiles: React.Dispatch<React.SetStateAction<ILegalCaseFile[]>>;
 };
 
 export default function CaseFileTab(props: Props) {

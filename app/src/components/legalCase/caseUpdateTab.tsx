@@ -15,17 +15,24 @@ import { LegalCaseStates } from "../../contexts/legalCaseStateConstants";
 import { useStyles } from "../../utils";
 import {
   createLegalCaseFile,
+  getLegalCaseFiles,
   createCaseUpdate,
   updateLegalCase,
+  getCaseUpdates,
 } from "../../api";
-import { ILegalCase, LocationState } from "../../types";
+import { ILegalCase, LocationState, ILegalCaseFile } from "../../types";
 import i18n from "../../i18n";
 import UpdateDialogTabs from "./updateDialogTabs";
+import UpdateTable from "./updateTable";
 import SnackbarAlert from "../general/snackBar";
 
 type Props = {
   legalCase: ILegalCase;
   setLegalCase: (legalCase: ILegalCase) => void;
+  legalCaseFiles: ILegalCaseFile[];
+  setLegalCaseFiles: (legalCaseFiles: ILegalCaseFile[]) => void;
+  caseUpdates: any;
+  setCaseUpdates: (caseUpdates: any) => void;
 };
 
 const CaseUpdateTab = (props: Props) => {
@@ -54,6 +61,7 @@ const CaseUpdateTab = (props: Props) => {
     message: "",
     severity: undefined,
   });
+  const [updateError, setUpdateError] = useState<string>("");
 
   useEffect(() => {
     const resetState = async () => {
@@ -127,15 +135,25 @@ const CaseUpdateTab = (props: Props) => {
       })
         .then((res: any) => {
           setIsLoading(false);
+
+          if (typeof res.note.title === "object") {
+            setUpdateError("title");
+            return false;
+          } else if (typeof res.note.content === "object") {
+            setUpdateError("content");
+            return false;
+          } else {
+            setUpdateError("");
+          }
+
           if (res.id) {
             dialogClose();
+            refreshUpdates();
             setShowSnackbar({
               open: true,
               message: "Note update successful",
               severity: "success",
             });
-          } else {
-            console.log("failed");
           }
         })
         .catch((e) => {
@@ -212,8 +230,23 @@ const CaseUpdateTab = (props: Props) => {
       })
         .then((res: any) => {
           setIsLoading(false);
+
+          if (typeof res.meeting.meeting_type === "object") {
+            setUpdateError("meeting_type");
+            return false;
+          } else if (typeof res.meeting.location === "object") {
+            setUpdateError("location");
+            return false;
+          } else if (typeof res.meeting.notes === "object") {
+            setUpdateError("notes");
+            return false;
+          } else {
+            setUpdateError("");
+          }
+
           if (res.id) {
             dialogClose();
+            refreshUpdates();
             setShowSnackbar({
               open: true,
               message: "Meeting update successful",
@@ -268,16 +301,13 @@ const CaseUpdateTab = (props: Props) => {
         .then((res: any) => {
           setIsLoading(false);
           if (res.id) {
+            setUpdateError("");
             createFile(res.id);
           }
         })
         .catch((err: any) => {
           setIsLoading(false);
-          setShowSnackbar({
-            open: true,
-            message: "File upload failed",
-            severity: "error",
-          });
+          setUpdateError("file_upload");
         });
     };
 
@@ -289,8 +319,14 @@ const CaseUpdateTab = (props: Props) => {
       })
         .then((res: any) => {
           setIsLoading(false);
+
           if (res.id) {
             dialogClose();
+            getLegalCaseFiles(props.legalCase.id).then((response) => {
+              props.setLegalCaseFiles(response);
+            });
+
+            refreshUpdates();
             setShowSnackbar({
               open: true,
               message: "File update successful",
@@ -353,6 +389,11 @@ const CaseUpdateTab = (props: Props) => {
     statusChanged && statusPatch();
   };
 
+  const refreshUpdates = async () => {
+    const updates = await getCaseUpdates(props.legalCase.id as number);
+    props.setCaseUpdates(updates);
+  };
+
   return (
     <Grid
       container
@@ -410,6 +451,7 @@ const CaseUpdateTab = (props: Props) => {
               fileTabFileName={fileTabFileName}
               setFileTabFileName={setFileTabFileName}
               setTabValue={setTabValue}
+              updateError={updateError}
             />
             <Box
               className={classes.centerItems}
@@ -483,7 +525,7 @@ const CaseUpdateTab = (props: Props) => {
       </Grid>
       <Grid item style={{ flexGrow: 1 }}>
         <strong>
-          {127} {i18n.t("Case Updates")}
+          {props.caseUpdates.length} {i18n.t("Case Updates")}
         </strong>
       </Grid>
       <Grid item>
@@ -508,6 +550,10 @@ const CaseUpdateTab = (props: Props) => {
           </MenuItem>
         </Select>
       </Grid>
+      <UpdateTable
+        caseUpdates={props.caseUpdates}
+        legalCaseFiles={props.legalCaseFiles ? props.legalCaseFiles : []}
+      />
       {showSnackbar.open && (
         <SnackbarAlert
           open={showSnackbar.open}
