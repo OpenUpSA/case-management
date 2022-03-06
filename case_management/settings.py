@@ -105,6 +105,17 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "case_management.urls"
 
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Enter value with prefix: 'Bearer {token}'"
+        }
+    },
+}
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
