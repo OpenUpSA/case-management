@@ -363,13 +363,15 @@ class Meeting(LoggedChildModel):
         null=True,
         blank=True,
     )
-    location = models.CharField(max_length=255, null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=True, default="")
     meeting_type = models.CharField(
         max_length=50, null=False, blank=False, default="In person meeting"
     )
     meeting_date = models.DateTimeField(null=False, blank=False)
+    location = models.CharField(max_length=255, null=False, blank=False)
     notes = models.TextField(null=False, blank=False)
-    name = models.CharField(max_length=255, null=False, blank=True, default="")
+    advice_was_offered = models.BooleanField(null=True, blank=True)
+    advice_offered = models.TextField(null=False, blank=True)
     file = models.ForeignKey(
         'File',
         related_name='meetings',

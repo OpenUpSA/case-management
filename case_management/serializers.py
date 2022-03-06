@@ -113,6 +113,15 @@ class FileSerializer(serializers.ModelSerializer):
 
 
 class MeetingSerializer(serializers.ModelSerializer):
+
+    def validate(self, data):
+        if data.get('advice_was_offered') and not data.get('advice_offered'):
+            raise serializers.ValidationError(
+                {
+                    'advice_offered': 'advice_offered is mandatory if advice_was_offered is true'
+                }
+            )
+
     class Meta:
         model = Meeting
         fields = '__all__'
