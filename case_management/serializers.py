@@ -121,6 +121,7 @@ class MeetingSerializer(serializers.ModelSerializer):
                     'advice_offered': 'advice_offered is mandatory if advice_was_offered is true'
                 }
             )
+        return data
 
     class Meta:
         model = Meeting
