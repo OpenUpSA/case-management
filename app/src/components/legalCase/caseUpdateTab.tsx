@@ -34,6 +34,7 @@ type Props = {
   setLegalCaseFiles: (legalCaseFiles: ILegalCaseFile[]) => void;
   caseUpdates: any;
   setCaseUpdates: (caseUpdates: any) => void;
+  setStatus: (status: string) => void;
 };
 
 const CaseUpdateTab = (props: Props) => {
@@ -492,6 +493,7 @@ const CaseUpdateTab = (props: Props) => {
                 onChange={(event: SelectChangeEvent<string>) => {
                   setStatus(event.target.value);
                   setStatusChanged(true);
+                  props.setStatus(event.target.value);
                 }}
               >
                 {LegalCaseStates?.map((value) => (
@@ -567,6 +569,16 @@ const CaseUpdateTab = (props: Props) => {
         caseUpdates={props.caseUpdates}
         legalCaseFiles={props.legalCaseFiles ? props.legalCaseFiles : []}
       />
+      <Button
+        className={classes.bigCanBeFab}
+        fullWidth
+        color="primary"
+        variant="contained"
+        startIcon={<AddCommentIcon />}
+        onClick={() => setOpen(true)}
+      >
+        {i18n.t("Add new update")}
+      </Button>
       {showSnackbar.open && (
         <SnackbarAlert
           open={showSnackbar.open}

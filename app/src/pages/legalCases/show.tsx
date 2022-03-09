@@ -53,9 +53,7 @@ const Page = () => {
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
-  const [status, setStatus] = React.useState<string>(
-    legalCase?.state || ""
-  );
+  const [status, setStatus] = React.useState<string>(legalCase?.state || "");
   const [caseHistory, setCaseHistory] = React.useState<ILog[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
@@ -270,6 +268,7 @@ const Page = () => {
           setShowSnackbar={setShowSnackbar}
           caseHistory={caseHistory ? caseHistory : []}
           setCaseHistory={setCaseHistory}
+          setStatus={setStatus}
         />
 
         {isLoading && (

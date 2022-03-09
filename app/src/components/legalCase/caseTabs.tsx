@@ -37,6 +37,7 @@ type Props = {
   setShowSnackbar: (showSnackbar: LocationState) => void;
   caseHistory: ILog[];
   setCaseHistory: (caseHistory: ILog[]) => void;
+  setStatus: (status: string) => void;
 };
 
 function TabPanel(props: TabPanelProps) {
@@ -74,7 +75,7 @@ export default function CaseTabs(props: Props) {
     async function fetchData() {
       try {
         props.setIsLoading(true);
-        if (props.legalCase?.id) {
+        if (props.legalCase?.id !== undefined) {
           const dataLegalCaseFiles = await getLegalCaseFiles(props.legalCase?.id);
           const clientInfo = await getClient(props.legalCase?.client);
           const userNumber = Number(props.legalCase?.users?.join());
@@ -99,7 +100,7 @@ export default function CaseTabs(props: Props) {
     }
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [props.legalCase?.id]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -172,6 +173,7 @@ export default function CaseTabs(props: Props) {
             setCaseUpdates={setCaseUpdates}
             legalCaseFiles={legalCaseFiles ? legalCaseFiles : []}
             setLegalCaseFiles={setLegalCaseFiles}
+            setStatus={props.setStatus}
           />
         ) : null}
       </TabPanel>
