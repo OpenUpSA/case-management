@@ -75,9 +75,7 @@ export default function CaseTabs(props: Props) {
       try {
         props.setIsLoading(true);
         if (props.legalCase?.id) {
-          const dataLegalCaseFiles = await getLegalCaseFiles(
-            props.legalCase?.id
-          );
+          const dataLegalCaseFiles = await getLegalCaseFiles(props.legalCase?.id);
           const clientInfo = await getClient(props.legalCase?.client);
           const userNumber = Number(props.legalCase?.users?.join());
           const userInfo = await getUser(userNumber);
@@ -101,7 +99,7 @@ export default function CaseTabs(props: Props) {
     }
     fetchData();
     // eslint-disable-next-line
-  }, [props.legalCase]);
+  }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -157,6 +155,7 @@ export default function CaseTabs(props: Props) {
         {props.legalCase ? (
           <CaseInfoTab
             legalCase={props.legalCase}
+            setLegalCase={props.setLegalCase}
             client={client}
             caseWorker={caseWorker}
             caseHistory={props.caseHistory ? props.caseHistory : []}

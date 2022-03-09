@@ -396,6 +396,56 @@ const UpdateDialogTabs = (props: Props) => {
               }}
             />
           </Box>
+          <Box
+            className={classes.centerItems}
+            style={{
+              marginBottom: "20px",
+            }}
+          >
+            <InputLabel
+              className={classes.dialogLabel}
+              style={{ paddingRight: 15 }}
+              htmlFor="was_advice_offered"
+            >
+              {i18n.t("Was advice offered")}?
+            </InputLabel>
+            <Select
+              id="was_advice_offered"
+              className={classes.select}
+              style={{ flexGrow: 1 }}
+              disableUnderline
+              input={<Input />}
+              value={props.meeting.advice_was_offered}
+              onChange={(e: SelectChangeEvent<string>) => {
+                props.setMeeting({
+                  ...props.meeting,
+                  advice_was_offered: e.target.value,
+                });
+              }}
+            >
+              <MenuItem key={"Yes"} value={"True"}>
+                {i18n.t("Yes")}
+              </MenuItem>
+              <MenuItem key={"No"} value={"False"}>
+                {i18n.t("No")}
+              </MenuItem>
+            </Select>
+          </Box>
+          <Input
+            id="advice_offered"
+            disableUnderline={true}
+            fullWidth
+            rows={4}
+            multiline
+            placeholder={i18n.t("Record of advice offered")}
+            className={classes.dialogInput}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              props.setMeeting({
+                ...props.meeting,
+                advice_offered: e.target.value,
+              });
+            }}
+          />
           {props.progress
             ? props.progress > 0 && (
                 <Grid>

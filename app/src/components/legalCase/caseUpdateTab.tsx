@@ -19,6 +19,7 @@ import {
   createCaseUpdate,
   updateLegalCase,
   getCaseUpdates,
+  getLegalCase,
 } from "../../api";
 import { ILegalCase, LocationState, ILegalCaseFile } from "../../types";
 import i18n from "../../i18n";
@@ -44,6 +45,8 @@ const CaseUpdateTab = (props: Props) => {
     location: "",
     notes: "",
     meeting_date: new Date().toISOString().slice(0, 16),
+    advice_was_offered: "",
+    advice_offered: "",
   });
   const [tabValue, setTabValue] = useState<number>(0);
   const [attachedFileData, setAttachedFileData] = useState<any>({
@@ -225,6 +228,8 @@ const CaseUpdateTab = (props: Props) => {
           notes: meeting.notes,
           meeting_date: meeting.meeting_date,
           file: meetingFileId,
+          advice_was_offered: meeting.advice_was_offered,
+          advice_offered: meeting.advice_offered,
         },
         legal_case: props.legalCase.id,
       })
@@ -363,7 +368,10 @@ const CaseUpdateTab = (props: Props) => {
         ...props.legalCase,
         state: status,
       };
-      await updateLegalCase(updatedStatus);
+      const { id } = await updateLegalCase(updatedStatus);
+      if (id) {
+        updateCase();
+      }
       setIsLoading(false);
     } catch (e) {
       setIsLoading(false);
@@ -392,6 +400,11 @@ const CaseUpdateTab = (props: Props) => {
   const refreshUpdates = async () => {
     const updates = await getCaseUpdates(props.legalCase.id as number);
     props.setCaseUpdates(updates);
+  };
+
+  const updateCase = async () => {
+    const dataLegalCase = await getLegalCase(props.legalCase.id as number);
+    props.setLegalCase(dataLegalCase);
   };
 
   return (

@@ -53,7 +53,9 @@ const Page = () => {
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
-  const [status, setStatus] = React.useState<string | undefined>("");
+  const [status, setStatus] = React.useState<string>(
+    legalCase?.state || ""
+  );
   const [caseHistory, setCaseHistory] = React.useState<ILog[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
@@ -117,10 +119,10 @@ const Page = () => {
         const historyData = await getLogs(caseId, "LegalCase");
         const dataClient = await getClient(dataLegalCase.client);
 
+        setStatus(dataLegalCase.state);
         setLegalCase(dataLegalCase);
         setClient(dataClient);
         setCaseHistory(historyData);
-        setStatus(dataLegalCase.state);
         setMeetings(dataMeetings);
         setIsLoading(false);
       } catch (e: any) {
@@ -149,13 +151,15 @@ const Page = () => {
       };
       const { id } = await updateLegalCase(updatedStatus);
       setIsLoading(false);
-      id &&
+      if (id) {
         setShowSnackbar({
           open: true,
           message: "Case edit successful",
           severity: "success",
         });
-      updateHistory();
+        updateCase();
+        updateHistory();
+      }
     } catch (e) {
       setIsLoading(false);
       setShowSnackbar({
@@ -164,6 +168,11 @@ const Page = () => {
         severity: "error",
       });
     }
+  };
+
+  const updateCase = async () => {
+    const dataLegalCase = await getLegalCase(caseId);
+    setLegalCase(dataLegalCase);
   };
 
   const updateHistory = async () => {
@@ -209,7 +218,7 @@ const Page = () => {
               className={classes.select}
               input={<Input />}
               value={status}
-              onChange={(event: SelectChangeEvent<string | undefined>) => {
+              onChange={(event: SelectChangeEvent<string>) => {
                 setStatus(event.target.value as any);
                 statusPatch(event.target.value as any);
               }}

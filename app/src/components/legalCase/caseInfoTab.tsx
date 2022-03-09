@@ -40,7 +40,7 @@ import {
   ILog,
   LocationState,
 } from "../../types";
-import { updateLegalCase, getLogs, createLog } from "../../api";
+import { updateLegalCase, getLogs, createLog, getLegalCase } from "../../api";
 
 const LogLabels = new Map([
   ["LegalCase Create", "Case created"],
@@ -64,6 +64,7 @@ type Props = {
   caseHistory: ILog[];
   caseWorker: IUser | undefined;
   setCaseHistory: (caseHistory: ILog[]) => void;
+  setLegalCase: (legalCase: ILegalCase) => void;
 };
 
 export default function CaseInfoTab(props: Props) {
@@ -196,8 +197,9 @@ export default function CaseInfoTab(props: Props) {
           message: "Case edit successful",
           severity: "success",
         });
+        updateCase();
+        updateHistory();
       }
-      updateHistory();
     } catch (e) {
       setSummaryLoader(false);
       setShowSnackbar({
@@ -222,13 +224,15 @@ export default function CaseInfoTab(props: Props) {
       };
       const { id } = await updateLegalCase(updatedSummary);
       setIsLoading(false);
-      id &&
+      if (id) {
         setShowSnackbar({
           open: true,
           message: "Case edit successful",
           severity: "success",
         });
-      updateHistory();
+        updateHistory();
+        updateCase();
+      }
     } catch (e) {
       setIsLoading(false);
       setShowSnackbar({
@@ -237,6 +241,11 @@ export default function CaseInfoTab(props: Props) {
         severity: "error",
       });
     }
+  };
+
+  const updateCase = async () => {
+    const dataLegalCase = await getLegalCase(props.legalCase.id as number);
+    props.setLegalCase(dataLegalCase);
   };
 
   const updateHistory = async () => {
