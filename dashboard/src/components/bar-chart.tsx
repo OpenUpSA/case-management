@@ -11,7 +11,7 @@ import { BlackTooltip } from "./general/tooltip";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     value: {
-      fontSize: "1.5rem",
+      fontSize: "1.2rem",
     },
     barWithLabels: {
       height: "100%",
@@ -46,6 +46,7 @@ interface IProps {
   selectedOffice: string;
   metric: string;
   info: string;
+  rangeDetail: string;
   dataMonthly: IDbDataMonthly;
   dataByRange: IDbDataByRange;
 }
@@ -75,7 +76,7 @@ export default function BarChart(props: IProps) {
       {hasData ? (
         <div>
           <Typography className={classes.value}>
-            {rangeValue ? rangeValue : "no value"}
+            {rangeValue ? rangeValue : "0"} {props.rangeDetail}
           </Typography>
           <div>
             <Grid
