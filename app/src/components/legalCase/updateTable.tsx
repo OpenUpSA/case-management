@@ -107,9 +107,7 @@ const UpdateTable = (props: Props) => {
                 <TableRow
                   key={update.id}
                   className={classes.caseHistoryList}
-                  onClick={() => {
-                    // history.push(`/cases/${legalCase.id}`);
-                  }}
+                  onClick={() => {}}
                 >
                   <TableCell
                     className={classes.updateTableBodyCell}
@@ -136,7 +134,7 @@ const UpdateTable = (props: Props) => {
                           legalCaseFiles
                             ?.filter(
                               (caseFile: ILegalCaseFile) =>
-                                update.files!.indexOf(caseFile.id) > -1
+                                update.files.indexOf(caseFile.id) > -1
                             )
                             .map(
                               (caseFile: ILegalCaseFile) => caseFile.description
@@ -160,7 +158,25 @@ const UpdateTable = (props: Props) => {
                       legalCaseFiles
                         ?.filter(
                           (caseFile: ILegalCaseFile) =>
-                            update.files!.indexOf(caseFile.id) > -1
+                            update.files.indexOf(caseFile.id) > -1
+                        )
+                        .map((caseFile: ILegalCaseFile) =>
+                          validFileIcon(caseFile.upload_file_extension)
+                        )
+                    ) : update.meeting !== null && update.meeting.file > 0 ? (
+                      legalCaseFiles
+                        ?.filter(
+                          (caseFile: ILegalCaseFile) =>
+                            [update.meeting.file].indexOf(caseFile.id) > -1
+                        )
+                        .map((caseFile: ILegalCaseFile) =>
+                          validFileIcon(caseFile.upload_file_extension)
+                        )
+                    ) : update.note !== null && update.note.file > 0 ? (
+                      legalCaseFiles
+                        ?.filter(
+                          (caseFile: ILegalCaseFile) =>
+                            [update.note.file].indexOf(caseFile.id) > -1
                         )
                         .map((caseFile: ILegalCaseFile) =>
                           validFileIcon(caseFile.upload_file_extension)
@@ -176,6 +192,7 @@ const UpdateTable = (props: Props) => {
                     align="center"
                   >
                     <Avatar
+                      // can't get user details from case update
                       alt="Paul Watson"
                       src="/static/images/avatar/1.jpg"
                       className={classes.caseHistoryAvatar}

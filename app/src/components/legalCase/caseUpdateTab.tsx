@@ -94,7 +94,7 @@ const CaseUpdateTab = (props: Props) => {
   };
 
   const submitNoteUpdate = async () => {
-    const upLoadFile = async () => {
+    const upLoadNoteFile = async () => {
       setIsLoading(true);
       createLegalCaseFile(
         props.legalCase.id,
@@ -172,7 +172,7 @@ const CaseUpdateTab = (props: Props) => {
 
     try {
       if (attachedFileData.file) {
-        await upLoadFile();
+        await upLoadNoteFile();
       } else {
         await createNote(null);
       }
@@ -187,7 +187,7 @@ const CaseUpdateTab = (props: Props) => {
   };
 
   const submitMeetingUpdate = async () => {
-    const upLoadFile = async () => {
+    const upLoadMeetingFile = async () => {
       setIsLoading(true);
       createLegalCaseFile(
         props.legalCase.id,
@@ -272,7 +272,7 @@ const CaseUpdateTab = (props: Props) => {
 
     try {
       if (attachedFileData.file) {
-        await upLoadFile();
+        await upLoadMeetingFile();
       } else {
         await createMeeting(null);
       }
@@ -328,10 +328,6 @@ const CaseUpdateTab = (props: Props) => {
 
           if (res.id) {
             dialogClose();
-            getLegalCaseFiles(props.legalCase.id).then((response) => {
-              props.setLegalCaseFiles(response);
-            });
-
             refreshUpdates();
             setShowSnackbar({
               open: true,
@@ -399,6 +395,10 @@ const CaseUpdateTab = (props: Props) => {
   };
 
   const refreshUpdates = async () => {
+    const dataLegalCaseFiles = await getLegalCaseFiles(
+      props.legalCase.id as number
+    );
+    props.setLegalCaseFiles(dataLegalCaseFiles);
     const updates = await getCaseUpdates(props.legalCase.id as number);
     props.setCaseUpdates(updates);
   };

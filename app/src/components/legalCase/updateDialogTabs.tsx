@@ -555,7 +555,7 @@ const UpdateDialogTabs = (props: Props) => {
                 <input {...getInputProps()} />
                 {props.selectedFiles && props.fileTabFileName.length > 0 ? (
                   <Typography>
-                    {i18n.t("Submit update to file")}: {props.fileTabFileName}
+                    {i18n.t("Submit update to save file")}: {props.fileTabFileName}
                   </Typography>
                 ) : (
                   <Stack
