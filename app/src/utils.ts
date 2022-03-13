@@ -232,7 +232,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     inputLabel: {
       color: "#000",
-      fontSize: "14px",
+      fontSize: "1.2em",
       "&.Mui-focused": {
         color: "unset",
       },

@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Routes from "./routes";
-import "@fontsource/roboto";
+import "@fontsource/karla";
 import { CaseOfficesProvider } from "./contexts/caseOfficesContext";
 import { CaseTypesProvider } from "./contexts/caseTypesContext";
 

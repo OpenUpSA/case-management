@@ -109,7 +109,7 @@ const Component = (props: Props) => {
           </FormControl>
         </Grid>
         {props.showUploadButton && (
-          <Grid item xs={12} md={4} style={{ position: "relative" }}>
+          <Grid item xs={12} md={4} style={{ position: "relative", paddingBottom: "50px"  }}>
             <Box className={classes.helpersBox}>
               {props.meetingFile?.description &&
                 (props.fileToDelete || stagedFileName.length > 0) && (
