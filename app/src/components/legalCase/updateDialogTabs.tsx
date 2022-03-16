@@ -152,12 +152,9 @@ const UpdateDialogTabs = (props: Props) => {
             className={classes.updateAlert}
             icon={<HelpOutlineOutlinedIcon fontSize="large" />}
           >
-            <p>
-              {i18n.t(
-                "A note is the quickest way for a case worker to update a case with new information and ensure that anybody working on case is able to keep informed about its progress. "
-              )}
-              <a href="www.google.com">{i18n.t("Learn more")}</a>
-            </p>
+            {i18n.t(
+              "A note is the quickest way for a case worker to update a case with new information and ensure that anybody working on case is able to keep informed about its progress. "
+            )}
           </Alert>
           {props.updateError === "title" && (
             <FormHelperText error>
@@ -282,12 +279,9 @@ const UpdateDialogTabs = (props: Props) => {
             className={classes.updateAlert}
             icon={<HelpOutlineOutlinedIcon fontSize="large" />}
           >
-            <p>
-              {i18n.t(
-                "A meeting is a clear record that an engagement between client and case officer took place. "
-              )}
-              <a href="www.google.com">{i18n.t("Learn more")}</a>
-            </p>
+            {i18n.t(
+              "A meeting is a clear record that an engagement between client and case officer took place. "
+            )}
           </Alert>
           {props.updateError === "meeting_type" && (
             <FormHelperText error>
@@ -537,12 +531,9 @@ const UpdateDialogTabs = (props: Props) => {
             className={classes.updateAlert}
             icon={<HelpOutlineOutlinedIcon fontSize="large" />}
           >
-            <p>
-              {i18n.t(
-                "Upload, label and add descriptions to important files to ensure that they are safely stored and always available to anyone else working on the case. "
-              )}
-              <a href="www.google.com">{i18n.t("Learn more")}</a>
-            </p>
+            {i18n.t(
+              "Upload, label and add descriptions to important files to ensure that they are safely stored and always available to anyone else working on the case. "
+            )}
           </Alert>
           {props.updateError === "file_upload" && (
             <FormHelperText error>
@@ -555,7 +546,8 @@ const UpdateDialogTabs = (props: Props) => {
                 <input {...getInputProps()} />
                 {props.selectedFiles && props.fileTabFileName.length > 0 ? (
                   <Typography>
-                    {i18n.t("Submit update to save file")}: {props.fileTabFileName}
+                    {i18n.t("Submit update to save file")}:{" "}
+                    {props.fileTabFileName}
                   </Typography>
                 ) : (
                   <Stack

@@ -11,7 +11,6 @@ import {
 } from "@material-ui/core";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
-import Avatar from "@mui/material/Avatar";
 import { format } from "date-fns";
 import { ILegalCaseFile } from "../../types";
 import {
@@ -21,6 +20,8 @@ import {
   FileIcon,
   VideoFileIcon,
 } from "../general/icons";
+import { BlackTooltip } from "../general/tooltip";
+import userDefaultAvatar from "../../user-default-avatar.jpeg";
 
 type Props = {
   caseUpdates: any;
@@ -52,23 +53,46 @@ const UpdateTable = (props: Props) => {
     });
   }, []);
 
-  const validFileIcon = (file_extension: string | undefined) => {
+  const validFileIcon = (
+    file_extension: string | undefined,
+    filePath: string
+  ) => {
     switch (file_extension) {
       case "pdf":
-        return <PdfFileIcon />;
+        return (
+          <a href={filePath} target="_blank" rel="noreferrer">
+            <PdfFileIcon />
+          </a>
+        );
       case "png":
       case "jpg":
       case "jpeg":
-        return <ImageFileIcon />;
+        return (
+          <a href={filePath} target="_blank" rel="noreferrer">
+            <ImageFileIcon />
+          </a>
+        );
       case "mp3":
       case "wav":
       case "m4a":
-        return <AudioFileIcon />;
+        return (
+          <a href={filePath} target="_blank" rel="noreferrer">
+            <AudioFileIcon />
+          </a>
+        );
       case "mp4":
       case "3gp":
-        return <VideoFileIcon />;
+        return (
+          <a href={filePath} target="_blank" rel="noreferrer">
+            <VideoFileIcon />
+          </a>
+        );
       default:
-        return <FileIcon />;
+        return (
+          <a href={filePath} target="_blank" rel="noreferrer">
+            <FileIcon />
+          </a>
+        );
     }
   };
 
@@ -161,7 +185,10 @@ const UpdateTable = (props: Props) => {
                             update.files.indexOf(caseFile.id) > -1
                         )
                         .map((caseFile: ILegalCaseFile) =>
-                          validFileIcon(caseFile.upload_file_extension)
+                          validFileIcon(
+                            caseFile.upload_file_extension,
+                            caseFile.upload
+                          )
                         )
                     ) : update.meeting !== null && update.meeting.file > 0 ? (
                       legalCaseFiles
@@ -170,7 +197,10 @@ const UpdateTable = (props: Props) => {
                             [update.meeting.file].indexOf(caseFile.id) > -1
                         )
                         .map((caseFile: ILegalCaseFile) =>
-                          validFileIcon(caseFile.upload_file_extension)
+                          validFileIcon(
+                            caseFile.upload_file_extension,
+                            caseFile.upload
+                          )
                         )
                     ) : update.note !== null && update.note.file > 0 ? (
                       legalCaseFiles
@@ -179,7 +209,10 @@ const UpdateTable = (props: Props) => {
                             [update.note.file].indexOf(caseFile.id) > -1
                         )
                         .map((caseFile: ILegalCaseFile) =>
-                          validFileIcon(caseFile.upload_file_extension)
+                          validFileIcon(
+                            caseFile.upload_file_extension,
+                            caseFile.upload
+                          )
                         )
                     ) : (
                       <Typography variant="caption">
@@ -191,12 +224,14 @@ const UpdateTable = (props: Props) => {
                     className={classes.updateTableBodyCell}
                     align="center"
                   >
-                    <Avatar
-                      // can't get user details from case update
-                      alt="Paul Watson"
-                      src="/static/images/avatar/1.jpg"
-                      className={classes.caseHistoryAvatar}
-                    />
+                    <BlackTooltip title="created_by: null" arrow placement="top">
+                      <img
+                        className={classes.updateAvatar}
+                        src={userDefaultAvatar}
+                        alt={"user"}
+                        loading={"lazy"}
+                      />
+                    </BlackTooltip>
                   </TableCell>
 
                   <TableCell

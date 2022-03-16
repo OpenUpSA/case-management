@@ -569,16 +569,6 @@ const CaseUpdateTab = (props: Props) => {
         caseUpdates={props.caseUpdates}
         legalCaseFiles={props.legalCaseFiles ? props.legalCaseFiles : []}
       />
-      <Button
-        className={classes.bigCanBeFab}
-        fullWidth
-        color="primary"
-        variant="contained"
-        startIcon={<AddCommentIcon />}
-        onClick={() => setOpen(true)}
-      >
-        {i18n.t("Add new update")}
-      </Button>
       {showSnackbar.open && (
         <SnackbarAlert
           open={showSnackbar.open}

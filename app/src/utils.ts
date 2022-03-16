@@ -792,5 +792,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       color: "#2b61f0",
       textDecorationLine: "underline",
     },
+    updateAvatar: {
+      height: "33px",
+      width: "33px",
+      borderRadius: "50%",
+    },
   })
 );
