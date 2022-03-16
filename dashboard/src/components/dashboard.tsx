@@ -110,32 +110,32 @@ export default function Dashboard(props: IProps) {
       {
         name: "Active case officers",
         info: "This graph shows the number of active case officers by month.",
-        rangeDetail: "active case officer(s) in the past 12 months.",
+        rangeDetail: "active case officer(s) in the past 12 months",
       },
       {
         name: "Total cases",
         info: "This graph shows  the total number of cases that remain open during the month.",
-        rangeDetail: "case(s) are currently open.",
+        rangeDetail: "case(s) are currently open",
       },
       {
         name: "Average cases per officer",
         info: "This graph shows the average number of cases open per case officer.",
-        rangeDetail: "case(s) per case officer.",
+        rangeDetail: "case(s) per case officer",
       },
       {
         name: "Average days per case",
         info: "This graph shows the average number of days that a case is in an open state.",
-        rangeDetail: "is the average number of days cases are open.",
+        rangeDetail: "is the average number of days cases are open",
       },
       {
         name: "Cases opened",
         info: "This graph shows the total amount of cases opened in the month",
-        rangeDetail: "case(s) opened in the past 12 months.",
+        rangeDetail: "case(s) opened in the past 12 months",
       },
       {
         name: "Cases closed",
         info: "This graph shows the total number of cases closed in the month.",
-        rangeDetail: "case(s) closed in the past 12 months.",
+        rangeDetail: "case(s) closed in the past 12 months",
       },
     ];
     barChartMetrics.forEach(
