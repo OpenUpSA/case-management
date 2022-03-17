@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Box from "@material-ui/core/Box";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
@@ -16,12 +16,10 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Input, MenuItem } from "@material-ui/core";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
+
 import LockIcon from "@mui/icons-material/Lock";
 import CircularProgress from "@mui/material/CircularProgress";
+import FormHelperText from "@mui/material/FormHelperText";
 
 import { BlackTooltip } from "../general/tooltip";
 import { useStyles } from "../../utils";
@@ -29,8 +27,8 @@ import SnackbarAlert from "../../components/general/snackBar";
 import { format } from "date-fns";
 import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
-import FormHelperText from "@mui/material/FormHelperText";
-
+import UpdateDialog from "./updateDialog";
+import { updateLegalCase, getLogs, getLegalCase } from "../../api";
 import {
   ILegalCase,
   ICaseType,
@@ -39,8 +37,8 @@ import {
   IUser,
   ILog,
   LocationState,
+  ILegalCaseFile
 } from "../../types";
-import { updateLegalCase, getLogs, createLog, getLegalCase } from "../../api";
 
 const LogLabels = new Map([
   ["LegalCase Create", "Case created"],
@@ -65,36 +63,34 @@ type Props = {
   caseWorker: IUser | undefined;
   setCaseHistory: (caseHistory: ILog[]) => void;
   setLegalCase: (legalCase: ILegalCase) => void;
+  setStatus: (status: string) => void;
+  setCaseUpdates: (caseUpdates: any) => void;
+  setLegalCaseFiles: (legalCaseFiles: ILegalCaseFile[]) => void;
 };
 
 export default function CaseInfoTab(props: Props) {
   const classes = useStyles();
   const [contextOffices] = useContext(CaseOfficesContext);
   const [contextCaseTypes] = useContext(CaseTypesContext);
-  const [caseSummary, setCaseSummary] = React.useState<string | undefined>("");
-
-  const [selectCaseType, setSelectCaseType] = React.useState<
+  const [caseSummary, setCaseSummary] = useState<string | undefined>("");
+  const [selectCaseType, setSelectCaseType] = useState<number[] | undefined>(
+    []
+  );
+  const [selectCaseOffice, setSelectCaseOffice] = useState<
     number[] | undefined
   >([]);
-  const [selectCaseOffice, setSelectCaseOffice] = React.useState<
-    number[] | undefined
-  >([]);
-
-  const [open, setOpen] = React.useState(false);
-  const [manualUpdateValue, setManualUpdateValue] = React.useState<string>("");
-  const [showButton, setShowButton] = React.useState<boolean>(false);
-  const [width, setWidth] = React.useState<number>(0);
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [open, setOpen] = useState(false);
+  const [showButton, setShowButton] = useState<boolean>(false);
+  const [width, setWidth] = useState<number>(0);
+  const [showSnackbar, setShowSnackbar] = useState<LocationState>({
     open: false,
     message: "",
     severity: undefined,
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [summaryLoader, setSummaryLoader] = useState<boolean>(false);
 
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [updateLoader, setUpdateLoader] = React.useState<boolean>(false);
-  const [summaryLoader, setSummaryLoader] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
+  useEffect(() => {
     setIsLoading(true);
     setSelectCaseOffice(props.legalCase?.case_offices);
     setCaseSummary(props.legalCase?.summary);
@@ -104,7 +100,7 @@ export default function CaseInfoTab(props: Props) {
     setIsLoading(false);
   }, [props.legalCase]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const resetState = async () => {
       setTimeout(() => {
         setShowSnackbar({
@@ -120,59 +116,6 @@ export default function CaseInfoTab(props: Props) {
   const discardChange = () => {
     setCaseSummary(props.legalCase?.summary);
     setShowButton(false);
-  };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setManualUpdateValue("");
-  };
-
-  const addUpdateHandler = async (
-    parent_id: number | undefined,
-    parent_type: string,
-    target_id: number | undefined,
-    target_type: string,
-    action: string,
-    user: number,
-    note: string
-  ) => {
-    try {
-      setUpdateLoader(true);
-      const caseHistory: ILog = {
-        id: 0,
-        created_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
-        updated_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
-        parent_id: parent_id,
-        parent_type: parent_type,
-        target_id: target_id,
-        target_type: target_type,
-        action: action,
-        user: user,
-        note: note,
-      };
-      const { id } = await createLog(caseHistory);
-      setUpdateLoader(false);
-      if (id) {
-        handleClose();
-        setShowSnackbar({
-          open: true,
-          message: "Case update successful",
-          severity: "success",
-        });
-      }
-      updateHistory();
-    } catch (e) {
-      setUpdateLoader(false);
-      handleClose();
-      setShowSnackbar({
-        open: true,
-        message: "Case update failed",
-        severity: "error",
-      });
-    }
   };
 
   const caseSummaryPatch = async () => {
@@ -251,6 +194,10 @@ export default function CaseInfoTab(props: Props) {
   const updateHistory = async () => {
     const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
     props.setCaseHistory(historyData);
+  };
+
+  const dialogOpen = () => {
+    setOpen(true);
   };
 
   return (
@@ -337,62 +284,20 @@ export default function CaseInfoTab(props: Props) {
               </InputLabel>
             </Grid>
             <Grid item>
-              <Button variant="contained" onClick={handleClickOpen}>
+              <Button variant="contained" onClick={() => dialogOpen()}>
                 Add update
               </Button>
 
-              <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-                <DialogTitle>Add Update</DialogTitle>
-                <DialogContent>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Note"
-                    type="text"
-                    fullWidth
-                    variant="standard"
-                    value={manualUpdateValue}
-                    onChange={(e: React.ChangeEvent<{ value: any }>) => {
-                      setManualUpdateValue(e.target.value);
-                    }}
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose}>Cancel</Button>
-                  <Button
-                    style={{ position: "relative" }}
-                    color="primary"
-                    variant="contained"
-                    disabled={manualUpdateValue.length === 0 || updateLoader}
-                    onClick={(e) =>
-                      addUpdateHandler(
-                        props.legalCase?.id,
-                        "LegalCase",
-                        props.legalCase?.id,
-                        "LegalCase",
-                        "Update",
-                        Number(props.legalCase?.users?.join()),
-                        manualUpdateValue
-                      )
-                    }
-                  >
-                    Submit
-                    {updateLoader && (
-                      <CircularProgress
-                        size={24}
-                        sx={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          marginTop: "-12px",
-                          marginLeft: "-12px",
-                        }}
-                      />
-                    )}
-                  </Button>
-                </DialogActions>
-              </Dialog>
+              <UpdateDialog
+                open={open}
+                setOpen={setOpen}
+                setStatus={props.setStatus}
+                legalCase={props.legalCase}
+                setLegalCase={props.setLegalCase}
+                setLegalCaseFiles={props.setLegalCaseFiles}
+                setCaseUpdates={props.setCaseUpdates}
+              />
+           
             </Grid>
           </Grid>
           <List sx={{ width: "100%", marginBottom: "26px" }}>

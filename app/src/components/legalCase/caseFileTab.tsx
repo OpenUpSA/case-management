@@ -13,14 +13,11 @@ import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import WorkIcon from "@mui/icons-material/Work";
 import LinkIcon from "@mui/icons-material/Link";
 import Divider from "@mui/material/Divider";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import TextField from "@mui/material/TextField";
 import { format } from "date-fns";
 
 import { ILegalCase, ILegalCaseFile, LocationState } from "../../types";
 import { getLegalCaseFiles, createLegalCaseFile } from "../../api";
+import UpdateDialog from "./updateDialog";
 
 import {
   Grid,
@@ -41,6 +38,9 @@ type Props = {
   legalCase: ILegalCase;
   legalCaseFiles: ILegalCaseFile[];
   setLegalCaseFiles: React.Dispatch<React.SetStateAction<ILegalCaseFile[]>>;
+  setStatus: (status: string) => void;
+  setCaseUpdates: (caseUpdates: any) => void;
+  setLegalCase: (legalCase: ILegalCase) => void;
 };
 
 export default function CaseFileTab(props: Props) {
@@ -106,14 +106,9 @@ export default function CaseFileTab(props: Props) {
         });
       });
   };
-  const showOpenFileDialog = () => {
-    if (!uploadFileRef.current) throw Error("uploadFileRef is not assigned");
-    uploadFileRef.current.click();
-  };
 
-  const dialogClose = () => {
-    setOpen(false);
-    setFileDescription("");
+  const dialogOpen = () => {
+    setOpen(true);
   };
 
   return (
@@ -166,41 +161,20 @@ export default function CaseFileTab(props: Props) {
             variant="contained"
             startIcon={<UploadIcon />}
             style={{ textTransform: "none" }}
-            onClick={() => setOpen(true)}
+            onClick={() => dialogOpen()}
           >
             {i18n.t("Upload file")}
           </Button>
-          <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
-            <DialogContent>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="File description"
-                type="text"
-                fullWidth
-                variant="standard"
-                value={fileDescription}
-                onChange={(e: React.ChangeEvent<{ value: any }>) => {
-                  setFileDescription(e.target.value);
-                }}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={dialogClose}>Cancel</Button>
-              <Button
-                color="primary"
-                variant="contained"
-                startIcon={<UploadIcon />}
-                onClick={() => {
-                  showOpenFileDialog();
-                  setOpen(false);
-                }}
-              >
-                {i18n.t("Choose file")}
-              </Button>
-            </DialogActions>
-          </Dialog>
+
+          <UpdateDialog
+            open={open}
+            setOpen={setOpen}
+            setStatus={props.setStatus}
+            legalCase={props.legalCase}
+            setLegalCase={props.setLegalCase}
+            setLegalCaseFiles={props.setLegalCaseFiles}
+            setCaseUpdates={props.setCaseUpdates}
+          />
         </Grid>
       </Grid>
       <Grid

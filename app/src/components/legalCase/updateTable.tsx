@@ -165,7 +165,7 @@ const UpdateTable = (props: Props) => {
                             )
                             .join(", ")
                         : update.meeting !== null
-                        ? update.meeting.meeting_type + " with client"
+                        ? update.meeting.meeting_type + " meeting with client"
                         : update.note !== null
                         ? update.note.content > 70 || !desktop
                           ? update.note.content.slice(0, 68) + "..."

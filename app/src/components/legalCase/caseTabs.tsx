@@ -76,7 +76,9 @@ export default function CaseTabs(props: Props) {
       try {
         props.setIsLoading(true);
         if (props.legalCase?.id !== undefined) {
-          const dataLegalCaseFiles = await getLegalCaseFiles(props.legalCase?.id);
+          const dataLegalCaseFiles = await getLegalCaseFiles(
+            props.legalCase?.id
+          );
           const clientInfo = await getClient(props.legalCase?.client);
           const userNumber = Number(props.legalCase?.users?.join());
           const userInfo = await getUser(userNumber);
@@ -161,6 +163,9 @@ export default function CaseTabs(props: Props) {
             caseWorker={caseWorker}
             caseHistory={props.caseHistory ? props.caseHistory : []}
             setCaseHistory={props.setCaseHistory}
+            setLegalCaseFiles={setLegalCaseFiles}
+            setStatus={props.setStatus}
+            setCaseUpdates={setCaseUpdates}
           />
         ) : null}
       </TabPanel>
@@ -181,8 +186,11 @@ export default function CaseTabs(props: Props) {
         {legalCaseFiles && props.legalCase ? (
           <CaseFileTab
             legalCase={props.legalCase}
+            setLegalCase={props.setLegalCase}
             legalCaseFiles={legalCaseFiles ? legalCaseFiles : []}
             setLegalCaseFiles={setLegalCaseFiles}
+            setStatus={props.setStatus}
+            setCaseUpdates={setCaseUpdates}
           />
         ) : null}
       </TabPanel>
