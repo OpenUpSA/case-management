@@ -28,6 +28,7 @@ import { format } from "date-fns";
 import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
 import UpdateDialog from "./updateDialog";
+import i18n from "../../i18n";
 import { updateLegalCase, getLogs, getLegalCase } from "../../api";
 import {
   ILegalCase,
@@ -37,7 +38,7 @@ import {
   IUser,
   ILog,
   LocationState,
-  ILegalCaseFile
+  ILegalCaseFile,
 } from "../../types";
 
 const LogLabels = new Map([
@@ -205,7 +206,7 @@ export default function CaseInfoTab(props: Props) {
       <Grid container spacing={3} className={classes.caseInfoContainer}>
         <Grid item xs={12} md={8}>
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Case summary:
+            {i18n.t("Case summary")}:
           </InputLabel>
           <TextField
             multiline
@@ -239,7 +240,7 @@ export default function CaseInfoTab(props: Props) {
                   color={summaryLoader ? "#767271" : "#ffffff"}
                   variant="caption"
                 >
-                  Save
+                  {i18n.t("Save")}
                 </Typography>
                 {summaryLoader && (
                   <CircularProgress
@@ -261,7 +262,7 @@ export default function CaseInfoTab(props: Props) {
                 className={classes.discardButton}
               >
                 <Typography color="#767271" variant="caption">
-                  Discard
+                  {i18n.t("Discard")}
                 </Typography>
               </IconButton>
             </BlackTooltip>
@@ -280,12 +281,12 @@ export default function CaseInfoTab(props: Props) {
           >
             <Grid item>
               <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-                Case history:
+                {i18n.t("Case history")}:
               </InputLabel>
             </Grid>
             <Grid item>
               <Button variant="contained" onClick={() => dialogOpen()}>
-                Add update
+                {i18n.t("Add update")}
               </Button>
 
               <UpdateDialog
@@ -297,7 +298,6 @@ export default function CaseInfoTab(props: Props) {
                 setLegalCaseFiles={props.setLegalCaseFiles}
                 setCaseUpdates={props.setCaseUpdates}
               />
-           
             </Grid>
           </Grid>
           <List sx={{ width: "100%", marginBottom: "26px" }}>
@@ -362,7 +362,7 @@ export default function CaseInfoTab(props: Props) {
         </Grid>
         <Grid item xs={12} md={4}>
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Case number:
+            {i18n.t("Case number")}:
           </InputLabel>
           <TextField
             variant="standard"
@@ -381,7 +381,7 @@ export default function CaseInfoTab(props: Props) {
             }}
           />
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Case type:
+            {i18n.t("Case type")}:
           </InputLabel>
 
           <Select
@@ -418,7 +418,7 @@ export default function CaseInfoTab(props: Props) {
           </FormHelperText>
 
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Client name:
+            {i18n.t("Client name")}:
           </InputLabel>
           <TextField
             variant="standard"
@@ -438,7 +438,7 @@ export default function CaseInfoTab(props: Props) {
           />
 
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Case worker:
+            {i18n.t("Case worker")}:
           </InputLabel>
           <TextField
             variant="standard"
@@ -457,7 +457,7 @@ export default function CaseInfoTab(props: Props) {
             }}
           />
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Case office:
+            {i18n.t("Case office")}:
           </InputLabel>
 
           <TextField
@@ -484,7 +484,7 @@ export default function CaseInfoTab(props: Props) {
           />
 
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Date created:
+            {i18n.t("Date created")}:
           </InputLabel>
           <TextField
             variant="standard"

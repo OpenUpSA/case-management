@@ -33,6 +33,7 @@ type Props = {
   setLegalCase: (legalCase: ILegalCase) => void;
   setLegalCaseFiles: (legalCaseFiles: ILegalCaseFile[]) => void;
   setCaseUpdates: (caseUpdates: any) => void;
+  fileView?: boolean;
 };
 
 const UpdateDialog = (props: Props) => {
@@ -62,7 +63,7 @@ const UpdateDialog = (props: Props) => {
     severity: undefined,
   });
   const [updateError, setUpdateError] = useState<string>("");
-  const [tabValue, setTabValue] = useState<number>(0);
+  const [tabValue, setTabValue] = useState<number>(props.fileView ? 2 : 0);
 
   useEffect(() => {
     const resetState = async () => {
@@ -417,7 +418,7 @@ const UpdateDialog = (props: Props) => {
           >
             <Grid item>
               <DialogTitle
-                style={{ padding: 5, fontWeight: "bold", fontSize: 24 }}
+                className={classes.dialogTitle}
               >
                 {i18n.t("New update")}
               </DialogTitle>
@@ -446,6 +447,7 @@ const UpdateDialog = (props: Props) => {
             setFileTabFileName={setFileTabFileName}
             setTabValue={setTabValue}
             updateError={updateError}
+            fileView={props.fileView}
           />
           <Box
             className={classes.centerItems}

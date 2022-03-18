@@ -51,6 +51,7 @@ type Props = {
   setSelectedFiles: (selectedFiles: any) => void;
   setTabValue: (tabValue: number) => void;
   updateError: string;
+  fileView?: boolean;
 };
 
 function TabPanel(props: TabPanelProps) {
@@ -78,7 +79,7 @@ function a11yProps(index: number) {
 
 const UpdateDialogTabs = (props: Props) => {
   const classes = useStyles();
-  const [value, setValue] = useState<number>(0);
+  const [value, setValue] = useState<number>(props.fileView ? 2 : 0);
   const [open, setOpen] = useState<boolean>(false);
   const uploadFileRef = useRef<HTMLInputElement>(null);
   const [fileDescription, setFileDescription] = useState<string>("");

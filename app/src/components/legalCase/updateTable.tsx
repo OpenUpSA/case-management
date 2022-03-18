@@ -152,25 +152,49 @@ const UpdateTable = (props: Props) => {
                   </TableCell>
 
                   <TableCell className={classes.updateTableBodyCell}>
-                    <Typography>
-                      {update.files > 0
-                        ? "File uploaded " +
-                          legalCaseFiles
-                            ?.filter(
-                              (caseFile: ILegalCaseFile) =>
-                                update.files.indexOf(caseFile.id) > -1
-                            )
-                            .map(
-                              (caseFile: ILegalCaseFile) => caseFile.description
-                            )
-                            .join(", ")
-                        : update.meeting !== null
-                        ? update.meeting.meeting_type + " meeting with client"
-                        : update.note !== null
-                        ? update.note.content > 70 || !desktop
-                          ? update.note.content.slice(0, 68) + "..."
-                          : update.note.content
-                        : ""}
+                    <Typography >
+                      {update.files > 0 ? (
+                        <Typography style={{ lineHeight: 1.2 }}>
+                          {"File uploaded "}
+                          {
+                            <a
+                              target="_blank"
+                              rel="noreferrer"
+                              className={classes.blueText}
+                              href={legalCaseFiles
+                                ?.filter(
+                                  (caseFile: ILegalCaseFile) =>
+                                    update.files.indexOf(caseFile.id) > -1
+                                )
+                                .map(
+                                  (caseFile: ILegalCaseFile) => caseFile.upload
+                                )
+                                .join()}
+                            >
+                              {legalCaseFiles
+                                ?.filter(
+                                  (caseFile: ILegalCaseFile) =>
+                                    update.files.indexOf(caseFile.id) > -1
+                                )
+                                .map(
+                                  (caseFile: ILegalCaseFile) =>
+                                    caseFile.description
+                                )
+                                .join()}
+                            </a>
+                          }
+                        </Typography>
+                      ) : update.meeting !== null ? (
+                        update.meeting.meeting_type + " meeting with client"
+                      ) : update.note !== null ? (
+                        update.note.content > 70 || !desktop ? (
+                          update.note.content.slice(0, 68) + "..."
+                        ) : (
+                          update.note.content
+                        )
+                      ) : (
+                        ""
+                      )}
                     </Typography>
                   </TableCell>
 
@@ -224,7 +248,11 @@ const UpdateTable = (props: Props) => {
                     className={classes.updateTableBodyCell}
                     align="center"
                   >
-                    <BlackTooltip title="created_by: null" arrow placement="top">
+                    <BlackTooltip
+                      title="created_by: null"
+                      arrow
+                      placement="top"
+                    >
                       <img
                         className={classes.updateAvatar}
                         src={userDefaultAvatar}

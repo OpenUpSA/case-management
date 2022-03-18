@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useStyles } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
 import CheckIcon from "@mui/icons-material/Check";
@@ -16,7 +16,6 @@ import Divider from "@mui/material/Divider";
 import { format } from "date-fns";
 
 import { ILegalCase, ILegalCaseFile, LocationState } from "../../types";
-import { getLegalCaseFiles, createLegalCaseFile } from "../../api";
 import UpdateDialog from "./updateDialog";
 
 import {
@@ -31,7 +30,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import i18n from "../../i18n";
-import ProgressBar from "../general/progressBar";
 import SnackbarAlert from "../../components/general/snackBar";
 
 type Props = {
@@ -45,17 +43,15 @@ type Props = {
 
 export default function CaseFileTab(props: Props) {
   const classes = useStyles();
-  const uploadFileRef = useRef<HTMLInputElement>(null);
-  const [progress, setProgress] = React.useState<number>(0);
-  const [open, setOpen] = React.useState(false);
-  const [fileDescription, setFileDescription] = React.useState("");
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [open, setOpen] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState<LocationState>({
     open: false,
     message: "",
     severity: undefined,
   });
+  const [fileView] = useState<boolean>(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const resetState = async () => {
       setTimeout(() => {
         setShowSnackbar({
@@ -67,45 +63,6 @@ export default function CaseFileTab(props: Props) {
     };
     resetState();
   }, [showSnackbar.open]);
-
-  const onFileChange = async (event: any) => {
-    createLegalCaseFile(
-      props.legalCase.id,
-      event.target.files[0],
-      fileDescription,
-      (e: any) => {
-        const { loaded, total } = e;
-        const percent = Math.floor((loaded * 100) / total);
-
-        setProgress(percent);
-        if (percent === 100) {
-          setTimeout(() => {
-            setProgress(0);
-            setShowSnackbar({
-              open: true,
-              message: "File upload successful",
-              severity: "success",
-            });
-          }, 1000);
-        }
-      }
-    )
-      .then((res: any) => {
-        setFileDescription("");
-        if (res.legal_case) {
-          getLegalCaseFiles(res.legal_case).then((res) => {
-            props.setLegalCaseFiles(res);
-          });
-        }
-      })
-      .catch(() => {
-        setShowSnackbar({
-          open: true,
-          message: "File upload failed",
-          severity: "error",
-        });
-      });
-  };
 
   const dialogOpen = () => {
     setOpen(true);
@@ -120,6 +77,29 @@ export default function CaseFileTab(props: Props) {
         alignItems="center"
         className={classes.containerMarginBottom}
       >
+        <Grid item xs={12} md={12}>
+          <Button
+            className={classes.bigCanBeFab}
+            fullWidth
+            color="primary"
+            variant="contained"
+            startIcon={<UploadIcon />}
+            onClick={() => dialogOpen()}
+          >
+            {i18n.t("Upload file")}
+          </Button>
+
+          <UpdateDialog
+            open={open}
+            setOpen={setOpen}
+            setStatus={props.setStatus}
+            legalCase={props.legalCase}
+            setLegalCase={props.setLegalCase}
+            setLegalCaseFiles={props.setLegalCaseFiles}
+            setCaseUpdates={props.setCaseUpdates}
+            fileView={fileView}
+          />
+        </Grid>
         <Grid item style={{ flexGrow: 1 }}>
           <strong>
             {props.legalCaseFiles?.length} {i18n.t("Case Files")}
@@ -129,7 +109,6 @@ export default function CaseFileTab(props: Props) {
           <InputLabel
             className={classes.inputLabel}
             htmlFor="sort_table"
-            shrink={true}
             style={{ marginRight: "-20px" }}
           >
             {i18n.t("Sort")}:
@@ -147,34 +126,6 @@ export default function CaseFileTab(props: Props) {
               {i18n.t("Alphabetical")}
             </MenuItem>
           </Select>
-        </Grid>
-        <Grid item className={classes.zeroWidthOnMobile}>
-          <input
-            ref={uploadFileRef}
-            type="file"
-            onChange={onFileChange}
-            hidden
-          />
-          <Button
-            className={classes.canBeFab}
-            color="primary"
-            variant="contained"
-            startIcon={<UploadIcon />}
-            style={{ textTransform: "none" }}
-            onClick={() => dialogOpen()}
-          >
-            {i18n.t("Upload file")}
-          </Button>
-
-          <UpdateDialog
-            open={open}
-            setOpen={setOpen}
-            setStatus={props.setStatus}
-            legalCase={props.legalCase}
-            setLegalCase={props.setLegalCase}
-            setLegalCaseFiles={props.setLegalCaseFiles}
-            setCaseUpdates={props.setCaseUpdates}
-          />
         </Grid>
       </Grid>
       <Grid
@@ -199,12 +150,11 @@ export default function CaseFileTab(props: Props) {
           value={"Enter a meeting location, type, or note..."}
         />
       </Grid>
-      {progress > 0 && <ProgressBar progress={progress} />}
       <InputLabel
         className={classes.caseFileLabel}
         style={{ paddingTop: "20px" }}
       >
-        All case files:{" "}
+        {i18n.t("All case files")}:
       </InputLabel>
       {props.legalCaseFiles && props.legalCaseFiles.length > 0 ? (
         <div>
@@ -275,12 +225,14 @@ export default function CaseFileTab(props: Props) {
         </Grid>
       )}
       <InputLabel className={classes.caseFileLabel}>
-        Recommended case files:{" "}
+        {i18n.t("Recommended case files")}:
       </InputLabel>
       <Grid container direction="column">
         <Grid item className={classes.caseFiles}>
           <MeetingRoomIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography style={{ flexGrow: 1 }}>Notice to vacate</Typography>
+          <Typography style={{ flexGrow: 1 }}>
+            {i18n.t("Notice to vacate")}
+          </Typography>
           <CheckIcon style={{ color: "#3dd997" }} />
           <IconButton>
             <MoreVertIcon sx={{ color: "#000000" }} />
@@ -288,7 +240,9 @@ export default function CaseFileTab(props: Props) {
         </Grid>
         <Grid item className={classes.caseFiles}>
           <DescriptionIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography style={{ flexGrow: 1 }}>Notice of motion</Typography>
+          <Typography style={{ flexGrow: 1 }}>
+            {i18n.t("Notice of motion")}
+          </Typography>
           <CheckIcon style={{ color: "#3dd997" }} />
           <IconButton>
             <MoreVertIcon sx={{ color: "#000000" }} />
@@ -296,7 +250,9 @@ export default function CaseFileTab(props: Props) {
         </Grid>
         <Grid item className={classes.caseFiles}>
           <GavelIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography style={{ flexGrow: 1 }}>Eviction order</Typography>
+          <Typography style={{ flexGrow: 1 }}>
+            {i18n.t("Eviction order")}
+          </Typography>
           <IconButton>
             <AddIcon sx={{ color: "#000000" }} />
           </IconButton>
@@ -304,7 +260,7 @@ export default function CaseFileTab(props: Props) {
         <Grid item className={classes.caseFiles}>
           <ReceiptLongIcon style={{ margin: "0px 15px 0px 10px" }} />
           <Typography style={{ flexGrow: 1 }}>
-            Proof of rental payment
+            {i18n.t("Proof of rental payment")}
           </Typography>
           <IconButton>
             <AddIcon sx={{ color: "#000000" }} />
@@ -312,7 +268,9 @@ export default function CaseFileTab(props: Props) {
         </Grid>
         <Grid item className={classes.caseFiles}>
           <HistoryEduIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography style={{ flexGrow: 1 }}>Lease agreement</Typography>
+          <Typography style={{ flexGrow: 1 }}>
+            {i18n.t("Lease agreement")}
+          </Typography>
           <IconButton>
             <AddIcon sx={{ color: "#000000" }} />
           </IconButton>
@@ -320,7 +278,7 @@ export default function CaseFileTab(props: Props) {
         <Grid item className={classes.caseFiles}>
           <WorkIcon style={{ margin: "0px 15px 0px 10px" }} />
           <Typography style={{ flexGrow: 1 }}>
-            Record of attempt to find legal council
+            {i18n.t("Record of attempt to find legal council")}
           </Typography>
           <IconButton>
             <AddIcon sx={{ color: "#000000" }} />

@@ -317,6 +317,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     caseHistoryList: {
       height: "52px",
+      maxHeight: "52px!important" as any,
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.035)!important" as any,
       },
@@ -756,6 +757,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.1)!important" as any,
       },
+    },
+    dialogTitle: {
+      padding: "5px!important" as any,
+      fontWeight: "bold!important" as any,
+      fontSize: "24px!important" as any,
     },
     dialogFileInput: {
       fontSize: "13px",
