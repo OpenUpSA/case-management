@@ -152,7 +152,7 @@ const Component = (props: Props) => {
                 {i18n.t("Identity number type")}:
               </InputLabel>
               <Select
-                style={{ marginTop: 25 }}
+                style={{ marginBottom: 25 }}
                 id="official_identifier_type_select"
                 disabled={props.readOnly}
                 className={classes.select}
