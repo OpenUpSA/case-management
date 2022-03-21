@@ -368,8 +368,7 @@ const UpdateDialogTabs = (props: Props) => {
             }}
           >
             <InputLabel
-              className={classes.dialogLabel}
-              style={{ paddingRight: 15, width: 100 }}
+              className={`${classes.dialogLabel} ${classes.dateLabel}`}
               htmlFor="Meeting-date"
             >
               {i18n.t("Meeting date")}
@@ -381,6 +380,7 @@ const UpdateDialogTabs = (props: Props) => {
               disableUnderline={true}
               className={classes.dialogInput}
               style={{ marginBottom: 0 }}
+              classes={{ input: classes.dateInput }}
               aria-describedby="date-picker"
               value={props.meeting.meeting_date}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -560,7 +560,7 @@ const UpdateDialogTabs = (props: Props) => {
                     <FileUploadOutlinedIcon
                       style={{ fontSize: 36, color: "#b2b2b2" }}
                     />
-                    <Typography>
+                    <Typography className={classes.dropzoneText}>
                       {i18n.t("Drag and drop files here or")}
                     </Typography>
                     <Button className={classes.dropzoneButton}>

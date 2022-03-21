@@ -49,7 +49,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     customAppBar: {
-      zIndex: "100000!important" as any,
+      zIndex: "2000!important" as any,
     },
     drawer: {
       flexShrink: 0,
@@ -477,16 +477,30 @@ export const useStyles = makeStyles((theme: Theme) =>
       margin: "0px 8px 16px 8px!important" as any,
       borderRadius: "6px!important" as any,
       backgroundColor: "#e5e5e5!important" as any,
+      [theme.breakpoints.down("xs")]: {
+        padding: "0px!important" as any,
+        maxWidth: "70px!important" as any,
+        minWidth: "70px!important" as any,
+        flexDirection: "column!important" as any,
+        margin: "0px 4px 16px 4px!important" as any,
+      },
       "& p": {
         padding: "2px 4px!important" as any,
         textTransform: "none",
         color: "#000!important" as any,
         fontSize: "13px!important" as any,
         fontWeight: 700,
+        lineHeight: "1.2!important" as any,
+        [theme.breakpoints.down("xs")]: {
+          padding: "0px!important" as any,
+        },
       },
       "&>.MuiSvgIcon-root": {
         marginBottom: "0px!important" as any,
         color: "#000!important" as any,
+        [theme.breakpoints.down("xs")]: {
+          padding: "0px!important" as any,
+        },
       },
       "&.Mui-selected": {
         backgroundColor: "#2b61f0!important" as any,
@@ -615,6 +629,13 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
       },
     },
+    closeButtonIcon: {
+      color: "#000",
+      fontSize: "20px!important" as any,
+      [theme.breakpoints.up("md")]: {
+        fontSize: "28px!important" as any,
+      },
+    },
     dialogCancel: {
       backgroundColor: "#f2f2f2!important" as any,
       textTransform: "none!important" as any,
@@ -629,6 +650,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       paddingTop: "10px!important" as any,
       paddingBottom: "10px!important" as any,
       textTransform: "none!important" as any,
+      whiteSpace: "nowrap!important" as any,
     },
     updateAlert: {
       height: "67px",
@@ -648,8 +670,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       "&>.MuiAlert-message": {
         color: "#2b61f0",
-        "& a": {
-          color: "#2b61f0",
+        overflow: "hidden!important" as any,
+        textOverflow: "ellipsis!important" as any,
+        [theme.breakpoints.down("xs")]: {
+          display: "block",
         },
       },
     },
@@ -694,6 +718,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#f2f2f2!important" as any,
       textTransform: "none!important" as any,
       color: "#000000!important" as any,
+      lineHeight: "1.2!important" as any,
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
       },
@@ -706,8 +731,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     tabBox: {
       width: "100%",
       overflowY: "auto",
-      maxHeight: "300px",
-      minHeight: "300px",
+      maxHeight: "200px",
+      minHeight: "200px",
+      marginTop: "10px",
     },
     dropzone: {
       height: 140,
@@ -724,6 +750,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       cursor: "pointer",
       marginBottom: "20px",
     },
+    dropzoneText: {
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "14px!important" as any,
+      },
+    },
     dropzoneButton: {
       backgroundColor: "#e9f0fe!important" as any,
       color: "#2b61f0",
@@ -731,6 +762,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontWeight: "600!important" as any,
       fontSize: "16px!important" as any,
       borderRadius: "6px!important" as any,
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "14px!important" as any,
+      },
     },
     uploadProgressBox: {
       height: "64px",
@@ -762,6 +796,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       padding: "5px!important" as any,
       fontWeight: "bold!important" as any,
       fontSize: "24px!important" as any,
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "16px!important" as any,
+      },
     },
     dialogFileInput: {
       fontSize: "13px",
@@ -802,6 +839,19 @@ export const useStyles = makeStyles((theme: Theme) =>
       height: "33px",
       width: "33px",
       borderRadius: "50%",
+    },
+    dialogPaper: {
+      top: 50,
+    },
+    dateInput: {
+      flexWrap: "wrap",
+    },
+    dateLabel: {
+      paddingRight: 15,
+      width: 100,
+      [theme.breakpoints.down("xs")]: {
+        paddingRight: 0,
+      },
     },
   })
 );

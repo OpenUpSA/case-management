@@ -408,7 +408,13 @@ const UpdateDialog = (props: Props) => {
 
   return (
     <>
-      <Dialog open={props.open} onClose={dialogClose} fullWidth maxWidth="md">
+      <Dialog
+        open={props.open}
+        onClose={dialogClose}
+        fullWidth
+        maxWidth="md"
+        classes={{ paper: classes.dialogPaper }}
+      >
         <Box style={{ margin: 20 }}>
           <Grid
             container
@@ -417,9 +423,7 @@ const UpdateDialog = (props: Props) => {
             alignItems={"center"}
           >
             <Grid item>
-              <DialogTitle
-                className={classes.dialogTitle}
-              >
+              <DialogTitle className={classes.dialogTitle}>
                 {i18n.t("New update")}
               </DialogTitle>
             </Grid>
@@ -429,7 +433,7 @@ const UpdateDialog = (props: Props) => {
                 size={"small"}
                 onClick={dialogClose}
               >
-                <CloseIcon fontSize={"large"} style={{ color: "black" }} />
+                <CloseIcon className={classes.closeButtonIcon} />
               </IconButton>
             </Grid>
           </Grid>

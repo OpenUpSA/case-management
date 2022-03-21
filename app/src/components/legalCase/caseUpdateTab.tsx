@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, InputLabel, Button } from "@material-ui/core";
-import Grid from "@mui/material/Grid";
+import { Input, InputLabel, Button, Grid } from "@material-ui/core";
 
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import Select from "@mui/material/Select";
@@ -48,76 +47,80 @@ const CaseUpdateTab = (props: Props) => {
   const dialogOpen = () => {
     setOpen(true);
   };
-  
-  return (
-    <Grid
-      container
-      direction="row"
-      spacing={2}
-      alignItems="center"
-      className={classes.containerMarginBottom}
-    >
-      <Grid item xs={12} md={12}>
-        <Button
-          className={classes.bigCanBeFab}
-          fullWidth
-          color="primary"
-          variant="contained"
-          startIcon={<AddCommentIcon />}
-          onClick={() => dialogOpen()}
-        >
-          {i18n.t("Add new update")}
-        </Button>
 
-        <UpdateDialog
-          open={open}
-          setOpen={setOpen}
-          setStatus={props.setStatus}
-          legalCase={props.legalCase}
-          setLegalCase={props.setLegalCase}
-          setLegalCaseFiles={props.setLegalCaseFiles}
-          setCaseUpdates={props.setCaseUpdates}
+  return (
+    <>
+      <Grid
+        container
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        className={classes.containerMarginBottom}
+      >
+        <Grid item xs={12} md={12}>
+          <Button
+            className={classes.bigCanBeFab}
+            fullWidth
+            color="primary"
+            variant="contained"
+            startIcon={<AddCommentIcon />}
+            onClick={() => dialogOpen()}
+          >
+            {i18n.t("Add new update")}
+          </Button>
+
+          <UpdateDialog
+            open={open}
+            setOpen={setOpen}
+            setStatus={props.setStatus}
+            legalCase={props.legalCase}
+            setLegalCase={props.setLegalCase}
+            setLegalCaseFiles={props.setLegalCaseFiles}
+            setCaseUpdates={props.setCaseUpdates}
+          />
+        </Grid>
+        <Grid item style={{ flexGrow: 1 }}>
+          <strong>
+            {props.caseUpdates.length} {i18n.t("Case Updates")}
+          </strong>
+        </Grid>
+        <Grid item>
+          <InputLabel
+            className={classes.inputLabel}
+            htmlFor="sort_table"
+            style={{ marginRight: "-20px" }}
+          >
+            {i18n.t("Sort")}:
+          </InputLabel>
+        </Grid>
+        <Grid item>
+          <Select
+            id="sort_table"
+            className={classes.select}
+            disableUnderline
+            input={<Input />}
+            value="alphabetical"
+          >
+            <MenuItem key="alphabetical" value="alphabetical">
+              {i18n.t("Alphabetical")}
+            </MenuItem>
+          </Select>
+        </Grid>
+      </Grid>
+      <Grid>
+        <UpdateTable
+          caseUpdates={props.caseUpdates}
+          legalCaseFiles={props.legalCaseFiles ? props.legalCaseFiles : []}
         />
+        {showSnackbar.open && (
+          <SnackbarAlert
+            open={showSnackbar.open}
+            message={showSnackbar.message ? showSnackbar.message : ""}
+            severity={showSnackbar.severity}
+          />
+        )}
       </Grid>
-      <Grid item style={{ flexGrow: 1 }}>
-        <strong>
-          {props.caseUpdates.length} {i18n.t("Case Updates")}
-        </strong>
-      </Grid>
-      <Grid item>
-        <InputLabel
-          className={classes.inputLabel}
-          htmlFor="sort_table"
-          style={{ marginRight: "-20px" }}
-        >
-          {i18n.t("Sort")}:
-        </InputLabel>
-      </Grid>
-      <Grid item>
-        <Select
-          id="sort_table"
-          className={classes.select}
-          disableUnderline
-          input={<Input />}
-          value="alphabetical"
-        >
-          <MenuItem key="alphabetical" value="alphabetical">
-            {i18n.t("Alphabetical")}
-          </MenuItem>
-        </Select>
-      </Grid>
-      <UpdateTable
-        caseUpdates={props.caseUpdates}
-        legalCaseFiles={props.legalCaseFiles ? props.legalCaseFiles : []}
-      />
-      {showSnackbar.open && (
-        <SnackbarAlert
-          open={showSnackbar.open}
-          message={showSnackbar.message ? showSnackbar.message : ""}
-          severity={showSnackbar.severity}
-        />
-      )}
-    </Grid>
+    </>
   );
 };
 
