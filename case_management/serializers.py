@@ -57,6 +57,7 @@ class LegalCaseSerializer(serializers.ModelSerializer):
 class ClientSerializer(CountryFieldMixin, serializers.ModelSerializer):
     legal_cases = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     updates = LogSerializer(many=True, read_only=True)
+    case_offices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     def validate(self, data):
         if data.get('official_identifier') and not data.get('official_identifier_type'):
@@ -97,6 +98,8 @@ class CaseOfficeSerializer(serializers.ModelSerializer):
 
 
 class MeetingSerializer(serializers.ModelSerializer):
+    case_offices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Meeting
         fields = '__all__'
@@ -112,6 +115,7 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'membership_number',
             'case_office',
+            'permission_group'
         ]
 
 
