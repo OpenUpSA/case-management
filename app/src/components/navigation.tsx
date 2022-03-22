@@ -44,7 +44,11 @@ const Component = () => {
       setContextOffices(dataCaseOffices);
       setContextCaseTypes(dataCaseTypes);
     }
-    fetchData();
+    const userInfo = UserInfo.getInstance();
+    const token = userInfo.getAccessToken();
+    if (token) {
+      fetchData();
+    }
     // eslint-disable-next-line
   }, []);
 

@@ -11,6 +11,7 @@ import {
   ILog,
   ILegalCaseFile,
 } from "./types";
+import { UserInfo } from "./auth";
 
 const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
@@ -28,11 +29,14 @@ export async function httpGet<T>(
   path: string,
   config?: RequestInit
 ): Promise<T> {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
   const init = {
     method: "GET",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     ...config,
   };
@@ -43,11 +47,14 @@ export async function httpDelete<T>(
   path: string,
   config?: RequestInit
 ): Promise<T> {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
   const init = {
     method: "DELETE",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     ...config,
   };
@@ -55,6 +62,26 @@ export async function httpDelete<T>(
 }
 
 export async function httpPost<T, U>(
+  path: string,
+  body: T,
+  config?: RequestInit
+): Promise<U> {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
+  const init = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+    ...config,
+  };
+  return await http<U>(path, init);
+}
+
+export async function httpPostNoBearer<T, U>(
   path: string,
   body: T,
   config?: RequestInit
@@ -71,16 +98,20 @@ export async function httpPost<T, U>(
   return await http<U>(path, init);
 }
 
+
 export async function httpPatch<T, U>(
   path: string,
   body: T,
   config?: RequestInit
 ): Promise<U> {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
   const init = {
     method: "PATCH",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(body),
     ...config,
@@ -183,7 +214,10 @@ export const updateUser = async (user: IUser) => {
 };
 
 export const authenticate = async (credentials: ICredentials) => {
-  return await httpPost<ICredentials, IUserInfo>(`/authenticate`, credentials);
+  return await httpPostNoBearer<ICredentials, IUserInfo>(
+    `/authenticate`,
+    credentials
+  );
 };
 
 export const getLogs = async (id?: number, parent_type?: string) => {
