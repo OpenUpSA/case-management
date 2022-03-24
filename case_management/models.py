@@ -191,19 +191,39 @@ class LoggedChildModel(LoggedModel):
     def log_create(self):
         if self.case_update is not None:
             logIt(
-                self, 'Create', parent_id=self.case_update.id, parent_type='CaseUpdate'
+                self,
+                'Create',
+                parent_id=self.case_update.id,
+                parent_type='CaseUpdate',
+                user=self.created_by,
             )
         else:
-            logIt(self, 'Create', parent_id=self.legal_case.id, parent_type='LegalCase')
+            logIt(
+                self,
+                'Create',
+                parent_id=self.legal_case.id,
+                parent_type='LegalCase',
+                user=self.created_by,
+            )
 
     @hook(AFTER_UPDATE)
     def log_update(self):
         if self.case_update is not None:
             logIt(
-                self, 'Update', parent_id=self.case_update.id, parent_type='CaseUpdate'
+                self,
+                'Update',
+                parent_id=self.case_update.id,
+                parent_type='CaseUpdate',
+                user=self.updated_by,
             )
         else:
-            logIt(self, 'Update', parent_id=self.legal_case.id, parent_type='LegalCase')
+            logIt(
+                self,
+                'Update',
+                parent_id=self.legal_case.id,
+                parent_type='LegalCase',
+                user=self.updated_by,
+            )
 
     class Meta:
         abstract = True
@@ -320,11 +340,23 @@ class CaseUpdate(LoggedModel):
 
     @hook(AFTER_CREATE)
     def log_create(self):
-        logIt(self, 'Create', parent_id=self.legal_case.id, parent_type='LegalCase')
+        logIt(
+            self,
+            'Create',
+            parent_id=self.legal_case.id,
+            parent_type='LegalCase',
+            user=self.created_by,
+        )
 
     @hook(AFTER_UPDATE)
     def log_update(self):
-        logIt(self, 'Update', parent_id=self.legal_case.id, parent_type='LegalCase')
+        logIt(
+            self,
+            'Update',
+            parent_id=self.legal_case.id,
+            parent_type='LegalCase',
+            user=self.updated_by,
+        )
 
 
 class Note(LoggedChildModel):

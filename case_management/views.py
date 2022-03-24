@@ -158,7 +158,7 @@ class LegalCaseViewSet(LoggedModelViewSet):
         generated_case_number = (
             f'{case_office_code}/{time.strftime("%y%m")}/{str(next_id).zfill(4)}'
         )
-        serializer.save(case_number=generated_case_number)
+        serializer.save(case_number=generated_case_number, created_by=get_user(self.request))
 
 
 class CaseUpdateViewSet(LoggedModelViewSet):
