@@ -320,6 +320,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       maxHeight: "52px!important" as any,
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.035)!important" as any,
+        cursor: "pointer",
       },
     },
     caseHistoryAvatar: {
@@ -516,6 +517,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       "&:hover": {
         backgroundColor: "#cccccc!important" as any,
+      },
+      "&.Mui-disabled": {
+        display: "none!important" as any,
       },
     },
     clientDetailLabel: {

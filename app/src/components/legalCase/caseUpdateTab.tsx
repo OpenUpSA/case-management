@@ -88,6 +88,7 @@ const CaseUpdateTab = (props: Props) => {
           <InputLabel
             className={classes.inputLabel}
             htmlFor="sort_table"
+            shrink={true}
             style={{ marginRight: "-20px" }}
           >
             {i18n.t("Sort")}:
@@ -111,6 +112,11 @@ const CaseUpdateTab = (props: Props) => {
         <UpdateTable
           caseUpdates={props.caseUpdates}
           legalCaseFiles={props.legalCaseFiles ? props.legalCaseFiles : []}
+          setStatus={props.setStatus}
+          legalCase={props.legalCase}
+          setLegalCase={props.setLegalCase}
+          setLegalCaseFiles={props.setLegalCaseFiles}
+          setCaseUpdates={props.setCaseUpdates}
         />
         {showSnackbar.open && (
           <SnackbarAlert

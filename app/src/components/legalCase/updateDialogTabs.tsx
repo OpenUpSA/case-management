@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
@@ -29,7 +29,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import i18n from "../../i18n";
-import { TabPanelProps } from "../../types";
+import { TabPanelProps, ILegalCaseFile } from "../../types";
 import { useStyles } from "../../utils";
 import { meetingTypes } from "../../contexts/meetingTypeConstants";
 import Dropzone from "react-dropzone";
@@ -49,9 +49,13 @@ type Props = {
   setFileTabFileName: (fileTabFileName: string) => void;
   selectedFiles: any;
   setSelectedFiles: (selectedFiles: any) => void;
+  tabValue: number;
   setTabValue: (tabValue: number) => void;
   updateError: string;
   fileView?: boolean;
+  editView?: boolean;
+  updateFileId: number;
+  legalCaseFiles: ILegalCaseFile[];
 };
 
 function TabPanel(props: TabPanelProps) {
@@ -91,17 +95,34 @@ const UpdateDialogTabs = (props: Props) => {
     props.setTabValue(newValue);
     props.setFileTabFileName("");
     props.setSelectedFiles(undefined);
+    props.setMeeting({});
+    props.setNote({});
   };
 
   const dialogClose = () => {
     setOpen(false);
     setFileDescription("");
+    props.setMeeting({});
+    props.setNote({});
   };
 
   const showOpenFileDialog = () => {
     if (!uploadFileRef.current) throw Error("uploadFileRef is not assigned");
     uploadFileRef.current.click();
   };
+
+  useEffect(() => {
+    function changeValue() {
+      if (props.editView && props.tabValue === 0) {
+        setValue(0);
+      } else if (props.editView && props.tabValue === 1) {
+        setValue(1);
+      } else if (props.editView && props.tabValue === 2) {
+        setValue(2);
+      }
+    }
+    changeValue();
+  }, [props.editView, props.tabValue]);
 
   return (
     <DialogContent style={{ padding: 0 }}>
@@ -129,6 +150,7 @@ const UpdateDialogTabs = (props: Props) => {
             }
             label={<Typography>{i18n.t("Note")}</Typography>}
             {...a11yProps(0)}
+            disabled={props.editView && value !== 0 ? true : false}
           />
           <Tab
             key="meetings"
@@ -136,6 +158,7 @@ const UpdateDialogTabs = (props: Props) => {
             icon={<ForumOutlinedIcon />}
             label={<Typography>{i18n.t("Meeting")}</Typography>}
             {...a11yProps(1)}
+            disabled={props.editView && value !== 1 ? true : false}
           />
           <Tab
             key="caseFiles"
@@ -143,6 +166,7 @@ const UpdateDialogTabs = (props: Props) => {
             icon={<UploadIcon />}
             label={<Typography>{i18n.t("File upload")}</Typography>}
             {...a11yProps(2)}
+            disabled={props.editView && value !== 2 ? true : false}
           />
         </Tabs>
       </Box>
@@ -166,6 +190,7 @@ const UpdateDialogTabs = (props: Props) => {
             id="title"
             disableUnderline={true}
             fullWidth
+            value={props.note.title}
             placeholder={i18n.t("Note title")}
             className={classes.dialogInput}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,6 +206,7 @@ const UpdateDialogTabs = (props: Props) => {
             id="content"
             disableUnderline={true}
             fullWidth
+            value={props.note.content}
             rows={4}
             multiline
             placeholder={i18n.t("Description of update")}
@@ -332,6 +358,7 @@ const UpdateDialogTabs = (props: Props) => {
             id="meeting-location"
             disableUnderline={true}
             fullWidth
+            value={props.meeting.location}
             placeholder={i18n.t("Meeting location")}
             className={classes.dialogInput}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -349,6 +376,7 @@ const UpdateDialogTabs = (props: Props) => {
           <Input
             id="meeting-note"
             disableUnderline={true}
+            value={props.meeting.notes}
             fullWidth
             rows={4}
             multiline
@@ -382,7 +410,9 @@ const UpdateDialogTabs = (props: Props) => {
               style={{ marginBottom: 0 }}
               classes={{ input: classes.dateInput }}
               aria-describedby="date-picker"
-              value={props.meeting.meeting_date}
+              value={new Date(props.meeting.meeting_date || 0)
+                .toISOString()
+                .slice(0, 16)}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 props.setMeeting({
                   ...props.meeting,
@@ -391,6 +421,11 @@ const UpdateDialogTabs = (props: Props) => {
               }}
             />
           </Box>
+          {props.updateError === "meeting_date" && (
+            <FormHelperText error>
+              {i18n.t("Enter a valid date")}
+            </FormHelperText>
+          )}
           <Box
             className={classes.centerItems}
             style={{
@@ -418,10 +453,10 @@ const UpdateDialogTabs = (props: Props) => {
                 });
               }}
             >
-              <MenuItem key={"Yes"} value={"True"}>
+              <MenuItem key={"true"} value={"true"}>
                 {i18n.t("Yes")}
               </MenuItem>
-              <MenuItem key={"No"} value={"False"}>
+              <MenuItem key={"false"} value={"false"}>
                 {i18n.t("No")}
               </MenuItem>
             </Select>
@@ -432,6 +467,7 @@ const UpdateDialogTabs = (props: Props) => {
             fullWidth
             rows={4}
             multiline
+            value={props.meeting.advice_offered}
             placeholder={i18n.t("Record of advice offered")}
             className={classes.dialogInput}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -546,10 +582,12 @@ const UpdateDialogTabs = (props: Props) => {
               <div {...getRootProps({ className: classes.dropzone })}>
                 <input {...getInputProps()} />
                 {props.selectedFiles && props.fileTabFileName.length > 0 ? (
-                  <Typography>
-                    {i18n.t("Submit update to save file")}:{" "}
-                    {props.fileTabFileName}
-                  </Typography>
+                  
+                    <Typography>
+                      {i18n.t("Submit update to save file")}:{" "}
+                      {props.fileTabFileName}
+                    </Typography>
+                   
                 ) : (
                   <Stack
                     direction="column"
@@ -560,6 +598,19 @@ const UpdateDialogTabs = (props: Props) => {
                     <FileUploadOutlinedIcon
                       style={{ fontSize: 36, color: "#b2b2b2" }}
                     />
+                    {props.updateFileId && props.updateFileId > 0 && (
+                      <Typography>
+                        {i18n.t("File")}:
+                        {props.legalCaseFiles
+                          ?.filter(
+                            (caseFile: ILegalCaseFile) =>
+                              [props.updateFileId].indexOf(caseFile.id as number) > -1
+                          )
+                          .map(
+                            (caseFile: ILegalCaseFile) => caseFile.description
+                          ).join()}
+                      </Typography>
+                    )}
                     <Typography className={classes.dropzoneText}>
                       {i18n.t("Drag and drop files here or")}
                     </Typography>

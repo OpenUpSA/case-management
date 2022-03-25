@@ -109,6 +109,7 @@ export default function CaseFileTab(props: Props) {
           <InputLabel
             className={classes.inputLabel}
             htmlFor="sort_table"
+            shrink={true}
             style={{ marginRight: "-20px" }}
           >
             {i18n.t("Sort")}:
