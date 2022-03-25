@@ -109,11 +109,12 @@ class FileSerializer(serializers.ModelSerializer):
             'description',
             'created_at',
             'updated_at',
+            'created_by',
+            'updated_by',
         ]
 
 
 class MeetingSerializer(serializers.ModelSerializer):
-
     def validate(self, data):
         if data.get('advice_was_offered') and not data.get('advice_offered'):
             raise serializers.ValidationError(
@@ -170,7 +171,9 @@ class CaseUpdateSerializer(serializers.ModelSerializer):
             if 'data' in update_type_details:
                 if update_type_details['action'] == 'create':
                     update_type_details['model'].objects.create(
-                        **update_type_details['data'], case_update=case_update
+                        **update_type_details['data'],
+                        case_update=case_update,
+                        created_by=validated_data['created_by'],
                     )
                 elif update_type_details['action'] == 'assign':
                     getattr(case_update, update_type_name).set(
