@@ -253,9 +253,6 @@ export const createCaseUpdate = async (caseUpdate: any) => {
   return await httpPost<any, any>(`/case-updates/`, caseUpdate);
 };
 
-export const updateCaseUpdate = async (caseUpdate: any) => {
-  return await httpPatch<any, any>(
-    `/case-updates/${caseUpdate.id}/`,
-    caseUpdate
-  );
+export const updateNote = async (note: any) => {
+  return await httpPatch<any, any>(`/notes/${note.id}/`, note);
 };

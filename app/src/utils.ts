@@ -857,5 +857,10 @@ export const useStyles = makeStyles((theme: Theme) =>
         paddingRight: 0,
       },
     },
+    noOverflow: {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
   })
 );

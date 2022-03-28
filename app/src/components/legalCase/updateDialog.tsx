@@ -19,7 +19,8 @@ import {
   updateLegalCase,
   getCaseUpdates,
   getLegalCase,
-  updateCaseUpdate,
+  updateNote,
+  updateMeeting,
 } from "../../api";
 import { ILegalCase, LocationState, ILegalCaseFile } from "../../types";
 import i18n from "../../i18n";
@@ -71,13 +72,16 @@ const UpdateDialog = (props: Props) => {
   });
   const [updateError, setUpdateError] = useState<string>("");
   const [tabValue, setTabValue] = useState<number>(props.fileView ? 2 : 0);
-  const [updateFileId, setUpdateFileId] = useState<number>(0);
+  const [updateFileId, setUpdateFileId] = useState<null | number>(null);
   const [updateId, setUpdateId] = useState<null | number>(null);
-console.log(updateFileId)
+
   useEffect(() => {
     function setUpdateVals() {
-      if (props.selectedUpdate.files > 0) {
-        setUpdateFileId(props.selectedUpdate.files);
+      if (props.selectedUpdate && props.selectedUpdate.note !== null) {
+        setNote({
+          title: props.selectedUpdate.note.title,
+          content: props.selectedUpdate.note.content,
+        });
         setMeeting({
           meeting_type: "",
           location: "",
@@ -86,11 +90,11 @@ console.log(updateFileId)
           advice_was_offered: "",
           advice_offered: "",
         });
-        setNote({
-          title: "",
-          content: "",
-        });
-        setTabValue(2);
+        props.selectedUpdate.note.file !== null
+          ? setUpdateFileId(props.selectedUpdate.note.file)
+          : setUpdateFileId(null);
+        setUpdateId(props.selectedUpdate.note.id);
+        setTabValue(0);
       } else if (
         props.selectedUpdate &&
         props.selectedUpdate.meeting !== null
@@ -107,14 +111,13 @@ console.log(updateFileId)
           title: "",
           content: "",
         });
-        setUpdateFileId(props.selectedUpdate.meeting.file);
-        setUpdateId(props.selectedUpdate.id);
+        props.selectedUpdate.meeting.file !== null
+          ? setUpdateFileId(props.selectedUpdate.meeting.file)
+          : setUpdateFileId(null);
+        setUpdateId(props.selectedUpdate.meeting.id);
         setTabValue(1);
-      } else if (props.selectedUpdate && props.selectedUpdate.note !== null) {
-        setNote({
-          title: props.selectedUpdate.note.title,
-          content: props.selectedUpdate.note.content,
-        });
+      } else if (props.selectedUpdate.files > 0) {
+        setUpdateFileId(+props.selectedUpdate.files.join());
         setMeeting({
           meeting_type: "",
           location: "",
@@ -123,9 +126,12 @@ console.log(updateFileId)
           advice_was_offered: "",
           advice_offered: "",
         });
-        setUpdateFileId(props.selectedUpdate.note.file);
+        setNote({
+          title: "",
+          content: "",
+        });
+        setTabValue(2);
         setUpdateId(props.selectedUpdate.id);
-        setTabValue(0);
       }
     }
     if (props.editView) {
@@ -149,6 +155,14 @@ console.log(updateFileId)
   const dialogClose = () => {
     props.setOpen(false);
     setNote({ title: "", content: "" });
+    setMeeting({
+      meeting_type: "",
+      location: "",
+      notes: "",
+      meeting_date: new Date().toISOString().slice(0, 16),
+      advice_was_offered: "",
+      advice_offered: "",
+    });
     setAttachedFileData({ file: null, description: "" });
   };
 
@@ -312,7 +326,7 @@ console.log(updateFileId)
           } else if (typeof res.meeting.notes === "object") {
             setUpdateError("notes");
             return false;
-          }else if (typeof res.meeting.meeting_date === "object") {
+          } else if (typeof res.meeting.meeting_date === "object") {
             setUpdateError("meeting_date");
             return false;
           } else {
@@ -427,101 +441,190 @@ console.log(updateFileId)
     }
   };
 
-//   only file update can be updated
+  const updateNoteUpdate = async () => {
+    const upLoadNoteFile = async () => {
+      setIsLoading(true);
+      createLegalCaseFile(
+        props.legalCase.id,
+        attachedFileData.file,
+        attachedFileData.description,
+        (e: any) => {
+          const { loaded, total } = e;
+          const percent = Math.floor((loaded * 100) / total);
+          setProgress(percent);
+          if (percent === 100) {
+            setTimeout(() => {
+              setProgress(0);
+            }, 1000);
+          }
+        }
+      )
+        .then((res: any) => {
+          setIsLoading(false);
+          if (res.id) {
+            editNote(res.id);
+          }
+        })
+        .catch((err: any) => {
+          setIsLoading(false);
+          setShowSnackbar({
+            open: true,
+            message: "Note update failed",
+            severity: "error",
+          });
+        });
+    };
 
-//   const updateNoteUpdate = async () => {
-//     const upLoadNoteFile = async () => {
-//       setIsLoading(true);
-//       createLegalCaseFile(
-//         props.legalCase.id,
-//         attachedFileData.file,
-//         attachedFileData.description,
-//         (e: any) => {
-//           const { loaded, total } = e;
-//           const percent = Math.floor((loaded * 100) / total);
-//           setProgress(percent);
-//           if (percent === 100) {
-//             setTimeout(() => {
-//               setProgress(0);
-//             }, 1000);
-//           }
-//         }
-//       )
-//         .then((res: any) => {
-//           setIsLoading(false);
-//           if (res.id) {
-//             createNote(res.id);
-//           }
-//         })
-//         .catch((err: any) => {
-//           setIsLoading(false);
-//           setShowSnackbar({
-//             open: true,
-//             message: "Note update failed",
-//             severity: "error",
-//           });
-//         });
-//     };
+    const editNote = async (fileId: number | null) => {
+      setIsLoading(true);
+      await updateNote({
+        ...note,
+        id: updateId,
+        file: fileId,
+      })
+        .then((res: any) => {
+          setIsLoading(false);
 
-//     const createNote = async (fileId: number | null) => {
-//       setIsLoading(true);
-//       await updateCaseUpdate({
-//         note: {
-//           title: note.title,
-//           content: note.content,
-//           file: fileId,
-//         },
-//         legal_case: props.legalCase.id,
-//         id: updateId,
-//       })
-//         .then((res: any) => {
-//           setIsLoading(false);
+          if (typeof res.title === "object") {
+            setUpdateError("title");
+            return false;
+          } else if (typeof res.content === "object") {
+            setUpdateError("content");
+            return false;
+          } else {
+            setUpdateError("");
+          }
+          if (res.id) {
+            dialogClose();
+            refreshUpdates();
+            setShowSnackbar({
+              open: true,
+              message: "Note update successful",
+              severity: "success",
+            });
+          }
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          setShowSnackbar({
+            open: true,
+            message: "Note update failed",
+            severity: "error",
+          });
+        });
+    };
 
-//           if (typeof res.note.title === "object") {
-//             setUpdateError("title");
-//             return false;
-//           } else if (typeof res.note.content === "object") {
-//             setUpdateError("content");
-//             return false;
-//           } else {
-//             setUpdateError("");
-//           }
+    try {
+      if (attachedFileData.file) {
+        await upLoadNoteFile();
+      } else {
+        await editNote(updateFileId);
+      }
+    } catch (e) {
+      setIsLoading(false);
+      setShowSnackbar({
+        open: true,
+        message: "Note update failed",
+        severity: "error",
+      });
+    }
+  };
 
-//           if (res.id) {
-//             dialogClose();
-//             refreshUpdates();
-//             setShowSnackbar({
-//               open: true,
-//               message: "Note update successful",
-//               severity: "success",
-//             });
-//           }
-//         })
-//         .catch((e) => {
-//           setIsLoading(false);
-//           setShowSnackbar({
-//             open: true,
-//             message: "Note update failed",
-//             severity: "error",
-//           });
-//         });
-//     };
+  const updateMeetingUpdate = async () => {
+    const upLoadMeetingFile = async () => {
+      setIsLoading(true);
+      createLegalCaseFile(
+        props.legalCase.id,
+        attachedFileData.file,
+        attachedFileData.description,
+        (e: any) => {
+          const { loaded, total } = e;
+          const percent = Math.floor((loaded * 100) / total);
+          setProgress(percent);
+          if (percent === 100) {
+            setTimeout(() => {
+              setProgress(0);
+            }, 1000);
+          }
+        }
+      )
+        .then((res: any) => {
+          setIsLoading(false);
+          if (res.id) {
+            editMeeting(res.id);
+          }
+        })
+        .catch((err: any) => {
+          setIsLoading(false);
+          setShowSnackbar({
+            open: true,
+            message: "Meeting update failed",
+            severity: "error",
+          });
+        });
+    };
 
-//     try {
-//       if (attachedFileData.file) {
-//         await upLoadNoteFile();
-//       } else {
-//         await createNote(updateFileId);
-//       }
-//     } catch (e) {
-//       setIsLoading(false);
-//       setShowSnackbar({
-//         open: true,
-//         message: "Note update failed",
-//         severity: "error",
-//       });
-//     }
-//   };
+    const editMeeting = async (fileId: number | null) => {
+      setIsLoading(true);
+      await updateMeeting({
+        ...meeting,
+        id: updateId,
+        file: fileId,
+      })
+        .then((res: any) => {
+          setIsLoading(false);
+
+          if (typeof res.meeting_type === "object") {
+            setUpdateError("meeting_type");
+            return false;
+          } else if (typeof res.location === "object") {
+            setUpdateError("location");
+            return false;
+          } else if (typeof res.notes === "object") {
+            setUpdateError("notes");
+            return false;
+          } else if (typeof res.meeting_date === "object") {
+            setUpdateError("meeting_date");
+            return false;
+          } else {
+            setUpdateError("");
+          }
+
+          if (res.id) {
+            dialogClose();
+            refreshUpdates();
+            setShowSnackbar({
+              open: true,
+              message: "Meeting update successful",
+              severity: "success",
+            });
+          }
+        })
+        .catch((e) => {
+          setIsLoading(false);
+          setShowSnackbar({
+            open: true,
+            message: "Meeting update failed",
+            severity: "error",
+          });
+        });
+    };
+
+    try {
+      if (attachedFileData.file) {
+        await upLoadMeetingFile();
+      } else {
+        await editMeeting(updateFileId);
+      }
+    } catch (e) {
+      setIsLoading(false);
+      setShowSnackbar({
+        open: true,
+        message: "Note update failed",
+        severity: "error",
+      });
+    }
+  };
 
   const statusPatch = async () => {
     try {
@@ -570,14 +673,11 @@ console.log(updateFileId)
       submitFileUpdate();
     }
 
-    // if (props.editView && tabValue === 0) {
-    //   updateNoteUpdate();
-    // } else if (props.editView && tabValue === 1) {
-    //     updateMeetingUpdate()
-    // } else if (props.editView && tabValue === 2) {
-    //    updateFileUpdate()
-    // }
-
+    if (props.editView && tabValue === 0) {
+      updateNoteUpdate();
+    } else if (props.editView && tabValue === 1) {
+      updateMeetingUpdate();
+    }
     statusChanged && statusPatch();
   };
 
@@ -682,7 +782,7 @@ console.log(updateFileId)
               variant="contained"
               className={classes.dialogSubmit}
               onClick={() => submitHandler()}
-              disabled={isLoading || props.editView}
+              disabled={isLoading}
               style={{ position: "relative" }}
             >
               {isLoading && (

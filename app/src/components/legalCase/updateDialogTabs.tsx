@@ -54,7 +54,7 @@ type Props = {
   updateError: string;
   fileView?: boolean;
   editView?: boolean;
-  updateFileId: number;
+  updateFileId: number | null;
   legalCaseFiles: ILegalCaseFile[];
 };
 
@@ -102,13 +102,24 @@ const UpdateDialogTabs = (props: Props) => {
   const dialogClose = () => {
     setOpen(false);
     setFileDescription("");
-    props.setMeeting({});
-    props.setNote({});
   };
 
   const showOpenFileDialog = () => {
     if (!uploadFileRef.current) throw Error("uploadFileRef is not assigned");
     uploadFileRef.current.click();
+  };
+
+  const validFileLink = (filePath: string, description: string) => {
+    return (
+      <a
+        href={filePath}
+        target="_blank"
+        rel="noreferrer"
+        className={classes.noOverflow}
+      >
+        {description}
+      </a>
+    );
   };
 
   useEffect(() => {
@@ -241,7 +252,17 @@ const UpdateDialogTabs = (props: Props) => {
                   : stagedFileName}
               </FormHelperText>
             )}
-
+            {props.updateFileId !== null && props.updateFileId > 0 &&
+              props.editView &&
+              stagedFileName.length === 0 &&
+              props.legalCaseFiles
+                ?.filter(
+                  (caseFile: ILegalCaseFile) =>
+                    [props.updateFileId].indexOf(caseFile.id as number) > -1
+                )
+                .map((caseFile: ILegalCaseFile) =>
+                  validFileLink(caseFile.upload, caseFile.description as string)
+                )}
             <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
               <DialogContent>
                 <TextField
@@ -503,7 +524,17 @@ const UpdateDialogTabs = (props: Props) => {
                   : stagedFileName}
               </FormHelperText>
             )}
-
+            {props.updateFileId !== null && props.updateFileId > 0 &&
+              props.editView &&
+              stagedFileName.length === 0 &&
+              props.legalCaseFiles
+                ?.filter(
+                  (caseFile: ILegalCaseFile) =>
+                    [props.updateFileId].indexOf(caseFile.id as number) > -1
+                )
+                .map((caseFile: ILegalCaseFile) =>
+                  validFileLink(caseFile.upload, caseFile.description as string)
+                )}
             <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
               <DialogContent>
                 <TextField
@@ -577,51 +608,48 @@ const UpdateDialogTabs = (props: Props) => {
               {i18n.t("Upload a valid file")}
             </FormHelperText>
           )}
-          <Dropzone onDrop={props.onDrop} multiple={false}>
-            {({ getRootProps, getInputProps }) => (
-              <div {...getRootProps({ className: classes.dropzone })}>
-                <input {...getInputProps()} />
-                {props.selectedFiles && props.fileTabFileName.length > 0 ? (
-                  
+
+          {props.updateFileId !== null && props.updateFileId > 0 && props.editView ? (
+            props.legalCaseFiles
+              ?.filter(
+                (caseFile: ILegalCaseFile) =>
+                  [props.updateFileId].indexOf(caseFile.id as number) > -1
+              )
+              .map((caseFile: ILegalCaseFile) =>
+                validFileLink(caseFile.upload, caseFile.description as string)
+              )
+          ) : (
+            <Dropzone onDrop={props.onDrop} multiple={false}>
+              {({ getRootProps, getInputProps }) => (
+                <div {...getRootProps({ className: classes.dropzone })}>
+                  <input {...getInputProps()} />
+                  {props.selectedFiles && props.fileTabFileName.length > 0 ? (
                     <Typography>
                       {i18n.t("Submit update to save file")}:{" "}
                       {props.fileTabFileName}
                     </Typography>
-                   
-                ) : (
-                  <Stack
-                    direction="column"
-                    justifyContent="center"
-                    alignItems="center"
-                    spacing={1}
-                  >
-                    <FileUploadOutlinedIcon
-                      style={{ fontSize: 36, color: "#b2b2b2" }}
-                    />
-                    {props.updateFileId && props.updateFileId > 0 && (
-                      <Typography>
-                        {i18n.t("File")}:
-                        {props.legalCaseFiles
-                          ?.filter(
-                            (caseFile: ILegalCaseFile) =>
-                              [props.updateFileId].indexOf(caseFile.id as number) > -1
-                          )
-                          .map(
-                            (caseFile: ILegalCaseFile) => caseFile.description
-                          ).join()}
+                  ) : (
+                    <Stack
+                      direction="column"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={1}
+                    >
+                      <FileUploadOutlinedIcon
+                        style={{ fontSize: 36, color: "#b2b2b2" }}
+                      />
+                      <Typography className={classes.dropzoneText}>
+                        {i18n.t("Drag and drop files here or")}
                       </Typography>
-                    )}
-                    <Typography className={classes.dropzoneText}>
-                      {i18n.t("Drag and drop files here or")}
-                    </Typography>
-                    <Button className={classes.dropzoneButton}>
-                      {i18n.t("click to add files from device")}
-                    </Button>
-                  </Stack>
-                )}
-              </div>
-            )}
-          </Dropzone>
+                      <Button className={classes.dropzoneButton}>
+                        {i18n.t("click to add files from device")}
+                      </Button>
+                    </Stack>
+                  )}
+                </div>
+              )}
+            </Dropzone>
+          )}
           {props.selectedFiles !== undefined && (
             <Box style={{ width: "100%" }}>
               <InputLabel
