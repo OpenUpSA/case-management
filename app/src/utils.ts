@@ -270,7 +270,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       cursor: "pointer",
     },
     vertButton: {
-      borderRadius: "4px!important" as any,
+      borderRadius: "8px!important" as any,
       backgroundColor: "rgba(0, 0, 0, 0.05)",
       padding: "8px 7px 7px 7px!important" as any,
       "&:hover": {
@@ -629,6 +629,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     closeButton: {
       borderRadius: "8px",
       backgroundColor: "#f2f2f2",
+      marginLeft: 10,
+      width: "38px",
+      height: "38px",
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
       },
@@ -711,6 +714,12 @@ export const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down("xs")]: {
         width: "100%",
       },
+    },
+    spaceItems: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
     },
     dialogLabel: {
       color: "#222222!important" as any,

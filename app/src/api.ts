@@ -253,6 +253,10 @@ export const createCaseUpdate = async (caseUpdate: any) => {
   return await httpPost<any, any>(`/case-updates/`, caseUpdate);
 };
 
+export const deleteCaseUpdate = async (id: number) => {
+  return await httpDelete<any>(`/case-updates/${id}/`);
+};
+
 export const updateNote = async (note: any) => {
   return await httpPatch<any, any>(`/notes/${note.id}/`, note);
 };

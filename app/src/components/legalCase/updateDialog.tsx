@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { IconButton, Input, InputLabel, Button } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import {
+  IconButton,
+  Input,
+  InputLabel,
+  Button,
+  ListItemIcon,
+  ListItemText,
+} from "@material-ui/core";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
@@ -9,6 +17,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import { LegalCaseStates } from "../../contexts/legalCaseStateConstants";
 import { useStyles } from "../../utils";
@@ -21,11 +30,13 @@ import {
   getLegalCase,
   updateNote,
   updateMeeting,
+  deleteCaseUpdate,
 } from "../../api";
 import { ILegalCase, LocationState, ILegalCaseFile } from "../../types";
 import i18n from "../../i18n";
 import UpdateDialogTabs from "./updateDialogTabs";
 import SnackbarAlert from "../general/snackBar";
+import MoreMenu from "../moreMenu";
 
 type Props = {
   open: boolean;
@@ -43,6 +54,7 @@ type Props = {
 
 const UpdateDialog = (props: Props) => {
   const classes = useStyles();
+  const history = useHistory();
   const [status, setStatus] = useState<string>(props.legalCase.state);
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
   const [note, setNote] = useState<any>({
@@ -74,6 +86,8 @@ const UpdateDialog = (props: Props) => {
   const [tabValue, setTabValue] = useState<number>(props.fileView ? 2 : 0);
   const [updateFileId, setUpdateFileId] = useState<null | number>(null);
   const [updateId, setUpdateId] = useState<null | number>(null);
+  const [updatePrimaryId, setUpdatePrimaryId] = useState<null | number>(null);  
+  const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
 
   useEffect(() => {
     function setUpdateVals() {
@@ -94,6 +108,7 @@ const UpdateDialog = (props: Props) => {
           ? setUpdateFileId(props.selectedUpdate.note.file)
           : setUpdateFileId(null);
         setUpdateId(props.selectedUpdate.note.id);
+        setUpdatePrimaryId(props.selectedUpdate.id);
         setTabValue(0);
       } else if (
         props.selectedUpdate &&
@@ -115,6 +130,7 @@ const UpdateDialog = (props: Props) => {
           ? setUpdateFileId(props.selectedUpdate.meeting.file)
           : setUpdateFileId(null);
         setUpdateId(props.selectedUpdate.meeting.id);
+        setUpdatePrimaryId(props.selectedUpdate.id);
         setTabValue(1);
       } else if (props.selectedUpdate.files > 0) {
         setUpdateFileId(+props.selectedUpdate.files.join());
@@ -132,6 +148,7 @@ const UpdateDialog = (props: Props) => {
         });
         setTabValue(2);
         setUpdateId(props.selectedUpdate.id);
+        setUpdatePrimaryId(props.selectedUpdate.id);
       }
     }
     if (props.editView) {
@@ -626,6 +643,32 @@ const UpdateDialog = (props: Props) => {
     }
   };
 
+  const destroyUpdate = async () => {
+    try {
+      setDeleteLoader(true);
+      if (
+        window.confirm(i18n.t("Are you sure you want to delete this update?"))
+      ) {
+        await deleteCaseUpdate(updatePrimaryId as number);
+        setShowSnackbar({
+          open: true,
+          message: "Case update deleted",
+          severity: "success",
+        });
+        dialogClose();
+        refreshUpdates();
+      }
+      setDeleteLoader(false);
+    } catch (e) {
+      setDeleteLoader(false);
+      setShowSnackbar({
+        open: true,
+        message: "Case update delete failed",
+        severity: "error",
+      });
+    }
+  };
+
   const statusPatch = async () => {
     try {
       setIsLoading(true);
@@ -702,10 +745,34 @@ const UpdateDialog = (props: Props) => {
                 {props.editView ? i18n.t("Edit update") : i18n.t("New update")}
               </DialogTitle>
             </Grid>
-            <Grid item>
+            <Grid item className={classes.spaceItems}>
+              <MoreMenu>
+                <MenuItem
+                  style={{ position: "relative" }}
+                  disabled={deleteLoader}
+                  onClick={() => destroyUpdate()}
+                >
+                  <ListItemIcon>
+                    <DeleteIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{i18n.t("Delete update")}</ListItemText>
+                  {deleteLoader && (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        marginTop: "-12px",
+                        marginLeft: "-12px",
+                      }}
+                    />
+                  )}
+                </MenuItem>
+              </MoreMenu>
               <IconButton
                 className={classes.closeButton}
-                size={"small"}
+                size={"medium"}
                 onClick={dialogClose}
               >
                 <CloseIcon className={classes.closeButtonIcon} />
@@ -782,7 +849,7 @@ const UpdateDialog = (props: Props) => {
               variant="contained"
               className={classes.dialogSubmit}
               onClick={() => submitHandler()}
-              disabled={isLoading}
+              disabled={isLoading || (props.editView && tabValue === 2)}
               style={{ position: "relative" }}
             >
               {isLoading && (
