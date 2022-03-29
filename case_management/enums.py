@@ -1,6 +1,12 @@
 from django.db import models
 
 
+class LogChangeTypes(models.TextChoices):
+    CHANGE = 'Change'
+    ADD = 'Add'
+    REMOVE = 'Remove'
+
+
 class OfficialIdentifiers(models.TextChoices):
     NATIONAL_ID = 'National', 'National Identity Number'
     PASSPORT_NUMBER = 'Passport', 'Passport Number'

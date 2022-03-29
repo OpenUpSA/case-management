@@ -112,7 +112,7 @@ const Component = (props: Props) => {
             </MenuItem>
           </Select>
         </Grid>
-        <Grid item md={12}>
+        <Grid item xs={12} md={12}>
           <Input
             id="table_search"
             fullWidth

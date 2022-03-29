@@ -1,7 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
-
 import {
   Grid,
   Hidden,
@@ -21,12 +19,14 @@ import {
 
 import SearchIcon from "@material-ui/icons/Search";
 import CircularProgress from "@mui/material/CircularProgress";
+import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
 
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
 import { format } from "date-fns";
-import { getCaseTypes, getClients } from "../../api";
+import { getClients } from "../../api";
 import { ILegalCase, IClient, ICaseType } from "../../types";
+import { CaseTypesContext } from "../../contexts/caseTypesContext";
 
 type Props = {
   legalCases: ILegalCase[];
@@ -36,7 +36,7 @@ type Props = {
 const Component = (props: Props) => {
   const history = useHistory();
   const classes = useStyles();
-  const [caseTypes, setCaseTypes] = React.useState<ICaseType[]>();
+  const [contextCaseTypes] = useContext(CaseTypesContext);
   const [clients, setClients] = React.useState<IClient[]>();
   const [filteredLegalCases, setFilteredLegalCases] =
     React.useState<ILegalCase[]>();
@@ -50,8 +50,9 @@ const Component = (props: Props) => {
 
   const filterLegalCases = () => {
     if (filterLegalCasesValue) {
-      const rightCaseType: ICaseType[] | undefined = caseTypes?.filter((el1) =>
-        el1.title.toLowerCase().includes(filterLegalCasesValue.toLowerCase())
+      const rightCaseType: ICaseType[] | undefined = contextCaseTypes?.filter(
+        (el1: ICaseType) =>
+          el1.title.toLowerCase().includes(filterLegalCasesValue.toLowerCase())
       );
 
       let stringFilter: ILegalCase[] = props.legalCases?.filter((legalCase) => {
@@ -96,7 +97,7 @@ const Component = (props: Props) => {
       typeof filteredLegalCases === "undefined"
     ) {
       filterLegalCases();
-    } 
+    }
   });
 
   useEffect(() => {
@@ -104,8 +105,6 @@ const Component = (props: Props) => {
     async function fetchData() {
       try {
         const dataClients = await getClients();
-        const dataCaseTypes = await getCaseTypes();
-        setCaseTypes(dataCaseTypes);
         setClients(dataClients);
         setIsLoading(false);
       } catch (e: any) {
@@ -141,7 +140,7 @@ const Component = (props: Props) => {
             </MenuItem>
           </Select>
         </Grid>
-        <Grid item md={12}>
+        <Grid item xs={12} md={12}>
           <Input
             id="table_search"
             fullWidth
@@ -206,12 +205,12 @@ const Component = (props: Props) => {
                     </TableCell>
                   ) : null}
                   <TableCell className={classes.tableBodyCell}>
-                    {caseTypes
+                    {contextCaseTypes
                       ?.filter(
-                        (caseType) =>
+                        (caseType: ICaseType) =>
                           legalCase.case_types.indexOf(caseType.id) > -1
                       )
-                      .map((caseType) => caseType.title)
+                      .map((caseType: ICaseType) => caseType.title)
                       .join(", ")}
                   </TableCell>
                   <TableCell className={classes.tableBodyCell}>

@@ -33,11 +33,14 @@ class UserAdmin(UserAdmin, DefaultAdmin):
     form = UserChangeForm
     model = User
     list_display = (
-        'email',
+        'name_or_email',
+        'case_office',
         'is_staff',
         'is_active',
     )
     list_filter = (
+        'name',
+        'case_office',
         'email',
         'is_staff',
         'is_active',
@@ -69,6 +72,9 @@ class UserAdmin(UserAdmin, DefaultAdmin):
     )
     search_fields = ('email',)
     ordering = ('email',)
+
+    def name_or_email(self, obj):
+        return obj.name if obj.name else obj.email
 
 
 class CaseOfficeAdmin(DefaultAdmin):

@@ -12,7 +12,8 @@ import {
   ILegalCaseFile,
 } from "./types";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
 
 async function http<T>(path: string, config: RequestInit): Promise<T> {
   path = `${API_BASE_URL}${path}`;
@@ -116,6 +117,14 @@ export const getClients = async () => {
   return await httpGet<IClient[]>(`/clients/`);
 };
 
+export const getClientsForCaseOffice = async (id: number) => {
+  return await httpGet<IClient[]>(`/clients/?caseOffice=${id}`);
+};
+
+export const getClientsForUser = async (id: number) => {
+  return await httpGet<IClient[]>(`/clients/?user=${id}`);
+};
+
 export const getClient = async (id: number) => {
   return await httpGet<IClient>(`/clients/${id}/`);
 };
@@ -193,6 +202,14 @@ export const getLegalCaseFiles = async (legal_case?: number) => {
   );
 };
 
+export const getLegalCaseFile = async (file_id: number) => {
+  return await httpGet<ILegalCaseFile>(`/files/${file_id}/`);
+};
+
+export const deleteLegalCaseFile = async (file_id: number) => {
+  return await httpDelete<ILegalCaseFile>(`/files/${file_id}/`);
+};
+
 type optionsType = {
   method: string | any;
   body: any;
@@ -203,7 +220,7 @@ export const createLegalCaseFile = async (
   legal_case: number | undefined,
   file: any,
   description: string,
-  onUploadProgress: any,
+  onUploadProgress: any
 ) => {
   const formData = new FormData();
 
@@ -225,7 +242,7 @@ export const createLegalCaseFile = async (
     formData,
     options
   );
-  return response.data
+  return response.data;
 };
 
 export const deleteLegalCaseFile = async (id: number) => {

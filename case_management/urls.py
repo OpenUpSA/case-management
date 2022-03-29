@@ -17,6 +17,9 @@ from case_management.views import (
     UserViewSet,
     LogViewSet,
     LegalCaseFileViewSet,
+    range_summary,
+    monthly_summary,
+    daily_summary,
 )
 
 # Note: For Sentry integration testing
@@ -29,7 +32,7 @@ def trigger_error(request):
 router = DefaultRouter()
 router.register(r'api/v1/meetings', MeetingViewSet)
 router.register(r'api/v1/cases', LegalCaseViewSet)
-router.register(r'api/v1/clients', ClientViewSet)
+router.register(r'api/v1/clients', ClientViewSet, basename='Client')
 router.register(r'api/v1/case-offices', CaseOfficeViewSet)
 router.register(r'api/v1/case-types', CaseTypeViewSet)
 router.register(r'api/v1/users', UserViewSet)
@@ -61,6 +64,9 @@ urlpatterns = [
         schema_view.without_ui(cache_timeout=0),
         name='schema-json',
     ),
+    path('api/v1/reports/range-summary', range_summary, name='range-summary'),
+    path('api/v1/reports/monthly-summary', monthly_summary, name='monthly-summary'),
+    path('api/v1/reports/daily-summary', daily_summary, name='daily-summary'),
     path(
         'api/ui/',
         schema_view.with_ui('swagger', cache_timeout=0),

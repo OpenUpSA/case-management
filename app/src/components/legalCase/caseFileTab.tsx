@@ -46,7 +46,7 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import i18n from "../../i18n";
-import ProgressBar from "../progressBar/progressBar";
+import ProgressBar from "../general/progressBar";
 import SnackbarAlert from "../../components/general/snackBar";
 
 type Props = {
