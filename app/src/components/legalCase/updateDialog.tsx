@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import {
   IconButton,
   Input,
@@ -54,7 +53,6 @@ type Props = {
 
 const UpdateDialog = (props: Props) => {
   const classes = useStyles();
-  const history = useHistory();
   const [status, setStatus] = useState<string>(props.legalCase.state);
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
   const [note, setNote] = useState<any>({
@@ -86,7 +84,7 @@ const UpdateDialog = (props: Props) => {
   const [tabValue, setTabValue] = useState<number>(props.fileView ? 2 : 0);
   const [updateFileId, setUpdateFileId] = useState<null | number>(null);
   const [updateId, setUpdateId] = useState<null | number>(null);
-  const [updatePrimaryId, setUpdatePrimaryId] = useState<null | number>(null);  
+  const [updatePrimaryId, setUpdatePrimaryId] = useState<null | number>(null);
   const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
 
   useEffect(() => {
@@ -746,30 +744,32 @@ const UpdateDialog = (props: Props) => {
               </DialogTitle>
             </Grid>
             <Grid item className={classes.spaceItems}>
-              <MoreMenu>
-                <MenuItem
-                  style={{ position: "relative" }}
-                  disabled={deleteLoader}
-                  onClick={() => destroyUpdate()}
-                >
-                  <ListItemIcon>
-                    <DeleteIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>{i18n.t("Delete update")}</ListItemText>
-                  {deleteLoader && (
-                    <CircularProgress
-                      size={24}
-                      sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        marginTop: "-12px",
-                        marginLeft: "-12px",
-                      }}
-                    />
-                  )}
-                </MenuItem>
-              </MoreMenu>
+              {props.editView && (
+                <MoreMenu>
+                  <MenuItem
+                    style={{ position: "relative" }}
+                    disabled={deleteLoader}
+                    onClick={() => destroyUpdate()}
+                  >
+                    <ListItemIcon>
+                      <DeleteIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>{i18n.t("Delete update")}</ListItemText>
+                    {deleteLoader && (
+                      <CircularProgress
+                        size={24}
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          marginTop: "-12px",
+                          marginLeft: "-12px",
+                        }}
+                      />
+                    )}
+                  </MenuItem>
+                </MoreMenu>
+              )}
               <IconButton
                 className={classes.closeButton}
                 size={"medium"}

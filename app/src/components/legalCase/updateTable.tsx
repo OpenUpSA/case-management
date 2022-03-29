@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import { format } from "date-fns";
 import { ILegalCaseFile, ILegalCase } from "../../types";
+import { getUser } from "../../api";
 import {
   AudioFileIcon,
   ImageFileIcon,
@@ -42,6 +43,7 @@ const UpdateTable = (props: Props) => {
   const [open, setOpen] = useState<boolean>(false);
   const [selectedUpdate, setSelectedUpdate] = useState<any>({});
   const [editView, setEditView] = useState<boolean>(false);
+  const [userName, setUserName] = useState<string>("");
 
   useEffect(() => {
     setCaseUpdates(props.caseUpdates);
@@ -267,11 +269,8 @@ const UpdateTable = (props: Props) => {
                       className={classes.updateTableBodyCell}
                       align="center"
                     >
-                      <BlackTooltip
-                        title="created_by: null"
-                        arrow
-                        placement="top"
-                      >
+                      {/* no endpoint to get all users */}
+                      <BlackTooltip title={update.created_by} arrow placement="top">
                         <img
                           className={classes.updateAvatar}
                           src={userDefaultAvatar}
