@@ -67,6 +67,8 @@ def view_allows_listing_without_filter(view):
     return hasattr(view, 'allow_listing_without_case_office_filter') and view.allow_listing_without_case_office_filter
 
 def check_create_update_permission(request):
+    if not request.user.is_authenticated:
+        raise PermissionDenied
     if permission_is_scoped(request.user.permission_group):
         permitted = False
         if 'case_office' in request.data:
@@ -78,6 +80,8 @@ def check_create_update_permission(request):
 
 
 def check_scoped_list_permission(request, view):
+    if not request.user.is_authenticated:
+        raise PermissionDenied
     if permission_is_scoped(request.user.permission_group) and not view_allows_listing_without_filter(view):
         scope_filter = request.query_params.get(view.permission_scope_field)
         if scope_filter is None or int(scope_filter) not in view.permission_scope_field_case_offices:
@@ -85,6 +89,8 @@ def check_scoped_list_permission(request, view):
 
 
 def check_scoped_reporting_permision(request):
+    if not request.user.is_authenticated:
+        raise PermissionDenied
     if permission_is_scoped(request.user.permission_group):
         case_office_filter = request.query_params.get('caseOffice')
         if case_office_filter is None or request.user.case_office.id != int(case_office_filter):
