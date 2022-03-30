@@ -5,6 +5,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import UploadIcon from "@mui/icons-material/Upload";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 import DescriptionIcon from "@mui/icons-material/Description";
 import GavelIcon from "@mui/icons-material/Gavel";
 import AddIcon from "@mui/icons-material/Add";
@@ -17,12 +18,20 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import TextField from "@mui/material/TextField";
-import { format } from "date-fns";
+import CircularProgress from "@mui/material/CircularProgress";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 import { ILegalCase, ILegalCaseFile, LocationState } from "../../types";
-import { getLegalCaseFiles, createLegalCaseFile } from "../../api";
-
+import {
+  getLegalCaseFiles,
+  createLegalCaseFile,
+  deleteLegalCaseFile,
+  renameLegalCaseFile,
+} from "../../api";
+import { format } from "date-fns";
 import {
   Grid,
   IconButton,
@@ -33,6 +42,8 @@ import {
   Select,
   Button,
   Typography,
+  ListItemIcon,
+  ListItemText,
 } from "@material-ui/core";
 import i18n from "../../i18n";
 import ProgressBar from "../general/progressBar";
@@ -40,10 +51,8 @@ import SnackbarAlert from "../../components/general/snackBar";
 
 type Props = {
   legalCase: ILegalCase;
-  legalCaseFiles: ILegalCaseFile[] | undefined;
-  setLegalCaseFiles: React.Dispatch<
-    React.SetStateAction<ILegalCaseFile[] | undefined>
-  >;
+  legalCaseFiles: ILegalCaseFile[];
+  setLegalCaseFiles: (files: ILegalCaseFile[]) => void;
 };
 
 export default function CaseFileTab(props: Props) {
@@ -52,10 +61,22 @@ export default function CaseFileTab(props: Props) {
   const [progress, setProgress] = React.useState<number>(0);
   const [open, setOpen] = React.useState(false);
   const [fileDescription, setFileDescription] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [renameDialog, setRenameDialog] = React.useState<boolean>(false);
+  const [renameDialogInput, setRenameDialogInput] = React.useState<any>({
+    description: "",
+    id: 0,
+    legal_case: 0,
+  });
+  const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
     open: false,
     message: "",
     severity: undefined,
+  });
+  const [triggerClick, setTriggerClick] = React.useState({
+    show: false,
+    val: 0,
   });
 
   React.useEffect(() => {
@@ -96,9 +117,20 @@ export default function CaseFileTab(props: Props) {
       .then((res: any) => {
         setFileDescription("");
         if (res.legal_case) {
-          getLegalCaseFiles(res.legal_case).then((res) => {
-            props.setLegalCaseFiles(res);
-          });
+          setIsLoading(true);
+          getLegalCaseFiles(res.legal_case)
+            .then((res) => {
+              setIsLoading(false);
+              props.setLegalCaseFiles(res);
+            })
+            .catch((e) => {
+              setIsLoading(false);
+              setShowSnackbar({
+                open: true,
+                message: e.message,
+                severity: "error",
+              });
+            });
         }
       })
       .catch(() => {
@@ -117,6 +149,86 @@ export default function CaseFileTab(props: Props) {
   const dialogClose = () => {
     setOpen(false);
     setFileDescription("");
+  };
+
+  const renameFile = async (file: ILegalCaseFile) => {
+    renameLegalCaseFile(file)
+      .then((res: any) => {
+        if (res.id) {
+          setShowSnackbar({
+            open: true,
+            message: "File renamed successfully",
+            severity: "success",
+          });
+          setTriggerClick({ show: false, val: 0 });
+          setIsLoading(true);
+          getLegalCaseFiles(res.legal_case)
+            .then((res) => {
+              setIsLoading(false);
+              props.setLegalCaseFiles(res);
+            })
+            .catch((e) => {
+              setIsLoading(false);
+              setShowSnackbar({
+                open: true,
+                message: e.message,
+                severity: "error",
+              });
+            });
+        } else {
+          setShowSnackbar({
+            open: true,
+            message: "File rename failed",
+            severity: "error",
+          });
+        }
+      })
+      .catch(() => {
+        setShowSnackbar({
+          open: true,
+          message: "File rename failed",
+          severity: "error",
+        });
+      });
+  };
+
+  const deleteFile = async (id: number) => {
+    if (window.confirm("Are you sure you want to delete this file?")) {
+      setDeleteLoader(true);
+      deleteLegalCaseFile(id)
+        .then(() => {
+          setDeleteLoader(false);
+          setShowSnackbar({
+            open: true,
+            message: "File delete successful",
+            severity: "success",
+          });
+          setIsLoading(true);
+          getLegalCaseFiles(props.legalCase.id)
+            .then((res) => {
+              setIsLoading(false);
+              props.setLegalCaseFiles(res);
+            })
+            .catch((e) => {
+              setIsLoading(false);
+              setShowSnackbar({
+                open: true,
+                message: e.message,
+                severity: "error",
+              });
+            });
+        })
+        .catch((err: any) => {
+          setDeleteLoader(false);
+          setShowSnackbar({
+            open: true,
+            message: "File delete failed",
+            severity: "error",
+          });
+        });
+    } else {
+      return;
+    }
   };
 
   return (
@@ -230,6 +342,7 @@ export default function CaseFileTab(props: Props) {
         />
       </Grid>
       {progress > 0 && <ProgressBar progress={progress} />}
+
       <InputLabel
         className={classes.caseFileLabel}
         style={{ paddingTop: "20px" }}
@@ -280,12 +393,116 @@ export default function CaseFileTab(props: Props) {
                   </p>
                 </Grid>
                 <Grid item className={classes.caseFilesItem}>
-                  <LinkIcon
-                    style={{ visibility: "hidden", color: "#3dd997" }}
-                  />
-                  <IconButton>
-                    <MoreVertIcon sx={{ color: "#000000" }} />
+                  <CheckIcon style={{ color: "#3dd997", marginLeft: 15 }} />
+                </Grid>
+                <Grid
+                  item
+                  className={classes.caseFilesItem}
+                  style={{ position: "relative" }}
+                >
+                  <IconButton
+                    onClick={() => {
+                      setTriggerClick({ show: true, val: legalCaseFile?.id! });
+                    }}
+                  >
+                    <MoreVertIcon />
                   </IconButton>
+                  {triggerClick.show && triggerClick.val === legalCaseFile?.id && (
+                    <ClickAwayListener
+                      onClickAway={() =>
+                        setTriggerClick({ show: false, val: 0 })
+                      }
+                    >
+                      <div className={classes.fileMoreMenu}>
+                        <Button
+                          style={{
+                            position: "relative",
+                            textTransform: "capitalize",
+                          }}
+                          disabled={false}
+                          onClick={() => {
+                            setRenameDialogInput({
+                              description: legalCaseFile!.description!,
+                              id: legalCaseFile!.id!,
+                              legal_case: legalCaseFile!.legal_case!,
+                            });
+                            setRenameDialog(true);
+                          }}
+                        >
+                          <ListItemIcon>
+                            <EditIcon fontSize="small" />
+                          </ListItemIcon>
+                          <ListItemText>{i18n.t("Rename file")}</ListItemText>
+                        </Button>
+                        <Dialog
+                          open={renameDialog}
+                          onClose={() => setRenameDialog(false)}
+                          fullWidth
+                          maxWidth="sm"
+                        >
+                          <DialogTitle>Rename file</DialogTitle>
+                          <DialogContent>
+                            <Input
+                              id="table_search"
+                              fullWidth
+                              disableUnderline={true}
+                              className={classes.textField}
+                              aria-describedby="Rename file"
+                              value={renameDialogInput.description}
+                              onChange={(
+                                e: React.ChangeEvent<{ value: any }>
+                              ) => {
+                                setRenameDialogInput({
+                                  ...renameDialogInput,
+                                  description: e.target.value,
+                                });
+                              }}
+                            />
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={() => setRenameDialog(false)}>
+                              Cancel
+                            </Button>
+                            <Button
+                              color="primary"
+                              variant="contained"
+                              onClick={() => {
+                                renameFile(renameDialogInput);
+                                setRenameDialog(false);
+                              }}
+                            >
+                              {i18n.t("Submit")}
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                        <Button
+                          style={{
+                            position: "relative",
+                            textTransform: "capitalize",
+                          }}
+                          disabled={deleteLoader}
+                          onClick={() => deleteFile(legalCaseFile!.id!)}
+                        >
+                          <ListItemIcon>
+                            <DeleteIcon fontSize="small" />
+                          </ListItemIcon>
+                          <ListItemText>{i18n.t("Delete file")}</ListItemText>
+                          {deleteLoader && (
+                            <CircularProgress
+                              size={24}
+                              sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                marginTop: "-12px",
+                                marginLeft: "-12px",
+                              }}
+                            />
+                          )}
+                        </Button>
+                      </div>
+                    </ClickAwayListener>
+                  )}
                 </Grid>
               </Grid>
             ))}
@@ -304,6 +521,11 @@ export default function CaseFileTab(props: Props) {
           </Grid>
         </Grid>
       )}
+      {isLoading && (
+        <Grid container justify="center">
+          <CircularProgress style={{ position: "absolute", left: "50%" }} />
+        </Grid>
+      )}
       <InputLabel className={classes.caseFileLabel}>
         Recommended case files:{" "}
       </InputLabel>
@@ -311,17 +533,15 @@ export default function CaseFileTab(props: Props) {
         <Grid item className={classes.caseFiles}>
           <MeetingRoomIcon style={{ margin: "0px 15px 0px 10px" }} />
           <Typography style={{ flexGrow: 1 }}>Notice to vacate</Typography>
-          <CheckIcon style={{ color: "#3dd997" }} />
           <IconButton>
-            <MoreVertIcon sx={{ color: "#000000" }} />
+            <AddIcon sx={{ color: "#000000" }} />
           </IconButton>
         </Grid>
         <Grid item className={classes.caseFiles}>
           <DescriptionIcon style={{ margin: "0px 15px 0px 10px" }} />
           <Typography style={{ flexGrow: 1 }}>Notice of motion</Typography>
-          <CheckIcon style={{ color: "#3dd997" }} />
           <IconButton>
-            <MoreVertIcon sx={{ color: "#000000" }} />
+            <AddIcon sx={{ color: "#000000" }} />
           </IconButton>
         </Grid>
         <Grid item className={classes.caseFiles}>

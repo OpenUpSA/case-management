@@ -206,10 +206,6 @@ export const getLegalCaseFile = async (file_id: number) => {
   return await httpGet<ILegalCaseFile>(`/files/${file_id}/`);
 };
 
-export const deleteLegalCaseFile = async (file_id: number) => {
-  return await httpDelete<ILegalCaseFile>(`/files/${file_id}/`);
-};
-
 type optionsType = {
   method: string | any;
   body: any;
@@ -241,6 +237,33 @@ export const createLegalCaseFile = async (
     `${API_BASE_URL}/files/`,
     formData,
     options
+  );
+  return response.data;
+};
+
+export const deleteLegalCaseFile = async (id: number) => {
+  return await httpDelete<ILegalCaseFile>(`/files/${id}/`);
+};
+
+type renameOptionsType = {
+  method: string | any;
+  body: any;
+};
+
+export const renameLegalCaseFile = async (legalCaseFile: any) => {
+  const formData = new FormData();
+  formData.append("legal_case", legalCaseFile.legal_case);
+  formData.append("description", legalCaseFile.description);
+
+  const renameOptions: renameOptionsType = {
+    method: "PATCH",
+    body: formData,
+  };
+
+  const response = await axios.patch(
+    `${API_BASE_URL}/files/${legalCaseFile.id}/`,
+    formData,
+    renameOptions
   );
   return response.data;
 };
