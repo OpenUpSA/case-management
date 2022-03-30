@@ -27,6 +27,7 @@ from case_management.serializers import (
     FileSerializer,
     MeetingSerializer,
     NoteSerializer,
+    UserListSerializer,
     UserSerializer,
     LogSerializer,
 )
@@ -62,13 +63,26 @@ class LoggedModelViewSet(viewsets.ModelViewSet):
 
 
 class UpdateRetrieveViewSet(
-    mixins.UpdateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet
 ):
     """
     A viewset that provides just the `update', and `retrieve` actions.
 
     To use it, override the class and set the `.queryset` and
     `.serializer_class` attributes.
+    """
+
+    pass
+
+class ListViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    """
+    A viewset that provides just the `list` action.
     """
 
     pass
@@ -189,6 +203,10 @@ class NoteViewSet(LoggedModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['legal_case']
 
+
+class UserListViewSet(ListViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserListSerializer
 
 class UserViewSet(UpdateRetrieveViewSet):
     queryset = User.objects.all()

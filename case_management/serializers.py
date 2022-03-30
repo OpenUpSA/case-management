@@ -188,6 +188,14 @@ class CaseUpdateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'name',
+        ]
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

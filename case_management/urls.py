@@ -17,6 +17,7 @@ from case_management.views import (
     NoteViewSet,
     ClientViewSet,
     CustomObtainAuthToken,
+    UserListViewSet,
     UserViewSet,
     LogViewSet,
     range_summary,
@@ -40,6 +41,7 @@ router.register(r'api/v1/case-updates', CaseUpdateViewSet)
 router.register(r'api/v1/files', FileViewSet)
 router.register(r'api/v1/meetings', MeetingViewSet)
 router.register(r'api/v1/notes', NoteViewSet)
+router.register(r'api/v1/users', UserListViewSet)
 router.register(r'api/v1/users', UserViewSet)
 router.register(r'api/v1/logs', LogViewSet)
 
