@@ -51,10 +51,8 @@ import SnackbarAlert from "../../components/general/snackBar";
 
 type Props = {
   legalCase: ILegalCase;
-  legalCaseFiles: ILegalCaseFile[] | undefined;
-  setLegalCaseFiles: React.Dispatch<
-    React.SetStateAction<ILegalCaseFile[] | undefined>
-  >;
+  legalCaseFiles: ILegalCaseFile[];
+  setLegalCaseFiles: (files: ILegalCaseFile[]) => void;
 };
 
 export default function CaseFileTab(props: Props) {
@@ -65,13 +63,11 @@ export default function CaseFileTab(props: Props) {
   const [fileDescription, setFileDescription] = React.useState("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [renameDialog, setRenameDialog] = React.useState<boolean>(false);
-  const [renameDialogInput, setRenameDialogInput] =
-    React.useState<ILegalCaseFile>({
-      description: "",
-      id: 0,
-      legal_case: 0,
-      upload: "",
-    });
+  const [renameDialogInput, setRenameDialogInput] = React.useState<any>({
+    description: "",
+    id: 0,
+    legal_case: 0,
+  });
   const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
     open: false,
@@ -157,13 +153,14 @@ export default function CaseFileTab(props: Props) {
 
   const renameFile = async (file: ILegalCaseFile) => {
     renameLegalCaseFile(file)
-      .then((res:any) => {
-        if (res.status === 200) {
+      .then((res: any) => {
+        if (res.id) {
           setShowSnackbar({
             open: true,
             message: "File renamed successfully",
             severity: "success",
           });
+          setTriggerClick({ show: false, val: 0 });
           setIsLoading(true);
           getLegalCaseFiles(res.legal_case)
             .then((res) => {
@@ -178,7 +175,7 @@ export default function CaseFileTab(props: Props) {
                 severity: "error",
               });
             });
-        }else{
+        } else {
           setShowSnackbar({
             open: true,
             message: "File rename failed",
@@ -280,7 +277,7 @@ export default function CaseFileTab(props: Props) {
           />
           <Button
             className={classes.canBeFab}
-            color="primary"   
+            color="primary"
             variant="contained"
             startIcon={<UploadIcon />}
             style={{ textTransform: "none" }}
@@ -427,7 +424,6 @@ export default function CaseFileTab(props: Props) {
                             setRenameDialogInput({
                               description: legalCaseFile!.description!,
                               id: legalCaseFile!.id!,
-                              upload: legalCaseFile!.upload!,
                               legal_case: legalCaseFile!.legal_case!,
                             });
                             setRenameDialog(true);
