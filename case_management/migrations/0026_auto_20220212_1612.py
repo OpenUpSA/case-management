@@ -12,7 +12,25 @@ def link_meetings_to_case_updates(apps, schema_editor):
     CaseUpdate = apps.get_model('case_management', 'CaseUpdate')
     for obj in Meeting.objects.filter(case_update=None):
         CaseUpdate.objects.create(legal_case=obj.legal_case, meeting=obj)
-        obj.save()
+
+def move_files_to_new_table_and_link_to_case_updates(apps, schema_editor):
+    LegalCaseFile = apps.get_model('case_management', 'LegalCaseFile')
+    File = apps.get_model('case_management', 'File')
+    CaseUpdate = apps.get_model('case_management', 'CaseUpdate')
+    for obj in LegalCaseFile.objects.all():
+        case_update = CaseUpdate.objects.create(legal_case=obj.legal_case)
+        new_obj = File.objects.create(
+            case_update=case_update,
+            legal_case=obj.legal_case,
+            upload=obj.upload,
+            description=obj.description,
+            created_at=obj.created_at,
+            updated_at=obj.updated_at,
+            created_by=obj.created_by,
+            updated_by=obj.updated_by
+        )
+
+
 
 class Migration(migrations.Migration):
 
@@ -87,6 +105,7 @@ class Migration(migrations.Migration):
             name='legal_case_file',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='legal_case_files', to='case_management.file'),
         ),
+        migrations.RunPython(move_files_to_new_table_and_link_to_case_updates, migrations.RunPython.noop),
         migrations.DeleteModel(
             name='LegalCaseFile',
         ),
