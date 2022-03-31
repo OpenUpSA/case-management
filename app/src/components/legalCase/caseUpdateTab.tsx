@@ -6,7 +6,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
 import { useStyles } from "../../utils";
-import { ILegalCase, LocationState, ILegalCaseFile } from "../../types";
+import { ILegalCase, LocationState, ILegalCaseFile, IUser } from "../../types";
 import i18n from "../../i18n";
 import UpdateDialog from "./updateDialog";
 import UpdateTable from "./updateTable";
@@ -20,6 +20,7 @@ type Props = {
   caseUpdates: any;
   setCaseUpdates: (caseUpdates: any) => void;
   setStatus: (status: string) => void;
+  users: IUser[];
 };
 
 const CaseUpdateTab = (props: Props) => {
@@ -117,6 +118,7 @@ const CaseUpdateTab = (props: Props) => {
           setLegalCase={props.setLegalCase}
           setLegalCaseFiles={props.setLegalCaseFiles}
           setCaseUpdates={props.setCaseUpdates}
+          users={props.users ? props.users : []}
         />
         {showSnackbar.open && (
           <SnackbarAlert

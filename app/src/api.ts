@@ -182,6 +182,10 @@ export const updateUser = async (user: IUser) => {
   return await httpPatch<IUser, IUser>(`/users/${user.id}/`, user);
 };
 
+export const getUsers = async () => {
+  return await httpGet<IUser[]>(`/users/`);
+};
+
 export const authenticate = async (credentials: ICredentials) => {
   return await httpPost<ICredentials, IUserInfo>(`/authenticate`, credentials);
 };

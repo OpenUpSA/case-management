@@ -12,8 +12,7 @@ import {
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import { format } from "date-fns";
-import { ILegalCaseFile, ILegalCase } from "../../types";
-import { getUser } from "../../api";
+import { ILegalCaseFile, ILegalCase, IUser } from "../../types";
 import {
   AudioFileIcon,
   ImageFileIcon,
@@ -33,6 +32,7 @@ type Props = {
   setLegalCase: (legalCase: ILegalCase) => void;
   setLegalCaseFiles: (legalCaseFiles: ILegalCaseFile[]) => void;
   setCaseUpdates: (caseUpdates: any) => void;
+  users: IUser[];
 };
 
 const UpdateTable = (props: Props) => {
@@ -43,7 +43,6 @@ const UpdateTable = (props: Props) => {
   const [open, setOpen] = useState<boolean>(false);
   const [selectedUpdate, setSelectedUpdate] = useState<any>({});
   const [editView, setEditView] = useState<boolean>(false);
-  const [userName, setUserName] = useState<string>("");
 
   useEffect(() => {
     setCaseUpdates(props.caseUpdates);
@@ -269,8 +268,16 @@ const UpdateTable = (props: Props) => {
                       className={classes.updateTableBodyCell}
                       align="center"
                     >
-                      {/* no endpoint to get all users */}
-                      <BlackTooltip title={update.created_by} arrow placement="top">
+                      <BlackTooltip
+                        title={props.users
+                          ?.filter(
+                            (user: IUser) =>
+                              [update.created_by].indexOf(user.id) > -1
+                          )
+                          .map((user: IUser) => user.name)}
+                        arrow
+                        placement="top"
+                      >
                         <img
                           className={classes.updateAvatar}
                           src={userDefaultAvatar}

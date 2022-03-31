@@ -22,6 +22,7 @@ import { useStyles } from "../../utils";
 import {
   getLegalCaseFiles,
   getUser,
+  getUsers,
   getClient,
   getCaseUpdates,
 } from "../../api";
@@ -70,6 +71,7 @@ export default function CaseTabs(props: Props) {
   const [caseWorker, setCaseWorker] = useState<IUser | undefined>();
   const [client, setClient] = useState<IClient | undefined>();
   const [caseUpdates, setCaseUpdates] = useState<any>([]);
+  const [users, setUsers] = useState<IUser[]>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -83,11 +85,13 @@ export default function CaseTabs(props: Props) {
           const userNumber = Number(props.legalCase?.users?.join());
           const userInfo = await getUser(userNumber);
           const updates = await getCaseUpdates(props.legalCase?.id);
+          const users = await getUsers();
 
           setLegalCaseFiles(dataLegalCaseFiles);
           setClient(clientInfo);
           setCaseWorker(userInfo);
           setCaseUpdates(updates);
+          setUsers(users);
 
           props.setIsLoading(false);
         }
@@ -108,6 +112,7 @@ export default function CaseTabs(props: Props) {
     setValue(newValue);
   };
 
+  console.log(users);
   return (
     <>
       <Box
@@ -179,6 +184,7 @@ export default function CaseTabs(props: Props) {
             legalCaseFiles={legalCaseFiles ? legalCaseFiles : []}
             setLegalCaseFiles={setLegalCaseFiles}
             setStatus={props.setStatus}
+            users={users ? users : []}
           />
         ) : null}
       </TabPanel>
