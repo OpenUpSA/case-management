@@ -112,7 +112,6 @@ export default function CaseTabs(props: Props) {
     setValue(newValue);
   };
 
-  console.log(users);
   return (
     <>
       <Box
