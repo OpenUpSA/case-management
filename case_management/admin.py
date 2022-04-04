@@ -37,6 +37,7 @@ class UserAdmin(UserAdmin, DefaultAdmin):
         'case_office',
         'is_staff',
         'is_active',
+        'permission_group',
     )
     list_filter = (
         'name',
@@ -44,6 +45,7 @@ class UserAdmin(UserAdmin, DefaultAdmin):
         'email',
         'is_staff',
         'is_active',
+        'permission_group',
     )
     fieldsets = (
         (
@@ -59,14 +61,14 @@ class UserAdmin(UserAdmin, DefaultAdmin):
                 )
             },
         ),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active', 'permission_group')}),
     )
     add_fieldsets = (
         (
             None,
             {
                 'classes': ('wide',),
-                'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active'),
+                'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active', 'permission_group'),
             },
         ),
     )
