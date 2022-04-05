@@ -20,6 +20,11 @@ async function http<T>(path: string, config: RequestInit): Promise<T> {
   path = `${API_BASE_URL}${path}`;
   const request = new Request(path, config);
   const response = await fetch(request);
+  if (response.status === 401) {
+    const userInfo = UserInfo.getInstance();
+    userInfo.clear();
+    window.location.href = "/login";
+  }
   return response.json().catch((e) => {
     console.log(e);
   });
@@ -97,7 +102,6 @@ export async function httpPostNoBearer<T, U>(
   };
   return await http<U>(path, init);
 }
-
 
 export async function httpPatch<T, U>(
   path: string,
