@@ -50,7 +50,7 @@ export default function BasicTabs(props: Props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [legalCaseFiles, setLegalCaseFiles] = React.useState<
-    ILegalCaseFile[] | undefined
+    ILegalCaseFile[]
   >();
 
   React.useEffect(() => {
@@ -161,7 +161,7 @@ export default function BasicTabs(props: Props) {
         {legalCaseFiles && props.legalCase ? (
           <CaseFileTab
             legalCase={props.legalCase}
-            legalCaseFiles={legalCaseFiles}
+            legalCaseFiles={legalCaseFiles ? legalCaseFiles : []} 
             setLegalCaseFiles={setLegalCaseFiles}
           />
         ) : null}
