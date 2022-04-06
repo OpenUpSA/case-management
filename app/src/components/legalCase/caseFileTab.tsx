@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useStyles } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
 import CheckIcon from "@mui/icons-material/Check";
@@ -25,13 +25,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 import {
   getLegalCaseFiles,
-  createLegalCaseFile,
   deleteLegalCaseFile,
   renameLegalCaseFile,
 } from "../../api";
@@ -50,7 +48,6 @@ import {
 } from "@material-ui/core";
 import i18n from "../../i18n";
 import SnackbarAlert from "../general/snackBar";
-import ProgressBar from "../general/progressBar"
 
 type Props = {
   legalCase: ILegalCase;
@@ -63,10 +60,7 @@ type Props = {
 
 export default function CaseFileTab(props: Props) {
   const classes = useStyles();
-  const uploadFileRef = useRef<HTMLInputElement>(null);
-  const [progress, setProgress] = React.useState<number>(0);
   const [open, setOpen] = React.useState(false);
-  const [fileDescription, setFileDescription] = React.useState("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [renameDialog, setRenameDialog] = React.useState<boolean>(false);
   const [renameDialogInput, setRenameDialogInput] = React.useState<any>({
@@ -101,64 +95,6 @@ export default function CaseFileTab(props: Props) {
 
   const dialogOpen = () => {
     setOpen(true);
-  }
-  const onFileChange = async (event: any) => {
-    createLegalCaseFile(
-      props.legalCase.id,
-      event.target.files[0],
-      fileDescription,
-      (e: any) => {
-        const { loaded, total } = e;
-        const percent = Math.floor((loaded * 100) / total);
-
-        setProgress(percent);
-        if (percent === 100) {
-          setTimeout(() => {
-            setProgress(0);
-            setShowSnackbar({
-              open: true,
-              message: "File upload successful",
-              severity: "success",
-            });
-          }, 1000);
-        }
-      }
-    )
-      .then((res: any) => {
-        setFileDescription("");
-        if (res.legal_case) {
-          setIsLoading(true);
-          getLegalCaseFiles(res.legal_case)
-            .then((res) => {
-              setIsLoading(false);
-              props.setLegalCaseFiles(res);
-            })
-            .catch((e) => {
-              setIsLoading(false);
-              setShowSnackbar({
-                open: true,
-                message: e.message,
-                severity: "error",
-              });
-            });
-        }
-      })
-      .catch(() => {
-        setShowSnackbar({
-          open: true,
-          message: "File upload failed",
-          severity: "error",
-        });
-      });
-  };
-  const showOpenFileDialog = () => {
-    if (!uploadFileRef.current) throw Error("uploadFileRef is not assigned");
-    uploadFileRef.current.click();
-  };
-
-  const dialogClose = () => {
-    setOpen(false);
-    setFileDescription("");
   };
 
   const renameFile = async (file: ILegalCaseFile) => {
@@ -324,8 +260,6 @@ export default function CaseFileTab(props: Props) {
           value={"Enter a meeting location, type, or note..."}
         />
       </Grid>
-      {progress > 0 && <ProgressBar progress={progress} />}
-
       <InputLabel
         className={classes.caseFileLabel}
         style={{ paddingTop: "20px" }}
