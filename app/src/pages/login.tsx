@@ -46,17 +46,21 @@ const Page = () => {
         username: username,
         password: password,
       };
-      const { token, user_id } = await authenticate(credentials);
-      const { name, case_office, email } = await getUser(user_id);
 
+      const { token, user_id } = await authenticate(credentials);
       if (token && user_id) {
         const userInfo = UserInfo.getInstance();
         userInfo.setAccessToken(token);
         userInfo.setUserId(user_id.toString());
-        userInfo.setName(name);
-        userInfo.setCaseOffice(case_office);
-        userInfo.setEmail(email);
-        history.push("/clients");
+
+        const newToken = userInfo.getAccessToken();
+        if (newToken) {
+          const { name, case_office, email } = await getUser(user_id);
+          userInfo.setName(name);
+          userInfo.setCaseOffice(case_office);
+          userInfo.setEmail(email);
+          history.push("/clients");
+        }
       } else {
         setLoginError(true);
         setShowSnackbar({

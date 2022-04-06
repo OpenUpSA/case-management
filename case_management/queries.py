@@ -41,7 +41,12 @@ FROM
 WHERE
     legalcase.id = case_office.legalcase_id"""
 
-def range_summary(start_date, end_date):
+
+def case_office_filter(case_office=None):
+    phrase = "" if case_office is None else f"WHERE caseoffice.id = '{case_office}'"
+    return phrase
+
+def range_summary(start_date, end_date, case_office=None):
     return f"""
 WITH
   date_range AS (
@@ -179,9 +184,10 @@ SELECT
   )
 )
 FROM
-	case_management_caseoffice AS caseoffice;"""
+	case_management_caseoffice AS caseoffice
+{case_office_filter(case_office)};"""
 
-def daily_summary(start_month, end_month):
+def daily_summary(start_month, end_month, case_office=None):
     return f"""
 WITH
   months AS (
@@ -319,10 +325,11 @@ SELECT
     )
 )
 FROM
-	case_management_caseoffice AS caseoffice;"""
+	case_management_caseoffice AS caseoffice
+{case_office_filter(case_office)};"""
 
 
-def monthly_summary(start_month, end_month):
+def monthly_summary(start_month, end_month, case_office=None):
     return f"""
 WITH
   months AS (
@@ -536,4 +543,5 @@ SELECT
     )
 )
 FROM
-	case_management_caseoffice AS caseoffice;"""
+	case_management_caseoffice AS caseoffice
+{case_office_filter(case_office)};"""

@@ -2,13 +2,15 @@ import re
 from datetime import date, timedelta
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.parsers import MultiPartParser, FormParser
+
+from django.core.exceptions import BadRequest, FieldError
 
 from django.views import generic
 
@@ -17,6 +19,16 @@ from django.db import connection
 from django.contrib.auth.models import AnonymousUser
 
 from django.http import HttpResponseBadRequest
+
+from case_management.auth import (
+    InAdminGroup,
+    InReportingGroup,
+    InAdviceOfficeAdminGroup,
+    InCaseWorkerGroup,
+    check_create_update_permission,
+    check_scoped_list_permission,
+    check_scoped_reporting_permision
+)
 
 from case_management.serializers import (
     CaseOfficeSerializer,
@@ -55,6 +67,22 @@ def get_user(request):
 
 
 class LoggedModelViewSet(viewsets.ModelViewSet):
+    permission_scope_field = 'caseOffice'
+
+    @property
+    def permission_scope_field_case_offices(self):
+        return [self.request.user.case_office.id]
+
+    def get_permissions(self):
+        permission_classes = [InAdminGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
+        if self.action == 'list':
+            check_scoped_list_permission(self.request, self)
+        if self.action == 'create':
+            check_create_update_permission(self.request)
+        elif self.action == 'destroy':
+            permission_classes = [InAdminGroup]
+        return [permission() for permission in permission_classes]
+
     def perform_create(self, serializer):
         serializer.save(created_by=get_user(self.request))
 
@@ -74,8 +102,7 @@ class UpdateRetrieveViewSet(
     To use it, override the class and set the `.queryset` and
     `.serializer_class` attributes.
     """
-
-    pass
+    permission_classes = [InAdminGroup]
 
 class ListViewSet(
     mixins.ListModelMixin,
@@ -83,22 +110,6 @@ class ListViewSet(
 ):
     """
     A viewset that provides just the `list` action.
-    """
-
-    pass
-
-
-class CreateListRetrieveViewSet(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet,
-):
-    """
-    A viewset that provides just the `create', 'list', and `retrieve` actions.
-
-    To use it, override the class and set the `.queryset` and
-    `.serializer_class` attributes.
     """
 
     pass
@@ -130,31 +141,28 @@ class CaseOfficeViewSet(LoggedModelViewSet):
 
 
 class CaseTypeViewSet(LoggedModelViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = CaseType.objects.all()
     serializer_class = CaseTypeSerializer
 
 
 class ClientViewSet(LoggedModelViewSet):
+    queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
     def get_queryset(self):
-        queryset = Client.objects.all()
+        queryset = super().get_queryset()
         case_office = self.request.query_params.get('caseOffice')
         user = self.request.query_params.get('user')
-        if case_office is not None and user is not None:
-            raise ValidationError(
-                'Query parameters "caseOffice" and "user" cannot be used together'
-            )
         if case_office is not None:
-            queryset = Client.objects.filter(
+            queryset = queryset.filter(
                 legal_cases__case_offices__id=case_office
             ).distinct('id')
         if user is not None:
-            queryset = Client.objects.filter(
+            queryset = queryset.filter(
                 users__id=user
             ).distinct('id')
         return queryset
-
 
 class LegalCaseViewSet(LoggedModelViewSet):
     queryset = LegalCase.objects.all()
@@ -172,8 +180,17 @@ class LegalCaseViewSet(LoggedModelViewSet):
         generated_case_number = (
             f'{case_office_code}/{time.strftime("%y%m")}/{str(next_id).zfill(4)}'
         )
-        serializer.save(case_number=generated_case_number, created_by=get_user(self.request))
+        serializer.validated_data['case_number'] = generated_case_number
+        super().perform_create(serializer)
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        case_office = self.request.query_params.get('caseOffice')
+        if case_office is not None:
+            queryset = queryset.filter(
+                case_offices__id=case_office
+            ).distinct('id')
+        return queryset
 
 class CaseUpdateViewSet(LoggedModelViewSet):
     queryset = CaseUpdate.objects.all()
@@ -213,12 +230,29 @@ class UserViewSet(UpdateRetrieveViewSet):
     serializer_class = UserSerializer
 
 
-class LogViewSet(CreateListRetrieveViewSet):
+class LogViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [InAdminGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
     queryset = Log.objects.all()
     serializer_class = LogSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['parent_id', 'parent_type', 'target_id', 'target_type']
 
+    permission_scope_field = 'parent_id'
+
+    @property
+    def permission_scope_field_case_offices(self):
+        parent_type = self.request.query_params.get('parent_type')
+        if parent_type != 'LegalCase':
+            raise ValidationError('Must provide parent_type=LegalCase')
+        parent_id = self.request.query_params.get('parent_id')
+        user_case_office = self.request.user.case_office.id
+        legalcase_case_offices = LegalCase.objects.filter(case_offices__id=user_case_office).values_list('id', flat=True)
+        return legalcase_case_offices
+
+    def get_permissions(self):
+        if self.action == 'list':
+            check_scoped_list_permission(self.request, self)
+        return [permission() for permission in self.permission_classes]
 
 def _get_summary_months_range(request):
     months = {'start': None, 'end': None}
@@ -275,10 +309,13 @@ def _get_summary_date_range(request):
     return start_date, end_date
 
 @api_view(['GET'])
+@permission_classes([InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup])
 def range_summary(request):
+    check_scoped_reporting_permision(request)
     start_date, end_date = _get_summary_date_range(request)
+    case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
-        cursor.execute(queries.range_summary(start_date, end_date))
+        cursor.execute(queries.range_summary(start_date, end_date, case_office))
         row = cursor.fetchone()
     response = {
         'startDate': start_date,
@@ -288,10 +325,13 @@ def range_summary(request):
     return Response(response)
 
 @api_view(['GET'])
+@permission_classes([InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup])
 def daily_summary(request):
+    check_scoped_reporting_permision(request)
     start_month, end_month = _get_summary_months_range(request)
+    case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
-        cursor.execute(queries.daily_summary(start_month, end_month))
+        cursor.execute(queries.daily_summary(start_month, end_month, case_office))
         row = cursor.fetchone()
     response = {
         'startMonth': start_month,
@@ -302,10 +342,13 @@ def daily_summary(request):
 
 
 @api_view(['GET'])
+@permission_classes([InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup])
 def monthly_summary(request):
+    check_scoped_reporting_permision(request)
     start_month, end_month = _get_summary_months_range(request)
+    case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
-        cursor.execute(queries.monthly_summary(start_month, end_month))
+        cursor.execute(queries.monthly_summary(start_month, end_month, case_office))
         row = cursor.fetchone()
     response = {
         'startMonth': start_month,

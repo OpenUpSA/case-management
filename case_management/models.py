@@ -5,6 +5,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from case_management.enums import (
+    PermissionGroups,
     OfficialIdentifiers,
     CaseStates,
     EmploymentStatus,
@@ -49,6 +50,10 @@ class User(AbstractUser):
     username = None
     first_name = None
     last_name = None
+
+    permission_group = models.CharField(
+        max_length=20, choices=PermissionGroups.choices, null=True
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -301,6 +306,11 @@ class Client(LoggedModel):
         return self.preferred_name
 
     @property
+    def case_offices(self):
+        case_offices = CaseOffice.objects.filter(legalcase__client=self)
+        return case_offices
+
+    @property
     def updates(self):
         '''TODO: Do this in scalable way e.g. in view using proper join
         The below would not scale, because the request is done for each row
@@ -412,6 +422,10 @@ class Meeting(LoggedChildModel):
         blank=True,
     )
 
+    @property
+    def case_offices(self):
+        return self.legal_case.case_offices
+
     def __str__(self):
         return self.name
 
@@ -429,6 +443,10 @@ class File(LoggedChildModel):
     )
     upload = models.FileField(upload_to='uploads/')
     description = models.CharField(max_length=255, null=False, blank=True, default='')
+
+    @property
+    def case_offices(self):
+        return self.legal_case.case_offices
 
     def save(self, *args, **kwargs):
         if self.description == '':
