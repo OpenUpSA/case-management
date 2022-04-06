@@ -170,7 +170,10 @@ const UpdateTable = (props: Props) => {
                       />
                     </TableCell>
 
-                    <TableCell className={classes.updateTableBodyCell}>
+                    <TableCell
+                      className={`${classes.updateTableBodyCell} ${classes.noOverflow}`}
+                      style={{maxWidth: 100}}
+                    >
                       <Typography>
                         {update.files > 0 ? (
                           <Typography style={{ lineHeight: 1.2 }}>

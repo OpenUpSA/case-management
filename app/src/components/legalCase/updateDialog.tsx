@@ -179,6 +179,7 @@ const UpdateDialog = (props: Props) => {
       advice_offered: "",
     });
     setAttachedFileData({ file: null, description: "" });
+    setUpdateError("");
   };
 
   const onFileChange = async (event: any, fileDescription: string) => {

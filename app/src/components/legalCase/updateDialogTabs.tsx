@@ -252,7 +252,8 @@ const UpdateDialogTabs = (props: Props) => {
                   : stagedFileName}
               </FormHelperText>
             )}
-            {props.updateFileId !== null && props.updateFileId > 0 &&
+            {props.updateFileId !== null &&
+              props.updateFileId > 0 &&
               props.editView &&
               stagedFileName.length === 0 &&
               props.legalCaseFiles
@@ -524,7 +525,8 @@ const UpdateDialogTabs = (props: Props) => {
                   : stagedFileName}
               </FormHelperText>
             )}
-            {props.updateFileId !== null && props.updateFileId > 0 &&
+            {props.updateFileId !== null &&
+              props.updateFileId > 0 &&
               props.editView &&
               stagedFileName.length === 0 &&
               props.legalCaseFiles
@@ -609,22 +611,29 @@ const UpdateDialogTabs = (props: Props) => {
             </FormHelperText>
           )}
 
-          {props.updateFileId !== null && props.updateFileId > 0 && props.editView ? (
-            props.legalCaseFiles
-              ?.filter(
-                (caseFile: ILegalCaseFile) =>
-                  [props.updateFileId].indexOf(caseFile.id as number) > -1
-              )
-              .map((caseFile: ILegalCaseFile) =>
-                validFileLink(caseFile.upload, caseFile.description as string)
-              )
+          {props.updateFileId !== null &&
+          props.updateFileId > 0 &&
+          props.editView ? (
+            <Typography className={classes.noOverflow}>
+              {props.legalCaseFiles
+                ?.filter(
+                  (caseFile: ILegalCaseFile) =>
+                    [props.updateFileId].indexOf(caseFile.id as number) > -1
+                )
+                .map((caseFile: ILegalCaseFile) =>
+                  validFileLink(caseFile.upload, caseFile.description as string)
+                )}
+            </Typography>
           ) : (
             <Dropzone onDrop={props.onDrop} multiple={false}>
               {({ getRootProps, getInputProps }) => (
                 <div {...getRootProps({ className: classes.dropzone })}>
                   <input {...getInputProps()} />
                   {props.selectedFiles && props.fileTabFileName.length > 0 ? (
-                    <Typography>
+                    <Typography
+                      className={classes.noOverflow}
+                      style={{ width: "100%" }}
+                    >
                       {i18n.t("Submit update to save file")}:{" "}
                       {props.fileTabFileName}
                     </Typography>

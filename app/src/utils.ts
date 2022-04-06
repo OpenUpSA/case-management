@@ -600,7 +600,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       boxShadow:
         "0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%);",
       fontSize: 16,
-
     },
     meetingFileButton: {
       width: "50%",
@@ -858,6 +857,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       border: "none",
       borderRight: "solid 1px rgba(0, 0, 0, 0.05)",
       borderBottom: "solid 1px rgba(0, 0, 0, 0.05)",
+      "& p": {
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      },
     },
     blueText: {
       color: "#2b61f0",
@@ -886,6 +890,5 @@ export const useStyles = makeStyles((theme: Theme) =>
       overflow: "hidden",
       textOverflow: "ellipsis",
     },
-
   })
 );

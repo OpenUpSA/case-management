@@ -321,7 +321,7 @@ export default function CaseInfoTab(props: Props) {
                                 : item.note}
                             </Typography>
                           }
-                          className={classes.caseHistoryText}
+                          className={`${classes.caseHistoryText} ${classes.noOverflow}`}
                         />
                         <Box className={classes.caseHistoryBox}>
                           <ListItemAvatar sx={{ minWidth: 40 }}>

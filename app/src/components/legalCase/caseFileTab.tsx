@@ -279,11 +279,14 @@ export default function CaseFileTab(props: Props) {
               >
                 <Grid
                   item
-                  className={classes.caseFilesItem}
+                  className={`${classes.caseFilesItem} ${classes.noOverflow}`}
                   style={{ flexGrow: 1 }}
                 >
                   <DescriptionIcon style={{ margin: "0px 15px 0px 10px" }} />
-                  <Typography>
+                  <Typography
+                    className={classes.noOverflow}
+                    style={{ maxWidth: "70%" }}
+                  >
                     <a
                       href={legalCaseFile.upload}
                       target="_blank"

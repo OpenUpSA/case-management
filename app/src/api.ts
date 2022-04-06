@@ -252,6 +252,7 @@ type optionsType = {
   method: string | any;
   body: any;
   onUploadProgress: any;
+  headers: any;
 };
 
 export const createLegalCaseFile = async (
@@ -260,8 +261,9 @@ export const createLegalCaseFile = async (
   description: string,
   onUploadProgress: any
 ) => {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
   const formData = new FormData();
-
   formData.append("upload", file);
   if (legal_case) {
     formData.append("legal_case", legal_case.toString());
@@ -274,6 +276,7 @@ export const createLegalCaseFile = async (
     method: "POST",
     body: formData,
     onUploadProgress: onUploadProgress,
+    headers: { Authorization: `Bearer ${token}` },
   };
   const response = await axios.post(
     `${API_BASE_URL}/files/`,
@@ -297,7 +300,8 @@ export const deleteCaseUpdate = async (id: number) => {
 
 export const updateNote = async (note: any) => {
   return await httpPatch<any, any>(`/notes/${note.id}/`, note);
-}
+};
+
 export const deleteLegalCaseFile = async (id: number) => {
   return await httpDelete<ILegalCaseFile>(`/files/${id}/`);
 };
@@ -305,9 +309,12 @@ export const deleteLegalCaseFile = async (id: number) => {
 type renameOptionsType = {
   method: string | any;
   body: any;
+  headers: any;
 };
 
 export const renameLegalCaseFile = async (legalCaseFile: any) => {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
   const formData = new FormData();
   formData.append("legal_case", legalCaseFile.legal_case);
   formData.append("description", legalCaseFile.description);
@@ -315,6 +322,7 @@ export const renameLegalCaseFile = async (legalCaseFile: any) => {
   const renameOptions: renameOptionsType = {
     method: "PATCH",
     body: formData,
+    headers: { Authorization: `Bearer ${token}` },
   };
 
   const response = await axios.patch(
