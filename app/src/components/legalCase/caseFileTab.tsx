@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useStyles } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
 import CheckIcon from "@mui/icons-material/Check";
 import UploadIcon from "@mui/icons-material/Upload";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 import DescriptionIcon from "@mui/icons-material/Description";
 import GavelIcon from "@mui/icons-material/Gavel";
 import AddIcon from "@mui/icons-material/Add";
@@ -18,6 +19,22 @@ import { format } from "date-fns";
 import { ILegalCase, ILegalCaseFile, LocationState } from "../../types";
 import UpdateDialog from "./updateDialog";
 
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import TextField from "@mui/material/TextField";
+import CircularProgress from "@mui/material/CircularProgress";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+
+import {
+  getLegalCaseFiles,
+  createLegalCaseFile,
+  deleteLegalCaseFile,
+  renameLegalCaseFile,
+} from "../../api";
 import {
   Grid,
   IconButton,
@@ -28,28 +45,46 @@ import {
   Select,
   Button,
   Typography,
+  ListItemIcon,
+  ListItemText,
 } from "@material-ui/core";
 import i18n from "../../i18n";
-import SnackbarAlert from "../../components/general/snackBar";
+import SnackbarAlert from "../general/snackBar";
+import ProgressBar from "../general/progressBar"
 
 type Props = {
   legalCase: ILegalCase;
   legalCaseFiles: ILegalCaseFile[];
-  setLegalCaseFiles: React.Dispatch<React.SetStateAction<ILegalCaseFile[]>>;
   setStatus: (status: string) => void;
   setCaseUpdates: (caseUpdates: any) => void;
   setLegalCase: (legalCase: ILegalCase) => void;
+  setLegalCaseFiles: (files: ILegalCaseFile[]) => void;
 };
 
 export default function CaseFileTab(props: Props) {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
-  const [showSnackbar, setShowSnackbar] = useState<LocationState>({
+  const uploadFileRef = useRef<HTMLInputElement>(null);
+  const [progress, setProgress] = React.useState<number>(0);
+  const [open, setOpen] = React.useState(false);
+  const [fileDescription, setFileDescription] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [renameDialog, setRenameDialog] = React.useState<boolean>(false);
+  const [renameDialogInput, setRenameDialogInput] = React.useState<any>({
+    description: "",
+    id: 0,
+    legal_case: 0,
+  });
+  const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
     open: false,
     message: "",
     severity: undefined,
   });
   const [fileView] = useState<boolean>(true);
+  const [triggerClick, setTriggerClick] = React.useState({
+    show: false,
+    val: 0,
+  });
 
   useEffect(() => {
     const resetState = async () => {
@@ -66,6 +101,144 @@ export default function CaseFileTab(props: Props) {
 
   const dialogOpen = () => {
     setOpen(true);
+  }
+  const onFileChange = async (event: any) => {
+    createLegalCaseFile(
+      props.legalCase.id,
+      event.target.files[0],
+      fileDescription,
+      (e: any) => {
+        const { loaded, total } = e;
+        const percent = Math.floor((loaded * 100) / total);
+
+        setProgress(percent);
+        if (percent === 100) {
+          setTimeout(() => {
+            setProgress(0);
+            setShowSnackbar({
+              open: true,
+              message: "File upload successful",
+              severity: "success",
+            });
+          }, 1000);
+        }
+      }
+    )
+      .then((res: any) => {
+        setFileDescription("");
+        if (res.legal_case) {
+          setIsLoading(true);
+          getLegalCaseFiles(res.legal_case)
+            .then((res) => {
+              setIsLoading(false);
+              props.setLegalCaseFiles(res);
+            })
+            .catch((e) => {
+              setIsLoading(false);
+              setShowSnackbar({
+                open: true,
+                message: e.message,
+                severity: "error",
+              });
+            });
+        }
+      })
+      .catch(() => {
+        setShowSnackbar({
+          open: true,
+          message: "File upload failed",
+          severity: "error",
+        });
+      });
+  };
+  const showOpenFileDialog = () => {
+    if (!uploadFileRef.current) throw Error("uploadFileRef is not assigned");
+    uploadFileRef.current.click();
+  };
+
+  const dialogClose = () => {
+    setOpen(false);
+    setFileDescription("");
+  };
+
+  const renameFile = async (file: ILegalCaseFile) => {
+    renameLegalCaseFile(file)
+      .then((res: any) => {
+        if (res.id) {
+          setShowSnackbar({
+            open: true,
+            message: "File renamed successfully",
+            severity: "success",
+          });
+          setTriggerClick({ show: false, val: 0 });
+          setIsLoading(true);
+          getLegalCaseFiles(res.legal_case)
+            .then((res) => {
+              setIsLoading(false);
+              props.setLegalCaseFiles(res);
+            })
+            .catch((e) => {
+              setIsLoading(false);
+              setShowSnackbar({
+                open: true,
+                message: e.message,
+                severity: "error",
+              });
+            });
+        } else {
+          setShowSnackbar({
+            open: true,
+            message: "File rename failed",
+            severity: "error",
+          });
+        }
+      })
+      .catch(() => {
+        setShowSnackbar({
+          open: true,
+          message: "File rename failed",
+          severity: "error",
+        });
+      });
+  };
+
+  const deleteFile = async (id: number) => {
+    if (window.confirm("Are you sure you want to delete this file?")) {
+      setDeleteLoader(true);
+      deleteLegalCaseFile(id)
+        .then(() => {
+          setDeleteLoader(false);
+          setShowSnackbar({
+            open: true,
+            message: "File delete successful",
+            severity: "success",
+          });
+          setIsLoading(true);
+          getLegalCaseFiles(props.legalCase.id)
+            .then((res) => {
+              setIsLoading(false);
+              props.setLegalCaseFiles(res);
+            })
+            .catch((e) => {
+              setIsLoading(false);
+              setShowSnackbar({
+                open: true,
+                message: e.message,
+                severity: "error",
+              });
+            });
+        })
+        .catch((err: any) => {
+          setDeleteLoader(false);
+          setShowSnackbar({
+            open: true,
+            message: "File delete failed",
+            severity: "error",
+          });
+        });
+    } else {
+      return;
+    }
   };
 
   return (
@@ -151,6 +324,8 @@ export default function CaseFileTab(props: Props) {
           value={"Enter a meeting location, type, or note..."}
         />
       </Grid>
+      {progress > 0 && <ProgressBar progress={progress} />}
+
       <InputLabel
         className={classes.caseFileLabel}
         style={{ paddingTop: "20px" }}
@@ -201,12 +376,116 @@ export default function CaseFileTab(props: Props) {
                   </p>
                 </Grid>
                 <Grid item className={classes.caseFilesItem}>
-                  <LinkIcon
-                    style={{ visibility: "hidden", color: "#3dd997" }}
-                  />
-                  <IconButton>
-                    <MoreVertIcon sx={{ color: "#000000" }} />
+                  <CheckIcon style={{ color: "#3dd997", marginLeft: 15 }} />
+                </Grid>
+                <Grid
+                  item
+                  className={classes.caseFilesItem}
+                  style={{ position: "relative" }}
+                >
+                  <IconButton
+                    onClick={() => {
+                      setTriggerClick({ show: true, val: legalCaseFile?.id! });
+                    }}
+                  >
+                    <MoreVertIcon />
                   </IconButton>
+                  {triggerClick.show && triggerClick.val === legalCaseFile?.id && (
+                    <ClickAwayListener
+                      onClickAway={() =>
+                        setTriggerClick({ show: false, val: 0 })
+                      }
+                    >
+                      <div className={classes.fileMoreMenu}>
+                        <Button
+                          style={{
+                            position: "relative",
+                            textTransform: "capitalize",
+                          }}
+                          disabled={false}
+                          onClick={() => {
+                            setRenameDialogInput({
+                              description: legalCaseFile!.description!,
+                              id: legalCaseFile!.id!,
+                              legal_case: legalCaseFile!.legal_case!,
+                            });
+                            setRenameDialog(true);
+                          }}
+                        >
+                          <ListItemIcon>
+                            <EditIcon fontSize="small" />
+                          </ListItemIcon>
+                          <ListItemText>{i18n.t("Rename file")}</ListItemText>
+                        </Button>
+                        <Dialog
+                          open={renameDialog}
+                          onClose={() => setRenameDialog(false)}
+                          fullWidth
+                          maxWidth="sm"
+                        >
+                          <DialogTitle>Rename file</DialogTitle>
+                          <DialogContent>
+                            <Input
+                              id="table_search"
+                              fullWidth
+                              disableUnderline={true}
+                              className={classes.textField}
+                              aria-describedby="Rename file"
+                              value={renameDialogInput.description}
+                              onChange={(
+                                e: React.ChangeEvent<{ value: any }>
+                              ) => {
+                                setRenameDialogInput({
+                                  ...renameDialogInput,
+                                  description: e.target.value,
+                                });
+                              }}
+                            />
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={() => setRenameDialog(false)}>
+                              Cancel
+                            </Button>
+                            <Button
+                              color="primary"
+                              variant="contained"
+                              onClick={() => {
+                                renameFile(renameDialogInput);
+                                setRenameDialog(false);
+                              }}
+                            >
+                              {i18n.t("Submit")}
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                        <Button
+                          style={{
+                            position: "relative",
+                            textTransform: "capitalize",
+                          }}
+                          disabled={deleteLoader}
+                          onClick={() => deleteFile(legalCaseFile!.id!)}
+                        >
+                          <ListItemIcon>
+                            <DeleteIcon fontSize="small" />
+                          </ListItemIcon>
+                          <ListItemText>{i18n.t("Delete file")}</ListItemText>
+                          {deleteLoader && (
+                            <CircularProgress
+                              size={24}
+                              sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                marginTop: "-12px",
+                                marginLeft: "-12px",
+                              }}
+                            />
+                          )}
+                        </Button>
+                      </div>
+                    </ClickAwayListener>
+                  )}
                 </Grid>
               </Grid>
             ))}
@@ -225,6 +504,11 @@ export default function CaseFileTab(props: Props) {
           </Grid>
         </Grid>
       )}
+      {isLoading && (
+        <Grid container justify="center">
+          <CircularProgress style={{ position: "absolute", left: "50%" }} />
+        </Grid>
+      )}
       <InputLabel className={classes.caseFileLabel}>
         {i18n.t("Recommended case files")}:
       </InputLabel>
@@ -236,7 +520,7 @@ export default function CaseFileTab(props: Props) {
           </Typography>
           <CheckIcon style={{ color: "#3dd997" }} />
           <IconButton>
-            <MoreVertIcon sx={{ color: "#000000" }} />
+            <AddIcon sx={{ color: "#000000" }} />
           </IconButton>
         </Grid>
         <Grid item className={classes.caseFiles}>
@@ -246,7 +530,7 @@ export default function CaseFileTab(props: Props) {
           </Typography>
           <CheckIcon style={{ color: "#3dd997" }} />
           <IconButton>
-            <MoreVertIcon sx={{ color: "#000000" }} />
+            <AddIcon sx={{ color: "#000000" }} />
           </IconButton>
         </Grid>
         <Grid item className={classes.caseFiles}>
