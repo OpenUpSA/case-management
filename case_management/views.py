@@ -84,7 +84,8 @@ class LoggedModelViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def perform_create(self, serializer):
-        serializer.save(created_by=get_user(self.request))
+        user = get_user(self.request)
+        serializer.save(created_by=user, updated_by=user)
 
     def perform_update(self, serializer):
         serializer.save(updated_by=get_user(self.request))
