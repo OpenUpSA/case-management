@@ -217,7 +217,7 @@ class LoggedChildModel(LoggedModel):
 
     @hook(AFTER_UPDATE)
     def log_update(self):
-        if hasattr(self, case_update) and self.case_update is not None:
+        if hasattr(self, 'case_update') and self.case_update is not None:
             logIt(
                 self,
                 'Update',
