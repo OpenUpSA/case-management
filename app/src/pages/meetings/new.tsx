@@ -94,7 +94,7 @@ const Page = () => {
       await createMeeting({
         ...newMeeting,
         legal_case: parseInt(params.id),
-        legal_case_file: meetingFileId,
+        file: meetingFileId,
       })
         .then((response: any) => {
           setIsLoading(false);

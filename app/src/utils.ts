@@ -622,8 +622,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     helpersBox: {
-      bottom: 70,
+      width: "100%",
       [theme.breakpoints.up("md")]: {
+        top: -40,
         position: "absolute",
       },
     },
