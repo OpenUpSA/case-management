@@ -185,16 +185,20 @@ class LoggedModel(LifecycleModel, models.Model):
 
 
 class LoggedChildModel(LoggedModel):
-    """Child models must define case_update and legal_case fields"""
+    """Child models must define field 'legal_case' and optionally 'case_update'"""
+
+    @property
+    def case_offices(self):
+        return self.legal_case.case_offices
 
     def save(self, *args, **kwargs):
-        if self.case_update is not None:
+        if hasattr(self, 'case_update') and self.case_update is not None:
             self.legal_case = self.case_update.legal_case
         super().save(*args, **kwargs)
 
     @hook(AFTER_CREATE)
     def log_create(self):
-        if self.case_update is not None:
+        if hasattr(self, 'case_update') and self.case_update is not None:
             logIt(
                 self,
                 'Create',
@@ -213,7 +217,7 @@ class LoggedChildModel(LoggedModel):
 
     @hook(AFTER_UPDATE)
     def log_update(self):
-        if self.case_update is not None:
+        if hasattr(self, case_update) and self.case_update is not None:
             logIt(
                 self,
                 'Update',
@@ -343,30 +347,10 @@ class LegalCase(LoggedModel):
         return self.case_number
 
 
-class CaseUpdate(LoggedModel):
+class CaseUpdate(LoggedChildModel):
     legal_case = models.ForeignKey(
         LegalCase, related_name='case_updates', on_delete=models.CASCADE
     )
-
-    @hook(AFTER_CREATE)
-    def log_create(self):
-        logIt(
-            self,
-            'Create',
-            parent_id=self.legal_case.id,
-            parent_type='LegalCase',
-            user=self.created_by,
-        )
-
-    @hook(AFTER_UPDATE)
-    def log_update(self):
-        logIt(
-            self,
-            'Update',
-            parent_id=self.legal_case.id,
-            parent_type='LegalCase',
-            user=self.updated_by,
-        )
 
 
 class Note(LoggedChildModel):
@@ -422,10 +406,6 @@ class Meeting(LoggedChildModel):
         blank=True,
     )
 
-    @property
-    def case_offices(self):
-        return self.legal_case.case_offices
-
     def __str__(self):
         return self.name
 
@@ -443,10 +423,6 @@ class File(LoggedChildModel):
     )
     upload = models.FileField(upload_to='uploads/')
     description = models.CharField(max_length=255, null=False, blank=True, default='')
-
-    @property
-    def case_offices(self):
-        return self.legal_case.case_offices
 
     def save(self, *args, **kwargs):
         if self.description == '':

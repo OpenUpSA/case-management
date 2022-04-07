@@ -31,6 +31,10 @@ class LogSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ChildModelSerializer(serializers.ModelSerializer):
+    case_offices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
+
 class CaseTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CaseType
@@ -98,7 +102,7 @@ class CaseOfficeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FileSerializer(serializers.ModelSerializer):
+class FileSerializer(ChildModelSerializer):
     class Meta:
         model = File
         fields = [
@@ -115,8 +119,7 @@ class FileSerializer(serializers.ModelSerializer):
         ]
 
 
-class MeetingSerializer(serializers.ModelSerializer):
-    case_offices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+class MeetingSerializer(ChildModelSerializer):
 
     def validate(self, data):
         if data.get('advice_was_offered') and not data.get('advice_offered'):
@@ -132,13 +135,13 @@ class MeetingSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class NoteSerializer(serializers.ModelSerializer):
+class NoteSerializer(ChildModelSerializer):
     class Meta:
         model = Note
         fields = '__all__'
 
 
-class CaseUpdateSerializer(serializers.ModelSerializer):
+class CaseUpdateSerializer(ChildModelSerializer):
     files = serializers.PrimaryKeyRelatedField(
         many=True, read_only=False, queryset=File.objects.all(), required=False
     )

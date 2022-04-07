@@ -67,10 +67,10 @@ def get_user(request):
 
 
 class LoggedModelViewSet(viewsets.ModelViewSet):
-    permission_scope_field = 'caseOffice'
+    permission_scope_query_param = 'caseOffice'
 
     @property
-    def permission_scope_field_case_offices(self):
+    def permission_scope_query_param_values(self):
         return [self.request.user.case_office.id]
 
     def get_permissions(self):
@@ -112,8 +112,16 @@ class ListViewSet(
     """
     A viewset that provides just the `list` action.
     """
+    permission_scope_query_param = 'caseOffice'
 
-    pass
+    @property
+    def permission_scope_query_param_values(self):
+        return [self.request.user.case_office.id]
+
+    def get_permissions(self):
+        permission_classes = [InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
+        check_scoped_list_permission(self.request, self)
+        return [permission() for permission in permission_classes]
 
 
 class Index(generic.TemplateView):
@@ -238,10 +246,10 @@ class LogViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['parent_id', 'parent_type', 'target_id', 'target_type']
 
-    permission_scope_field = 'parent_id'
+    permission_scope_query_param = 'parent_id'
 
     @property
-    def permission_scope_field_case_offices(self):
+    def permission_scope_query_param_values(self):
         parent_type = self.request.query_params.get('parent_type')
         if parent_type != 'LegalCase':
             raise ValidationError('Must provide parent_type=LegalCase')

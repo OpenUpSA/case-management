@@ -3,6 +3,8 @@ from rest_framework.permissions import BasePermission, DjangoModelPermissions
 from django.core.exceptions import PermissionDenied
 
 from case_management.enums import PermissionGroups
+from case_management.models import CaseOffice
+
 
 class BearerTokenAuthentication(TokenAuthentication):
     keyword = 'Bearer'
@@ -66,6 +68,7 @@ def permission_is_scoped(permission_group):
 def view_allows_listing_without_filter(view):
     return hasattr(view, 'allow_listing_without_case_office_filter') and view.allow_listing_without_case_office_filter
 
+
 def check_create_update_permission(request):
     if not request.user.is_authenticated:
         raise PermissionDenied
@@ -75,6 +78,10 @@ def check_create_update_permission(request):
             permitted = request.user.case_office.id == request.data['case_office']
         elif 'case_offices' in request.data:
             permitted = len(request.data['case_offices']) == 1 and request.user.case_office.id == request.data['case_offices'][0]
+        elif 'legal_case' in request.data:
+            legal_case_id = request.data['legal_case']
+            user_case_office_match = CaseOffice.objects.filter(legalcase__id=legal_case_id, id=request.user.case_office.id)
+            permitted = bool(user_case_office_match)
         if not permitted:
             raise PermissionDenied
 
@@ -83,8 +90,8 @@ def check_scoped_list_permission(request, view):
     if not request.user.is_authenticated:
         raise PermissionDenied
     if permission_is_scoped(request.user.permission_group) and not view_allows_listing_without_filter(view):
-        scope_filter = request.query_params.get(view.permission_scope_field)
-        if scope_filter is None or int(scope_filter) not in view.permission_scope_field_case_offices:
+        scope_filter = request.query_params.get(view.permission_scope_query_param)
+        if scope_filter is None or int(scope_filter) not in view.permission_scope_query_param_values:
             raise PermissionDenied
 
 
