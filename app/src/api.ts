@@ -86,7 +86,7 @@ export async function httpPost<T, U>(
   return await http<U>(path, init);
 }
 
-export async function httpPostNoBearer<T, U>(
+export async function httpPostNoAuth<T, U>(
   path: string,
   body: T,
   config?: RequestInit
@@ -222,7 +222,7 @@ export const getUsers = async () => {
 };
 
 export const authenticate = async (credentials: ICredentials) => {
-  return await httpPostNoBearer<ICredentials, IUserInfo>(
+  return await httpPostNoAuth<ICredentials, IUserInfo>(
     `/authenticate`,
     credentials
   );
