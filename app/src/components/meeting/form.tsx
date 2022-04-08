@@ -54,7 +54,7 @@ const Component = (props: Props) => {
     legal_case: 0,
     notes: "",
     name: "",
-    legal_case_file: null,
+    file: null,
   });
 
   useEffect(() => {
@@ -109,43 +109,46 @@ const Component = (props: Props) => {
           </FormControl>
         </Grid>
         {props.showUploadButton && (
-          <Grid item xs={12} md={4} style={{ position: "relative", paddingBottom: "50px"  }}>
-            <Box className={classes.helpersBox}>
-              {props.meetingFile?.description &&
-                (props.fileToDelete || stagedFileName.length > 0) && (
-                  <FormHelperText
-                    id="file-description"
-                    style={{ color: "maroon" }}
-                  >
-                    Save meeting to delete:{" "}
-                    {props.meetingFile?.description.length > 12
-                      ? props.meetingFile?.description.slice(0, 10) + "..."
-                      : props.meetingFile?.description}
-                  </FormHelperText>
-                )}
-              {stagedFileName.length > 0 && (
-                <FormHelperText id="file-selected">
-                  New file:{" "}
-                  {stagedFileName.length > 24
-                    ? stagedFileName.slice(0, 22) + "..."
-                    : stagedFileName}
-                </FormHelperText>
-              )}
-              {props.meetingFile?.description &&
-                stagedFileName.length === 0 &&
-                !props.fileToDelete && (
-                  <FormHelperText id="file-description">
-                    Current file:{" "}
-                    {props.meetingFile?.description.length > 22
-                      ? props.meetingFile?.description.slice(0, 20) + "..."
-                      : props.meetingFile?.description}
-                  </FormHelperText>
-                )}
+          <Grid
+            item
+            xs={12}
+            md={4}
+            style={{ position: "relative", paddingBottom: "40px" }}
+          >
+            <Box className={`${classes.helpersBox} ${classes.noOverflow}`}>
               {props.progress
                 ? props.progress > 0 && (
                     <ProgressBar progress={props.progress} />
                   )
                 : null}
+              {props.meetingFile?.description &&
+                (props.fileToDelete || stagedFileName.length > 0) && (
+                  <FormHelperText
+                    id="file-description"
+                    style={{ color: "maroon" }}
+                    className={classes.noOverflow}
+                  >
+                    Save meeting to delete: {props.meetingFile?.description}
+                  </FormHelperText>
+                )}
+              {stagedFileName.length > 0 && (
+                <FormHelperText
+                  id="file-selected"
+                  className={classes.noOverflow}
+                >
+                  New file: {stagedFileName}
+                </FormHelperText>
+              )}
+              {props.meetingFile?.description &&
+                stagedFileName.length === 0 &&
+                !props.fileToDelete && (
+                  <FormHelperText
+                    id="file-description"
+                    className={classes.noOverflow}
+                  >
+                    Current file: {props.meetingFile?.description}
+                  </FormHelperText>
+                )}
             </Box>
             <input
               ref={uploadFileRef}
@@ -245,7 +248,7 @@ const Component = (props: Props) => {
         )}
 
         {props.showFile && (
-          <Grid xs={12} md={4}>
+          <Grid xs={12} md={4} style={{ paddingBottom: "30px" }}>
             <InputLabel
               className={classes.inputLabel}
               htmlFor="name"
@@ -258,21 +261,20 @@ const Component = (props: Props) => {
               {props.meetingFile ? (
                 <>
                   <DescriptionIcon style={{ margin: "0px 15px 0px 10px" }} />
-                  <Typography>
+                  <Typography className={classes.noOverflow}>
                     <a
                       href={props.meetingFile.upload}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {props.meetingFile?.description &&
-                      props.meetingFile?.description?.length > 53
-                        ? props.meetingFile?.description?.slice(0, 51) + "..."
-                        : props.meetingFile?.description}
+                      {props.meetingFile?.description}
                     </a>
                   </Typography>
                 </>
               ) : (
-                <Typography style={{cursor: "default"}}>{i18n.t("No file")}</Typography>
+                <Typography style={{ cursor: "default" }}>
+                  {i18n.t("No file")}
+                </Typography>
               )}
             </Grid>
           </Grid>

@@ -35,8 +35,21 @@ export const useStyles = makeStyles((theme: Theme) =>
         zIndex: "1300!important" as any,
       },
     },
+    bigCanBeFab: {
+      paddingTop: "10px",
+      paddingBottom: "10px",
+      textTransform: "none",
+      [theme.breakpoints.down("xs")]: {
+        width: "90%",
+        margin: "0px",
+        right: "16px",
+        bottom: "20px",
+        position: "fixed",
+        zIndex: "1300!important" as any,
+      },
+    },
     customAppBar: {
-      zIndex: "100000!important" as any,
+      zIndex: "2000!important" as any,
     },
     drawer: {
       flexShrink: 0,
@@ -113,6 +126,8 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     tableHeadRow: {
       backgroundColor: "transparent",
+      boxShadow: "0px 4px 5px 0px rgba(0, 0, 0, 0.05)",
+      marginBottom: "20px!important" as any,
       "&>:last-child": {
         borderRight: "none",
       },
@@ -255,7 +270,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       cursor: "pointer",
     },
     vertButton: {
-      borderRadius: "4px!important" as any,
+      borderRadius: "8px!important" as any,
       backgroundColor: "rgba(0, 0, 0, 0.05)",
       padding: "8px 7px 7px 7px!important" as any,
       "&:hover": {
@@ -302,11 +317,16 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     caseHistoryList: {
       height: "52px",
+      maxHeight: "52px!important" as any,
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.035)!important" as any,
+        cursor: "pointer",
       },
     },
     caseHistoryAvatar: {
+      width: "28px!important" as any,
+      height: "28px!important" as any,
+      border: "0.5px solid transparent",
       "&:hover": {
         border: "0.5px solid blue",
       },
@@ -365,6 +385,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "5px!important" as any,
       fontSize: "12px!important" as any,
       height: "20px!important" as any,
+      minWidth: "68px!important" as any,
     },
     chipGrey: {
       backgroundColor: "#eee!important" as any,
@@ -426,21 +447,79 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0, 0, 0, 0.1)",
       },
     },
-
     caseFilesItem: {
       display: "flex",
       alignItems: "center",
     },
-
     caseFileLabel: {
       color: "#000",
       fontSize: "13px",
       fontWeight: 600,
       paddingBottom: "20px",
     },
-    tabButton: {
+    caseTabButton: {
+      "& p": {
+        padding: "4px 12px 4px 0px!important" as any,
+        textTransform: "none",
+        color: "black",
+        fontWeight: 700,
+      },
       "&.Mui-selected": {
         backgroundColor: "#f4f7fe",
+      },
+    },
+    dialogTabButton: {
+      height: "45px!important" as any,
+      minHeight: "45px!important" as any,
+      display: "flex!important" as any,
+      flexDirection: "row!important" as any,
+      alignItems: "center!important" as any,
+      justifyContent: "space-around!important" as any,
+      margin: "0px 8px 16px 8px!important" as any,
+      borderRadius: "6px!important" as any,
+      backgroundColor: "#e5e5e5!important" as any,
+      [theme.breakpoints.down("xs")]: {
+        padding: "0px!important" as any,
+        maxWidth: "70px!important" as any,
+        minWidth: "70px!important" as any,
+        flexDirection: "column!important" as any,
+        margin: "0px 4px 16px 4px!important" as any,
+      },
+      "& p": {
+        padding: "2px 4px!important" as any,
+        textTransform: "none",
+        color: "#000!important" as any,
+        fontSize: "13px!important" as any,
+        fontWeight: 700,
+        lineHeight: "1.2!important" as any,
+        [theme.breakpoints.down("xs")]: {
+          padding: "0px!important" as any,
+        },
+      },
+      "&>.MuiSvgIcon-root": {
+        marginBottom: "0px!important" as any,
+        color: "#000!important" as any,
+        [theme.breakpoints.down("xs")]: {
+          padding: "0px!important" as any,
+        },
+      },
+      "&.Mui-selected": {
+        backgroundColor: "#2b61f0!important" as any,
+        "&:hover": {
+          backgroundColor: "#043ed9!important" as any,
+        },
+        "& p": {
+          color: "#fff!important" as any,
+        },
+        "&>.MuiSvgIcon-root": {
+          color: "#fff!important" as any,
+        },
+      },
+      "&:hover": {
+        backgroundColor: "#cccccc!important" as any,
+      },
+      "&.Mui-disabled": {
+        display: "none!important" as any,
       },
     },
     clientDetailLabel: {
@@ -521,7 +600,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       boxShadow:
         "0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%);",
       fontSize: 16,
-
     },
     meetingFileButton: {
       width: "50%",
@@ -544,8 +622,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     helpersBox: {
-      bottom: 70,
+      width: "100%",
       [theme.breakpoints.up("md")]: {
+        top: -40,
         position: "absolute",
       },
     },
@@ -559,6 +638,90 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "#b30900",
       },
     },
+    noIndicator: {
+      display: "none",
+    },
+    closeButton: {
+      borderRadius: "8px",
+      backgroundColor: "#f2f2f2",
+      marginLeft: 10,
+      width: "38px",
+      height: "38px",
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
+      },
+    },
+    closeButtonIcon: {
+      color: "#000",
+      fontSize: "20px!important" as any,
+      [theme.breakpoints.up("md")]: {
+        fontSize: "28px!important" as any,
+      },
+    },
+    dialogCancel: {
+      backgroundColor: "#f2f2f2!important" as any,
+      textTransform: "none!important" as any,
+      color: "#000000!important" as any,
+      paddingTop: "10px!important" as any,
+      paddingBottom: "10px!important" as any,
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
+      },
+    },
+    dialogSubmit: {
+      paddingTop: "10px!important" as any,
+      paddingBottom: "10px!important" as any,
+      textTransform: "none!important" as any,
+      whiteSpace: "nowrap!important" as any,
+    },
+    updateAlert: {
+      height: "67px",
+      margin: "20px 0px",
+      borderRadius: "6px!important" as any,
+      backgroundColor: "#e9f0fe!important" as any,
+      "&>.MuiAlert-icon": {
+        alignItems: "center",
+      },
+      "& svg": {
+        color: "#2b61f0",
+      },
+      "& div": {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      },
+      "&>.MuiAlert-message": {
+        color: "#2b61f0",
+        overflow: "hidden!important" as any,
+        textOverflow: "ellipsis!important" as any,
+        [theme.breakpoints.down("xs")]: {
+          display: "block",
+        },
+      },
+    },
+    dialogInput: {
+      fontSize: "13px",
+      backgroundColor: "rgba(0, 0, 0, 0.035)",
+      border: "solid 1px rgba(0, 0, 0, 0)",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      marginBottom: "20px",
+      "&.Mui-disabled": {
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
+        color: "#000000",
+      },
+      "&.Mui-focused": {
+        backgroundColor: "rgba(0, 0, 0, 0.01)",
+        borderColor: "rgba(0, 0, 0, 0.1)",
+      },
+      "& textarea": {
+        paddingTop: "8px",
+        paddingBottom: "8px",
+      },
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.07)",
+      },
+    },
     centerItems: {
       display: "flex",
       flexDirection: "row",
@@ -567,6 +730,166 @@ export const useStyles = makeStyles((theme: Theme) =>
         width: "100%",
       },
     },
-
+    spaceItems: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    dialogLabel: {
+      color: "#222222!important" as any,
+      fontSize: "14px!important" as any,
+    },
+    attachmentButton: {
+      padding: "7px 15px!important" as any,
+      fontSize: "13px!important" as any,
+      backgroundColor: "#f2f2f2!important" as any,
+      textTransform: "none!important" as any,
+      color: "#000000!important" as any,
+      lineHeight: "1.2!important" as any,
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
+      },
+    },
+    attachmentIcon: {
+      transform: "rotate(135deg)",
+      color: "#797979!important" as any,
+      fontSize: "30px!important" as any,
+    },
+    tabBox: {
+      width: "100%",
+      overflowY: "auto",
+      maxHeight: "200px",
+      minHeight: "200px",
+      marginTop: "10px",
+    },
+    dropzone: {
+      height: 140,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "column",
+      textAlign: "center",
+      padding: "30px",
+      border: "5px dotted #b2b2b2",
+      borderRadius: "10px",
+      backgroundColor: "#ffffff",
+      color: "#000000",
+      cursor: "pointer",
+      marginBottom: "20px",
+    },
+    dropzoneText: {
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "14px!important" as any,
+      },
+    },
+    dropzoneButton: {
+      backgroundColor: "#e9f0fe!important" as any,
+      color: "#2b61f0",
+      textTransform: "none!important" as any,
+      fontWeight: "600!important" as any,
+      fontSize: "16px!important" as any,
+      borderRadius: "6px!important" as any,
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "14px!important" as any,
+      },
+    },
+    uploadProgressBox: {
+      height: "64px",
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      backgroundColor: "#f2f2f2",
+      padding: "10px",
+      borderRadius: "6px",
+    },
+    deleteIcon: {
+      marginRight: 10,
+      marginLeft: 20,
+      borderRadius: "1px",
+      padding: "17px 10px",
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)!important" as any,
+      },
+    },
+    renameIcons: {
+      borderRadius: "8px",
+      padding: "3px",
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)!important" as any,
+      },
+    },
+    dialogTitle: {
+      padding: "5px!important" as any,
+      fontWeight: "bold!important" as any,
+      fontSize: "24px!important" as any,
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "16px!important" as any,
+      },
+    },
+    dialogFileInput: {
+      fontSize: "13px",
+      fontWeight: "bold",
+      backgroundColor: "#ffffff",
+      color: "#000000",
+      border: "solid 1px blue",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      marginRight: "10px",
+      "&.Mui-disabled": {
+        backgroundColor: "#f2f2f2",
+        border: "solid 1px #f2f2f2",
+        color: "#000000",
+      },
+      "& textarea": {
+        paddingTop: "8px",
+        paddingBottom: "8px",
+      },
+    },
+    renameFile: {
+      minWidth: "85px!important" as any,
+      fontSize: "14px!important" as any,
+      textDecorationLine: "underline!important" as any,
+      cursor: "pointer!important" as any,
+    },
+    updateTableBodyCell: {
+      padding: "6px 10px!important" as any,
+      border: "none",
+      borderRight: "solid 1px rgba(0, 0, 0, 0.05)",
+      borderBottom: "solid 1px rgba(0, 0, 0, 0.05)",
+      "& p": {
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      },
+    },
+    blueText: {
+      color: "#2b61f0",
+      textDecorationLine: "underline",
+    },
+    updateAvatar: {
+      height: "33px",
+      width: "33px",
+      borderRadius: "50%",
+    },
+    dialogPaper: {
+      top: 50,
+    },
+    dateInput: {
+      flexWrap: "wrap",
+    },
+    dateLabel: {
+      paddingRight: 15,
+      width: 100,
+      [theme.breakpoints.down("xs")]: {
+        paddingRight: 0,
+      },
+    },
+    noOverflow: {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
   })
 );

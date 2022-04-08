@@ -74,7 +74,7 @@ export interface IMeeting {
   meeting_type: string;
   notes: string;
   name?: string | null;
-  legal_case_file?: number | null;
+  file?: number | null;
 }
 
 export interface IUserInfo {
@@ -131,4 +131,10 @@ export interface LocationState {
   open?: boolean;
   message?: string;
   severity?: "success" | "error" | undefined;
+}
+
+export interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
 }

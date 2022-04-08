@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import LayoutSimple from "../components/layoutSimple";
 import i18n from "../i18n";
@@ -8,11 +8,13 @@ import Box from "@material-ui/core/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { RedirectIfLoggedIn, UserInfo } from "../auth";
-import { authenticate, getUser } from "../api";
+import { authenticate, getUser, getCaseTypes, getCaseOffices } from "../api";
 import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
 import { useStyles } from "../utils";
 import { LocationState } from "../types";
 import SnackbarAlert from "../components/general/snackBar";
+import { CaseOfficesContext } from "../contexts/caseOfficesContext";
+import { CaseTypesContext } from "../contexts/caseTypesContext";
 
 const Page = () => {
   RedirectIfLoggedIn();
@@ -25,6 +27,10 @@ const Page = () => {
     message: "",
     severity: undefined,
   });
+  // eslint-disable-next-line
+  const [contextCaseTypes, setContextCaseTypes] = useContext(CaseTypesContext);
+  // eslint-disable-next-line
+  const [contextOffices, setContextOffices] = useContext(CaseOfficesContext);
 
   React.useEffect(() => {
     const resetState = async () => {
@@ -46,17 +52,22 @@ const Page = () => {
         username: username,
         password: password,
       };
-      const { token, user_id } = await authenticate(credentials);
-      const { name, case_office, email } = await getUser(user_id);
 
+      const { token, user_id } = await authenticate(credentials);
       if (token && user_id) {
         const userInfo = UserInfo.getInstance();
         userInfo.setAccessToken(token);
         userInfo.setUserId(user_id.toString());
-        userInfo.setName(name);
-        userInfo.setCaseOffice(case_office);
-        userInfo.setEmail(email);
-        history.push("/clients");
+
+        const newToken = userInfo.getAccessToken();
+        if (newToken) {
+          const { name, case_office, email } = await getUser(user_id);
+          fetchData();
+          userInfo.setName(name);
+          userInfo.setCaseOffice(case_office);
+          userInfo.setEmail(email);
+          history.push("/clients");
+        }
       } else {
         setLoginError(true);
         setShowSnackbar({
@@ -75,6 +86,13 @@ const Page = () => {
       });
     }
   };
+
+  async function fetchData() {
+    const dataCaseOffices = await getCaseOffices();
+    const dataCaseTypes = await getCaseTypes();
+    setContextOffices(dataCaseOffices);
+    setContextCaseTypes(dataCaseTypes);
+  }
 
   return (
     <LayoutSimple>

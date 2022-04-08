@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import i18n from "../../i18n";
 import { IClient } from "../../types";
 import { useStyles } from "../../utils";
-import { constants } from "../../dropDownConstants";
+import { constants } from "../../contexts/dropDownConstants";
 
 type Props = {
   client?: IClient;

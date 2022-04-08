@@ -93,10 +93,8 @@ const Page = () => {
         const meetingId = parseInt(params.id);
         const dataMeeting = await getMeeting(meetingId);
         const dataLegalCase = await getLegalCase(dataMeeting.legal_case);
-        if (dataMeeting.legal_case_file) {
-          const dataMeetingFile = await getLegalCaseFile(
-            dataMeeting.legal_case_file
-          );
+        if (dataMeeting.file) {
+          const dataMeetingFile = await getLegalCaseFile(dataMeeting.file);
           setMeetingFile(dataMeetingFile);
         }
         setMeeting(dataMeeting);

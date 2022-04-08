@@ -23,27 +23,24 @@ import {
   getLegalCase,
   getMeetings,
   updateLegalCase,
+  getLogs,
 } from "../../api";
-import { ILegalCase, IClient, IMeeting, LocationState } from "../../types";
+import {
+  ILegalCase,
+  IClient,
+  IMeeting,
+  LocationState,
+  ILog,
+} from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import DeleteIcon from "@material-ui/icons/Delete";
-import MuiTabs from "../../components/legalCase/muiTabs";
+import CaseTabs from "../../components/legalCase/caseTabs";
 import SnackbarAlert from "../../components/general/snackBar";
 import CircularProgress from "@mui/material/CircularProgress";
+import { LegalCaseStates } from "../../contexts/legalCaseStateConstants";
 
 type RouteParams = { id: string };
-
-const LegalCaseStates = [
-  "Opened",
-  "InProgress",
-  "Hanging",
-  "Pending",
-  "Referred",
-  "Resolved",
-  "Escalated",
-  "Closed",
-];
 
 const Page = () => {
   RedirectIfNotLoggedIn();
@@ -56,7 +53,8 @@ const Page = () => {
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
-  const [status, setStatus] = React.useState<string | undefined>("");
+  const [status, setStatus] = React.useState<string>(legalCase?.state || "");
+  const [caseHistory, setCaseHistory] = React.useState<ILog[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
@@ -116,9 +114,13 @@ const Page = () => {
         setIsLoading(true);
         const dataLegalCase = await getLegalCase(caseId);
         const dataMeetings = await getMeetings(caseId);
-        setLegalCase(dataLegalCase);
-        setClient(await getClient(dataLegalCase.client));
+        const historyData = await getLogs(caseId, "LegalCase");
+        const dataClient = await getClient(dataLegalCase.client);
+
         setStatus(dataLegalCase.state);
+        setLegalCase(dataLegalCase);
+        setClient(dataClient);
+        setCaseHistory(historyData);
         setMeetings(dataMeetings);
         setIsLoading(false);
       } catch (e: any) {
@@ -136,7 +138,7 @@ const Page = () => {
   const statusPatch = async (arg: any) => {
     try {
       setIsLoading(true);
-      const updatedSummary: ILegalCase = {
+      const updatedStatus: ILegalCase = {
         id: legalCase!.id,
         summary: legalCase!.summary,
         case_number: legalCase!.case_number,
@@ -145,14 +147,17 @@ const Page = () => {
         case_types: legalCase!.case_types,
         case_offices: legalCase!.case_offices,
       };
-      const { id } = await updateLegalCase(updatedSummary);
+      const { id } = await updateLegalCase(updatedStatus);
       setIsLoading(false);
-      id &&
+      if (id) {
         setShowSnackbar({
           open: true,
           message: "Case edit successful",
           severity: "success",
         });
+        updateCase();
+        updateHistory();
+      }
     } catch (e) {
       setIsLoading(false);
       setShowSnackbar({
@@ -161,6 +166,16 @@ const Page = () => {
         severity: "error",
       });
     }
+  };
+
+  const updateCase = async () => {
+    const dataLegalCase = await getLegalCase(caseId);
+    setLegalCase(dataLegalCase);
+  };
+
+  const updateHistory = async () => {
+    const historyData = await getLogs(caseId, "LegalCase");
+    setCaseHistory(historyData);
   };
 
   return (
@@ -201,7 +216,7 @@ const Page = () => {
               className={classes.select}
               input={<Input />}
               value={status}
-              onChange={(event: SelectChangeEvent<string | undefined>) => {
+              onChange={(event: SelectChangeEvent<string>) => {
                 setStatus(event.target.value as any);
                 statusPatch(event.target.value as any);
               }}
@@ -243,10 +258,17 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        <MuiTabs
+        <CaseTabs
           legalCase={legalCase!}
+          setLegalCase={setLegalCase}
           meetings={meetings ? meetings : []}
           standalone={false}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          setShowSnackbar={setShowSnackbar}
+          caseHistory={caseHistory ? caseHistory : []}
+          setCaseHistory={setCaseHistory}
+          setStatus={setStatus}
         />
 
         {isLoading && (

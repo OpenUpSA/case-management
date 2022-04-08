@@ -75,10 +75,8 @@ const Page = () => {
       const meetingId = parseInt(params.id);
       const dataMeeting = await getMeeting(meetingId);
       const dataLegalCase = await getLegalCase(dataMeeting.legal_case);
-      if (dataMeeting.legal_case_file) {
-        const dataMeetingFile = await getLegalCaseFile(
-          dataMeeting.legal_case_file
-        );
+      if (dataMeeting.file) {
+        const dataMeetingFile = await getLegalCaseFile(dataMeeting.file);
         setMeetingFile(dataMeetingFile);
       }
       setMeeting(dataMeeting);
@@ -103,8 +101,8 @@ const Page = () => {
 
   const saveMeeting = async (saveMeeting: IMeeting) => {
     const upLoadFile = async () => {
-      if (!fileToDelete && meeting?.legal_case_file) {
-        await deleteLegalCaseFile(meeting?.legal_case_file as number);
+      if (!fileToDelete && meeting?.file) {
+        await deleteLegalCaseFile(meeting?.file as number);
       }
       setIsLoading(true);
       createLegalCaseFile(
@@ -146,7 +144,7 @@ const Page = () => {
       await updateMeeting({
         ...saveMeeting,
         id: parseInt(params.id),
-        legal_case_file: meetingFileId,
+        file: meetingFileId,
       })
         .then((response: any) => {
           setIsLoading(false);
@@ -193,7 +191,7 @@ const Page = () => {
 
     try {
       if (fileToDelete) {
-        await deleteLegalCaseFile(meeting?.legal_case_file as number);
+        await deleteLegalCaseFile(meeting?.file as number);
       }
       if (meetingFileData.file) {
         await upLoadFile();

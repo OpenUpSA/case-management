@@ -5,6 +5,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from case_management.enums import (
+    PermissionGroups,
     OfficialIdentifiers,
     CaseStates,
     EmploymentStatus,
@@ -49,6 +50,10 @@ class User(AbstractUser):
     username = None
     first_name = None
     last_name = None
+
+    permission_group = models.CharField(
+        max_length=20, choices=PermissionGroups.choices, null=True
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -179,6 +184,60 @@ class LoggedModel(LifecycleModel, models.Model):
         abstract = True
 
 
+class LoggedChildModel(LoggedModel):
+    """Child models must define field 'legal_case' and optionally 'case_update'"""
+
+    @property
+    def case_offices(self):
+        return self.legal_case.case_offices
+
+    def save(self, *args, **kwargs):
+        if hasattr(self, 'case_update') and self.case_update is not None:
+            self.legal_case = self.case_update.legal_case
+        super().save(*args, **kwargs)
+
+    @hook(AFTER_CREATE)
+    def log_create(self):
+        if hasattr(self, 'case_update') and self.case_update is not None:
+            logIt(
+                self,
+                'Create',
+                parent_id=self.case_update.id,
+                parent_type='CaseUpdate',
+                user=self.created_by,
+            )
+        else:
+            logIt(
+                self,
+                'Create',
+                parent_id=self.legal_case.id,
+                parent_type='LegalCase',
+                user=self.created_by,
+            )
+
+    @hook(AFTER_UPDATE)
+    def log_update(self):
+        if hasattr(self, 'case_update') and self.case_update is not None:
+            logIt(
+                self,
+                'Update',
+                parent_id=self.case_update.id,
+                parent_type='CaseUpdate',
+                user=self.updated_by,
+            )
+        else:
+            logIt(
+                self,
+                'Update',
+                parent_id=self.legal_case.id,
+                parent_type='LegalCase',
+                user=self.updated_by,
+            )
+
+    class Meta:
+        abstract = True
+
+
 class CaseOffice(LoggedModel):
     name = models.CharField(max_length=500, unique=True)
     description = models.TextField()
@@ -251,6 +310,11 @@ class Client(LoggedModel):
         return self.preferred_name
 
     @property
+    def case_offices(self):
+        case_offices = CaseOffice.objects.filter(legalcase__client=self)
+        return case_offices
+
+    @property
     def updates(self):
         '''TODO: Do this in scalable way e.g. in view using proper join
         The below would not scale, because the request is done for each row
@@ -283,40 +347,79 @@ class LegalCase(LoggedModel):
         return self.case_number
 
 
-class Meeting(LoggedModel):
+class CaseUpdate(LoggedChildModel):
     legal_case = models.ForeignKey(
-        LegalCase, related_name='meetings', on_delete=models.CASCADE
+        LegalCase, related_name='case_updates', on_delete=models.CASCADE
     )
-    location = models.CharField(max_length=255, null=False, blank=False)
-    meeting_type = models.CharField(
-        max_length=50, null=False, blank=False, default="In person meeting"
+
+
+class Note(LoggedChildModel):
+    case_update = models.OneToOneField(
+        CaseUpdate, on_delete=models.CASCADE, related_name='note', null=True, blank=True
     )
-    meeting_date = models.DateTimeField(null=False, blank=False)
-    notes = models.TextField(null=False, blank=False)
-    name = models.CharField(max_length=255, null=False, blank=True, default="")
-    legal_case_file = models.ForeignKey(
-        'LegalCaseFile',
-        related_name='legal_case_files',
+    legal_case = models.ForeignKey(
+        LegalCase, related_name='notes', on_delete=models.CASCADE, null=True, blank=True
+    )
+    title = models.CharField(max_length=255, null=False, blank=False)
+    content = models.TextField(null=False, blank=False)
+    file = models.ForeignKey(
+        'File',
+        related_name='notes',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
 
-    @hook(AFTER_CREATE)
-    def log_create(self):
-        logIt(self, 'Create', parent_id=self.legal_case.id, parent_type='LegalCase')
+    def __str__(self):
+        return self.title
 
-    @hook(AFTER_UPDATE)
-    def log_update(self):
-        logIt(self, 'Update', parent_id=self.legal_case.id, parent_type='LegalCase')
+
+class Meeting(LoggedChildModel):
+    case_update = models.OneToOneField(
+        CaseUpdate,
+        on_delete=models.CASCADE,
+        related_name='meeting',
+        null=True,
+        blank=True,
+    )
+    legal_case = models.ForeignKey(
+        LegalCase,
+        related_name='meetings',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    name = models.CharField(max_length=255, null=False, blank=True, default="")
+    meeting_type = models.CharField(
+        max_length=50, null=False, blank=False, default="In person meeting"
+    )
+    meeting_date = models.DateTimeField(null=False, blank=False)
+    location = models.CharField(max_length=255, null=False, blank=False)
+    notes = models.TextField(null=False, blank=False)
+    advice_was_offered = models.BooleanField(null=True, blank=True)
+    advice_offered = models.TextField(null=False, blank=True)
+    file = models.ForeignKey(
+        'File',
+        related_name='meetings',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return self.name
 
 
-class LegalCaseFile(LoggedModel):
+class File(LoggedChildModel):
+    case_update = models.ForeignKey(
+        CaseUpdate,
+        related_name='files',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     legal_case = models.ForeignKey(
-        LegalCase, related_name='files', on_delete=models.CASCADE
+        LegalCase, related_name='files', on_delete=models.CASCADE, null=True, blank=True
     )
     upload = models.FileField(upload_to='uploads/')
     description = models.CharField(max_length=255, null=False, blank=True, default='')
@@ -325,14 +428,6 @@ class LegalCaseFile(LoggedModel):
         if self.description == '':
             self.description = self.upload_file_name()
         super().save(*args, **kwargs)
-
-    @hook(AFTER_CREATE)
-    def log_create(self):
-        logIt(self, 'Create', parent_id=self.legal_case.id, parent_type='LegalCase')
-
-    @hook(AFTER_UPDATE)
-    def log_update(self):
-        logIt(self, 'Update', parent_id=self.legal_case.id, parent_type='LegalCase')
 
     def __str__(self):
         return self.upload_file_name()

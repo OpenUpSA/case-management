@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Box from "@material-ui/core/Box";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
@@ -16,12 +16,10 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Input, MenuItem } from "@material-ui/core";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
+
 import LockIcon from "@mui/icons-material/Lock";
 import CircularProgress from "@mui/material/CircularProgress";
+import FormHelperText from "@mui/material/FormHelperText";
 
 import { BlackTooltip } from "../general/tooltip";
 import { useStyles } from "../../utils";
@@ -29,8 +27,9 @@ import SnackbarAlert from "../../components/general/snackBar";
 import { format } from "date-fns";
 import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
-import FormHelperText from "@mui/material/FormHelperText";
-
+import UpdateDialog from "./updateDialog";
+import i18n from "../../i18n";
+import { updateLegalCase, getLogs, getLegalCase } from "../../api";
 import {
   ILegalCase,
   ICaseType,
@@ -39,14 +38,8 @@ import {
   IUser,
   ILog,
   LocationState,
+  ILegalCaseFile,
 } from "../../types";
-import {
-  updateLegalCase,
-  getClient,
-  getUser,
-  getLogs,
-  createLog,
-} from "../../api";
 
 const LogLabels = new Map([
   ["LegalCase Create", "Case created"],
@@ -66,68 +59,49 @@ const logLabel = (
 
 type Props = {
   legalCase: ILegalCase;
+  client: IClient | undefined;
+  caseHistory: ILog[];
+  caseWorker: IUser | undefined;
+  setCaseHistory: (caseHistory: ILog[]) => void;
+  setLegalCase: (legalCase: ILegalCase) => void;
+  setStatus: (status: string) => void;
+  setCaseUpdates: (caseUpdates: any) => void;
+  setLegalCaseFiles: (legalCaseFiles: ILegalCaseFile[]) => void;
 };
 
 export default function CaseInfoTab(props: Props) {
   const classes = useStyles();
   const [contextOffices] = useContext(CaseOfficesContext);
   const [contextCaseTypes] = useContext(CaseTypesContext);
-  const [caseSummary, setCaseSummary] = React.useState<string | undefined>("");
-  const [caseWorker, setCaseWorker] = React.useState<IUser | undefined>();
-  const [client, setClient] = React.useState<IClient>();
-  const [selectCaseType, setSelectCaseType] = React.useState<
+  const [caseSummary, setCaseSummary] = useState<string | undefined>("");
+  const [selectCaseType, setSelectCaseType] = useState<number[] | undefined>(
+    []
+  );
+  const [selectCaseOffice, setSelectCaseOffice] = useState<
     number[] | undefined
   >([]);
-  const [selectCaseOffice, setSelectCaseOffice] = React.useState<
-    number[] | undefined
-  >([]);
-  const [caseHistory, setCaseHistory] = React.useState<ILog[]>([]);
-  const [open, setOpen] = React.useState(false);
-  const [manualUpdateValue, setManualUpdateValue] = React.useState<string>("");
-  const [showButton, setShowButton] = React.useState<boolean>(false);
-  const [width, setWidth] = React.useState<number>(0);
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [open, setOpen] = useState(false);
+  const [showButton, setShowButton] = useState<boolean>(false);
+  const [width, setWidth] = useState<number>(0);
+  const [showSnackbar, setShowSnackbar] = useState<LocationState>({
     open: false,
     message: "",
     severity: undefined,
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [summaryLoader, setSummaryLoader] = useState<boolean>(false);
 
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [updateLoader, setUpdateLoader] = React.useState<boolean>(false);
-  const [summaryLoader, setSummaryLoader] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
+  useEffect(() => {
     setIsLoading(true);
     setSelectCaseOffice(props.legalCase?.case_offices);
     setCaseSummary(props.legalCase?.summary);
     setSelectCaseType(props.legalCase?.case_types);
     setWidth(window.innerWidth);
 
-    async function fetchData() {
-      try {
-        const clientInfo = await getClient(props.legalCase?.client);
-        const userNumber = Number(props.legalCase?.users?.join());
-        const userInfo = await getUser(userNumber);
-        const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
-
-        setClient(clientInfo);
-        setCaseWorker(userInfo);
-        setCaseHistory(historyData);
-        setIsLoading(false);
-      } catch (e: any) {
-        setIsLoading(false);
-        setShowSnackbar({
-          open: true,
-          message: e.message,
-          severity: "error",
-        });
-      }
-    }
-
-    fetchData();
+    setIsLoading(false);
   }, [props.legalCase]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const resetState = async () => {
       setTimeout(() => {
         setShowSnackbar({
@@ -143,60 +117,6 @@ export default function CaseInfoTab(props: Props) {
   const discardChange = () => {
     setCaseSummary(props.legalCase?.summary);
     setShowButton(false);
-  };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setManualUpdateValue("");
-  };
-
-  const addUpdateHandler = async (
-    parent_id: number | undefined,
-    parent_type: string,
-    target_id: number | undefined,
-    target_type: string,
-    action: string,
-    user: number,
-    note: string
-  ) => {
-    try {
-      setUpdateLoader(true);
-      const caseHistory: ILog = {
-        id: 0,
-        created_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
-        updated_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
-        parent_id: parent_id,
-        parent_type: parent_type,
-        target_id: target_id,
-        target_type: target_type,
-        action: action,
-        user: user,
-        note: note,
-      };
-      const { id } = await createLog(caseHistory);
-      setUpdateLoader(false);
-      if (id) {
-        handleClose();
-        setShowSnackbar({
-          open: true,
-          message: "Case update successful",
-          severity: "success",
-        });
-      }
-      const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
-      setCaseHistory(historyData);
-    } catch (e) {
-      setUpdateLoader(false);
-      handleClose();
-      setShowSnackbar({
-        open: true,
-        message: "Case update failed",
-        severity: "error",
-      });
-    }
   };
 
   const caseSummaryPatch = async () => {
@@ -221,6 +141,8 @@ export default function CaseInfoTab(props: Props) {
           message: "Case edit successful",
           severity: "success",
         });
+        updateCase();
+        updateHistory();
       }
     } catch (e) {
       setSummaryLoader(false);
@@ -246,12 +168,15 @@ export default function CaseInfoTab(props: Props) {
       };
       const { id } = await updateLegalCase(updatedSummary);
       setIsLoading(false);
-      id &&
+      if (id) {
         setShowSnackbar({
           open: true,
           message: "Case edit successful",
           severity: "success",
         });
+        updateHistory();
+        updateCase();
+      }
     } catch (e) {
       setIsLoading(false);
       setShowSnackbar({
@@ -262,12 +187,26 @@ export default function CaseInfoTab(props: Props) {
     }
   };
 
+  const updateCase = async () => {
+    const dataLegalCase = await getLegalCase(props.legalCase.id as number);
+    props.setLegalCase(dataLegalCase);
+  };
+
+  const updateHistory = async () => {
+    const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
+    props.setCaseHistory(historyData);
+  };
+
+  const dialogOpen = () => {
+    setOpen(true);
+  };
+
   return (
     <>
       <Grid container spacing={3} className={classes.caseInfoContainer}>
         <Grid item xs={12} md={8}>
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Case summary:
+            {i18n.t("Case summary")}:
           </InputLabel>
           <TextField
             multiline
@@ -301,7 +240,7 @@ export default function CaseInfoTab(props: Props) {
                   color={summaryLoader ? "#767271" : "#ffffff"}
                   variant="caption"
                 >
-                  Save
+                  {i18n.t("Save")}
                 </Typography>
                 {summaryLoader && (
                   <CircularProgress
@@ -323,7 +262,7 @@ export default function CaseInfoTab(props: Props) {
                 className={classes.discardButton}
               >
                 <Typography color="#767271" variant="caption">
-                  Discard
+                  {i18n.t("Discard")}
                 </Typography>
               </IconButton>
             </BlackTooltip>
@@ -342,72 +281,29 @@ export default function CaseInfoTab(props: Props) {
           >
             <Grid item>
               <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-                Case history:
+                {i18n.t("Case history")}:
               </InputLabel>
             </Grid>
             <Grid item>
-              <Button variant="contained" onClick={handleClickOpen}>
-                Add update
+              <Button variant="contained" onClick={() => dialogOpen()}>
+                {i18n.t("Add update")}
               </Button>
 
-              <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-                <DialogTitle>Add Update</DialogTitle>
-                <DialogContent>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Note"
-                    type="text"
-                    fullWidth
-                    variant="standard"
-                    value={manualUpdateValue}
-                    onChange={(e: React.ChangeEvent<{ value: any }>) => {
-                      setManualUpdateValue(e.target.value);
-                    }}
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose}>Cancel</Button>
-                  <Button
-                    style={{ position: "relative" }}
-                    color="primary"
-                    variant="contained"
-                    disabled={manualUpdateValue.length === 0 || updateLoader}
-                    onClick={(e) =>
-                      addUpdateHandler(
-                        props.legalCase?.id,
-                        "LegalCase",
-                        props.legalCase?.id,
-                        "LegalCase",
-                        "Update",
-                        Number(props.legalCase?.users?.join()),
-                        manualUpdateValue
-                      )
-                    }
-                  >
-                    Submit
-                    {updateLoader && (
-                      <CircularProgress
-                        size={24}
-                        sx={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          marginTop: "-12px",
-                          marginLeft: "-12px",
-                        }}
-                      />
-                    )}
-                  </Button>
-                </DialogActions>
-              </Dialog>
+              <UpdateDialog
+                open={open}
+                setOpen={setOpen}
+                setStatus={props.setStatus}
+                legalCase={props.legalCase}
+                setLegalCase={props.setLegalCase}
+                setLegalCaseFiles={props.setLegalCaseFiles}
+                setCaseUpdates={props.setCaseUpdates}
+              />
             </Grid>
           </Grid>
           <List sx={{ width: "100%", marginBottom: "26px" }}>
             <Divider />
-            {caseHistory.length > 0
-              ? caseHistory
+            {props.caseHistory.length > 0
+              ? props.caseHistory
                   ?.slice(0)
                   .reverse()
                   .map((item) => (
@@ -425,7 +321,7 @@ export default function CaseInfoTab(props: Props) {
                                 : item.note}
                             </Typography>
                           }
-                          className={classes.caseHistoryText}
+                          className={`${classes.caseHistoryText} ${classes.noOverflow}`}
                         />
                         <Box className={classes.caseHistoryBox}>
                           <ListItemAvatar sx={{ minWidth: 40 }}>
@@ -433,7 +329,6 @@ export default function CaseInfoTab(props: Props) {
                               alt="Paul Watson"
                               src="/static/images/avatar/1.jpg"
                               className={classes.caseHistoryAvatar}
-                              sx={{ width: 28, height: 28 }}
                             />
                           </ListItemAvatar>
                           <Typography
@@ -454,7 +349,8 @@ export default function CaseInfoTab(props: Props) {
           <Grid container justifyContent="space-between">
             <Grid item>
               <Typography variant="caption">
-                Showing {caseHistory?.length} of {caseHistory?.length} updates
+                Showing {props.caseHistory?.length} of{" "}
+                {props.caseHistory?.length} updates
               </Typography>
             </Grid>
             <Grid item>
@@ -466,7 +362,7 @@ export default function CaseInfoTab(props: Props) {
         </Grid>
         <Grid item xs={12} md={4}>
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Case number:
+            {i18n.t("Case number")}:
           </InputLabel>
           <TextField
             variant="standard"
@@ -485,7 +381,7 @@ export default function CaseInfoTab(props: Props) {
             }}
           />
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Case type:
+            {i18n.t("Case type")}:
           </InputLabel>
 
           <Select
@@ -522,11 +418,11 @@ export default function CaseInfoTab(props: Props) {
           </FormHelperText>
 
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Client name:
+            {i18n.t("Client name")}:
           </InputLabel>
           <TextField
             variant="standard"
-            value={client?.preferred_name || ""}
+            value={props.client?.preferred_name || ""}
             fullWidth
             className={classes.smallTextField}
             InputProps={{
@@ -542,11 +438,11 @@ export default function CaseInfoTab(props: Props) {
           />
 
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Case worker:
+            {i18n.t("Case worker")}:
           </InputLabel>
           <TextField
             variant="standard"
-            value={caseWorker?.name || ""}
+            value={props.caseWorker?.name || ""}
             fullWidth
             className={classes.smallTextField}
             InputProps={{
@@ -561,7 +457,7 @@ export default function CaseInfoTab(props: Props) {
             }}
           />
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Case office:
+            {i18n.t("Case office")}:
           </InputLabel>
 
           <TextField
@@ -588,7 +484,7 @@ export default function CaseInfoTab(props: Props) {
           />
 
           <InputLabel htmlFor="put-later" className={classes.plainLabel}>
-            Date created:
+            {i18n.t("Date created")}:
           </InputLabel>
           <TextField
             variant="standard"

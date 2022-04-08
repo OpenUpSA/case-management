@@ -8,15 +8,18 @@ from rest_framework import permissions
 
 from . import views
 from case_management.views import (
-    MeetingViewSet,
     LegalCaseViewSet,
     CaseOfficeViewSet,
     CaseTypeViewSet,
+    CaseUpdateViewSet,
+    FileViewSet,
+    MeetingViewSet,
+    NoteViewSet,
     ClientViewSet,
     CustomObtainAuthToken,
+    UserListViewSet,
     UserViewSet,
     LogViewSet,
-    LegalCaseFileViewSet,
     range_summary,
     monthly_summary,
     daily_summary,
@@ -30,14 +33,17 @@ def trigger_error(request):
 
 
 router = DefaultRouter()
-router.register(r'api/v1/meetings', MeetingViewSet)
 router.register(r'api/v1/cases', LegalCaseViewSet)
 router.register(r'api/v1/clients', ClientViewSet, basename='Client')
 router.register(r'api/v1/case-offices', CaseOfficeViewSet)
 router.register(r'api/v1/case-types', CaseTypeViewSet)
+router.register(r'api/v1/case-updates', CaseUpdateViewSet)
+router.register(r'api/v1/files', FileViewSet)
+router.register(r'api/v1/meetings', MeetingViewSet)
+router.register(r'api/v1/notes', NoteViewSet)
+router.register(r'api/v1/users', UserListViewSet)
 router.register(r'api/v1/users', UserViewSet)
 router.register(r'api/v1/logs', LogViewSet)
-router.register(r'api/v1/files', LegalCaseFileViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
