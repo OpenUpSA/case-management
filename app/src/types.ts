@@ -131,6 +131,11 @@ export interface ILog {
     action: string;
     log: number;
   }[];
+  extra: {
+    user: {
+      name: string;
+    };
+  };
 }
 
 export interface LocationState {

@@ -3,8 +3,8 @@ import SearchIcon from "@material-ui/icons/Search";
 
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
+import userDefaultAvatar from "../../user-default-avatar.jpeg";
+import { BlackTooltip } from "../general/tooltip";
 
 import {
   Divider,
@@ -22,24 +22,35 @@ import List from "@mui/material/List";
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
 import { format } from "date-fns";
-import { ILog } from "../../types";
+import { ILog, IUser } from "../../types";
 
 const LogLabels = new Map([
-  ['LegalCase Create', 'Case created'],
-  ['LegalCase Update', 'Case update'],
-  ['Meeting Create', 'New meeting'],
-  ['Meeting Update', 'Meeting updated'],
-  ['LegalCaseFile Create', 'File uploaded'],
-  ['LegalCaseFile Update', 'File updated']
+  ["LegalCase Create", "Case created"],
+  ["LegalCase Update", "Case update"],
+  ["Meeting Create", "New meeting"],
+  ["Meeting Update", "Meeting updated"],
+  ["File Create", "File uploaded"],
+  ["File Update", "File updated"],
+  ["Note Create", "New note"],
+  ["Note Update", "Note updated"],
+  ["CaseOffice Create", "New case office"],
+  ["CaseType Create", "New case type"],
+  ["Client Create", "New client"],
+  ["Client Update", "Client update"],
+  ["CaseUpdate Create", "New update"],
 ]);
 
-const logLabel = (targetAction:string | undefined, targetType: string | undefined) => {
+const logLabel = (
+  targetAction: string | undefined,
+  targetType: string | undefined
+) => {
   return LogLabels.get(`${targetType} ${targetAction}`);
 };
 
 type Props = {
   logs: ILog[];
   standalone: boolean;
+  users: IUser[];
 };
 
 const Component = (props: Props) => {
@@ -128,40 +139,50 @@ const Component = (props: Props) => {
         </Grid>
       </Grid>
       <List sx={{ width: "100%", marginBottom: "26px" }}>
-          <Divider />
-          {filteredLogs ? filteredLogs
-                ?.slice(0)
-                .reverse()
-                .map((item) => (
-                  <>
-                    <ListItem className={classes.caseHistoryList}>
-                      <Chip
-                        label={logLabel(item.action, item.target_type)}
-                        className={classes.chip}
+        <Divider />
+        {filteredLogs
+          ? filteredLogs
+              ?.slice(0)
+              .reverse()
+              .map((item) => (
+                <>
+                  <ListItem className={classes.caseHistoryList}>
+                    <Chip
+                      label={logLabel(item.action, item.target_type)}
+                      className={classes.chip}
+                    />
+                    <ListItemText
+                      primary={
+                        <Typography variant="caption">{item.note}</Typography>
+                      }
+                      style={{ flexGrow: 1 }}
+                    />
+                    <BlackTooltip
+                      title={props.users
+                        ?.filter(
+                          (user: IUser) =>
+                            [item.user].indexOf(user.id as number) > -1
+                        )
+                        .map((user: IUser) => user.name)}
+                      arrow
+                      placement="top"
+                    >
+                      <img
+                        className={classes.updateAvatar}
+                        src={userDefaultAvatar}
+                        alt={"user"}
+                        loading={"lazy"}
                       />
-                      <ListItemText
-                        primary={
-                          <Typography variant="caption">{item.note}</Typography>
-                        }
-                        style={{ flexGrow: 1 }}
-                      />
-                      <ListItemAvatar sx={{ minWidth: 40 }}>
-                        <Avatar
-                          alt="Paul Watson"
-                          src="/static/images/avatar/1.jpg"
-                          className={classes.caseHistoryAvatar}
-                          sx={{ width: 28, height: 28 }}
-                        />
-                      </ListItemAvatar>
-                      <Typography sx={{ fontSize: "11px", color: "#616161" }}>
-                        {format(new Date(item?.created_at!), "MMM dd, yyyy")}
-                      </Typography>
-                    </ListItem>
-                    <Divider />
-                  </>
-                ))
-            : ""}
-        </List>
+                    </BlackTooltip>
+                    <Typography sx={{ fontSize: "11px", color: "#616161" }}>
+                      {format(new Date(item?.created_at!), "MMM dd, yyyy")}
+                    </Typography>
+                  </ListItem>
+                  <Divider />
+                </>
+              ))
+          : ""}
+      </List>
     </div>
   );
 };

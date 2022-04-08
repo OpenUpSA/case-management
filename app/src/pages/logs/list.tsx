@@ -1,16 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Typography from "@material-ui/core/Typography";
-import {
-  Breadcrumbs,
-  Container,
-  Grid,
-} from "@material-ui/core";
+import { Breadcrumbs, Container, Grid } from "@material-ui/core";
 
 import ForumIcon from "@material-ui/icons/Forum";
 
 import Layout from "../../components/layout";
-import { getLogs } from "../../api";
-import { ILog } from "../../types";
+import { getLogs, getUsers } from "../../api";
+import { ILog, IUser } from "../../types";
 import i18n from "../../i18n";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
@@ -19,12 +15,15 @@ import LogsTable from "../../components/log/table";
 const Page = () => {
   RedirectIfNotLoggedIn();
   const classes = useStyles();
-  const [logs, setLogs] = React.useState<ILog[]>();
+  const [logs, setLogs] = useState<ILog[]>();
+  const [users, setUsers] = useState<IUser[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       const dataLogs = await getLogs();
+      const users = await getUsers();
       setLogs(dataLogs);
+      setUsers(users);
     }
     fetchData();
   }, []);
@@ -52,7 +51,7 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        <LogsTable logs={logs ? logs : []} />
+        <LogsTable logs={logs ? logs : []} users={users ? users : []} />
       </Container>
     </Layout>
   );

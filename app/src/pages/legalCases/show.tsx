@@ -23,6 +23,7 @@ import {
   getLegalCase,
   updateLegalCase,
   getLogs,
+  getMeetings,
 } from "../../api";
 import {
   ILegalCase,
@@ -273,7 +274,7 @@ const Page = () => {
         {isLoading && (
           <Grid container justify="center">
             <CircularProgress
-              sx={{ position: "absolute", top: 10, left: "50%", zIndex:100 }}
+              sx={{ position: "absolute", top: 10, left: "50%", zIndex: 100 }}
             />
           </Grid>
         )}
