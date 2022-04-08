@@ -18,6 +18,7 @@ import environ
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+
 ROOT_DIR = environ.Path(__file__) - 2
 PROJ_DIR = ROOT_DIR.path("case_management")
 
@@ -51,11 +52,13 @@ ALLOWED_HOSTS = ["*"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3321",
     "http://localhost:3000",
-    "https://osf-case-management-app.netlify.app",
+    "http://localhost:3001",
+    "https://case-management.pages.dev",
     "https://app.casefile.org.za",
     "https://staging.casefile.org.za",
-    "https://case-management.pages.dev",
+    "https://staging-app.casefile.org.za",
     "https://dashboard.casefile.org.za",
+    "https://staging-dashboard.casefile.org.za",
 ]
 
 # Application definition
@@ -81,6 +84,9 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'case_management.auth.BearerTokenAuthentication',
+    ],
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
@@ -98,6 +104,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "case_management.urls"
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Enter value with prefix: 'Bearer {token}'"
+        }
+    },
+}
 
 TEMPLATES = [
     {

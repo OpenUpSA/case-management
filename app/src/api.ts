@@ -11,6 +11,7 @@ import {
   ILog,
   ILegalCaseFile,
 } from "./types";
+import { UserInfo } from "./auth";
 
 const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
@@ -19,6 +20,11 @@ async function http<T>(path: string, config: RequestInit): Promise<T> {
   path = `${API_BASE_URL}${path}`;
   const request = new Request(path, config);
   const response = await fetch(request);
+  if (response.status === 401) {
+    const userInfo = UserInfo.getInstance();
+    userInfo.clear();
+    window.location.href = "/login";
+  }
   return response.json().catch((e) => {
     console.log(e);
   });
@@ -28,11 +34,14 @@ export async function httpGet<T>(
   path: string,
   config?: RequestInit
 ): Promise<T> {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
   const init = {
     method: "GET",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     ...config,
   };
@@ -43,11 +52,14 @@ export async function httpDelete<T>(
   path: string,
   config?: RequestInit
 ): Promise<T> {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
   const init = {
     method: "DELETE",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     ...config,
   };
@@ -55,6 +67,26 @@ export async function httpDelete<T>(
 }
 
 export async function httpPost<T, U>(
+  path: string,
+  body: T,
+  config?: RequestInit
+): Promise<U> {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
+  const init = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+    ...config,
+  };
+  return await http<U>(path, init);
+}
+
+export async function httpPostNoAuth<T, U>(
   path: string,
   body: T,
   config?: RequestInit
@@ -76,11 +108,14 @@ export async function httpPatch<T, U>(
   body: T,
   config?: RequestInit
 ): Promise<U> {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
   const init = {
     method: "PATCH",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(body),
     ...config,
@@ -115,6 +150,14 @@ export const deleteLegalCase = async (id: number) => {
 
 export const getClients = async () => {
   return await httpGet<IClient[]>(`/clients/`);
+};
+
+export const getClientsForCaseOffice = async (id: number) => {
+  return await httpGet<IClient[]>(`/clients/?caseOffice=${id}`);
+};
+
+export const getClientsForUser = async (id: number) => {
+  return await httpGet<IClient[]>(`/clients/?user=${id}`);
 };
 
 export const getClient = async (id: number) => {
@@ -174,8 +217,15 @@ export const updateUser = async (user: IUser) => {
   return await httpPatch<IUser, IUser>(`/users/${user.id}/`, user);
 };
 
+export const getUsers = async () => {
+  return await httpGet<IUser[]>(`/users/`);
+};
+
 export const authenticate = async (credentials: ICredentials) => {
-  return await httpPost<ICredentials, IUserInfo>(`/authenticate`, credentials);
+  return await httpPostNoAuth<ICredentials, IUserInfo>(
+    `/authenticate`,
+    credentials
+  );
 };
 
 export const getLogs = async (id?: number, parent_type?: string) => {
@@ -194,10 +244,15 @@ export const getLegalCaseFiles = async (legal_case?: number) => {
   );
 };
 
+export const getLegalCaseFile = async (file_id: number) => {
+  return await httpGet<ILegalCaseFile>(`/files/${file_id}/`);
+};
+
 type optionsType = {
   method: string | any;
   body: any;
   onUploadProgress: any;
+  headers: any;
 };
 
 export const createLegalCaseFile = async (
@@ -206,8 +261,9 @@ export const createLegalCaseFile = async (
   description: string,
   onUploadProgress: any
 ) => {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
   const formData = new FormData();
-
   formData.append("upload", file);
   if (legal_case) {
     formData.append("legal_case", legal_case.toString());
@@ -220,11 +276,59 @@ export const createLegalCaseFile = async (
     method: "POST",
     body: formData,
     onUploadProgress: onUploadProgress,
+    headers: { Authorization: `Bearer ${token}` },
   };
   const response = await axios.post(
     `${API_BASE_URL}/files/`,
     formData,
     options
+  );
+  return response.data;
+};
+
+export const getCaseUpdates = async (id: number) => {
+  return await httpGet<any>(`/case-updates/?legal_case=${id}`);
+};
+
+export const createCaseUpdate = async (caseUpdate: any) => {
+  return await httpPost<any, any>(`/case-updates/`, caseUpdate);
+};
+
+export const deleteCaseUpdate = async (id: number) => {
+  return await httpDelete<any>(`/case-updates/${id}/`);
+};
+
+export const updateNote = async (note: any) => {
+  return await httpPatch<any, any>(`/notes/${note.id}/`, note);
+};
+
+export const deleteLegalCaseFile = async (id: number) => {
+  return await httpDelete<ILegalCaseFile>(`/files/${id}/`);
+};
+
+type renameOptionsType = {
+  method: string | any;
+  body: any;
+  headers: any;
+};
+
+export const renameLegalCaseFile = async (legalCaseFile: any) => {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
+  const formData = new FormData();
+  formData.append("legal_case", legalCaseFile.legal_case);
+  formData.append("description", legalCaseFile.description);
+
+  const renameOptions: renameOptionsType = {
+    method: "PATCH",
+    body: formData,
+    headers: { Authorization: `Bearer ${token}` },
+  };
+
+  const response = await axios.patch(
+    `${API_BASE_URL}/files/${legalCaseFile.id}/`,
+    formData,
+    renameOptions
   );
   return response.data;
 };

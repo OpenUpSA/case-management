@@ -7,7 +7,7 @@ import i18n from "../../i18n";
 import Layout from "../../components/layout";
 import { createClient } from "../../api";
 import { IClient } from "../../types";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 import {
   Breadcrumbs,
   Container,
@@ -51,12 +51,16 @@ const Page = () => {
     resetState();
   }, [showSnackbar]);
 
+  const userInfo = UserInfo.getInstance();
+  const userId = Number(userInfo.getUserId());
+
   const newClient = async (client: IClient) => {
     try {
       setIsLoading(true);
-      const { id, name, contact_email, contact_number } = await createClient(
-        client
-      );
+      const { id, name, contact_email, contact_number } = await createClient({
+        ...client,
+        users: [userId],
+      });
       setIsLoading(false);
       if (typeof name === "object") {
         setNameError(true);

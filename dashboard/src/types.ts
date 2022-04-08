@@ -5,16 +5,34 @@ export interface IDbDataPoint {
   value: number;
 }
 
+export interface IDbDataByRange {
+  startDate?: string
+  endDate?: string
+  dataPerCaseOffice?: {
+    [office: string]: {
+      [metric: string]: number;
+    };
+  }
+}
+
 export interface IDbDataMonthly {
-  [office: string]: {
-    [metric: string]: IDbDataPoint[];
+  startMonth?: string
+  endMonth?: string
+  dataPerCaseOffice?: {
+    [office: string]: {
+      [metric: string]: IDbDataPoint[];
+    };
   };
 }
 
 export interface IDbDataDailyPerMonth {
-  [office: string]: {
-    [metric: string]: {
-      [month: string]: IDbDataPoint[];
+  startMonth?: string
+  endMonth?: string
+  dataPerCaseOffice?: {
+    [office: string]: {
+      [metric: string]: {
+        [month: string]: IDbDataPoint[];
+      };
     };
   };
 }
@@ -26,8 +44,11 @@ export interface IChartDataPoint {
 
 export interface IBarChart {
   metric: string;
+  info: string;
   type: "bar";
-  data: IDbDataMonthly;
+  rangeDetail: string;
+  dataMonthly: IDbDataMonthly;
+  dataByRange: IDbDataByRange;
 }
 
 export interface IHeatmapChart {

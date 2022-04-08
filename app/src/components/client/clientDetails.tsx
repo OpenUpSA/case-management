@@ -17,7 +17,7 @@ import i18n from "../../i18n";
 import ReusableInput from "./reusableInput";
 import ReusableSelect from "./reusableSelect";
 import { updateClient, getClient } from "../../api";
-import { constants } from "../../dropDownConstants";
+import { constants } from "../../contexts/dropDownConstants";
 import SnackbarAlert from "../../components/general/snackBar";
 import CircularProgress from "@mui/material/CircularProgress";
 

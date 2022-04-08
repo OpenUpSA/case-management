@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import i18n from "../../i18n";
 import { IClient } from "../../types";
 import { useStyles } from "../../utils";
-import { constants } from "../../dropDownConstants";
+import { constants } from "../../contexts/dropDownConstants";
 
 type Props = {
   client?: IClient;
@@ -60,10 +60,11 @@ const Component = (props: Props) => {
               </InputLabel>
               <Input
                 id="name"
+                autoFocus
                 disableUnderline={true}
                 disabled={props.readOnly}
                 className={classes.textField}
-                aria-describedby="my-helper-text"
+                aria-describedby="Input your full name"
                 value={client.name}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setClient((client) => ({
@@ -94,11 +95,10 @@ const Component = (props: Props) => {
             </InputLabel>
             <Input
               id="preferred_name"
-              autoFocus
               disableUnderline={true}
               disabled={props.readOnly}
               className={classes.textField}
-              aria-describedby="my-helper-text"
+              aria-describedby="input for preferred name"
               value={client.preferred_name}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setClient((client) => ({
@@ -124,7 +124,7 @@ const Component = (props: Props) => {
               disableUnderline={true}
               disabled={props.readOnly}
               className={classes.textField}
-              aria-describedby="my-helper-text"
+              aria-describedby="input for official identity number"
               value={client.official_identifier}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setClient((client) => ({
@@ -141,7 +141,7 @@ const Component = (props: Props) => {
             <input
               type="hidden"
               id="official_identifier_type"
-              value={client.official_identifier_type} 
+              value={client.official_identifier_type}
             />
             <FormControl fullWidth size="small">
               <InputLabel
@@ -152,6 +152,7 @@ const Component = (props: Props) => {
                 {i18n.t("Identity number type")}:
               </InputLabel>
               <Select
+                style={{ marginBottom: 25 }}
                 id="official_identifier_type_select"
                 disabled={props.readOnly}
                 className={classes.select}
@@ -164,6 +165,7 @@ const Component = (props: Props) => {
                   props.setChanged(true);
                 }}
                 input={<Input id="select-multiple-chip" />}
+                aria-describedby="dropdown to select identity type"
                 value={client.official_identifier_type}
                 renderValue={() => {
                   return constants.officialIdentifierTypes
@@ -200,7 +202,7 @@ const Component = (props: Props) => {
               disableUnderline={true}
               disabled={props.readOnly}
               className={classes.textField}
-              aria-describedby="my-helper-text"
+              aria-describedby="input for contact number"
               value={client.contact_number}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setClient((client) => ({
@@ -232,7 +234,7 @@ const Component = (props: Props) => {
                 disableUnderline={true}
                 disabled={props.readOnly}
                 className={classes.textField}
-                aria-describedby="my-helper-text"
+                aria-describedby="input for contact email"
                 value={client.contact_email}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setClient((client) => ({

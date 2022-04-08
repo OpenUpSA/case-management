@@ -5,11 +5,13 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
-import Tooltip from "@material-ui/core/Tooltip";
+import MenuItem from "@material-ui/core/MenuItem";
+
 import LayoutChart from "./layout-chart";
 import NoData from "./no-data";
 import { IDbDataDailyPerMonth } from "../types";
 import { yearMonthLabel } from "../utils";
+import { BlackTooltip } from "./general/tooltip";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,6 +30,36 @@ const useStyles = makeStyles((theme: Theme) =>
     dayValue: {
       backgroundColor: theme.palette.primary.main,
       borderRadius: "3px",
+      width: "100%",
+      height: "20px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      boxSizing: "border-box",
+      "&:hover": {
+        border: " 1px solid black",
+      },
+    },
+    select: {
+      minWidth: "10rem",
+      backgroundColor: "#ffffff",
+      border: "solid 1px #f2f2f2",
+      borderRadius: "4px",
+      padding: "8px 8px 4px 8px",
+      "&.Mui-disabled": {
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
+        color: "#000000",
+        "&>.MuiSelect-icon": {
+          display: "none",
+        },
+      },
+      "&.Mui-focused": {
+        backgroundColor: "#fcfcfc",
+        borderColor: "#e5e5e5",
+      },
+      "&:hover": {
+        backgroundColor: "#e5e5e5",
+      },
     },
   })
 );
@@ -41,7 +73,8 @@ interface IProps {
 export default function HeatmapChart(props: IProps) {
   const classes = useStyles();
 
-  const selectedOfficeData = props.data[props.selectedOffice] || {};
+  const selectedOfficeData =
+    (props.data.dataPerCaseOffice || {})[props.selectedOffice] || {};
   const selectedMetric = props.metrics[0];
   const selectedMetricData = selectedOfficeData[selectedMetric] || {};
   const months = Object.keys(selectedMetricData);
@@ -113,7 +146,12 @@ export default function HeatmapChart(props: IProps) {
   };
 
   return (
-    <LayoutChart title={i18next.t("Data heatmap")}>
+    <LayoutChart
+      title={i18next.t("Data heatmap")}
+      info={i18next.t(
+        "The Data Heatmap shows cases; opened, closed and activity (by day of the month)."
+      )}
+    >
       <Grid
         container
         justifyContent="space-between"
@@ -122,7 +160,8 @@ export default function HeatmapChart(props: IProps) {
       >
         <FormControl>
           <Select
-            native
+            disableUnderline
+            className={classes.select}
             value={state.selectedMetric}
             onChange={handleSelect}
             inputProps={{
@@ -131,15 +170,16 @@ export default function HeatmapChart(props: IProps) {
             }}
           >
             {props.metrics.map((metric: string) => (
-              <option key={metric} value={metric}>
+              <MenuItem key={metric} value={metric}>
                 {metric}
-              </option>
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
         <FormControl>
           <Select
-            native
+            disableUnderline
+            className={classes.select}
             value={state.selectedMonth}
             onChange={handleSelect}
             inputProps={{
@@ -148,9 +188,9 @@ export default function HeatmapChart(props: IProps) {
             }}
           >
             {months.map((month: string) => (
-              <option key={month} value={month}>
+              <MenuItem key={month} value={month}>
                 {yearMonthLabel(new Date(month))}
-              </option>
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -182,7 +222,7 @@ export default function HeatmapChart(props: IProps) {
                     {week.map(
                       (dayData: { day: number; value: number }, j: number) => (
                         <Grid key={j} item xs>
-                          <Tooltip
+                          <BlackTooltip
                             title={
                               dayData === null
                                 ? ""
@@ -191,6 +231,7 @@ export default function HeatmapChart(props: IProps) {
                                   )}: ${dayData.value} ${state.selectedMetric}`
                             }
                             arrow
+                            placement="top"
                           >
                             <Box
                               className={classes.dayValue}
@@ -211,7 +252,7 @@ export default function HeatmapChart(props: IProps) {
                             >
                               {dayData === null ? "-" : dayData.value}
                             </Box>
-                          </Tooltip>
+                          </BlackTooltip>
                         </Grid>
                       )
                     )}

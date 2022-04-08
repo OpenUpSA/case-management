@@ -5,6 +5,9 @@ import i18n from "../i18n";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import SnackbarAlert from "../components/general/snackBar";
+import { LocationState } from "../types";
 
 import { RedirectIfLoggedIn, UserInfo } from "../auth";
 import { authenticate, getUser } from "../api";
@@ -16,28 +19,65 @@ const Page = () => {
   const classes = useStyles();
   const history = useHistory();
   const [loginError, setLoginError] = React.useState<boolean>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+    open: false,
+    message: "",
+    severity: undefined,
+  });
+
+  React.useEffect(() => {
+    const resetState = async () => {
+      setTimeout(() => {
+        setShowSnackbar({
+          open: false,
+          message: "",
+          severity: undefined,
+        });
+      }, 6000);
+    };
+    resetState();
+  }, [showSnackbar.open]);
 
   const validateLogin = async (username: string, password: string) => {
+    setIsLoading(true);
     try {
       const credentials = {
         username: username,
         password: password,
       };
       const { token, user_id } = await authenticate(credentials);
-      const { name, case_office, email } = await getUser(user_id);
 
       if (token && user_id) {
         const userInfo = UserInfo.getInstance();
         userInfo.setAccessToken(token);
         userInfo.setUserId(user_id.toString());
-        userInfo.setName(name);
-        userInfo.setCaseOffice(case_office);
-        userInfo.setEmail(email);
-        history.push("/dashboard");
+
+        const newToken = userInfo.getAccessToken();
+        if (newToken) {
+          const { name, case_office, email } = await getUser(user_id);
+          userInfo.setName(name);
+          userInfo.setCaseOffice(case_office);
+          userInfo.setEmail(email);
+          history.push("/dashboard");
+        }
       } else {
         setLoginError(true);
+        setShowSnackbar({
+          open: true,
+          message: "Login failed",
+          severity: "error",
+        });
       }
-    } catch (e) {}
+      setIsLoading(false);
+    } catch (e) {
+      setIsLoading(false);
+      setShowSnackbar({
+        open: true,
+        message: "Login failed",
+        severity: "error",
+      });
+    }
   };
 
   return (
@@ -113,12 +153,32 @@ const Page = () => {
               variant="contained"
               color="primary"
               style={{ marginTop: 3, marginBottom: 2 }}
+              disabled={isLoading}
             >
               {i18n.t("Login")}
+              {isLoading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              )}
             </Button>
           </Grid>
         </Grid>
       </Box>
+      {showSnackbar.open && (
+        <SnackbarAlert
+          open={showSnackbar.open}
+          message={showSnackbar.message ? showSnackbar.message : ""}
+          severity={showSnackbar.severity}
+        />
+      )}
     </LayoutSimple>
   );
 };

@@ -11,8 +11,8 @@ import {
   InputAdornment,
   InputLabel,
   MenuItem,
-  Select,
 } from "@material-ui/core";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Hidden from "@material-ui/core/Hidden";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import PeopleIcon from "@material-ui/icons/People";
@@ -30,10 +30,10 @@ import SearchIcon from "@material-ui/icons/Search";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import Layout from "../../components/layout";
-import { getClients } from "../../api";
+import { getClientsForCaseOffice, getClientsForUser } from "../../api";
 import { IClient, LocationState } from "../../types";
 import { useStyles } from "../../utils";
-import { RedirectIfNotLoggedIn } from "../../auth";
+import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 import SnackbarAlert from "../../components/general/snackBar";
 
 const Page = () => {
@@ -42,48 +42,42 @@ const Page = () => {
   const history = useHistory();
   const location = useLocation<LocationState>();
 
-  const [clients, setClients] = React.useState<IClient[]>();
+  const [caseOfficeClients, setCaseOfficeClients] = React.useState<IClient[]>();
+  const [userClients, setUserClients] = React.useState<IClient[]>();
   const [filteredClients, setFilteredClients] = React.useState<IClient[]>();
-  const [filterClientsValue, setFilterClientsValue] = React.useState<string>();
+  const [filterClientsValue, setFilterClientsValue] = React.useState<string>("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
     open: location.state?.open!,
     message: location.state?.message!,
     severity: location.state?.severity!,
   });
-
-  const filterClients = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (filterClientsValue) {
-      setFilteredClients(
-        clients?.filter((client) => {
-          return (
-            client.name
-              .toLowerCase()
-              .includes(filterClientsValue.toLowerCase()) ||
-            client.preferred_name
-              .toLowerCase()
-              .includes(filterClientsValue.toLowerCase()) ||
-            client.contact_number
-              .toLowerCase()
-              .includes(filterClientsValue.toLowerCase()) ||
-            client.contact_email
-              .toLowerCase()
-              .includes(filterClientsValue.toLowerCase())
-          );
-        })
-      );
-    } else {
-      setFilteredClients(clients);
-    }
-  };
+  const [usersId, setUsersId] = React.useState<number>(0);
+  const [usersCaseOfficeId, setUsersCaseOfficeId] = React.useState<number>(0);
+  const [clientList, setClientList] = React.useState<string>(
+    "All case office clients"
+  );
 
   useEffect(() => {
     async function fetchData() {
       try {
         setIsLoading(true);
-        const data = await getClients();
-        setClients(data);
-        setFilteredClients(data);
+        const userInfo = UserInfo.getInstance();
+        const id = Number(userInfo.getUserId());
+        setUsersId(id);
+        const usersCaseOffice = Number(userInfo.getCaseOffice());
+        setUsersCaseOfficeId(usersCaseOffice);
+
+        if (usersId) {
+          const data = await getClientsForUser(usersId);
+          setUserClients(data);
+        }
+
+        if (usersCaseOfficeId) {
+          const data2 = await getClientsForCaseOffice(usersCaseOfficeId);
+          setCaseOfficeClients(data2);
+          setFilteredClients(data2);
+        }
         setIsLoading(false);
       } catch (e) {
         setIsLoading(false);
@@ -95,7 +89,7 @@ const Page = () => {
       }
     }
     fetchData();
-  }, []);
+  }, [usersCaseOfficeId, usersId]);
 
   // set location.state?.open! to false on page load
   useEffect(() => {
@@ -115,6 +109,40 @@ const Page = () => {
     resetState();
   }, [showSnackbar.open]);
 
+  const changeListHandler = (value: string) => {
+    if (value === "All case office clients") {
+      setFilteredClients(caseOfficeClients);
+    } else if (value === "My clients") {
+      setFilteredClients(userClients);
+    }
+    setFilterClientsValue("");
+  };
+
+  const filterClients = (list: IClient[] | undefined) => {
+    if (filterClientsValue) {
+      setFilteredClients(
+        list?.filter((client) => {
+          return (
+            client.name
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.preferred_name
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.contact_number
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.contact_email
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase())
+          );
+        })
+      );
+    } else {
+      setFilteredClients(list);
+    }
+  };
+
   return (
     <Layout>
       <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
@@ -131,9 +159,14 @@ const Page = () => {
           <Grid item>
             <PeopleIcon color="primary" style={{ display: "flex" }} />
           </Grid>
-          <Grid item style={{ flexGrow: 1 }}>
+          <Grid
+            item
+            style={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+          >
             <Typography variant="h6">
-              <strong>{i18n.t("Client list")}</strong>
+              <strong style={{ textTransform: "capitalize" }}>
+                {i18n.t("Client list")}
+              </strong>
             </Typography>
           </Grid>
           <Grid item className={classes.zeroWidthOnMobile}>
@@ -150,22 +183,47 @@ const Page = () => {
         </Grid>
 
         <Grid container direction="row" spacing={2} alignItems="center">
-          <Grid item style={{ flexGrow: 1 }}>
+          <Grid item style={{ flexGrow: 1, fontSize: 16 }}>
             <strong>
               {filteredClients ? filteredClients.length : "0"}{" "}
               {i18n.t("Clients")}
             </strong>
           </Grid>
-          <Grid item>
+          <Grid item className={classes.centerItems}>
             <InputLabel
               className={classes.inputLabel}
-              htmlFor="sort_table"
               shrink={true}
+              htmlFor="filter"
+            >
+              {i18n.t("Filter")}:
+            </InputLabel>
+            <Select
+              id="Filter"
+              className={classes.select}
+              style={{minWidth: 200}}
+              disableUnderline
+              input={<Input />}
+              value={clientList}
+              renderValue={() => clientList}
+              onChange={(event: SelectChangeEvent<string>) => {
+                setClientList(event.target.value);
+                changeListHandler(event.target.value);
+              }}
+            >
+              <MenuItem value={"All case office clients"}>
+                {i18n.t("All case office clients")}
+              </MenuItem>
+              <MenuItem value={"My clients"}>{i18n.t("My clients")}</MenuItem>
+            </Select>
+          </Grid>
+          <Grid item className={classes.centerItems}>
+            <InputLabel
+              className={classes.inputLabel}
+              shrink={true}
+              htmlFor="sort_table"
             >
               {i18n.t("Sort")}:
             </InputLabel>
-          </Grid>
-          <Grid item>
             <Select
               id="sort_table"
               className={classes.select}
@@ -178,7 +236,7 @@ const Page = () => {
               </MenuItem>
             </Select>
           </Grid>
-          <Grid item md={12}>
+          <Grid item xs={12} md={12}>
             <Input
               id="table_search"
               fullWidth
@@ -195,7 +253,11 @@ const Page = () => {
               aria-describedby="my-helper-text"
               value={filterClientsValue}
               onChange={(e) => setFilterClientsValue(e.target.value)}
-              onKeyUp={filterClients}
+              onKeyUp={() => {
+                clientList === "All case office clients"
+                  ? filterClients(caseOfficeClients)
+                  : filterClients(userClients);
+              }}
             />
           </Grid>
         </Grid>
