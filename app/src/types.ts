@@ -127,7 +127,7 @@ export interface ILog {
   changes: {
     id: number;
     field: string;
-    value: string;
+    value: any;
     action: string;
     log: number;
   }[];

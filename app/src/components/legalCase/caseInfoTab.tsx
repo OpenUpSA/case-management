@@ -314,13 +314,44 @@ export default function CaseInfoTab(props: Props) {
                         />
                         <ListItemText
                           primary={
-                            item?.changes?.length > 0 &&
-                            item.target_type !== "File" ? (
+                            item.target_type === "LegalCase" &&
+                            item.action === "Create" ? (
+                              <Typography variant="caption">
+                                {format(
+                                  new Date(item.created_at as string),
+                                  "dd/MM/yyyy (h:ma)"
+                                )}
+                              </Typography>
+                            ) : item?.changes?.length > 0 &&
+                              item.changes?.[0].field === "summary" ? (
+                              <Typography variant="caption">
+                                {`Summary changed to "${item.changes?.[0].value}"`}
+                              </Typography>
+                            ) : item?.changes?.length > 0 &&
+                              item.changes?.[0].field === "state" ? (
+                              <Typography variant="caption">
+                                {`Status changed to "${item.changes?.[0].value}"`}
+                              </Typography>
+                            ) : item?.changes?.length > 0 &&
+                              item.changes?.[0].field === "case_types" ? (
+                              <Typography variant="caption">
+                                {`Case type changed to "${contextCaseTypes
+                                  ?.filter(
+                                    (caseType: ICaseType) =>
+                                      item.changes?.[0].value.indexOf(
+                                        caseType.id
+                                      ) > -1
+                                  )
+                                  .map(
+                                    (caseType: ICaseType) => caseType.title
+                                  )}"`}
+                              </Typography>
+                            ) : item?.changes?.length > 0 &&
+                              item.target_type !== "File" ? (
                               <Typography variant="caption">
                                 {item?.changes?.[0].field}
                               </Typography>
-                            ) : item?.changes?.length > 0 &&
-                              item.target_type === "File" ? (
+                            ) : item.target_type === "File" ? (
                               <Typography variant="caption">
                                 {item.note}
                               </Typography>
