@@ -361,7 +361,7 @@ class CaseUpdate(LoggedChildModel):
     )
 
     def __str__(self):
-        return f'Case update for case {self.legal_case.case_number}'
+        return f'{self.legal_case.case_number} case update'
 
 
 class Note(LoggedChildModel):
