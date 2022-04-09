@@ -186,6 +186,10 @@ class LoggedModel(LifecycleModel, models.Model):
     def log_update(self):
         logIt(self, 'Update', user=self.updated_by)
 
+    @hook(BEFORE_DELETE)
+    def log_update(self):
+        logIt(self, 'Delete', user=self.updated_by)
+
     class Meta:
         abstract = True
 
@@ -202,43 +206,41 @@ class LoggedChildModel(LoggedModel):
             self.legal_case = self.case_update.legal_case
         super().save(*args, **kwargs)
 
+    def __log(self, action):
+        if action == 'Create':
+            user = self.created_by
+        else:
+            user = self.updated_by
+        logIt(
+            self,
+            action,
+            parent_id=self.legal_case.id,
+            parent_type='LegalCase',
+            user=user,
+        )
+        # TODO: for now, only logging against legal_case \
+        #   to log against case_update as well, we should probably change the \
+        #   Log -> LogChange model to avoid duplication of LogChange records
+        # if hasattr(self, 'case_update') and self.case_update is not None:
+        #     logIt(
+        #         self,
+        #         action,
+        #         parent_id=self.case_update.id,
+        #         parent_type='CaseUpdate',
+        #         user=user,
+        #     )
+
     @hook(AFTER_CREATE)
     def log_create(self):
-        if hasattr(self, 'case_update') and self.case_update is not None:
-            logIt(
-                self,
-                'Create',
-                parent_id=self.case_update.id,
-                parent_type='CaseUpdate',
-                user=self.created_by,
-            )
-        else:
-            logIt(
-                self,
-                'Create',
-                parent_id=self.legal_case.id,
-                parent_type='LegalCase',
-                user=self.created_by,
-            )
+        self.__log('Create')
 
     @hook(AFTER_UPDATE)
     def log_update(self):
-        if hasattr(self, 'case_update') and self.case_update is not None:
-            logIt(
-                self,
-                'Update',
-                parent_id=self.case_update.id,
-                parent_type='CaseUpdate',
-                user=self.updated_by,
-            )
-        else:
-            logIt(
-                self,
-                'Update',
-                parent_id=self.legal_case.id,
-                parent_type='LegalCase',
-                user=self.updated_by,
-            )
+        self.__log('Update')
+
+    @hook(BEFORE_DELETE)
+    def log_delete(self):
+        self.__log('Delete')
 
     class Meta:
         abstract = True
@@ -358,6 +360,9 @@ class CaseUpdate(LoggedChildModel):
         LegalCase, related_name='case_updates', on_delete=models.CASCADE
     )
 
+    def __str__(self):
+        return f'Case update for case {self.legal_case.case_number}'
+
 
 class Note(LoggedChildModel):
     case_update = models.OneToOneField(
@@ -412,20 +417,10 @@ class Meeting(LoggedChildModel):
         blank=True,
     )
 
-    @hook(AFTER_CREATE)
-    def log_create(self):
-        logIt(self, 'Create', user=self.created_by, parent_id=self.legal_case.id, parent_type='LegalCase')
-
-    @hook(AFTER_UPDATE)
-    def log_update(self):
-        logIt(self, 'Update', user=self.updated_by, parent_id=self.legal_case.id, parent_type='LegalCase')
-
-    @hook(BEFORE_DELETE)
-    def log_delete(self):
-        logIt(self, 'Delete', user=self.updated_by, parent_id=self.legal_case.id, parent_type='LegalCase')
-
     def __str__(self):
-        return self.name
+        value = self.name if self.name else self.meeting_type
+        date = self.meeting_date.strftime('%d %B %Y')
+        return f'{value} on {date}'
 
 
 class File(LoggedChildModel):
@@ -447,16 +442,9 @@ class File(LoggedChildModel):
             self.description = self.upload_file_name()
         super().save(*args, **kwargs)
 
-    @hook(AFTER_CREATE)
-    def log_create(self):
-        logIt(self, 'Create', user=self.created_by, parent_id=self.legal_case.id, parent_type='LegalCase')
-
-    @hook(AFTER_UPDATE)
-    def log_update(self):
-        logIt(self, 'Update', user=self.updated_by, parent_id=self.legal_case.id, parent_type='LegalCase')
-
     def __str__(self):
-        return self.upload_file_name()
+        value = self.description if self.description else self.upload_file_name()
+        return value
 
     def upload_file_extension(self):
         return os.path.splitext(self.upload.file.name)[1][1:]
