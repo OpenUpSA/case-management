@@ -48,7 +48,7 @@ const LogLabels = new Map([
   ["File Update", "File updated"],
   ["Note Create", "New note"],
   ["Note Update", "Note updated"],
-  ["CaseUpdate Create", "New update"],
+  ["CaseUpdate Create", "New update**"],
 ]);
 
 const logLabel = (
@@ -347,13 +347,9 @@ export default function CaseInfoTab(props: Props) {
                                   )}"`}
                               </Typography>
                             ) : item?.changes?.length > 0 &&
-                              item.target_type !== "File" ? (
+                              item.action === "Update" ? (
                               <Typography variant="caption">
-                                {item?.changes?.[0].field}
-                              </Typography>
-                            ) : item.target_type === "File" ? (
-                              <Typography variant="caption">
-                                {item.note}
+                                {`${item.note}'s ${item.changes?.[0].field} changed to "${item.changes?.[0].value}"`}
                               </Typography>
                             ) : (
                               <Typography variant="caption">

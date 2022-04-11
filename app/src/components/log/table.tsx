@@ -17,6 +17,7 @@ import {
   ListItemText,
   MenuItem,
   Select,
+  Box,
 } from "@material-ui/core";
 import List from "@mui/material/List";
 import { useStyles } from "../../utils";
@@ -37,7 +38,7 @@ const LogLabels = new Map([
   ["CaseType Create", "New case type"],
   ["Client Create", "New client"],
   ["Client Update", "Client update"],
-  ["CaseUpdate Create", "New update"],
+  ["CaseUpdate Create", "New update**"],
 ]);
 
 const logLabel = (
@@ -156,27 +157,30 @@ const Component = (props: Props) => {
                         <Typography variant="caption">{item.note}</Typography>
                       }
                       style={{ flexGrow: 1 }}
+                      className={`${classes.caseHistoryText} ${classes.noOverflow}`}
                     />
-                    <BlackTooltip
-                      title={props.users
-                        ?.filter(
-                          (user: IUser) =>
-                            [item.user].indexOf(user.id as number) > -1
-                        )
-                        .map((user: IUser) => user.name)}
-                      arrow
-                      placement="top"
-                    >
-                      <img
-                        className={classes.updateAvatar}
-                        src={userDefaultAvatar}
-                        alt={"user"}
-                        loading={"lazy"}
-                      />
-                    </BlackTooltip>
-                    <Typography sx={{ fontSize: "11px", color: "#616161" }}>
-                      {format(new Date(item?.created_at!), "MMM dd, yyyy")}
-                    </Typography>
+                    <Box className={classes.caseHistoryBox}>
+                      <BlackTooltip
+                        title={props.users
+                          ?.filter(
+                            (user: IUser) =>
+                              [item.user].indexOf(user.id as number) > -1
+                          )
+                          .map((user: IUser) => user.name)}
+                        arrow
+                        placement="top"
+                      >
+                        <img
+                          className={classes.updateAvatar}
+                          src={userDefaultAvatar}
+                          alt={"user"}
+                          loading={"lazy"}
+                        />
+                      </BlackTooltip>
+                      <Typography sx={{ fontSize: "11px", color: "#616161" }}>
+                        {format(new Date(item?.created_at!), "MMM dd, yyyy")}
+                      </Typography>
+                    </Box>
                   </ListItem>
                   <Divider />
                 </>
