@@ -130,7 +130,7 @@ const UpdateDialog = (props: Props) => {
         setUpdateId(props.selectedUpdate.meeting.id);
         setUpdatePrimaryId(props.selectedUpdate.id);
         setTabValue(1);
-      } else if (props.selectedUpdate.files > 0) {
+      } else if (props.selectedUpdate && props.selectedUpdate.files > 0) {
         setUpdateFileId(+props.selectedUpdate.files.join());
         setMeeting({
           meeting_type: "",
@@ -169,15 +169,17 @@ const UpdateDialog = (props: Props) => {
 
   const dialogClose = () => {
     props.setOpen(false);
-    setNote({ title: "", content: "" });
-    setMeeting({
-      meeting_type: "",
-      location: "",
-      notes: "",
-      meeting_date: new Date().toISOString().slice(0, 16),
-      advice_was_offered: "",
-      advice_offered: "",
-    });
+    if (!props.editView) {
+      setNote({ title: "", content: "" });
+      setMeeting({
+        meeting_type: "",
+        location: "",
+        notes: "",
+        meeting_date: new Date().toISOString().slice(0, 16),
+        advice_was_offered: "",
+        advice_offered: "",
+      });
+    }
     setAttachedFileData({ file: null, description: "" });
     setUpdateError("");
   };

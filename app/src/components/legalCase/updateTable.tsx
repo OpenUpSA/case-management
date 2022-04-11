@@ -33,6 +33,8 @@ type Props = {
   setLegalCaseFiles: (legalCaseFiles: ILegalCaseFile[]) => void;
   setCaseUpdates: (caseUpdates: any) => void;
   users: IUser[];
+  editView: boolean;
+  setEditView: (editView: boolean) => void;
 };
 
 const UpdateTable = (props: Props) => {
@@ -42,7 +44,6 @@ const UpdateTable = (props: Props) => {
   const [desktop, setDesktop] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [selectedUpdate, setSelectedUpdate] = useState<any>({});
-  const [editView, setEditView] = useState<boolean>(false);
 
   useEffect(() => {
     setCaseUpdates(props.caseUpdates);
@@ -147,9 +148,9 @@ const UpdateTable = (props: Props) => {
                     key={update.id}
                     className={classes.caseHistoryList}
                     onClick={() => {
-                      dialogOpen();
+                      props.setEditView(true);
                       setSelectedUpdate(update);
-                      setEditView(true);
+                      dialogOpen();
                     }}
                   >
                     <TableCell
@@ -172,7 +173,7 @@ const UpdateTable = (props: Props) => {
 
                     <TableCell
                       className={`${classes.updateTableBodyCell} ${classes.noOverflow}`}
-                      style={{maxWidth: 100}}
+                      style={{ maxWidth: 100 }}
                     >
                       <Typography>
                         {update.files > 0 ? (
@@ -325,7 +326,7 @@ const UpdateTable = (props: Props) => {
         legalCaseFiles={props.legalCaseFiles}
         setLegalCaseFiles={props.setLegalCaseFiles}
         setCaseUpdates={props.setCaseUpdates}
-        editView={editView}
+        editView={props.editView}
         selectedUpdate={selectedUpdate}
       />
     </>
