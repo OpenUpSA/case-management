@@ -95,8 +95,18 @@ const UpdateDialogTabs = (props: Props) => {
     props.setTabValue(newValue);
     props.setFileTabFileName("");
     props.setSelectedFiles(undefined);
-    props.setMeeting({});
-    props.setNote({});
+    props.setMeeting({
+      meeting_type: "",
+      location: "",
+      notes: "",
+      meeting_date: new Date().toISOString().slice(0, 16),
+      advice_was_offered: "",
+      advice_offered: "",
+    });
+    props.setNote({
+      title: "",
+      content: "",
+    });
   };
 
   const dialogClose = () => {
@@ -432,9 +442,11 @@ const UpdateDialogTabs = (props: Props) => {
               style={{ marginBottom: 0 }}
               classes={{ input: classes.dateInput }}
               aria-describedby="date-picker"
-              value={new Date(props.meeting.meeting_date || 0)
-                .toISOString()
-                .slice(0, 16)}
+              value={
+                props.meeting.meeting_date
+                  ? props.meeting.meeting_date.slice(0, 16)
+                  : new Date().toISOString().slice(0, 16)
+              }
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 props.setMeeting({
                   ...props.meeting,
