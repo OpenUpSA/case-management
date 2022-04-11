@@ -31,6 +31,7 @@ const CaseUpdateTab = (props: Props) => {
     message: "",
     severity: undefined,
   });
+  const [editView, setEditView] = useState<boolean>(false);
 
   useEffect(() => {
     const resetState = async () => {
@@ -65,7 +66,10 @@ const CaseUpdateTab = (props: Props) => {
             color="primary"
             variant="contained"
             startIcon={<AddCommentIcon />}
-            onClick={() => dialogOpen()}
+            onClick={() => {
+              dialogOpen();
+              setEditView(false);
+            }}
           >
             {i18n.t("Add new update")}
           </Button>
@@ -78,6 +82,7 @@ const CaseUpdateTab = (props: Props) => {
             setLegalCase={props.setLegalCase}
             setLegalCaseFiles={props.setLegalCaseFiles}
             setCaseUpdates={props.setCaseUpdates}
+            editView={editView}
           />
         </Grid>
         <Grid item style={{ flexGrow: 1 }}>
@@ -119,6 +124,8 @@ const CaseUpdateTab = (props: Props) => {
           setLegalCaseFiles={props.setLegalCaseFiles}
           setCaseUpdates={props.setCaseUpdates}
           users={props.users ? props.users : []}
+          editView={editView}
+          setEditView={setEditView}
         />
         {showSnackbar.open && (
           <SnackbarAlert
