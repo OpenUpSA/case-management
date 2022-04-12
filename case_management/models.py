@@ -108,9 +108,9 @@ class LogChange(models.Model):
     action = models.CharField(max_length=10, choices=LogChangeTypes.choices)
 
 
-def _logChange(log_id, field, value, action):
+def _logChange(log, field, value, action):
     log_change = LogChange(
-        log=log_id, field=field, value=value, action=action
+        log=log, field=field, value=value, action=action
     )
     log_change.save()
 
@@ -132,7 +132,6 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
             note = record[0].__str__()
         else:
             note = target_type
-
     self.log = Log(
         parent_id=parent_id,
         parent_type=parent_type,
@@ -151,6 +150,7 @@ def logIt(self, action, parent_id=None, parent_type=None, user=None, note=None):
         ):
             value = getattr(self, field.name)
             _logChange(self.log, field.name, value, LogChangeTypes.CHANGE)
+    return self.log
 
 
 @receiver(m2m_changed)
@@ -164,8 +164,10 @@ def logManyToManyChange(
             change_action = LogChangeTypes.REMOVE
         _, field = sender.__name__.split('_', 1)
         value = list(pk_set)
+        if not hasattr(instance, 'log'):
+            # logIt has not been called
+            logIt(instance, 'Update', user=instance.updated_by)
         _logChange(instance.log, field, value, change_action)
-
 
 class LoggedModel(LifecycleModel, models.Model):
     id = models.AutoField(primary_key=True)
