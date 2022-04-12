@@ -6,7 +6,13 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
 import { useStyles } from "../../utils";
-import { ILegalCase, LocationState, ILegalCaseFile, IUser } from "../../types";
+import {
+  ILegalCase,
+  LocationState,
+  ILegalCaseFile,
+  IUser,
+  ILog,
+} from "../../types";
 import i18n from "../../i18n";
 import UpdateDialog from "./updateDialog";
 import UpdateTable from "./updateTable";
@@ -21,6 +27,7 @@ type Props = {
   setCaseUpdates: (caseUpdates: any) => void;
   setStatus: (status: string) => void;
   users: IUser[];
+  setCaseHistory: (caseHistory: ILog[]) => void;
 };
 
 const CaseUpdateTab = (props: Props) => {
@@ -83,6 +90,7 @@ const CaseUpdateTab = (props: Props) => {
             setLegalCaseFiles={props.setLegalCaseFiles}
             setCaseUpdates={props.setCaseUpdates}
             editView={editView}
+            setCaseHistory={props.setCaseHistory}
           />
         </Grid>
         <Grid item style={{ flexGrow: 1 }}>
@@ -126,6 +134,7 @@ const CaseUpdateTab = (props: Props) => {
           users={props.users ? props.users : []}
           editView={editView}
           setEditView={setEditView}
+          setCaseHistory={props.setCaseHistory}
         />
         {showSnackbar.open && (
           <SnackbarAlert

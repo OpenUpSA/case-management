@@ -39,6 +39,7 @@ const LogLabels = new Map([
   ["Client Create", "New client"],
   ["Client Update", "Client update"],
   ["CaseUpdate Create", "New update**"],
+  ["CaseUpdate Delete", "Update deleted"],
 ]);
 
 const logLabel = (

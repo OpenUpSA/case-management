@@ -12,7 +12,7 @@ import {
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import { format } from "date-fns";
-import { ILegalCaseFile, ILegalCase, IUser } from "../../types";
+import { ILegalCaseFile, ILegalCase, IUser, ILog } from "../../types";
 import {
   AudioFileIcon,
   ImageFileIcon,
@@ -35,6 +35,7 @@ type Props = {
   users: IUser[];
   editView: boolean;
   setEditView: (editView: boolean) => void;
+  setCaseHistory: (caseHistory: ILog[]) => void;
 };
 
 const UpdateTable = (props: Props) => {
@@ -328,6 +329,7 @@ const UpdateTable = (props: Props) => {
         setCaseUpdates={props.setCaseUpdates}
         editView={props.editView}
         selectedUpdate={selectedUpdate}
+        setCaseHistory={props.setCaseHistory}
       />
     </>
   );

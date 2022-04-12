@@ -30,8 +30,9 @@ import {
   updateNote,
   updateMeeting,
   deleteCaseUpdate,
+  getLogs,
 } from "../../api";
-import { ILegalCase, LocationState, ILegalCaseFile } from "../../types";
+import { ILegalCase, LocationState, ILegalCaseFile, ILog } from "../../types";
 import i18n from "../../i18n";
 import UpdateDialogTabs from "./updateDialogTabs";
 import SnackbarAlert from "../general/snackBar";
@@ -49,6 +50,7 @@ type Props = {
   fileView?: boolean;
   editView?: boolean;
   selectedUpdate?: any;
+  setCaseHistory: (caseHistory: ILog[]) => void;
 };
 
 const UpdateDialog = (props: Props) => {
@@ -251,6 +253,7 @@ const UpdateDialog = (props: Props) => {
           if (res.id) {
             dialogClose();
             refreshUpdates();
+            updateHistory();
             setShowSnackbar({
               open: true,
               message: "Note update successful",
@@ -354,6 +357,7 @@ const UpdateDialog = (props: Props) => {
           if (res.id) {
             dialogClose();
             refreshUpdates();
+            updateHistory();
             setShowSnackbar({
               open: true,
               message: "Meeting update successful",
@@ -430,6 +434,7 @@ const UpdateDialog = (props: Props) => {
           if (res.id) {
             dialogClose();
             refreshUpdates();
+            updateHistory();
             setShowSnackbar({
               open: true,
               message: "File update successful",
@@ -515,6 +520,7 @@ const UpdateDialog = (props: Props) => {
           if (res.id) {
             dialogClose();
             refreshUpdates();
+            updateHistory();
             setShowSnackbar({
               open: true,
               message: "Note update successful",
@@ -611,6 +617,7 @@ const UpdateDialog = (props: Props) => {
           if (res.id) {
             dialogClose();
             refreshUpdates();
+            updateHistory();
             setShowSnackbar({
               open: true,
               message: "Meeting update successful",
@@ -658,6 +665,7 @@ const UpdateDialog = (props: Props) => {
         });
         dialogClose();
         refreshUpdates();
+        updateHistory();
       }
       setDeleteLoader(false);
     } catch (e) {
@@ -680,6 +688,7 @@ const UpdateDialog = (props: Props) => {
       const { id } = await updateLegalCase(updatedStatus);
       if (id) {
         updateCase();
+        updateHistory();
       }
       setIsLoading(false);
     } catch (e) {
@@ -706,6 +715,11 @@ const UpdateDialog = (props: Props) => {
   const updateCase = async () => {
     const dataLegalCase = await getLegalCase(props.legalCase.id as number);
     props.setLegalCase(dataLegalCase);
+  };
+
+  const updateHistory = async () => {
+    const historyData = await getLogs(props.legalCase?.id!, "LegalCase");
+    props.setCaseHistory(historyData);
   };
 
   const submitHandler = () => {

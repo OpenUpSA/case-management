@@ -16,7 +16,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import Divider from "@mui/material/Divider";
 import { format } from "date-fns";
 
-import { ILegalCase, ILegalCaseFile, LocationState } from "../../types";
+import { ILegalCase, ILegalCaseFile, LocationState, ILog } from "../../types";
 import UpdateDialog from "./updateDialog";
 
 import Dialog from "@mui/material/Dialog";
@@ -56,6 +56,7 @@ type Props = {
   setCaseUpdates: (caseUpdates: any) => void;
   setLegalCase: (legalCase: ILegalCase) => void;
   setLegalCaseFiles: (files: ILegalCaseFile[]) => void;
+  setCaseHistory: (caseHistory: ILog[]) => void;
 };
 
 export default function CaseFileTab(props: Props) {
@@ -207,6 +208,7 @@ export default function CaseFileTab(props: Props) {
             setLegalCaseFiles={props.setLegalCaseFiles}
             setCaseUpdates={props.setCaseUpdates}
             fileView={fileView}
+            setCaseHistory={props.setCaseHistory}
           />
         </Grid>
         <Grid item style={{ flexGrow: 1 }}>

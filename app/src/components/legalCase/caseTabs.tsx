@@ -184,6 +184,7 @@ export default function CaseTabs(props: Props) {
             setLegalCaseFiles={setLegalCaseFiles}
             setStatus={props.setStatus}
             users={users ? users : []}
+            setCaseHistory={props.setCaseHistory}
           />
         ) : null}
       </TabPanel>
@@ -196,6 +197,7 @@ export default function CaseTabs(props: Props) {
             setLegalCaseFiles={setLegalCaseFiles}
             setStatus={props.setStatus}
             setCaseUpdates={setCaseUpdates}
+            setCaseHistory={props.setCaseHistory}
           />
         ) : null}
       </TabPanel>

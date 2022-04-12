@@ -49,6 +49,7 @@ const LogLabels = new Map([
   ["Note Create", "New note"],
   ["Note Update", "Note updated"],
   ["CaseUpdate Create", "New update**"],
+  ["CaseUpdate Delete", "Update deleted"],
 ]);
 
 const logLabel = (
@@ -296,6 +297,7 @@ export default function CaseInfoTab(props: Props) {
                 setLegalCase={props.setLegalCase}
                 setLegalCaseFiles={props.setLegalCaseFiles}
                 setCaseUpdates={props.setCaseUpdates}
+                setCaseHistory={props.setCaseHistory}
               />
             </Grid>
           </Grid>
