@@ -189,7 +189,7 @@ class LoggedModel(LifecycleModel, models.Model):
         logIt(self, 'Update', user=self.updated_by)
 
     @hook(BEFORE_DELETE)
-    def log_update(self):
+    def log_delete(self):
         logIt(self, 'Delete', user=self.updated_by)
 
     class Meta:
