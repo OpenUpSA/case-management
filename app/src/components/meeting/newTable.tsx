@@ -29,6 +29,7 @@ type Props = {
   meetings: IMeeting[];
   standalone: boolean;
   legalCase: ILegalCase;
+  isLoading: boolean;
 };
 
 const Component = (props: Props) => {
@@ -37,7 +38,6 @@ const Component = (props: Props) => {
   const [filteredMeetings, setfilteredMeetings] = React.useState<IMeeting[]>();
   const [filterMeetingsValue, setfilterMeetingsValue] =
     React.useState<string>();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const filterKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     filterMeetings();
@@ -74,13 +74,13 @@ const Component = (props: Props) => {
     }
   });
 
-  useEffect(() => {
-    if (props.meetings.length === 0) {
-      setIsLoading(true);
-    } else {
-      setIsLoading(false);
-    }
-  }, [props.meetings]);
+  // useEffect(() => {
+  //   if (props.meetings.length === 0) {
+  //     setIsLoading(true);
+  //   } else {
+  //     setIsLoading(false);
+  //   }
+  // }, [props.meetings]);
 
   return (
     <div>
@@ -218,7 +218,7 @@ const Component = (props: Props) => {
           )}
         </Table>
       </TableContainer>
-      {isLoading && (
+      {props.isLoading && (
         <Grid container justify="center">
           <CircularProgress />
         </Grid>

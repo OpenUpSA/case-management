@@ -124,6 +124,18 @@ export interface ILog {
   action: string;
   note: string;
   user: number;
+  changes: {
+    id: number;
+    field: string;
+    value: any;
+    action: string;
+    log: number;
+  }[];
+  extra: {
+    user: {
+      name: string;
+    };
+  };
 }
 
 export interface LocationState {

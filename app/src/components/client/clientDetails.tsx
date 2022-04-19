@@ -208,22 +208,23 @@ const Component = (props: Props) => {
   };
 
   return (
-    <div style={{ position: "relative" }}>
-      {isLoading && (
-        <Grid container justify="center">
-          <CircularProgress
-            style={{ position: "absolute", top: 70, left: "50%" }}
-          />
-        </Grid>
-      )}
+    <>
       <Grid
         className={classes.pageBar}
-        style={{ marginBottom: 5 }}
+        style={{ marginBottom: 5, position: "relative" }}
         container
         direction="row"
         spacing={2}
         alignItems="center"
       >
+        {isLoading && (
+          <Grid container justify="center">
+            <CircularProgress
+              style={{ position: "absolute", top: 70, left: "50%" }}
+            />
+          </Grid>
+        )}
+
         <Grid item xs={12} md={4}>
           <ReusableInput
             inputName={"name"}
@@ -477,7 +478,7 @@ const Component = (props: Props) => {
           severity={showSnackbar.severity}
         />
       )}
-    </div>
+    </>
   );
 };
 

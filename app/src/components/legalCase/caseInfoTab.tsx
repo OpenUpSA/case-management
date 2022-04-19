@@ -10,13 +10,10 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Input, MenuItem } from "@material-ui/core";
-
 import LockIcon from "@mui/icons-material/Lock";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -29,6 +26,7 @@ import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
 import UpdateDialog from "./updateDialog";
 import i18n from "../../i18n";
+import userDefaultAvatar from "../../user-default-avatar.jpeg";
 import { updateLegalCase, getLogs, getLegalCase } from "../../api";
 import {
   ILegalCase,
@@ -46,8 +44,12 @@ const LogLabels = new Map([
   ["LegalCase Update", "Case update"],
   ["Meeting Create", "New meeting"],
   ["Meeting Update", "Meeting updated"],
-  ["LegalCaseFile Create", "File uploaded"],
-  ["LegalCaseFile Update", "File updated"],
+  ["File Create", "File uploaded"],
+  ["File Update", "File updated"],
+  ["Note Create", "New note"],
+  ["Note Update", "Note updated"],
+  ["CaseUpdate Create", "New update**"],
+  ["CaseUpdate Delete", "Update deleted"],
 ]);
 
 const logLabel = (
@@ -82,7 +84,6 @@ export default function CaseInfoTab(props: Props) {
   >([]);
   const [open, setOpen] = useState(false);
   const [showButton, setShowButton] = useState<boolean>(false);
-  const [width, setWidth] = useState<number>(0);
   const [showSnackbar, setShowSnackbar] = useState<LocationState>({
     open: false,
     message: "",
@@ -96,7 +97,6 @@ export default function CaseInfoTab(props: Props) {
     setSelectCaseOffice(props.legalCase?.case_offices);
     setCaseSummary(props.legalCase?.summary);
     setSelectCaseType(props.legalCase?.case_types);
-    setWidth(window.innerWidth);
 
     setIsLoading(false);
   }, [props.legalCase]);
@@ -297,6 +297,7 @@ export default function CaseInfoTab(props: Props) {
                 setLegalCase={props.setLegalCase}
                 setLegalCaseFiles={props.setLegalCaseFiles}
                 setCaseUpdates={props.setCaseUpdates}
+                setCaseHistory={props.setCaseHistory}
               />
             </Grid>
           </Grid>
@@ -315,22 +316,65 @@ export default function CaseInfoTab(props: Props) {
                         />
                         <ListItemText
                           primary={
-                            <Typography variant="caption">
-                              {item.note.length > 12 && width <= 500
-                                ? item.note.slice(0, 10) + "..."
-                                : item.note}
-                            </Typography>
+                            item.target_type === "LegalCase" &&
+                            item.action === "Create" ? (
+                              <Typography variant="caption">
+                                {format(
+                                  new Date(item.created_at as string),
+                                  "dd/MM/yyyy (h:ma)"
+                                )}
+                              </Typography>
+                            ) : item?.changes?.length > 0 &&
+                              item.changes?.[0].field === "summary" ? (
+                              <Typography variant="caption">
+                                {`Summary changed to "${item.changes?.[0].value}"`}
+                              </Typography>
+                            ) : item?.changes?.length > 0 &&
+                              item.changes?.[0].field === "state" ? (
+                              <Typography variant="caption">
+                                {`Status changed to "${item.changes?.[0].value}"`}
+                              </Typography>
+                            ) : item?.changes?.length > 0 &&
+                              item.changes?.[0].field === "case_types" ? (
+                              <Typography variant="caption">
+                                {`Case type changed to "${contextCaseTypes
+                                  ?.filter(
+                                    (caseType: ICaseType) =>
+                                      item.changes?.[0].value.indexOf(
+                                        caseType.id
+                                      ) > -1
+                                  )
+                                  .map(
+                                    (caseType: ICaseType) => caseType.title
+                                  )}"`}
+                              </Typography>
+                            ) : item?.changes?.length > 0 &&
+                              item.action === "Update" ? (
+                              <Typography variant="caption">
+                                {`${item.note}'s ${item.changes?.[0].field} changed to "${item.changes?.[0].value}"`}
+                              </Typography>
+                            ) : (
+                              <Typography variant="caption">
+                                {item.note}
+                              </Typography>
+                            )
                           }
                           className={`${classes.caseHistoryText} ${classes.noOverflow}`}
                         />
                         <Box className={classes.caseHistoryBox}>
-                          <ListItemAvatar sx={{ minWidth: 40 }}>
-                            <Avatar
-                              alt="Paul Watson"
-                              src="/static/images/avatar/1.jpg"
-                              className={classes.caseHistoryAvatar}
+                          <BlackTooltip
+                            title={item.extra.user.name || ""}
+                            arrow
+                            placement="top"
+                          >
+                            <img
+                              className={classes.updateAvatar}
+                              src={userDefaultAvatar}
+                              alt={"user"}
+                              loading={"lazy"}
                             />
-                          </ListItemAvatar>
+                          </BlackTooltip>
+
                           <Typography
                             sx={{ fontSize: "11px", color: "#616161" }}
                           >

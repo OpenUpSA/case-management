@@ -333,7 +333,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     caseHistoryText: {
       flexGrow: 1,
-      paddingRight: "100px!important" as any,
+      paddingRight: "20px!important" as any,
       [theme.breakpoints.down("xs")]: {
         paddingRight: 0,
       },
@@ -385,7 +385,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "5px!important" as any,
       fontSize: "12px!important" as any,
       height: "20px!important" as any,
-      minWidth: "68px!important" as any,
+      minWidth: "100px!important" as any,
     },
     chipGrey: {
       backgroundColor: "#eee!important" as any,

@@ -241,7 +241,7 @@ class UserViewSet(UpdateRetrieveViewSet):
 
 class LogViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [InAdminGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
-    queryset = Log.objects.all()
+    queryset = Log.objects.all().order_by('-id')
     serializer_class = LogSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['parent_id', 'parent_type', 'target_id', 'target_type']

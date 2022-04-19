@@ -311,6 +311,16 @@ const Page = () => {
                 onClick={() => setChanged(false)}
               >
                 {i18n.t("Save meeting")}
+                {isLoading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    position: "absolute",     
+                    zIndex: 10000,
+                    left: "50%",
+                  }}
+                />
+              )}
               </Button>
               {isLoading && (
                 <CircularProgress
