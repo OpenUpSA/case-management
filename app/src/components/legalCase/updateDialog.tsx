@@ -184,6 +184,7 @@ const UpdateDialog = (props: Props) => {
     }
     setAttachedFileData({ file: null, description: "" });
     setUpdateError("");
+    setTabValue(0);
   };
 
   const onFileChange = async (event: any, fileDescription: string) => {
