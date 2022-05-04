@@ -70,7 +70,14 @@ class UserAdmin(UserAdmin, DefaultAdmin):
             None,
             {
                 'classes': ('wide',),
-                'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active', 'permission_group'),
+                'fields': (
+                    'email',
+                    'password1',
+                    'password2',
+                    'is_staff',
+                    'is_active',
+                    'permission_group',
+                ),
             },
         ),
     )
@@ -95,14 +102,34 @@ class CaseTypeAdmin(DefaultAdmin):
 
 class ClientAdmin(DefaultAdmin):
     model = Client
-    list_display = ['name']
-    list_filter = ['name']
+    list_display = ['name', 'province', 'officers', 'created_at']
+    list_filter = ['name', 'province', 'created_at']
+
+    def officers(self, obj):
+        return "\n".join([p.name for p in obj.users.all()])
 
 
 class LegalCaseAdmin(DefaultAdmin):
     model = LegalCase
-    list_display = ['case_number']
-    list_filter = ['case_number']
+    list_display = [
+        'case_number',
+        'client',
+        'state',
+        'types',
+        'offices',
+        'officers',
+        'created_at',
+    ]
+    list_filter = ['case_number', 'client', 'state', 'created_at']
+
+    def types(self, obj):
+        return "\n".join([p.title for p in obj.case_types.all()])
+
+    def offices(self, obj):
+        return "\n".join([p.name for p in obj.case_offices.all()])
+
+    def officers(self, obj):
+        return "\n".join([p.name for p in obj.users.all()])
 
 
 class CaseUpdateAdmin(DefaultAdmin):
