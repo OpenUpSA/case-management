@@ -8,7 +8,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Development Setup
 Run `yarn install` to download all dependencies
 
-Create a .env file and set `REACT_APP_API_BASE_URL=https://casemanagement.openup.org.za/api/v1` to connect with the live backend, this is to bypass setting up the backend yourself with docker, also set `REACT_APP_GA_ID=` equal to the google analytics Measurement ID.
+Run `cp .env.example .env` and set correct values.
 
 ## Available Scripts
 
