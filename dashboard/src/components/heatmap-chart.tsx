@@ -78,7 +78,7 @@ export default function HeatmapChart(props: IProps) {
   const selectedMetric = props.metrics[0];
   const selectedMetricData = selectedOfficeData[selectedMetric] || {};
   const months = Object.keys(selectedMetricData);
-  const selectedMonth = months[0];
+  const selectedMonth = months[0] || '';
 
   const generateChartData = () => {
     const chartData: {

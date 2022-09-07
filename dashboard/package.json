@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "latest",
-    "@emotion/styled": "latest",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@fontsource/karla": "^4.5.2",
-    "@material-ui/core": "latest",
+    "@material-ui/core": "^4.12.4",
     "@material-ui/data-grid": "^4.0.0-alpha.32",
-    "@material-ui/icons": "latest",
-    "@material-ui/styles": "latest",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/styles": "^4.11.5",
     "@mui/icons-material": "^5.0.1",
     "@mui/material": "^5.0.2",
     "@reduxjs/toolkit": "^1.6.0",
@@ -62,5 +62,8 @@
   "devDependencies": {
     "cypress": "^8.5.0",
     "cypress-localstorage-commands": "^1.5.0"
+  },
+  "resolutions": {
+    "@types/react": "17.0.38"
   }
 }

@@ -71,7 +71,7 @@ const Component = (props: Props) => {
                   ...user,
                   name: e.target.value,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -98,7 +98,7 @@ const Component = (props: Props) => {
                   ...user,
                   membership_number: e.target.value,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -125,7 +125,7 @@ const Component = (props: Props) => {
                   ...user,
                   email: e.target.value,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -151,7 +151,7 @@ const Component = (props: Props) => {
                   ...user,
                   contact_number: e.target.value,
                 }));
-                props.setChanged(true)
+                props.setChanged(true);
               }}
             />
           </FormControl>
@@ -170,36 +170,38 @@ const Component = (props: Props) => {
             >
               {i18n.t("Case office")}:
             </InputLabel>
-            <Select
-              id="case_office_select"
-              disabled={props.readOnly}
-              className={classes.select}
-              disableUnderline
-              onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                setUser((user) => ({
-                  ...user,
-                  case_office: e.target.value as number,
-                }));
-                props.setChanged(true)
-              }}
-              input={<Input id="select-multiple-chip" />}
-              value={user.case_office || ""}
-              renderValue={() => {
-                return caseOffices
-                  ?.filter((caseOffice) => user.case_office === caseOffice.id)
-                  .map((caseOffice) => caseOffice.name)
-                  .join(", ");
-              }}
-            >
-              <MenuItem key={0} value={0}>
-                {i18n.t("No case office")}
-              </MenuItem>
-              {caseOffices?.map(({ id, name }) => (
-                <MenuItem key={id} value={id}>
-                  {name}
+            {caseOffices ? (
+              <Select
+                id="case_office_select"
+                disabled={props.readOnly}
+                className={classes.select}
+                disableUnderline
+                onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+                  setUser((user) => ({
+                    ...user,
+                    case_office: e.target.value as number,
+                  }));
+                  props.setChanged(true);
+                }}
+                input={<Input id="select-multiple-chip" />}
+                value={user.case_office || "0"}
+                renderValue={() => {
+                  return caseOffices
+                    ?.filter((caseOffice) => user.case_office === caseOffice.id)
+                    .map((caseOffice) => caseOffice.name)
+                    .join(", ");
+                }}
+              >
+                <MenuItem key={0} value={0}>
+                  {i18n.t("No case office")}
                 </MenuItem>
-              ))}
-            </Select>
+                {caseOffices?.map(({ id, name }) => (
+                  <MenuItem key={id} value={id}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            ) : null}
           </FormControl>
         </Grid>
       </Grid>

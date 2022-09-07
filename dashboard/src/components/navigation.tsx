@@ -100,9 +100,7 @@ const Component = () => {
       </AppBar>
       <Drawer
         variant="temporary"
-        ModalProps={{
-          onBackdropClick: closeDrawer,
-        }}
+        onClose={closeDrawer}
         open={drawerOpen}
         elevation={1}
         className={classes.drawer}
