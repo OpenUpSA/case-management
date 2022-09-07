@@ -272,7 +272,7 @@ const Page = () => {
         />
 
         {isLoading && (
-          <Grid container justify="center">
+          <Grid container justifyContent="center">
             <CircularProgress
               sx={{ position: "absolute", top: 10, left: "50%", zIndex: 100 }}
             />

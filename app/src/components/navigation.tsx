@@ -96,6 +96,11 @@ const Component = () => {
     logout();
   }
 
+  const goHome = () => {
+    closeDrawer();
+    history.push("/");
+  };
+
   return (
     <div>
       <AppBar
@@ -111,10 +116,7 @@ const Component = () => {
                 className={classes.cursorPointer}
                 src={logo}
                 alt={i18n.t("CaseFile Logo")}
-                onClick={() => {
-                  history.push("/");
-                  closeDrawer();
-                }}
+                onClick={goHome}
               />
             </Box>
             <IconButton
@@ -130,9 +132,7 @@ const Component = () => {
       </AppBar>
       <Drawer
         variant="temporary"
-        ModalProps={{
-          onBackdropClick: closeDrawer,
-        }}
+        onClose={closeDrawer}
         open={drawerOpen}
         elevation={1}
         className={classes.drawer}
@@ -162,6 +162,7 @@ const Component = () => {
                     Case worker at{" "}
                     <Typography
                       display="inline"
+                      component={"span"}
                       className={classes.userCaseOffice}
                     >
                       {filteredCaseOffice}

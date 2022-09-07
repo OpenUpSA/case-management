@@ -219,7 +219,7 @@ const Component = (props: Props) => {
         </Table>
       </TableContainer>
       {props.isLoading && (
-        <Grid container justify="center">
+        <Grid container justifyContent="center">
           <CircularProgress />
         </Grid>
       )}

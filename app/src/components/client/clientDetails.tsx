@@ -218,7 +218,7 @@ const Component = (props: Props) => {
         alignItems="center"
       >
         {isLoading && (
-          <Grid container justify="center">
+          <Grid container justifyContent="center">
             <CircularProgress
               style={{ position: "absolute", top: 70, left: "50%" }}
             />
