@@ -10,7 +10,7 @@
   .half-and-half {
     display: block;
     width: 100%;
-    height: 48vh;
+    height: 47vh;
     text-align: center;
     float: left;
     display: flex;
@@ -38,12 +38,21 @@
   }
   
   .logo {
-    display: block;
-    margin: 1vh auto;
+    padding: 2vh;
+    height: 6vh;
+    border-bottom: solid 1px rgba(128, 128, 255, 0.2);
+    box-sizing: border-box;
+  }
+
+  .logo img {
     height: 2vh;
+    display: block;
+    margin: 0 auto;
   }
 </style>
-<img class="logo" src="/static/logo-small.svg" />
+<div class="logo">
+  <img src="/static/logo-small.svg" />
+</div>
 <a class="half-and-half has-border-right" href="https://app.casefile.org.za/">App</a>
 <a class="half-and-half has-border-left" href="https://dashboard.casefile.org.za/">Dashboard</a
 {% endblock content %}
