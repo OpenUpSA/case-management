@@ -81,10 +81,8 @@ const Component = () => {
   };
 
   const logout = () => {
-    const userInfo = UserInfo.getInstance();
-    userInfo.clear();
-    history.push("/");
     closeDrawer();
+    history.push("/logout");
   };
 
   const accountSettings = () => {

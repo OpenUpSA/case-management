@@ -2,6 +2,7 @@ import { Switch, Route, useHistory } from "react-router-dom";
 import React from "react";
 import HomePage from "./pages/home";
 import LoginPage from "./pages/login";
+import LogoutPage from "./pages/logout";
 
 import ClientsPage from "./pages/clients/list";
 import ClientPage from "./pages/clients/show";
@@ -60,6 +61,7 @@ function Routes() {
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/login" component={LoginPage} />
+        <Route exact path="/logout" component={LogoutPage} />
 
         <Route exact path="/clients" component={ClientsPage} />
         <Route exact path="/clients/new" component={ClientNewPage} />
