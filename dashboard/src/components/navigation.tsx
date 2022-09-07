@@ -12,7 +12,7 @@ import { useHistory } from "react-router-dom";
 
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import AnalyticsIcon from '@mui/icons-material/Analytics';
+import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -51,10 +51,8 @@ const Component = () => {
   };
 
   const logout = () => {
-    const userInfo = UserInfo.getInstance();
-    userInfo.clear();
-    history.push("/");
     closeDrawer();
+    history.push("/logout");
   };
 
   const accountSettings = () => {
