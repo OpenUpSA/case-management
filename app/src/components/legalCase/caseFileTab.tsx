@@ -444,7 +444,7 @@ export default function CaseFileTab(props: Props) {
         </Grid>
       )}
       {isLoading && (
-        <Grid container justify="center">
+        <Grid container justifyContent="center">
           <CircularProgress style={{ position: "absolute", left: "50%" }} />
         </Grid>
       )}

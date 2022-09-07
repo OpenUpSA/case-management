@@ -110,7 +110,7 @@ const Page = () => {
           </Grid>
         </Grid>
         {isLoading && (
-          <Grid container justify="center">
+          <Grid container justifyContent="center">
             <CircularProgress />
           </Grid>
         )}

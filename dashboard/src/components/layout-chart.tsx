@@ -69,14 +69,14 @@ export default function LayoutChart(props: IProps) {
             {props.title}
           </Typography>
           {desktop ? (
-            <BlackTooltip title={props.info} arrow placement="top">
+            <BlackTooltip title={props.info || ""} arrow placement="top">
               <InfoIcon />
             </BlackTooltip>
           ) : (
             <ClickAwayListener onClickAway={handleTooltipClose}>
               <span>
                 <BlackTooltip
-                  title={props.info}
+                  title={props.info || ""}
                   arrow
                   placement="top"
                   PopperProps={{

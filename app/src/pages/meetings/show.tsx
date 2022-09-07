@@ -217,7 +217,7 @@ const Page = () => {
           />
         </form>
         {isLoading && (
-          <Grid container justify="center">
+          <Grid container justifyContent="center">
             <CircularProgress
               sx={{ position: "absolute", top: "42vh", left: "50%" }}
             />

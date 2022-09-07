@@ -95,7 +95,7 @@ export default function BarChart(props: IProps) {
                     {dataPoint.value}
                   </Box>
                   <BlackTooltip
-                    title={dataPoint.value}
+                    title={dataPoint.value || ""}
                     arrow
                     placement="right-start"
                     componentsProps={{

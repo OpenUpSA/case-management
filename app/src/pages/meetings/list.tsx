@@ -92,7 +92,7 @@ const Page = () => {
         </Grid>
         <MeetingsTable meetings={meetings ? meetings : []} />
         {isLoading && (
-          <Grid container justify="center">
+          <Grid container justifyContent="center">
             <CircularProgress />
           </Grid>
         )}
