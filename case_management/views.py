@@ -105,6 +105,18 @@ class UpdateRetrieveViewSet(
     """
     permission_classes = [InAdminGroup]
 
+class ViewViewSet(
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet
+):
+    """
+    A viewset that provides just the `update', and `retrieve` actions.
+
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+    """
+    permission_classes = [InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
+
 class ListViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet
@@ -234,7 +246,7 @@ class UserListViewSet(ListViewSet):
     queryset = User.objects.all()
     serializer_class = UserListSerializer
 
-class UserViewSet(UpdateRetrieveViewSet):
+class UserViewSet(ViewViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
