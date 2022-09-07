@@ -52,17 +52,6 @@ Rebuild the image to contain the new dependencies:
 Make sure to commit updates to pyproject.toml and poetry.lock to git
 
 
-### Javascript and CSS
-
-JS and CSS are bundled using [parcel](https://parceljs.org/) - see `package.json`.
-
-Dependencies are managed via `yarn`, e.g.
-
-    docker-compose run --rm web yarn add bootstrap@4.x
-
-Make sure to commit updates to package.json and yarn.lock to git.
-
-
 Development setup
 -----------------
 
@@ -73,11 +62,6 @@ AWS_ACCESS_KEY_ID=...
 AWS_SECRET_ACCESS_KEY=...
 AWS_STORAGE_BUCKET_NAME=some-s3-bucket-name
 ```
-
-In one shell, run the frontend asset builder
-
-    docker-compose run --rm web yarn dev
-
 
 In another shell, initialise and run the django app
 
