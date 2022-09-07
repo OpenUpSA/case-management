@@ -142,6 +142,23 @@ class OpenListViewSet(
     """
     A viewset that provides just the `list` action.
     """
+    permission_scope_query_param = 'caseOffice'
+
+    @property
+    def permission_scope_query_param_values(self):
+        return [self.request.user.case_office.id]
+
+    def get_permissions(self):
+        permission_classes = [InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
+        return [permission() for permission in permission_classes]
+
+class OpenListViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    """
+    A viewset that provides just the `list` action.
+    """
 
     permission_classes = [InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
 
@@ -177,7 +194,7 @@ class CaseTypeViewSet(LoggedModelViewSet):
     serializer_class = CaseTypeSerializer
 
 
-class ClientViewSet(LoggedModelViewSet):
+class ClientViewSet(OpenListViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
