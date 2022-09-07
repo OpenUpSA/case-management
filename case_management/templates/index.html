@@ -1,3 +1,49 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 {% block content %}
+<style>
+  html, body {
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+
+  .half-and-half {
+    display: block;
+    width: 100%;
+    height: 48vh;
+    text-align: center;
+    float: left;
+    display: flex;
+    align-items: center; /* Vertical center alignment */
+    justify-content: center;
+    font-size: 3em;
+    font-family: sans-serif;
+    text-decoration: none;
+    box-sizing: border-box;
+    background-color: rgba(128, 128, 255, 0.1);
+    color: blue;
+  }
+
+  .half-and-half:hover  {
+    background-color: rgba(128, 128, 255, 0.2);
+    cursor: pointer;
+  }
+
+  .has-border-right {
+    border-bottom: solid 1px rgba(128, 128, 255, 0.2);
+  }
+
+  .has-border-left {
+    border-top: solid 1px rgba(128, 128, 255, 0.2);
+  }
+  
+  .logo {
+    display: block;
+    margin: 1vh auto;
+    height: 2vh;
+  }
+</style>
+<img class="logo" src="/static/logo-small.svg" />
+<a class="half-and-half has-border-right" href="https://app.casefile.org.za/">App</a>
+<a class="half-and-half has-border-left" href="https://dashboard.casefile.org.za/">Dashboard</a
 {% endblock content %}

@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "whitenoise.runserver_nostatic",
     "case_management",
-    "case_management.dashboard.apps.DashboardConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

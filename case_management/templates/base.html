@@ -25,7 +25,8 @@
     <meta property="og:description" content="{% block og_description %}OSF Case Management project built by OpenUp.{% endblock %}" />
     {% endblock %}
 
-    <link rel="stylesheet" href="{% static "scss/case_management.css" %}">
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
   </head>
   <body>
     {% if TAG_MANAGER_ENABLED %} 
@@ -36,7 +37,5 @@
     {% endif %} 
 
     {% block content %}{% endblock %}
-
-    <script src="{% static "js/case_management.js" %}" async></script>
   </body>
 </html>

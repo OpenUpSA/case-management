@@ -58,10 +58,6 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("", views.Index.as_view(), name="index"),
-    path(
-        "dashboard",
-        include("case_management.dashboard.urls"),
-    ),
     path("admin/", admin.site.urls),
     path('api/v1/authenticate', CustomObtainAuthToken.as_view()),
     path(r'', include(router.urls)),
