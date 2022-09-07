@@ -135,6 +135,16 @@ class ListViewSet(
         check_scoped_list_permission(self.request, self)
         return [permission() for permission in permission_classes]
 
+class OpenListViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    """
+    A viewset that provides just the `list` action.
+    """
+
+    permission_classes = [InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
+
 
 class Index(generic.TemplateView):
     template_name = "index.html"
@@ -156,7 +166,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
         )
 
 
-class CaseOfficeViewSet(LoggedModelViewSet):
+class CaseOfficeViewSet(OpenListViewSet):
     queryset = CaseOffice.objects.all()
     serializer_class = CaseOfficeSerializer
 
