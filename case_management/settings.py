@@ -185,7 +185,6 @@ STATICFILES_FINDERS = [
 ]
 STATICFILES_DIRS = [
     str(PROJ_DIR.path("static")),
-    str(ROOT_DIR.path("assets/bundles")),
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
