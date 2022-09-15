@@ -74,7 +74,8 @@ class LoggedModelViewSet(viewsets.ModelViewSet):
         return [self.request.user.case_office.id]
 
     def get_permissions(self):
-        permission_classes = [InAdminGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
+        permission_classes = [InAdminGroup |
+                              InAdviceOfficeAdminGroup | InCaseWorkerGroup]
         if self.action == 'list':
             check_scoped_list_permission(self.request, self)
         if self.action == 'create':
@@ -105,17 +106,6 @@ class UpdateRetrieveViewSet(
     """
     permission_classes = [InAdminGroup]
 
-class ViewViewSet(
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
-):
-    """
-    A viewset that provides just the `update', and `retrieve` actions.
-
-    To use it, override the class and set the `.queryset` and
-    `.serializer_class` attributes.
-    """
-    permission_classes = [InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
 
 class ListViewSet(
     mixins.ListModelMixin,
@@ -131,36 +121,10 @@ class ListViewSet(
         return [self.request.user.case_office.id]
 
     def get_permissions(self):
-        permission_classes = [InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
+        permission_classes = [InAdminGroup | InReportingGroup |
+                              InAdviceOfficeAdminGroup | InCaseWorkerGroup]
         check_scoped_list_permission(self.request, self)
         return [permission() for permission in permission_classes]
-
-class OpenListViewSet(
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet
-):
-    """
-    A viewset that provides just the `list` action.
-    """
-    permission_scope_query_param = 'caseOffice'
-
-    @property
-    def permission_scope_query_param_values(self):
-        return [self.request.user.case_office.id]
-
-    def get_permissions(self):
-        permission_classes = [InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
-        return [permission() for permission in permission_classes]
-
-class OpenListViewSet(
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet
-):
-    """
-    A viewset that provides just the `list` action.
-    """
-
-    permission_classes = [InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
 
 
 class Index(generic.TemplateView):
@@ -183,7 +147,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
         )
 
 
-class CaseOfficeViewSet(OpenListViewSet):
+class CaseOfficeViewSet(LoggedModelViewSet):
     queryset = CaseOffice.objects.all()
     serializer_class = CaseOfficeSerializer
 
@@ -194,7 +158,7 @@ class CaseTypeViewSet(LoggedModelViewSet):
     serializer_class = CaseTypeSerializer
 
 
-class ClientViewSet(OpenListViewSet):
+class ClientViewSet(LoggedModelViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
@@ -212,6 +176,7 @@ class ClientViewSet(OpenListViewSet):
             ).distinct('id')
         return queryset
 
+
 class LegalCaseViewSet(LoggedModelViewSet):
     queryset = LegalCase.objects.all()
     serializer_class = LegalCaseSerializer
@@ -223,7 +188,8 @@ class LegalCaseViewSet(LoggedModelViewSet):
             next_id = LegalCase.objects.latest('id').id + 1
         except LegalCase.DoesNotExist:
             next_id = 1
-        case_office = CaseOffice.objects.get(pk=self.request.data['case_offices'][0])
+        case_office = CaseOffice.objects.get(
+            pk=self.request.data['case_offices'][0])
         case_office_code = case_office.case_office_code
         generated_case_number = (
             f'{case_office_code}/{time.strftime("%y%m")}/{str(next_id).zfill(4)}'
@@ -239,6 +205,7 @@ class LegalCaseViewSet(LoggedModelViewSet):
                 case_offices__id=case_office
             ).distinct('id')
         return queryset
+
 
 class CaseUpdateViewSet(LoggedModelViewSet):
     queryset = CaseUpdate.objects.all()
@@ -273,13 +240,15 @@ class UserListViewSet(ListViewSet):
     queryset = User.objects.all()
     serializer_class = UserListSerializer
 
-class UserViewSet(ViewViewSet):
+
+class UserViewSet(UpdateRetrieveViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
 class LogViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [InAdminGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
+    permission_classes = [InAdminGroup |
+                          InAdviceOfficeAdminGroup | InCaseWorkerGroup]
     queryset = Log.objects.all().order_by('-id')
     serializer_class = LogSerializer
     filter_backends = [DjangoFilterBackend]
@@ -294,13 +263,15 @@ class LogViewSet(viewsets.ReadOnlyModelViewSet):
             raise ValidationError('Must provide parent_type=LegalCase')
         parent_id = self.request.query_params.get('parent_id')
         user_case_office = self.request.user.case_office.id
-        legalcase_case_offices = LegalCase.objects.filter(case_offices__id=user_case_office).values_list('id', flat=True)
+        legalcase_case_offices = LegalCase.objects.filter(
+            case_offices__id=user_case_office).values_list('id', flat=True)
         return legalcase_case_offices
 
     def get_permissions(self):
         if self.action == 'list':
             check_scoped_list_permission(self.request, self)
         return [permission() for permission in self.permission_classes]
+
 
 def _get_summary_months_range(request):
     months = {'start': None, 'end': None}
@@ -322,9 +293,11 @@ def _get_summary_months_range(request):
         if months['start'] is None:
             months['end'] = date.today()
         else:
-            months['end'] = (months['start'] + timedelta(days=30 * 11.5)).replace(day=1)
+            months['end'] = (months['start'] +
+                             timedelta(days=30 * 11.5)).replace(day=1)
     if months['start'] is None:
-        months['start'] = (months['end'] - timedelta(days=30 * 10.5)).replace(day=1)
+        months['start'] = (
+            months['end'] - timedelta(days=30 * 10.5)).replace(day=1)
     start_month = months['start'].strftime("%Y-%m-%d")
     end_month = months['end'].strftime("%Y-%m-%d")
     return start_month, end_month
@@ -332,7 +305,8 @@ def _get_summary_months_range(request):
 
 def _get_summary_date_range(request):
     dates = {'start': None, 'end': None}
-    date_input_pattern = re.compile('^([0-9]{4})-(0[1-9]|1[0-2])-([0-2][1-9]|3[0-1])$')
+    date_input_pattern = re.compile(
+        '^([0-9]{4})-(0[1-9]|1[0-2])-([0-2][1-9]|3[0-1])$')
     for d in list(dates):
         query_param = f'{d}Date'
         query_param_input = request.query_params.get(query_param, None)
@@ -342,19 +316,21 @@ def _get_summary_date_range(request):
                 year_input = int(match.group(1))
                 month_input = int(match.group(2))
                 day_input = int(match.group(3))
-                dates[d] = date(year=year_input, month=month_input, day=day_input)
+                dates[d] = date(year=year_input,
+                                month=month_input, day=day_input)
             else:
                 return HttpResponseBadRequest(
                     f'{query_param} query param must be in format yyyy-mm-dd'
                 )
     today = date.today()
     if dates['start'] is None:
-        dates['start'] = date.today().replace(year = today.year - 1, day=1)
+        dates['start'] = date.today().replace(year=today.year - 1, day=1)
     if dates['end'] is None:
         dates['end'] = today
     start_date = dates['start'].strftime("%Y-%m-%d")
     end_date = dates['end'].strftime("%Y-%m-%d")
     return start_date, end_date
+
 
 @api_view(['GET'])
 @permission_classes([InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup])
@@ -363,7 +339,8 @@ def range_summary(request):
     start_date, end_date = _get_summary_date_range(request)
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
-        cursor.execute(queries.range_summary(start_date, end_date, case_office))
+        cursor.execute(queries.range_summary(
+            start_date, end_date, case_office))
         row = cursor.fetchone()
     response = {
         'startDate': start_date,
@@ -372,6 +349,7 @@ def range_summary(request):
     }
     return Response(response)
 
+
 @api_view(['GET'])
 @permission_classes([InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup])
 def daily_summary(request):
@@ -379,7 +357,8 @@ def daily_summary(request):
     start_month, end_month = _get_summary_months_range(request)
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
-        cursor.execute(queries.daily_summary(start_month, end_month, case_office))
+        cursor.execute(queries.daily_summary(
+            start_month, end_month, case_office))
         row = cursor.fetchone()
     response = {
         'startMonth': start_month,
@@ -396,7 +375,8 @@ def monthly_summary(request):
     start_month, end_month = _get_summary_months_range(request)
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
-        cursor.execute(queries.monthly_summary(start_month, end_month, case_office))
+        cursor.execute(queries.monthly_summary(
+            start_month, end_month, case_office))
         row = cursor.fetchone()
     response = {
         'startMonth': start_month,

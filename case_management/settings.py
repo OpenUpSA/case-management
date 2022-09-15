@@ -48,12 +48,10 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 # Rely on nginx to direct only allowed hosts, allow all for dokku checks to work.
 ALLOWED_HOSTS = ["*"]
 
-# TODO: Replace with actual array of CORS_ALLOWED_ORIGINS even for development
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3321",
     "http://localhost:3000",
     "http://localhost:3001",
-    "https://case-management.pages.dev",
     "https://app.casefile.org.za",
     "https://staging.casefile.org.za",
     "https://staging-app.casefile.org.za",

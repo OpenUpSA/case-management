@@ -1,4 +1,4 @@
-import LayoutSimple from "../components/layout-simple";
+import LayoutSimple from "../components/layoutSimple";
 import i18n from "../i18n";
 import Typography from "@material-ui/core/Typography";
 import { UserInfo } from "../auth";

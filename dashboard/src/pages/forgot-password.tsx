@@ -1,6 +1,6 @@
 import { Component } from "react";
 
-import LayoutSimple from "../components/layout-simple";
+import LayoutSimple from "../components/layoutSimple";
 
 import i18next from "i18next";
 
@@ -25,7 +25,11 @@ class Page extends Component<RouteComponentProps> {
           {i18next.t("Reset password")}
         </Typography>
 
-        <Box component="form" onSubmit={this.handleSubmit} style={{ marginTop: 1 }}>
+        <Box
+          component="form"
+          onSubmit={this.handleSubmit}
+          style={{ marginTop: 1 }}
+        >
           <TextField
             margin="normal"
             required

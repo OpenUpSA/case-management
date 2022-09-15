@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import LayoutSimple from "../components/layout-simple";
+import LayoutSimple from "../components/layoutSimple";
 import i18n from "../i18n";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -82,10 +82,7 @@ const Page = () => {
 
   return (
     <LayoutSimple>
-      <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>
-        {i18n.t("Login")}
-      </Typography>
-
+      <br />
       {loginError ? (
         <Typography component="p" style={{ color: "#990000", marginTop: 8 }}>
           {i18n.t("Login error")}

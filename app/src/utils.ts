@@ -247,6 +247,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     inputLabel: {
       color: "#000",
+      fontWeight: 700,
       fontSize: "1.2em",
       "&.Mui-focused": {
         color: "unset",
