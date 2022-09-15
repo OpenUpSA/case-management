@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import LayoutSimple from "../components/layoutSimple";
 import i18n from "../i18n";
@@ -6,15 +6,13 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import CircularProgress from "@mui/material/CircularProgress";
+import SnackbarAlert from "../components/general/snackBar";
+import { LocationState } from "../types";
 
 import { RedirectIfLoggedIn, UserInfo } from "../auth";
-import { authenticate, getUser, getCaseTypes, getCaseOffices } from "../api";
+import { authenticate, getUser } from "../api";
 import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
 import { useStyles } from "../utils";
-import { LocationState } from "../types";
-import SnackbarAlert from "../components/general/snackBar";
-import { CaseOfficesContext } from "../contexts/caseOfficesContext";
-import { CaseTypesContext } from "../contexts/caseTypesContext";
 
 const Page = () => {
   RedirectIfLoggedIn();
@@ -27,10 +25,6 @@ const Page = () => {
     message: "",
     severity: undefined,
   });
-  // eslint-disable-next-line
-  const [contextCaseTypes, setContextCaseTypes] = useContext(CaseTypesContext);
-  // eslint-disable-next-line
-  const [contextOffices, setContextOffices] = useContext(CaseOfficesContext);
 
   React.useEffect(() => {
     const resetState = async () => {
@@ -46,14 +40,14 @@ const Page = () => {
   }, [showSnackbar.open]);
 
   const validateLogin = async (username: string, password: string) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const credentials = {
         username: username,
         password: password,
       };
-
       const { token, user_id } = await authenticate(credentials);
+
       if (token && user_id) {
         const userInfo = UserInfo.getInstance();
         userInfo.setAccessToken(token);
@@ -62,7 +56,6 @@ const Page = () => {
         const newToken = userInfo.getAccessToken();
         if (newToken) {
           const { name, case_office, email } = await getUser(user_id);
-          fetchData();
           userInfo.setName(name);
           userInfo.setCaseOffice(case_office);
           userInfo.setEmail(email);
@@ -87,19 +80,9 @@ const Page = () => {
     }
   };
 
-  async function fetchData() {
-    const dataCaseOffices = await getCaseOffices();
-    const dataCaseTypes = await getCaseTypes();
-    setContextOffices(dataCaseOffices);
-    setContextCaseTypes(dataCaseTypes);
-  }
-
   return (
     <LayoutSimple>
-      <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>
-        {i18n.t("Login")}
-      </Typography>
-
+      <br />
       {loginError ? (
         <Typography component="p" style={{ color: "#990000", marginTop: 8 }}>
           {i18n.t("Login error")}
@@ -170,19 +153,19 @@ const Page = () => {
               disabled={isLoading}
             >
               {i18n.t("Login")}
+              {isLoading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              )}
             </Button>
-            {isLoading && (
-              <CircularProgress
-                size={24}
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  marginTop: "-12px",
-                  marginLeft: "-12px",
-                }}
-              />
-            )}
           </Grid>
         </Grid>
       </Box>

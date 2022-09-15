@@ -1,6 +1,5 @@
-import { Switch, Route, useHistory } from "react-router-dom";
+import { Switch, Route, useHistory, Redirect } from "react-router-dom";
 import React from "react";
-import HomePage from "./pages/home";
 import LoginPage from "./pages/login";
 import LogoutPage from "./pages/logout";
 
@@ -26,7 +25,7 @@ import Navigation from "./components/navigation";
 import LogsPage from "./pages/logs/list";
 
 import ReactGA from "react-ga4";
-import { hotjar } from 'react-hotjar';
+import { hotjar } from "react-hotjar";
 import { UserInfo } from "./auth";
 
 if (process.env.REACT_APP_GA_ID) {
@@ -34,7 +33,10 @@ if (process.env.REACT_APP_GA_ID) {
 }
 
 if (process.env.REACT_APP_HOTJAR_ID && process.env.REACT_APP_HOTJAR_SV) {
-  hotjar.initialize(Number(process.env.REACT_APP_HOTJAR_ID), Number(process.env.REACT_APP_HOTJAR_SV));
+  hotjar.initialize(
+    Number(process.env.REACT_APP_HOTJAR_ID),
+    Number(process.env.REACT_APP_HOTJAR_SV)
+  );
 }
 
 function Routes() {
@@ -59,7 +61,9 @@ function Routes() {
     <div>
       <Navigation />
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <Route exact path="/">
+          <Redirect to="/login" />
+        </Route>
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/logout" component={LogoutPage} />
 
