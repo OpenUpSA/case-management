@@ -71,6 +71,13 @@ In another shell, initialise and run the django app
     docker-compose run --rm web python manage.py createsuperuser
     docker-compose up
 
+Demo/seed data can be loaded with:
+
+     docker compose run --rm web python manage.py loaddata demo-data
+
+To dump data from your db for updating demo/seed data:
+
+     docker compose run --rm web python manage.py dumpdata --exclude=auth --exclude=contenttypes --exclude=sessions --exclude=admin --exclude=case_management.log --exclude=case_management.logchange --exclude=authtoken
 
 If you need to destroy and recreate your dev setup, e.g. if you've messed up your
 database data or want to switch to a branch with an incompatible database schema,
