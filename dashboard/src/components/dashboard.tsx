@@ -150,11 +150,6 @@ export default function Dashboard(props: IProps) {
         });
       }
     );
-    charts.push({
-      type: "heatmap",
-      data: props.dataDaily,
-      metrics: ["Cases opened", "Cases closed", "Cases with activity"],
-    });
     return charts;
   };
 
