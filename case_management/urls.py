@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
+from django.http import HttpResponse
 
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
@@ -67,12 +68,20 @@ urlpatterns = [
         name='schema-json',
     ),
     path('api/v1/reports/range-summary', range_summary, name='range-summary'),
-    path('api/v1/reports/monthly-summary', monthly_summary, name='monthly-summary'),
+    path('api/v1/reports/monthly-summary',
+         monthly_summary, name='monthly-summary'),
     path('api/v1/reports/daily-summary', daily_summary, name='daily-summary'),
     path(
         'api/ui/',
         schema_view.with_ui('swagger', cache_timeout=0),
         name='schema-swagger-ui',
     ),
+    path(
+        'robots.txt',
+        view=lambda r: HttpResponse(
+            "User-agent: *\nAllow: /\n",
+            content_type="text/plain")
+    ),
     path('debug/bnp6tVkWRPhVUd5ieGij-sentry/', trigger_error),
+
 ]
