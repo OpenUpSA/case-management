@@ -49,20 +49,13 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = ["*"]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3321",
     "http://localhost:3000",
-    "http://localhost:3001",
     "https://app.casefile.org.za",
-    "https://staging.casefile.org.za",
-    "https://staging-app.casefile.org.za",
-    "https://staging.app.casefile.org.za",
-    "https://sandbox-app.casefile.org.za",
-    "https://sandbox.app.casefile.org.za",
     "https://dashboard.casefile.org.za",
+    "https://staging-app.casefile.org.za",
+    "https://sandbox-app.casefile.org.za",
     "https://staging-dashboard.casefile.org.za",
-    "https://staging.dashboard.casefile.org.za",
     "https://sandbox-dashboard.casefile.org.za",
-    "https://sandbox.dashboard.casefile.org.za",
 ]
 
 CORS_ALLOW_HEADERS = [
