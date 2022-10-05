@@ -134,3 +134,11 @@ Database
 Generate a dot visualisaton diagram of the database architecture with;
     
     docker-compose run --rm web python manage.py graph_models -a -g -o database_diagram.dot
+
+
+Production
+----------
+
+Hosted on Vercel, `master` auto-deploys.
+
+[![Powered by Vercel](powered-by-vercel.svg)](https://vercel.com/?utm_source=openup&utm_campaign=oss)
