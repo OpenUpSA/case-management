@@ -1,4 +1,5 @@
 {% extends "base.html" %} 
+{% load env_filter %}
 {% block content %}
 <style>
   html, body {
@@ -53,8 +54,8 @@
 <div class="logo">
   <img src="/static/logo-small.svg" />
 </div>
-<a class="half-and-half has-border-right" href="https://app.casefile.org.za/">App</a>
-<a class="half-and-half has-border-left" href="https://dashboard.casefile.org.za/">Dashboard</a>
+<a class="half-and-half has-border-right" href={{ "APP_URL"|get_env|safe }}>App</a>
+<a class="half-and-half has-border-left" href={{ "DASHBOARD_URL"|get_env|safe }}>Dashboard</a>
 <a class="half-and-half has-border-left" href="/admin">Admin</a>
 <a class="half-and-half has-border-left" href="/api/ui/">API</a>
 {% endblock content %}
