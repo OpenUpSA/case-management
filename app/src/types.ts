@@ -48,6 +48,7 @@ export interface IClient {
   translator_language?: string;
   translator_needed?: string;
   users?: number[];
+  non_field_errors?: string;
 }
 
 //Note: Cannot use Case so internally use LegalCase. User interface refers to Case.
