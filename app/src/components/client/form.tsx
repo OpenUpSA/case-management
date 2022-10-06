@@ -82,7 +82,7 @@ const Component = (props: Props) => {
                 id="name_text"
                 style={{ marginTop: "-19px" }}
               >
-                Enter your name
+                Enter a name
               </FormHelperText>
             )}
           </Grid>
@@ -146,7 +146,7 @@ const Component = (props: Props) => {
               id="non_field_error"
               style={{ marginTop: "-19px" }}
             >
-              Enter a unique Id
+              Enter a unique identity number 
             </FormHelperText>
           )}
         </Grid>
