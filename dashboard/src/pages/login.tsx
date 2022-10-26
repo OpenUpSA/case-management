@@ -104,6 +104,19 @@ const Page = () => {
       >
         <Grid container direction="row" spacing={2} alignItems="center">
           <Grid item xs={12}>
+            {process.env.REACT_APP_DEMO_USER === "1" ? (
+              <Typography
+                gutterBottom
+                variant="h5"
+                color="primary"
+                className={classes.cardUserName}
+              >
+                This is a sandbox. All user data is cleared every 24 hours. You
+                can use this prefilled login.
+              </Typography>
+            ) : (
+              ""
+            )}
             <FormControl fullWidth size="small">
               <InputLabel
                 className={classes.inputLabel}
@@ -120,6 +133,11 @@ const Page = () => {
                 autoComplete="email"
                 autoFocus
                 required
+                value={
+                  process.env.REACT_APP_DEMO_USER === "1"
+                    ? "demo@test.test"
+                    : ""
+                }
               />
             </FormControl>
           </Grid>
@@ -140,6 +158,9 @@ const Page = () => {
                 aria-describedby="my-helper-text"
                 autoComplete="password"
                 required
+                value={
+                  process.env.REACT_APP_DEMO_USER === "1" ? "test12345" : ""
+                }
               />
             </FormControl>
           </Grid>
