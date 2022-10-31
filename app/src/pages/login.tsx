@@ -34,6 +34,8 @@ const Page = () => {
   // eslint-disable-next-line
   const [contextCaseTypes, setContextCaseTypes] =
     React.useContext(CaseTypesContext);
+  const [userEmail, setUserEmail] = React.useState<string>("");
+  const [userPassword, setUserPassword] = React.useState<string>("");
 
   React.useEffect(() => {
     const resetState = async () => {
@@ -148,8 +150,11 @@ const Page = () => {
                 autoComplete="email"
                 autoFocus
                 required
+                onChange={(e: React.ChangeEvent<{ value: string }>) => {
+                    setUserEmail(e.target.value);
+                }}
                 value={
-                  process.env.REACT_APP_DEMO_USER === "1" ? "demo@test.test" : ""
+                  process.env.REACT_APP_DEMO_USER === "1" ? "demo@test.test" : userEmail
                 }
               />
             </FormControl>
@@ -171,8 +176,11 @@ const Page = () => {
                 aria-describedby="my-helper-text"
                 autoComplete="password"
                 required
+                onChange={(e: React.ChangeEvent<{ value: string }>) => {
+                    setUserPassword(e.target.value);
+                }}
                 value={
-                  process.env.REACT_APP_DEMO_USER === "1" ? "test12345" : ""
+                  process.env.REACT_APP_DEMO_USER === "1" ? "test12345" : userPassword
                 }
               />
             </FormControl>
