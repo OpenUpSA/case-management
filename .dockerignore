@@ -6,3 +6,4 @@ Dockerfile
 node_modules
 yarn.lock
 app/
+dashboard/

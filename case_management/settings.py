@@ -49,6 +49,7 @@ ALLOWED_HOSTS = ["*"]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://localhost:3001",
     "https://app.casefile.org.za",
     "https://dashboard.casefile.org.za",
     "https://staging-app.casefile.org.za",
