@@ -225,6 +225,7 @@ logging.config.dictConfig(
                 "level": "INFO",
                 "handlers": ["console"],
             },
+            "django.db.backends": {"level": "DEBUG"},
         },
     }
 )
