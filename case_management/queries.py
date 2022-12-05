@@ -74,7 +74,6 @@ WITH
   		legalcase.created_at BETWEEN date_range.start_date AND date_range.end_date
   	GROUP BY
   		legalcase.caseoffice_id
-    LIMIT 1
   ),
   metric_cases_closed AS (
   	SELECT
@@ -87,7 +86,6 @@ WITH
   		legalcase.closed_at BETWEEN date_range.start_date AND date_range.end_date
   	GROUP BY
   		legalcase.caseoffice_id
-    LIMIT 1
   ),
   metric_open_cases AS (
   	SELECT
@@ -104,7 +102,6 @@ WITH
   		)
   	GROUP BY
   		legalcase.caseoffice_id
-    LIMIT 1
   ),
   active_users_by_caseoffice AS (
   	SELECT
@@ -150,6 +147,7 @@ WITH
   	GROUP BY
   		legalcase.caseoffice_id,
   		legalcase.days_created_to_closed
+    LIMIT 1
   )
 SELECT
 	json_object_agg(
