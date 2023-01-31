@@ -85,12 +85,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "rest_framework",
-    "django_rest_passwordreset",
     "phonenumber_field",
     "rest_framework.authtoken",
     "django_countries",
     "django_filters",
     "drf_yasg",
+    "django_rest_passwordreset",
 ]
 
 REST_FRAMEWORK = {
@@ -226,6 +226,7 @@ logging.config.dictConfig(
                 "level": "INFO",
                 "handlers": ["console"],
             },
+            "django.db.backends": {"level": "DEBUG"},
         },
     }
 )
