@@ -2,10 +2,14 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 from django.http import HttpResponse
-
+from django.contrib.auth import views as auth_views
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
+
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 from . import views
 from case_management.views import (
@@ -81,7 +85,25 @@ urlpatterns = [
         view=lambda r: HttpResponse(
             "User-agent: *\nAllow: /\n",
             content_type="text/plain")
-    ),
+    ),   
+    path('password-reset/',
+         auth_views.PasswordResetView.as_view(
+             
+         ),
+         name='password_reset'),  
+
+    path('password-reset/done/',
+         auth_views.PasswordResetDoneView.as_view(),           
+         name='password_reset_done'),
+
+    path('password-reset-confirm/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(),
+         name='password_reset_confirm'),
+
+    path('password-reset-complete/',
+         auth_views.PasswordResetCompleteView.as_view(),
+         name='password_reset_complete'),     
+    
     path('debug/bnp6tVkWRPhVUd5ieGij-sentry/', trigger_error),
 
 ]
