@@ -9,7 +9,7 @@ const resources = {
       Login: "Login",
       "Email Address": "Email Address",
       Password: "Password",
-      "Forgot password": "Lost your password?",
+      "Forgot password": "Forgot your password?",
       "CaseFile Logo": "CaseFile Logo",
       "Lost": "Lost?",
       "Lost message": "We can't find what you are looking for.",

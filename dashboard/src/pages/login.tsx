@@ -136,7 +136,7 @@ const Page = () => {
                 autoFocus
                 required
                 onChange={(e: React.ChangeEvent<{ value: string }>) => {
-                    setUserEmail(e.target.value);
+                  setUserEmail(e.target.value);
                 }}
                 value={
                   process.env.REACT_APP_DEMO_USER === "1"
@@ -164,10 +164,12 @@ const Page = () => {
                 autoComplete="password"
                 required
                 onChange={(e: React.ChangeEvent<{ value: string }>) => {
-                    setUserPassword(e.target.value);
+                  setUserPassword(e.target.value);
                 }}
                 value={
-                  process.env.REACT_APP_DEMO_USER === "1" ? "test12345" : userPassword
+                  process.env.REACT_APP_DEMO_USER === "1"
+                    ? "test12345"
+                    : userPassword
                 }
               />
             </FormControl>
@@ -196,6 +198,23 @@ const Page = () => {
               )}
             </Button>
           </Grid>
+          {process.env.hasOwnProperty("REACT_APP_PASSWORD_RESET_URL") ? (
+            <Grid
+              item
+              xs={12}
+              style={{ position: "relative", textAlign: "center" }}
+            >
+              <a
+                href={process.env.REACT_APP_PASSWORD_RESET_URL}
+                rel="noreferrer"
+                target="_blank"
+                color="secondary"
+                style={{ color: "#999" }}
+              >
+                {i18n.t("Forgot password")}
+              </a>
+            </Grid>
+          ) : null}
         </Grid>
       </Box>
       {showSnackbar.open && (

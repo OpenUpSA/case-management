@@ -35,6 +35,7 @@ botocore = "^1.21.61"
 boto3 = "^1.18.61"
 django-storages = "^1.12.1"
 django-countries = "^7.2.1"
+django-naomi = "^0.8"
 
 
 [tool.poetry.dev-dependencies]
