@@ -88,7 +88,8 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "django_countries",
     "django_filters",
-    "drf_yasg"
+    "drf_yasg",
+    "naomi",
 ]
 
 REST_FRAMEWORK = {
@@ -253,3 +254,6 @@ if os.getenv("EMAIL_HOST"):
     EMAIL_USE_TLS = True
     DEFAULT_FROM_EMAIL = env('EMAIL_DEFAULT_FROM')
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = "naomi.mail.backends.naomi.NaomiBackend"
+    EMAIL_FILE_PATH = "./tmp/email_preview"
