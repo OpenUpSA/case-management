@@ -21,6 +21,7 @@ RUN set -ex; \
   rm -rf /var/lib/apt/lists/*
 
 RUN pip install -U poetry virtualenv
+RUN poetry self update
 
 # Copy, then install requirements before copying rest for a requirements cache layer.
 COPY pyproject.toml poetry.lock /tmp/
