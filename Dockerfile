@@ -20,14 +20,14 @@ RUN set -ex; \
   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
   rm -rf /var/lib/apt/lists/*
 
-RUN pip install -U poetry virtualenv
-RUN poetry self update
+#RUN pip install -U poetry virtualenv
+RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local python3 -
+RUN poetry --version
 
 # Copy, then install requirements before copying rest for a requirements cache layer.
 COPY pyproject.toml poetry.lock /tmp/
 RUN set -ex; \
   cd /tmp; \
-  poetry lock; \
   poetry install
 
 COPY . /app
