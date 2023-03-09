@@ -257,3 +257,7 @@ if os.getenv("EMAIL_HOST"):
 else:
     EMAIL_BACKEND = "naomi.mail.backends.naomi.NaomiBackend"
     EMAIL_FILE_PATH = "./tmp/email_preview"
+
+LOGIN_URL = "/admin/login/"
+LOGIN_REDIRECT_URL = "/admin/"
+LOGOUT_REDIRECT_URL="/"
