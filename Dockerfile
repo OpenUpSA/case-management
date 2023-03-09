@@ -26,6 +26,7 @@ RUN pip install -U poetry virtualenv
 COPY pyproject.toml poetry.lock /tmp/
 RUN set -ex; \
   cd /tmp; \
+  poetry lock; \
   poetry install
 
 COPY . /app
