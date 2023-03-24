@@ -8,6 +8,9 @@ import Box from "@material-ui/core/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "../components/general/snackBar";
 import { LocationState } from "../types";
+import { getCaseOffices, getCaseTypes } from "../api";
+import { CaseOfficesContext } from "../contexts/caseOfficesContext";
+import { CaseTypesContext } from "../contexts/caseTypesContext";
 
 import { RedirectIfLoggedIn, UserInfo } from "../auth";
 import { authenticate, getUser } from "../api";
@@ -25,6 +28,14 @@ const Page = () => {
     message: "",
     severity: undefined,
   });
+  // eslint-disable-next-line
+  const [contextOffices, setContextOffices] =
+    React.useContext(CaseOfficesContext);
+  // eslint-disable-next-line
+  const [contextCaseTypes, setContextCaseTypes] =
+    React.useContext(CaseTypesContext);
+  const [userEmail, setUserEmail] = React.useState<string>("");
+  const [userPassword, setUserPassword] = React.useState<string>("");
 
   React.useEffect(() => {
     const resetState = async () => {
@@ -59,6 +70,12 @@ const Page = () => {
           userInfo.setName(name);
           userInfo.setCaseOffice(case_office);
           userInfo.setEmail(email);
+
+          const dataCaseOffices = await getCaseOffices();
+          const dataCaseTypes = await getCaseTypes();
+          setContextOffices(dataCaseOffices);
+          setContextCaseTypes(dataCaseTypes);
+
           history.push("/clients");
         }
       } else {
@@ -104,6 +121,19 @@ const Page = () => {
       >
         <Grid container direction="row" spacing={2} alignItems="center">
           <Grid item xs={12}>
+            {process.env.REACT_APP_DEMO_USER === "1" ? (
+              <Typography
+                gutterBottom
+                variant="h5"
+                color="primary"
+                className={classes.cardUserName}
+              >
+                This is a sandbox. All user data is cleared every 24 hours. You
+                can use this prefilled login.
+              </Typography>
+            ) : (
+              ""
+            )}
             <FormControl fullWidth size="small">
               <InputLabel
                 className={classes.inputLabel}
@@ -120,6 +150,14 @@ const Page = () => {
                 autoComplete="email"
                 autoFocus
                 required
+                onChange={(e: React.ChangeEvent<{ value: string }>) => {
+                  setUserEmail(e.target.value);
+                }}
+                value={
+                  process.env.REACT_APP_DEMO_USER === "1"
+                    ? "demo@test.test"
+                    : userEmail
+                }
               />
             </FormControl>
           </Grid>
@@ -140,6 +178,14 @@ const Page = () => {
                 aria-describedby="my-helper-text"
                 autoComplete="password"
                 required
+                onChange={(e: React.ChangeEvent<{ value: string }>) => {
+                  setUserPassword(e.target.value);
+                }}
+                value={
+                  process.env.REACT_APP_DEMO_USER === "1"
+                    ? "test12345"
+                    : userPassword
+                }
               />
             </FormControl>
           </Grid>
@@ -167,6 +213,25 @@ const Page = () => {
               )}
             </Button>
           </Grid>
+          {process.env.hasOwnProperty('REACT_APP_PASSWORD_RESET_URL') ? (
+            <Grid
+              item
+              xs={12}
+              style={{ position: "relative", textAlign: "center" }}
+            >
+              <a
+                href={process.env.REACT_APP_PASSWORD_RESET_URL}
+                rel="noreferrer"
+                target="_blank"
+                color="secondary"
+                style={{ color: "#999" }}
+              >
+                {i18n.t("Forgot password")}
+              </a>
+            </Grid>
+          ) : (
+            null
+          )}
         </Grid>
       </Box>
       {showSnackbar.open && (

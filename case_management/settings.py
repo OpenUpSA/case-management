@@ -12,12 +12,10 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import logging.config
-import os
 import environ
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
-
 
 ROOT_DIR = environ.Path(__file__) - 2
 PROJ_DIR = ROOT_DIR.path("case_management")
@@ -49,20 +47,14 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = ["*"]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3321",
     "http://localhost:3000",
     "http://localhost:3001",
     "https://app.casefile.org.za",
-    "https://staging.casefile.org.za",
-    "https://staging-app.casefile.org.za",
-    "https://staging.app.casefile.org.za",
-    "https://sandbox-app.casefile.org.za",
-    "https://sandbox.app.casefile.org.za",
     "https://dashboard.casefile.org.za",
+    "https://staging-app.casefile.org.za",
+    "https://sandbox-app.casefile.org.za",
     "https://staging-dashboard.casefile.org.za",
-    "https://staging.dashboard.casefile.org.za",
     "https://sandbox-dashboard.casefile.org.za",
-    "https://sandbox.dashboard.casefile.org.za",
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -97,6 +89,7 @@ INSTALLED_APPS = [
     "django_countries",
     "django_filters",
     "drf_yasg",
+    "naomi",
 ]
 
 REST_FRAMEWORK = {
@@ -232,6 +225,7 @@ logging.config.dictConfig(
                 "level": "INFO",
                 "handlers": ["console"],
             },
+            "django.db.backends": {"level": "DEBUG"},
         },
     }
 )
@@ -251,3 +245,19 @@ if os.getenv("AWS_ACCESS_KEY_ID"):
     AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
     AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+
+if os.getenv("EMAIL_HOST"):
+    EMAIL_HOST = env('EMAIL_HOST')
+    EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+    EMAIL_PORT = env('EMAIL_PORT', default=587)
+    EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = env('EMAIL_DEFAULT_FROM')
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = "naomi.mail.backends.naomi.NaomiBackend"
+    EMAIL_FILE_PATH = "./tmp/email_preview"
+
+LOGIN_URL = "/admin/login/"
+LOGIN_REDIRECT_URL = "/admin/"
+LOGOUT_REDIRECT_URL="/"

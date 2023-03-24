@@ -1,60 +1,65 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
+{% load env_filter %}
 {% block content %}
 <style>
-  html, body {
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-  }
+    html,
+    body {
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+    }
 
-  .half-and-half {
-    display: block;
-    width: 100%;
-    height: 24vh;
-    text-align: center;
-    float: left;
-    display: flex;
-    align-items: center; /* Vertical center alignment */
-    justify-content: center;
-    font-size: 3em;
-    font-family: sans-serif;
-    text-decoration: none;
-    box-sizing: border-box;
-    background-color: rgba(128, 128, 255, 0.1);
-    color: blue;
-  }
+    .half-and-half {
+        display: block;
+        width: 100%;
+        height: 19vh;
+        text-align: center;
+        float: left;
+        display: flex;
+        align-items: center;
+        /* Vertical center alignment */
+        justify-content: center;
+        font-size: 3em;
+        font-family: sans-serif;
+        text-decoration: none;
+        box-sizing: border-box;
+        background-color: rgba(128, 128, 255, 0.1);
+        color: blue;
+    }
 
-  .half-and-half:hover  {
-    background-color: rgba(128, 128, 255, 0.2);
-    cursor: pointer;
-  }
+    .half-and-half:hover {
+        background-color: rgba(128, 128, 255, 0.2);
+        cursor: pointer;
+    }
 
-  .has-border-right {
-    border-bottom: solid 1px rgba(128, 128, 255, 0.2);
-  }
+    .has-border-right {
+        border-bottom: solid 1px rgba(128, 128, 255, 0.2);
+    }
 
-  .has-border-left {
-    border-top: solid 1px rgba(128, 128, 255, 0.2);
-  }
-  
-  .logo {
-    padding: 2vh;
-    height: 6vh;
-    border-bottom: solid 1px rgba(128, 128, 255, 0.2);
-    box-sizing: border-box;
-  }
+    .has-border-left {
+        border-top: solid 1px rgba(128, 128, 255, 0.2);
+    }
 
-  .logo img {
-    height: 2vh;
-    display: block;
-    margin: 0 auto;
-  }
+    .logo {
+        padding: 2vh;
+        height: 6vh;
+        border-bottom: solid 1px rgba(128, 128, 255, 0.2);
+        box-sizing: border-box;
+    }
+
+    .logo img {
+        height: 2vh;
+        display: block;
+        margin: 0 auto;
+    }
+
 </style>
 <div class="logo">
-  <img src="/static/logo-small.svg" />
+    <img src="/static/logo-small.svg" />
 </div>
-<a class="half-and-half has-border-right" href="https://app.casefile.org.za/">App</a>
-<a class="half-and-half has-border-left" href="https://dashboard.casefile.org.za/">Dashboard</a>
+<a class="half-and-half has-border-right" href={{ "APP_URL" |get_env|safe }}>App</a>
+<a class="half-and-half has-border-left" href={{ "DASHBOARD_URL" |get_env|safe }}>Dashboard</a>
 <a class="half-and-half has-border-left" href="/admin">Admin</a>
 <a class="half-and-half has-border-left" href="/api/ui/">API</a>
+<a class="half-and-half has-border-left" href="https://docs.casefile.org.za/">User Manual</a>
 {% endblock content %}

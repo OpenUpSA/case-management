@@ -18,6 +18,7 @@ type Props = {
   phoneErrorMessage?: boolean;
   emailErrorMessage?: boolean;
   nameError?: boolean;
+  nonFieldError?: boolean;
   changed?: boolean;
   setChanged?: any;
 };
@@ -76,8 +77,12 @@ const Component = (props: Props) => {
               />
             </FormControl>
             {props.nameError && (
-              <FormHelperText error id="name_text">
-                Enter your name
+              <FormHelperText
+                error
+                id="name_text"
+                style={{ marginTop: "-19px" }}
+              >
+                Enter a name
               </FormHelperText>
             )}
           </Grid>
@@ -135,6 +140,15 @@ const Component = (props: Props) => {
               }}
             />
           </FormControl>
+          {props.nonFieldError && (
+            <FormHelperText
+              error
+              id="non_field_error"
+              style={{ marginTop: "-19px" }}
+            >
+              Enter a unique identity number 
+            </FormHelperText>
+          )}
         </Grid>
         {props.detailedView ? (
           <Grid item xs={12} md={4}>
@@ -214,7 +228,11 @@ const Component = (props: Props) => {
             />
           </FormControl>
           {props.phoneErrorMessage && (
-            <FormHelperText error id="contact_number-text">
+            <FormHelperText
+              error
+              id="contact_number-text"
+              style={{ marginTop: "-19px" }}
+            >
               Enter a valid phone number
             </FormHelperText>
           )}
@@ -246,7 +264,11 @@ const Component = (props: Props) => {
               />
             </FormControl>
             {props.emailErrorMessage && (
-              <FormHelperText error id="contact_email-text">
+              <FormHelperText
+                error
+                id="contact_email-text"
+                style={{ marginTop: "-19px" }}
+              >
                 Enter a valid Email address
               </FormHelperText>
             )}

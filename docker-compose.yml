@@ -22,6 +22,8 @@ services:
       - DJANGO_SECRET_KEY=not-secret-in-dev
       - DJANGO_WHITENOISE_AUTOREFRESH=True
       - TAG_MANAGER_ENABLED=False
+      - APP_URL="https://app.casefile.org.za"
+      - DASHBOARD_URL="https://dashboard.casefile.org.za"
     env_file:
       - development.env
   db:

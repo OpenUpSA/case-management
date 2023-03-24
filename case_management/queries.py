@@ -147,6 +147,7 @@ WITH
   	GROUP BY
   		legalcase.caseoffice_id,
   		legalcase.days_created_to_closed
+    LIMIT 1
   )
 SELECT
 	json_object_agg(

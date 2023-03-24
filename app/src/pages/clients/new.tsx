@@ -39,6 +39,7 @@ const Page = () => {
     React.useState<boolean>(false);
   const [phoneErrorMessage, setPhoneErrorMessage] =
     React.useState<boolean>(false);
+  const [nonFieldError, setNonFieldError] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -57,7 +58,7 @@ const Page = () => {
   const newClient = async (client: IClient) => {
     try {
       setIsLoading(true);
-      const { id, name, contact_email, contact_number } = await createClient({
+      const { id, name, contact_email, contact_number, non_field_errors } = await createClient({
         ...client,
         users: [userId],
       });
@@ -66,14 +67,23 @@ const Page = () => {
         setNameError(true);
         setEmailErrorMessage(false);
         setPhoneErrorMessage(false);
+        setNonFieldError(false)
         return false;
       } else if (typeof contact_email === "object") {
         setEmailErrorMessage(true);
         setPhoneErrorMessage(false);
         setNameError(false);
+        setNonFieldError(false)
         return false;
       } else if (typeof contact_number === "object") {
         setPhoneErrorMessage(true);
+        setEmailErrorMessage(false);
+        setNameError(false);        
+        setNonFieldError(false)
+        return false;
+      } else if (typeof non_field_errors === "object") {
+        setNonFieldError(true)
+        setPhoneErrorMessage(false);
         setEmailErrorMessage(false);
         setNameError(false);
         return false;
@@ -81,6 +91,7 @@ const Page = () => {
         setNameError(false);
         setEmailErrorMessage(false);
         setPhoneErrorMessage(false);
+        setNonFieldError(false)
       }
 
       id &&
@@ -200,6 +211,7 @@ const Page = () => {
             emailErrorMessage={emailErrorMessage}
             phoneErrorMessage={phoneErrorMessage}
             nameError={nameError}
+            nonFieldError={nonFieldError}
             client={client}
             readOnly={false}
             detailedView={true}
