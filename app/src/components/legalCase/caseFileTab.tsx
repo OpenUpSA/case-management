@@ -3,14 +3,9 @@ import { useStyles } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
 import CheckIcon from "@mui/icons-material/Check";
 import UploadIcon from "@mui/icons-material/Upload";
-import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import DescriptionIcon from "@mui/icons-material/Description";
-import GavelIcon from "@mui/icons-material/Gavel";
-import AddIcon from "@mui/icons-material/Add";
-import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
-import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import WorkIcon from "@mui/icons-material/Work";
 import LinkIcon from "@mui/icons-material/Link";
 import Divider from "@mui/material/Divider";
@@ -448,67 +443,7 @@ export default function CaseFileTab(props: Props) {
           <CircularProgress style={{ position: "absolute", left: "50%" }} />
         </Grid>
       )}
-      <InputLabel className={classes.caseFileLabel}>
-        {i18n.t("Recommended case files")}:
-      </InputLabel>
-      <Grid container direction="column">
-        <Grid item className={classes.caseFiles}>
-          <MeetingRoomIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography style={{ flexGrow: 1 }}>
-            {i18n.t("Notice to vacate")}
-          </Typography>
-          <CheckIcon style={{ color: "#3dd997" }} />
-          <IconButton>
-            <AddIcon sx={{ color: "#000000" }} />
-          </IconButton>
-        </Grid>
-        <Grid item className={classes.caseFiles}>
-          <DescriptionIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography style={{ flexGrow: 1 }}>
-            {i18n.t("Notice of motion")}
-          </Typography>
-          <CheckIcon style={{ color: "#3dd997" }} />
-          <IconButton>
-            <AddIcon sx={{ color: "#000000" }} />
-          </IconButton>
-        </Grid>
-        <Grid item className={classes.caseFiles}>
-          <GavelIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography style={{ flexGrow: 1 }}>
-            {i18n.t("Eviction order")}
-          </Typography>
-          <IconButton>
-            <AddIcon sx={{ color: "#000000" }} />
-          </IconButton>
-        </Grid>
-        <Grid item className={classes.caseFiles}>
-          <ReceiptLongIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography style={{ flexGrow: 1 }}>
-            {i18n.t("Proof of rental payment")}
-          </Typography>
-          <IconButton>
-            <AddIcon sx={{ color: "#000000" }} />
-          </IconButton>
-        </Grid>
-        <Grid item className={classes.caseFiles}>
-          <HistoryEduIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography style={{ flexGrow: 1 }}>
-            {i18n.t("Lease agreement")}
-          </Typography>
-          <IconButton>
-            <AddIcon sx={{ color: "#000000" }} />
-          </IconButton>
-        </Grid>
-        <Grid item className={classes.caseFiles}>
-          <WorkIcon style={{ margin: "0px 15px 0px 10px" }} />
-          <Typography style={{ flexGrow: 1 }}>
-            {i18n.t("Record of attempt to find legal council")}
-          </Typography>
-          <IconButton>
-            <AddIcon sx={{ color: "#000000" }} />
-          </IconButton>
-        </Grid>
-      </Grid>
+      
       {showSnackbar.open && (
         <SnackbarAlert
           open={showSnackbar.open}
