@@ -56,6 +56,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://staging-dashboard.casefile.org.za",
     "https://sandbox-dashboard.casefile.org.za",
     "https://app.wasafiri.casefile.org.za",
+    "https://dashboard.wasafiri.casefile.org.za",
 ]
 
 CORS_ALLOW_HEADERS = [
