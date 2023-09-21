@@ -55,6 +55,10 @@ CORS_ALLOWED_ORIGINS = [
     "https://sandbox-app.casefile.org.za",
     "https://staging-dashboard.casefile.org.za",
     "https://sandbox-dashboard.casefile.org.za",
+    "https://app.wasafiri.casefile.org.za",
+    "https://dashboard.wasafiri.casefile.org.za",
+    "https://app.casefile.wasafirifoundation.org.za",
+    "https://dashboard.casefile.wasafirifoundation.org.za",
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -260,4 +264,4 @@ else:
 
 LOGIN_URL = "/admin/login/"
 LOGIN_REDIRECT_URL = "/admin/"
-LOGOUT_REDIRECT_URL="/"
+LOGOUT_REDIRECT_URL = "/"
