@@ -9,6 +9,11 @@ export function toSentence(items: string[]): string {
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    "@global": {
+      ".MuiDialog-root": {
+        zIndex: "2000!important",
+      },
+    },
     formError: {
       color: "#990000",
       textAlign: "center",
@@ -875,7 +880,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       borderRadius: "50%",
     },
     dialogPaper: {
-      top: 50,
+      top: 0,
     },
     dateInput: {
       flexWrap: "wrap",
