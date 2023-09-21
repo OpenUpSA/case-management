@@ -47,10 +47,8 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 # Rely on nginx to direct only allowed hosts, allow all for dokku checks to work.
 ALLOWED_HOSTS = ["*"]
 
-
 CORS_ALLOWED_ORIGIN_REGEXES = [
-    re.compile(env.str("CORS_ALLOWED_ORIGIN_REGEXES",
-                       default="https?:\/\/(.+casefile.+.netlify.app|.+casefile.org.za|.*casefile.wasafirifoundation.org.za|localhost:\d+|127.0.0.1:\d+)"))
+    re.compile(x) for x in env.list("CORS_ALLOWED_ORIGIN_REGEXES", default=["https?:\/\/(.+casefile.+.netlify.app|.+casefile.org.za)"])
 ]
 
 CORS_ALLOW_HEADERS = [
