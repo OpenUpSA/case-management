@@ -82,6 +82,7 @@ Other commands can be run on the production server;
 
 The dokku app environment is deployed using an [Ansible playbook](https://github.com/OpenUpSA/ansible-config/tree/master/apps/osf-case-management).
 
+`CORS_ALLOWED_ORIGIN_REGEXES` defaults to just allowing requests from `netlify.app` and `casefile.org.za`. If you are deploying an instance with a different domain/host then make sure to set the environment variable appropriately.
 
 Settings
 --------
