@@ -11,7 +11,7 @@ export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     "@global": {
       ".MuiDialog-root": {
-        zIndex: "2000!important",
+        zIndex: "2147483640!important",
       },
     },
     formError: {
