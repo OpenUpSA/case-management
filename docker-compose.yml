@@ -24,6 +24,7 @@ services:
       - TAG_MANAGER_ENABLED=False
       - APP_URL="https://app.casefile.org.za"
       - DASHBOARD_URL="https://dashboard.casefile.org.za"
+      - CORS_ALLOWED_ORIGIN_REGEXES=^http://localhost:\d+$$,^http://127.0.0.1:\d+$$
     env_file:
       - development.env
   db:
