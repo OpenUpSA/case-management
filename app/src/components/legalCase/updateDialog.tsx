@@ -748,12 +748,6 @@ const UpdateDialog = (props: Props) => {
         fullWidth
         maxWidth="md"
         classes={{ paper: classes.dialogPaper }}
-        PaperProps={{
-          sx: {
-            minHeight: "90vh",
-          }
-        }}
-
       >
         <Box style={{ margin: 20 }}>
           <Grid

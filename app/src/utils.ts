@@ -765,7 +765,6 @@ export const useStyles = makeStyles((theme: Theme) =>
     tabBox: {
       width: "100%",
       overflowY: "auto",
-      maxHeight: "200px",
       minHeight: "200px",
       marginTop: "10px",
     },
