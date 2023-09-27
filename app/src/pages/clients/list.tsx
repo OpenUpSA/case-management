@@ -45,7 +45,8 @@ const Page = () => {
   const [caseOfficeClients, setCaseOfficeClients] = React.useState<IClient[]>();
   const [userClients, setUserClients] = React.useState<IClient[]>();
   const [filteredClients, setFilteredClients] = React.useState<IClient[]>();
-  const [filterClientsValue, setFilterClientsValue] = React.useState<string>("");
+  const [filterClientsValue, setFilterClientsValue] =
+    React.useState<string>("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
     open: location.state?.open!,
@@ -123,7 +124,10 @@ const Page = () => {
       setFilteredClients(
         list?.filter((client) => {
           return (
-            client.name
+            client.first_names
+              .toLowerCase()
+              .includes(filterClientsValue.toLowerCase()) ||
+            client.last_name
               .toLowerCase()
               .includes(filterClientsValue.toLowerCase()) ||
             client.preferred_name
@@ -200,7 +204,7 @@ const Page = () => {
             <Select
               id="Filter"
               className={classes.select}
-              style={{minWidth: 200}}
+              style={{ minWidth: 200 }}
               disableUnderline
               input={<Input />}
               value={clientList}

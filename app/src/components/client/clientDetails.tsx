@@ -47,7 +47,8 @@ const Component = (props: Props) => {
     official_identifier_type: "",
     contact_number: "",
     contact_email: "",
-    name: "",
+    first_names: "",
+    last_name: "",
     address: "",
     next_of_kin_name: "",
     next_of_kin_contact_number: "",
@@ -225,17 +226,27 @@ const Component = (props: Props) => {
           </Grid>
         )}
 
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <ReusableInput
-            inputName={"name"}
-            title={"Name"}
-            value={client?.name}
+            inputName={"first_names"}
+            title={"First name(s)"}
+            value={client?.first_names}
             setClient={setClient}
-            prevValue={props.client?.name!}
+            prevValue={props.client?.first_names!}
             editClientInput={editClientInput}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
+          <ReusableInput
+            inputName={"last_name"}
+            title={"Last name"}
+            value={client?.last_name}
+            setClient={setClient}
+            prevValue={props.client?.last_name!}
+            editClientInput={editClientInput}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
           <ReusableInput
             inputName={"preferred_name"}
             title={"Preferred name"}
@@ -245,7 +256,7 @@ const Component = (props: Props) => {
             editClientInput={editClientInput}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <ReusableInput
             inputName={"contact_number"}
             title={"Contact number"}

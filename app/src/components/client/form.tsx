@@ -17,7 +17,8 @@ type Props = {
   detailedView: boolean;
   phoneErrorMessage?: boolean;
   emailErrorMessage?: boolean;
-  nameError?: boolean;
+  firstNamesError?: boolean;
+  lastNameError?: boolean;
   nonFieldError?: boolean;
   changed?: boolean;
   setChanged?: any;
@@ -31,7 +32,8 @@ const Component = (props: Props) => {
     official_identifier_type: "",
     contact_number: "",
     contact_email: "",
-    name: "",
+    first_names: "",
+    last_name: "",
   });
 
   useEffect(() => {
@@ -50,33 +52,73 @@ const Component = (props: Props) => {
         alignItems="center"
       >
         {props.detailedView ? (
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={6}>
             <FormControl fullWidth size="small">
               <InputLabel
                 className={classes.inputLabel}
-                htmlFor="name"
+                htmlFor="first_names"
                 shrink={true}
               >
-                {i18n.t("Full name")}:
+                {i18n.t("First name(s)")}:
               </InputLabel>
               <Input
-                id="name"
+                id="first_names"
                 autoFocus
                 disableUnderline={true}
                 disabled={props.readOnly}
                 className={classes.textField}
-                aria-describedby="Input your full name"
-                value={client.name}
+                aria-describedby="Input your first name(s)"
+                value={client.first_names}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setClient((client) => ({
                     ...client,
-                    name: e.target.value,
+                    first_names: e.target.value,
                   }));
                   props.setChanged(true);
                 }}
               />
             </FormControl>
-            {props.nameError && (
+            {props.firstNamesError && (
+              <FormHelperText
+                error
+                id="name_text"
+                style={{ marginTop: "-19px" }}
+              >
+                Enter names
+              </FormHelperText>
+            )}
+          </Grid>
+        ) : (
+          ""
+        )}
+        {props.detailedView ? (
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth size="small">
+              <InputLabel
+                className={classes.inputLabel}
+                htmlFor="last_name"
+                shrink={true}
+              >
+                {i18n.t("Last name")}:
+              </InputLabel>
+              <Input
+                id="last_name"
+                autoFocus
+                disableUnderline={true}
+                disabled={props.readOnly}
+                className={classes.textField}
+                aria-describedby="Input your first name(s)"
+                value={client.last_name}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setClient((client) => ({
+                    ...client,
+                    last_name: e.target.value,
+                  }));
+                  props.setChanged(true);
+                }}
+              />
+            </FormControl>
+            {props.lastNameError && (
               <FormHelperText
                 error
                 id="name_text"
@@ -146,7 +188,7 @@ const Component = (props: Props) => {
               id="non_field_error"
               style={{ marginTop: "-19px" }}
             >
-              Enter a unique identity number 
+              Enter a unique identity number
             </FormHelperText>
           )}
         </Grid>
