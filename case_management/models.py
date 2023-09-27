@@ -267,6 +267,8 @@ class CaseType(LoggedModel):
 
 class Client(LoggedModel):
     name = models.CharField(max_length=255, null=False, blank=False)
+    first_names = models.CharField(max_length=255, null=True, blank=False)
+    last_name = models.CharField(max_length=255, null=True, blank=False)
     preferred_name = models.CharField(max_length=128, blank=True)
     official_identifier = models.CharField(max_length=64, null=True, blank=True)
     official_identifier_type = models.CharField(
