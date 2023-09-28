@@ -15,6 +15,7 @@ from case_management.enums import (
     Languages,
     Provinces,
     LogChangeTypes,
+    ContactMethods
 )
 from django_countries.fields import CountryField
 from django.conf import settings
@@ -101,7 +102,8 @@ class Log(models.Model):
 
 class LogChange(models.Model):
     id = models.AutoField(primary_key=True)
-    log = models.ForeignKey(Log, related_name='changes', on_delete=models.CASCADE)
+    log = models.ForeignKey(Log, related_name='changes',
+                            on_delete=models.CASCADE)
 
     field = models.CharField(max_length=255)
     value = models.TextField(null=True)
@@ -168,6 +170,7 @@ def logManyToManyChange(
             # logIt has not been called
             logIt(instance, 'Update', user=instance.updated_by)
         _logChange(instance.log, field, value, change_action)
+
 
 class LoggedModel(LifecycleModel, models.Model):
     id = models.AutoField(primary_key=True)
@@ -269,18 +272,24 @@ class Client(LoggedModel):
     first_names = models.CharField(max_length=255, null=True, blank=False)
     last_name = models.CharField(max_length=255, null=True, blank=False)
     preferred_name = models.CharField(max_length=128, blank=True)
-    official_identifier = models.CharField(max_length=64, null=True, blank=True)
+    official_identifier = models.CharField(
+        max_length=64, null=True, blank=True)
     official_identifier_type = models.CharField(
         max_length=25, choices=OfficialIdentifiers.choices, null=True, blank=True
     )
-    date_of_birth = models.DateTimeField(null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
     contact_number = PhoneNumberField(blank=True)
     alternative_contact_number = PhoneNumberField(blank=True)
     contact_email = models.EmailField(max_length=254, blank=True)
     alternative_contact_email = models.EmailField(max_length=254, blank=True)
+    preferred_contact_method = models.CharField(
+        max_length=25, blank=True, choices=ContactMethods.choices
+    )
     address = models.CharField(max_length=255, blank=True)
-    province = models.CharField(max_length=20, blank=True, choices=Provinces.choices)
-    gender = models.CharField(max_length=20, blank=True, choices=Genders.choices)
+    province = models.CharField(
+        max_length=20, blank=True, choices=Provinces.choices)
+    gender = models.CharField(
+        max_length=20, blank=True, choices=Genders.choices)
     marital_status = models.CharField(
         max_length=20, blank=True, choices=MaritalStatuses.choices
     )
@@ -301,6 +310,7 @@ class Client(LoggedModel):
         max_length=20, blank=True, choices=Languages.choices
     )
     nationality = CountryField(blank=True)
+    country_of_birth = CountryField(blank=True)
     employment_status = models.CharField(
         max_length=25, blank=True, choices=EmploymentStatus.choices
     )
@@ -337,7 +347,8 @@ class Client(LoggedModel):
 
 
 class LegalCase(LoggedModel):
-    case_number = models.CharField(max_length=32, null=False, blank=False, unique=True)
+    case_number = models.CharField(
+        max_length=32, null=False, blank=False, unique=True)
     state = models.CharField(
         max_length=10, choices=CaseStates.choices, default=CaseStates.OPENED
     )
@@ -438,7 +449,8 @@ class File(LoggedChildModel):
         LegalCase, related_name='files', on_delete=models.CASCADE, null=True, blank=True
     )
     upload = models.FileField(upload_to='uploads/')
-    description = models.CharField(max_length=255, null=False, blank=True, default='')
+    description = models.CharField(
+        max_length=255, null=False, blank=True, default='')
 
     def save(self, *args, **kwargs):
         if self.description == '':

@@ -7,6 +7,7 @@ class PermissionGroups(models.TextChoices):
     ADVICE_OFFICE_ADMIN = 'AdviceOfficeAdmin', 'Advice Office Admin'
     CASE_WORKER = 'CaseWorker', 'Case Worker'
 
+
 class LogChangeTypes(models.TextChoices):
     CHANGE = 'Change'
     ADD = 'Add'
@@ -97,3 +98,10 @@ class Provinces(models.TextChoices):
     NC = 'NorthernCape', 'Northern Cape'
     NW = 'NorthWest', 'North West'
     WC = 'WesternCape', 'Western Cape'
+
+
+class ContactMethods(models.TextChoices):
+    Call = 'Call', 'Phone Call'
+    SMS = 'SMS', 'SMS'
+    WhatsApp = 'WhatsApp', 'WhatsApp/messenger'
+    Email = 'Email', 'Email'

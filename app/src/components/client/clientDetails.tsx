@@ -57,6 +57,9 @@ const Component = (props: Props) => {
     gender: "",
     alternative_contact_email: "",
     alternative_contact_number: "",
+    date_of_birth: "",
+    country_of_birth: "",
+    nationality: "",
     created_at: new Date(),
   });
 
@@ -463,6 +466,47 @@ const Component = (props: Props) => {
               prevValue={props.client?.dependents!}
               editClientInput={editClientInput}
               type={"number"}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <ReusableInput
+              inputName={"date_of_birth"}
+              title={"Date of birth"}
+              value={client?.date_of_birth}
+              setClient={setClient}
+              prevValue={props.client?.date_of_birth!}
+              editClientInput={editClientInput}
+              type={"date"}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <ReusableSelect
+              title={"Country of birth"}
+              value={client?.country_of_birth}
+              menuItems={constants.countries}
+              inputName={"country_of_birth"}
+              setClient={setClient}
+              editClientSelect={editClientSelect}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <ReusableSelect
+              title={"Nationality"}
+              value={client?.nationality}
+              menuItems={constants.countries}
+              inputName={"nationality"}
+              setClient={setClient}
+              editClientSelect={editClientSelect}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <ReusableSelect
+              title={"Preferred contact method"}
+              value={client?.preferred_contact_method}
+              menuItems={constants.preferredContactMethods}
+              inputName={"preferred_contact_method"}
+              setClient={setClient}
+              editClientSelect={editClientSelect}
             />
           </Grid>
         </Grid>

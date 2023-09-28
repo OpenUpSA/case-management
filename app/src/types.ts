@@ -42,6 +42,7 @@ export interface IClient {
   home_language?: string;
   marital_status?: string;
   nationality?: string;
+  country_of_birth?: string;
   next_of_kin_contact_number?: string;
   next_of_kin_name?: string;
   next_of_kin_relationship?: string;
@@ -50,6 +51,7 @@ export interface IClient {
   translator_needed?: string;
   users?: number[];
   non_field_errors?: string;
+  preferred_contact_method?: string;
 }
 
 //Note: Cannot use Case so internally use LegalCase. User interface refers to Case.
