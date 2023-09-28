@@ -311,7 +311,7 @@ class Client(LoggedModel):
 
     def save(self, *args, **kwargs):
         if self.preferred_name == '':
-            self.preferred_name = self.name
+            self.preferred_name = self.first_names
         super().save(*args, **kwargs)
 
     class Meta:
