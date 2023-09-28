@@ -1,8 +1,16 @@
 {
+  "name": "case-file",
   "stack": "container",
+  "env": {
+    "DJANGO_DEBUG": 1,
+    "DJANGO_SECRET_KEY": "default-change-me"
+  },
   "environments": {
     "review": {
       "addons": ["heroku-postgresql:mini"]
     }
+  },
+  "scripts": {
+    "postdeploy": "./postdeploy.sh"
   }
 }

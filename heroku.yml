@@ -10,4 +10,4 @@ run:
 release:
   image: web
   command:
-    - python manage.py migrate --noinput
+    - ./release.sh
