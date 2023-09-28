@@ -13,6 +13,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       ".MuiDialog-root": {
         zIndex: "2147483640!important",
       },
+      ".MuiPopover-root": {
+        zIndex: "2147483640!important",
+      },
     },
     formError: {
       color: "#990000",
