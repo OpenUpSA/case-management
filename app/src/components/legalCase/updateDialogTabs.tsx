@@ -228,7 +228,7 @@ const UpdateDialogTabs = (props: Props) => {
             disableUnderline={true}
             fullWidth
             value={props.note.content}
-            rows={4}
+            rows={10}
             multiline
             placeholder={i18n.t("Description of update")}
             className={classes.dialogInput}

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import logging.config
 import environ
+import re
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -46,19 +47,8 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 # Rely on nginx to direct only allowed hosts, allow all for dokku checks to work.
 ALLOWED_HOSTS = ["*"]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "https://app.casefile.org.za",
-    "https://dashboard.casefile.org.za",
-    "https://staging-app.casefile.org.za",
-    "https://sandbox-app.casefile.org.za",
-    "https://staging-dashboard.casefile.org.za",
-    "https://sandbox-dashboard.casefile.org.za",
-    "https://app.wasafiri.casefile.org.za",
-    "https://dashboard.wasafiri.casefile.org.za",
-    "https://app.casefile.wasafirifoundation.org.za",
-    "https://dashboard.casefile.wasafirifoundation.org.za",
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    re.compile(x) for x in env.list("CORS_ALLOWED_ORIGIN_REGEXES", default=["https?:\/\/(.+casefile.+.netlify.app|.+casefile.org.za)"])
 ]
 
 CORS_ALLOW_HEADERS = [

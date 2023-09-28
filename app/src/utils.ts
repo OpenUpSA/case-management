@@ -9,6 +9,14 @@ export function toSentence(items: string[]): string {
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    "@global": {
+      ".MuiDialog-root": {
+        zIndex: "2147483640!important",
+      },
+      ".MuiPopover-root": {
+        zIndex: "2147483640!important",
+      },
+    },
     formError: {
       color: "#990000",
       textAlign: "center",
@@ -760,7 +768,6 @@ export const useStyles = makeStyles((theme: Theme) =>
     tabBox: {
       width: "100%",
       overflowY: "auto",
-      maxHeight: "200px",
       minHeight: "200px",
       marginTop: "10px",
     },
@@ -875,7 +882,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       borderRadius: "50%",
     },
     dialogPaper: {
-      top: 50,
+      top: 0,
     },
     dateInput: {
       flexWrap: "wrap",

@@ -107,3 +107,7 @@ urlpatterns = [
     path('debug/bnp6tVkWRPhVUd5ieGij-sentry/', trigger_error),
 
 ]
+
+admin.site.site_header = 'CaseFile'                    # default: "Django Administration"
+admin.site.index_title = 'Admin'                 # default: "Site administration"
+admin.site.site_title = 'CaseFile' # default: "Django site admin"
