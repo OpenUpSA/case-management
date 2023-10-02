@@ -78,6 +78,13 @@ const Page = () => {
         setPhoneErrorMessage(false);
         setNonFieldError(false);
         return false;
+      } else if (typeof last_name === "object") {
+        setFirstNamesError(false);
+        setLastNameError(true);
+        setEmailErrorMessage(false);
+        setPhoneErrorMessage(false);
+        setNonFieldError(false);
+        return false;
       } else if (typeof contact_email === "object") {
         setEmailErrorMessage(true);
         setPhoneErrorMessage(false);

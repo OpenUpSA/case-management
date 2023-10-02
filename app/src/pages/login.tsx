@@ -8,9 +8,10 @@ import Box from "@material-ui/core/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "../components/general/snackBar";
 import { LocationState } from "../types";
-import { getCaseOffices, getCaseTypes } from "../api";
+import { getCaseOffices, getCaseTypes, getLanguages } from "../api";
 import { CaseOfficesContext } from "../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../contexts/caseTypesContext";
+import { LanguagesContext } from "../contexts/languagesContext";
 
 import { RedirectIfLoggedIn, UserInfo } from "../auth";
 import { authenticate, getUser } from "../api";
@@ -34,6 +35,9 @@ const Page = () => {
   // eslint-disable-next-line
   const [contextCaseTypes, setContextCaseTypes] =
     React.useContext(CaseTypesContext);
+  // eslint-disable-next-line
+  const [contextLanguages, setContextLanguages] =
+    React.useContext(LanguagesContext);
   const [userEmail, setUserEmail] = React.useState<string>("");
   const [userPassword, setUserPassword] = React.useState<string>("");
 
@@ -73,8 +77,10 @@ const Page = () => {
 
           const dataCaseOffices = await getCaseOffices();
           const dataCaseTypes = await getCaseTypes();
+          const dataLanguages = await getLanguages();
           setContextOffices(dataCaseOffices);
           setContextCaseTypes(dataCaseTypes);
+          setContextLanguages(dataLanguages);
 
           history.push("/clients");
         }
@@ -213,7 +219,7 @@ const Page = () => {
               )}
             </Button>
           </Grid>
-          {process.env.hasOwnProperty('REACT_APP_PASSWORD_RESET_URL') ? (
+          {process.env.hasOwnProperty("REACT_APP_PASSWORD_RESET_URL") ? (
             <Grid
               item
               xs={12}
@@ -229,9 +235,7 @@ const Page = () => {
                 {i18n.t("Forgot password")}
               </a>
             </Grid>
-          ) : (
-            null
-          )}
+          ) : null}
         </Grid>
       </Box>
       {showSnackbar.open && (

@@ -40,6 +40,7 @@ from case_management.serializers import (
     MeetingSerializer,
     NoteSerializer,
     UserListSerializer,
+    LanguageListSerializer,
     UserSerializer,
     LogSerializer,
 )
@@ -54,6 +55,7 @@ from case_management.models import (
     Note,
     User,
     Log,
+    Language,
 )
 from case_management import queries
 
@@ -156,6 +158,11 @@ class CaseTypeViewSet(LoggedModelViewSet):
     allow_listing_without_case_office_filter = True
     queryset = CaseType.objects.all()
     serializer_class = CaseTypeSerializer
+
+
+class LanguageViewSet(ListViewSet):
+    queryset = Language.objects.all()
+    serializer_class = LanguageListSerializer
 
 
 class ClientViewSet(LoggedModelViewSet):

@@ -4,7 +4,6 @@ const countryLabels: string[][] = countries.map((country: CountryType) => [
   country.code,
   country.label,
 ]);
-console.log(countryLabels);
 
 export const constants = {
   officialIdentifierTypes: [

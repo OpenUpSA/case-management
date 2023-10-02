@@ -26,9 +26,10 @@ import i18n from "../i18n";
 import { UserInfo } from "../auth";
 import { useStyles } from "../utils";
 import { ICaseOffice } from "../types";
-import { getCaseOffices, getCaseTypes } from "../api";
+import { getCaseOffices, getCaseTypes, getLanguages } from "../api";
 import { CaseOfficesContext } from "../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../contexts/caseTypesContext";
+import { LanguagesContext } from "../contexts/languagesContext";
 
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -41,8 +42,10 @@ const Component = () => {
     async function fetchData() {
       const dataCaseOffices = await getCaseOffices();
       const dataCaseTypes = await getCaseTypes();
+      const dataLanguages = await getLanguages();
       setContextOffices(dataCaseOffices);
       setContextCaseTypes(dataCaseTypes);
+      setContextLanguages(dataLanguages);
     }
     const userInfo = UserInfo.getInstance();
     const token = userInfo.getAccessToken();
@@ -58,6 +61,8 @@ const Component = () => {
   const [contextOffices, setContextOffices] = useContext(CaseOfficesContext);
   // eslint-disable-next-line
   const [contextCaseTypes, setContextCaseTypes] = useContext(CaseTypesContext);
+  // eslint-disable-next-line
+  const [contextLanguages, setContextLanguages] = useContext(LanguagesContext);
 
   const userInfo = UserInfo.getInstance();
   const userId = Number(userInfo.getUserId());

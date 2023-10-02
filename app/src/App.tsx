@@ -4,17 +4,20 @@ import Routes from "./routes";
 import "@fontsource/karla";
 import { CaseOfficesProvider } from "./contexts/caseOfficesContext";
 import { CaseTypesProvider } from "./contexts/caseTypesContext";
+import { LanguagesProvider } from "./contexts/languagesContext";
 
 class App extends Component {
   render() {
     return (
-      <CaseTypesProvider>
-        <CaseOfficesProvider>
-          <Router>
-            <Routes />
-          </Router>
-        </CaseOfficesProvider>
-      </CaseTypesProvider>
+      <LanguagesProvider>
+        <CaseTypesProvider>
+          <CaseOfficesProvider>
+            <Router>
+              <Routes />
+            </Router>
+          </CaseOfficesProvider>
+        </CaseTypesProvider>
+      </LanguagesProvider>
     );
   }
 }

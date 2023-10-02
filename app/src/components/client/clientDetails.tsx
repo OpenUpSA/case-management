@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 
@@ -22,9 +22,9 @@ import ReusableInput from "./reusableInput";
 import ReusableSelect from "./reusableSelect";
 import { updateClient, getClient } from "../../api";
 import { constants } from "../../contexts/dropDownConstants";
+import { LanguagesContext } from "../../contexts/languagesContext";
 import SnackbarAlert from "../../components/general/snackBar";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Phone } from "@material-ui/icons";
 
 type Props = {
   client?: IClient;
@@ -44,6 +44,8 @@ const Component = (props: Props) => {
   const classes = useStyles();
   const params = useParams<RouteParams>();
   const clientId = parseInt(params.id);
+
+  const [contextLanguages] = useContext(LanguagesContext);
 
   const [client, setClient] = useState<IClient>({
     preferred_name: "",
@@ -437,7 +439,7 @@ const Component = (props: Props) => {
               <ReusableSelect
                 title={"Preferred language"}
                 value={client?.home_language}
-                menuItems={constants.homeLanguages}
+                menuItems={contextLanguages?.map(({ id, label }: any) => [id, label])}
                 inputName={"home_language"}
                 setClient={setClient}
                 editClientSelect={editClientSelect}

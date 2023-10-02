@@ -154,3 +154,10 @@ export interface TabPanelProps {
   index: number;
   value: number;
 }
+
+export interface ILanguage {
+  id: number;
+  created_at: Date;
+  updated_at: Date;
+  label: string;
+}
