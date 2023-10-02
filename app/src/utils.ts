@@ -16,6 +16,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       ".MuiPopover-root": {
         zIndex: "2147483640!important",
       },
+      ".MuiSvgIcon-colorPrimary": {
+        color: "#2b61f0!important",
+      },
     },
     formError: {
       color: "#990000",
@@ -262,8 +265,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     pageBar: {
-      marginBottom: "50px",
-      marginTop: "50px",
+      marginBottom: "20px",
+      marginTop: "25px",
       display: "flex",
       [theme.breakpoints.down("xs")]: {
         "&>:nth-child(3)": {
