@@ -12,7 +12,6 @@ from case_management.enums import (
     Genders,
     MaritalStatuses,
     CivilMarriageTypes,
-    Languages,
     Provinces,
     LogChangeTypes,
     ContactMethods
@@ -69,6 +68,20 @@ class User(AbstractUser):
 
     def has_perm(self, perm, obj=None):
         return self.is_superuser
+
+
+class Language(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    label = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.label
+
+    class Meta:
+        ordering = ['label']
 
 
 class Log(models.Model):
@@ -302,13 +315,13 @@ class Client(LoggedModel):
     next_of_kin_name = models.CharField(max_length=255, blank=True)
     next_of_kin_relationship = models.CharField(max_length=255, blank=True)
     next_of_kin_contact_number = PhoneNumberField(blank=True)
-    home_language = models.CharField(
-        max_length=20, blank=True, choices=Languages.choices
-    )
+    home_language = models.ForeignKey(
+        Language, null=True, on_delete=models.CASCADE,
+        related_name='home_language', blank=True)
     translator_needed = models.BooleanField(blank=True, null=True)
-    translator_language = models.CharField(
-        max_length=20, blank=True, choices=Languages.choices
-    )
+    translator_language = models.ForeignKey(
+        Language, null=True, on_delete=models.CASCADE,
+        related_name='translator_language', blank=True)
     nationality = CountryField(blank=True)
     country_of_birth = CountryField(blank=True)
     employment_status = models.CharField(

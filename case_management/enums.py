@@ -71,23 +71,6 @@ class CivilMarriageTypes(models.TextChoices):
         'Out Of Community Of Propery No Accrual',
     )
 
-
-class Languages(models.TextChoices):
-    AFRIKAANS = 'Afrikaans'
-    ENGLISH = 'English'
-    FRENCH = 'French'
-    ISINDEBELE = 'isiNdebele'
-    ISIXHOSA = 'isiXhosa'
-    ISIZULU = 'isiZulu'
-    SEPEDI = 'Sepedi'
-    SESOTHO = 'Sesotho'
-    SETSWANA = 'Setswana'
-    SISWATI = 'siSwati'
-    TSHIVENDA = 'Tshivenda'
-    XITSONGA = 'Xitsonga'
-    OTHER = 'Other'
-
-
 class Provinces(models.TextChoices):
     EC = 'EasternCape', 'Eastern Cape'
     FS = 'Freestate'

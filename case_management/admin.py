@@ -12,6 +12,7 @@ from case_management.models import (
     Note,
     User,
     Log,
+    Language
 )
 from case_management.forms import UserCreationForm, UserChangeForm
 
@@ -63,7 +64,8 @@ class UserAdmin(UserAdmin, DefaultAdmin):
                 )
             },
         ),
-        ('Permissions', {'fields': ('is_staff', 'is_active', 'permission_group')}),
+        ('Permissions', {
+         'fields': ('is_staff', 'is_active', 'permission_group')}),
     )
     add_fieldsets = (
         (
@@ -102,7 +104,8 @@ class CaseTypeAdmin(DefaultAdmin):
 
 class ClientAdmin(DefaultAdmin):
     model = Client
-    list_display = ['first_names', 'last_name', 'province', 'officers', 'created_at']
+    list_display = ['first_names', 'last_name',
+                    'province', 'officers', 'created_at']
     list_filter = ['province', 'created_at']
 
     def officers(self, obj):
@@ -157,6 +160,10 @@ class LogAdmin(DefaultAdmin):
     model = Log
     list_display = ['action', 'target_type']
 
+class LanguageAdmin(DefaultAdmin):
+    model = Language
+    list_display = ['label', ]
+
 
 admin.site.register(CaseType, CaseTypeAdmin)
 admin.site.register(CaseOffice, CaseOfficeAdmin)
@@ -168,3 +175,4 @@ admin.site.register(Meeting, MeetingAdmin)
 admin.site.register(Note, NoteAdmin)
 admin.site.register(Log, LogAdmin)
 admin.site.register(User, UserAdmin)
+admin.site.register(Language, LanguageAdmin)
