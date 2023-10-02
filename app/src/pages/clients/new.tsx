@@ -34,7 +34,8 @@ const Page = () => {
   const [client] = React.useState<IClient>();
   const [changed, setChanged] = React.useState<boolean>(false);
 
-  const [nameError, setNameError] = React.useState<boolean>(false);
+  const [lastNameError, setLastNameError] = React.useState<boolean>(false);
+  const [firstNamesError, setFirstNamesError] = React.useState<boolean>(false);
   const [emailErrorMessage, setEmailErrorMessage] =
     React.useState<boolean>(false);
   const [phoneErrorMessage, setPhoneErrorMessage] =
@@ -58,40 +59,52 @@ const Page = () => {
   const newClient = async (client: IClient) => {
     try {
       setIsLoading(true);
-      const { id, name, contact_email, contact_number, non_field_errors } = await createClient({
+      const {
+        id,
+        first_names,
+        last_name,
+        contact_email,
+        contact_number,
+        non_field_errors,
+      } = await createClient({
         ...client,
         users: [userId],
       });
       setIsLoading(false);
-      if (typeof name === "object") {
-        setNameError(true);
+      if (typeof first_names === "object") {
+        setFirstNamesError(true);
+        setLastNameError(true);
         setEmailErrorMessage(false);
         setPhoneErrorMessage(false);
-        setNonFieldError(false)
+        setNonFieldError(false);
         return false;
       } else if (typeof contact_email === "object") {
         setEmailErrorMessage(true);
         setPhoneErrorMessage(false);
-        setNameError(false);
-        setNonFieldError(false)
+        setFirstNamesError(true);
+        setLastNameError(true);
+        setNonFieldError(false);
         return false;
       } else if (typeof contact_number === "object") {
         setPhoneErrorMessage(true);
         setEmailErrorMessage(false);
-        setNameError(false);        
-        setNonFieldError(false)
+        setFirstNamesError(true);
+        setLastNameError(true);
+        setNonFieldError(false);
         return false;
       } else if (typeof non_field_errors === "object") {
-        setNonFieldError(true)
+        setNonFieldError(true);
         setPhoneErrorMessage(false);
         setEmailErrorMessage(false);
-        setNameError(false);
+        setFirstNamesError(true);
+        setLastNameError(true);
         return false;
       } else {
-        setNameError(false);
+        setFirstNamesError(true);
+        setLastNameError(true);
         setEmailErrorMessage(false);
         setPhoneErrorMessage(false);
-        setNonFieldError(false)
+        setNonFieldError(false);
       }
 
       id &&
@@ -127,7 +140,8 @@ const Page = () => {
               official_identifier_type: { value: string | null };
               contact_number: { value: string };
               contact_email: { value: string };
-              name: { value: string };
+              first_names: { value: string };
+              last_name: { value: string };
             };
 
             newClient({
@@ -142,7 +156,8 @@ const Page = () => {
                   : null,
               contact_number: target.contact_number.value,
               contact_email: target.contact_email.value,
-              name: target.name.value,
+              first_names: target.first_names.value,
+              last_name: target.last_name.value,
             } as IClient);
           }}
         >
@@ -210,7 +225,8 @@ const Page = () => {
           <ClientForm
             emailErrorMessage={emailErrorMessage}
             phoneErrorMessage={phoneErrorMessage}
-            nameError={nameError}
+            firstNamesError={firstNamesError}
+            lastNameError={lastNameError}
             nonFieldError={nonFieldError}
             client={client}
             readOnly={false}

@@ -27,7 +27,8 @@ export interface IClient {
   official_identifier_type: string;
   contact_number: string;
   contact_email: string;
-  name: string;
+  first_names: string;
+  last_name: string;
   address?: string;
   alternative_contact_email?: string;
   alternative_contact_number?: string;

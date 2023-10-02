@@ -102,8 +102,8 @@ class CaseTypeAdmin(DefaultAdmin):
 
 class ClientAdmin(DefaultAdmin):
     model = Client
-    list_display = ['name', 'province', 'officers', 'created_at']
-    list_filter = ['name', 'province', 'created_at']
+    list_display = ['first_names', 'last_name', 'province', 'officers', 'created_at']
+    list_filter = ['province', 'created_at']
 
     def officers(self, obj):
         return "\n".join([p.name for p in obj.users.all()])

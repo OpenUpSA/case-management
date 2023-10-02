@@ -266,3 +266,5 @@ uploads/
 .vscode/
 
 tmp/
+
+*.sql

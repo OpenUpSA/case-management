@@ -74,7 +74,8 @@ const Page = () => {
               official_identifier_type: { value: string };
               contact_number: { value: string };
               contact_email: { value: string };
-              name: { value: string };
+              first_names: { value: string };
+              last_name: { value: string };
             };
 
             saveClient({
@@ -83,7 +84,8 @@ const Page = () => {
               official_identifier_type: target.official_identifier_type.value,
               contact_number: target.contact_number.value,
               contact_email: target.contact_email.value,
-              name: target.name.value,
+              first_names: target.first_names.value,
+              last_name: target.last_name.value,
             });
           }}
         >
