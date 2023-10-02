@@ -106,7 +106,7 @@ const Component = (props: Props) => {
                 disableUnderline={true}
                 disabled={props.readOnly}
                 className={classes.textField}
-                aria-describedby="Input your first name(s)"
+                aria-describedby="Input your last name"
                 value={client.last_name}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setClient((client) => ({
