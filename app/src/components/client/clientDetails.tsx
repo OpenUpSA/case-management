@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Stack from "@mui/material/Stack";
 
 import { Grid, Typography } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import InputAdornment from "@mui/material/InputAdornment";
+import Divider from "@mui/material/Divider";
 import LockIcon from "@mui/icons-material/Lock";
+import BadgeIcon from "@mui/icons-material/Badge";
+import PhoneEnabledIcon from "@mui/icons-material/PhoneEnabled";
 import FormHelperText from "@mui/material/FormHelperText";
 
 import { IClient, LocationState } from "../../types";
@@ -18,6 +22,7 @@ import ReusableInput from "./reusableInput";
 import ReusableSelect from "./reusableSelect";
 import { updateClient, getClient } from "../../api";
 import { constants } from "../../contexts/dropDownConstants";
+import { LanguagesContext } from "../../contexts/languagesContext";
 import SnackbarAlert from "../../components/general/snackBar";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -40,6 +45,8 @@ const Component = (props: Props) => {
   const params = useParams<RouteParams>();
   const clientId = parseInt(params.id);
 
+  const [contextLanguages] = useContext(LanguagesContext);
+
   const [client, setClient] = useState<IClient>({
     preferred_name: "",
     home_language: "",
@@ -57,6 +64,9 @@ const Component = (props: Props) => {
     gender: "",
     alternative_contact_email: "",
     alternative_contact_number: "",
+    date_of_birth: "",
+    country_of_birth: "",
+    nationality: "",
     created_at: new Date(),
   });
 
@@ -225,6 +235,15 @@ const Component = (props: Props) => {
             />
           </Grid>
         )}
+        <Grid item xs={12}>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <BadgeIcon color="primary" sx={{ marginTop: "-4px" }} />
+            <Typography variant="h6" color="primary">
+              Identification
+            </Typography>
+          </Stack>
+          <Divider sx={{ marginTop: 1 }} />
+        </Grid>
 
         <Grid item xs={12} md={6}>
           <ReusableInput
@@ -246,7 +265,7 @@ const Component = (props: Props) => {
             editClientInput={editClientInput}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <ReusableInput
             inputName={"preferred_name"}
             title={"Preferred name"}
@@ -256,44 +275,34 @@ const Component = (props: Props) => {
             editClientInput={editClientInput}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <ReusableInput
-            inputName={"contact_number"}
-            title={"Contact number"}
-            value={client?.contact_number}
+        <Grid item xs={12} md={4}>
+          <ReusableSelect
+            title={"Gender"}
+            value={client?.gender}
+            menuItems={constants.genders}
+            inputName={"gender"}
             setClient={setClient}
-            prevValue={props.client?.contact_number!}
-            editClientInput={editClientInput}
+            editClientSelect={editClientSelect}
           />
-          {phoneErrorMessage && (
-            <FormHelperText error id="contact_number-text">
-              Enter a valid phone number
-            </FormHelperText>
-          )}
         </Grid>
         <Grid item xs={12} md={4}>
-          <ReusableInput
-            inputName={"contact_email"}
-            title={"Email address"}
-            value={client?.contact_email}
+          <ReusableSelect
+            title={"Nationality"}
+            value={client?.nationality}
+            menuItems={constants.countries}
+            inputName={"nationality"}
             setClient={setClient}
-            prevValue={props.client?.contact_email!}
-            editClientInput={editClientInput}
+            editClientSelect={editClientSelect}
           />
-          {emailErrorMessage && (
-            <FormHelperText error id="contact-email-text">
-              Enter a valid email address
-            </FormHelperText>
-          )}
         </Grid>
         <Grid item xs={12} md={4}>
-          <ReusableInput
-            inputName={"address"}
-            title={"Physical address"}
-            value={client?.address!}
+          <ReusableSelect
+            title={"Country of birth"}
+            value={client?.country_of_birth}
+            menuItems={constants.countries}
+            inputName={"country_of_birth"}
             setClient={setClient}
-            prevValue={props.client?.address!}
-            editClientInput={editClientInput}
+            editClientSelect={editClientSelect}
           />
         </Grid>
         <Grid item xs={12} md={4}>
@@ -304,6 +313,27 @@ const Component = (props: Props) => {
             inputName={"official_identifier_type"}
             setClient={setClient}
             editClientSelect={editClientSelect}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReusableInput
+            inputName={"official_identifier"}
+            title={"Identification number"}
+            value={client?.official_identifier}
+            setClient={setClient}
+            prevValue={props.client?.official_identifier!}
+            editClientInput={editClientInput}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReusableInput
+            inputName={"date_of_birth"}
+            title={"Date of birth"}
+            value={client?.date_of_birth}
+            setClient={setClient}
+            prevValue={props.client?.date_of_birth!}
+            editClientInput={editClientInput}
+            type={"date"}
           />
         </Grid>
       </Grid>
@@ -318,7 +348,7 @@ const Component = (props: Props) => {
           style={{
             textDecoration: "underline",
             cursor: "pointer",
-            marginBottom: 5,
+            marginBottom: 0,
           }}
         >
           Show detailed client information
@@ -326,146 +356,202 @@ const Component = (props: Props) => {
       )}
 
       {showDetailedInfo ? (
-        <Grid
-          className={classes.pageBar}
-          style={{ marginBottom: 5 }}
-          container
-          direction="row"
-          spacing={2}
-          alignItems="center"
-        >
-          <Grid item xs={12} md={4}>
-            <ReusableInput
-              inputName={"official_identifier"}
-              title={"Identification number"}
-              value={client?.official_identifier}
-              setClient={setClient}
-              prevValue={props.client?.official_identifier!}
-              editClientInput={editClientInput}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <ReusableInput
-              inputName={"alternative_contact_number"}
-              title={"Alternative contact number"}
-              value={client?.alternative_contact_number}
-              setClient={setClient}
-              prevValue={props.client?.alternative_contact_number!}
-              editClientInput={editClientInput}
-            />
-            {altPhoneErrorMessage && (
-              <FormHelperText error id="contact_number-text">
-                Enter a valid phone number
-              </FormHelperText>
-            )}
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <ReusableInput
-              inputName={"alternative_contact_email"}
-              title={"Alternative email address"}
-              value={client?.alternative_contact_email}
-              setClient={setClient}
-              prevValue={props.client?.alternative_contact_email!}
-              editClientInput={editClientInput}
-            />
-            {altEmailErrorMessage && (
-              <FormHelperText error id="contact_number-text">
-                Enter a valid email address
-              </FormHelperText>
-            )}
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel
-                className={classes.clientDetailLabel}
-                htmlFor="date"
-                shrink={true}
-              >
-                {i18n.t("Client added")}:
-              </InputLabel>
-              <Input
-                id="date"
-                disableUnderline={true}
-                disabled={true}
-                className={classes.clientDetailInput}
-                aria-describedby="date input"
-                value={format(new Date(client?.created_at!), "MMM dd, yyyy")}
-                endAdornment={
-                  <InputAdornment position="start">
-                    <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
-                  </InputAdornment>
-                }
+        <>
+          <Grid
+            className={classes.pageBar}
+            style={{ marginBottom: 5 }}
+            container
+            direction="row"
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={12}>
+              <Stack direction="row" alignItems="center" gap={1}>
+                <PhoneEnabledIcon color="primary" />
+                <Typography variant="h6" color="primary">
+                  Contact information
+                </Typography>
+              </Stack>
+              <Divider sx={{ marginTop: 1 }} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <ReusableInput
+                inputName={"contact_number"}
+                title={"Contact number"}
+                value={client?.contact_number}
+                setClient={setClient}
+                prevValue={props.client?.contact_number!}
+                editClientInput={editClientInput}
               />
-            </FormControl>
+              {phoneErrorMessage && (
+                <FormHelperText error id="contact_number-text">
+                  Enter a valid phone number
+                </FormHelperText>
+              )}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <ReusableInput
+                inputName={"contact_email"}
+                title={"Email address"}
+                value={client?.contact_email}
+                setClient={setClient}
+                prevValue={props.client?.contact_email!}
+                editClientInput={editClientInput}
+              />
+              {emailErrorMessage && (
+                <FormHelperText error id="contact-email-text">
+                  Enter a valid email address
+                </FormHelperText>
+              )}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <ReusableInput
+                inputName={"alternative_contact_number"}
+                title={"Alternative contact number"}
+                value={client?.alternative_contact_number}
+                setClient={setClient}
+                prevValue={props.client?.alternative_contact_number!}
+                editClientInput={editClientInput}
+              />
+              {altPhoneErrorMessage && (
+                <FormHelperText error id="contact_number-text">
+                  Enter a valid phone number
+                </FormHelperText>
+              )}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <ReusableInput
+                inputName={"alternative_contact_email"}
+                title={"Alternative email address"}
+                value={client?.alternative_contact_email}
+                setClient={setClient}
+                prevValue={props.client?.alternative_contact_email!}
+                editClientInput={editClientInput}
+              />
+              {altEmailErrorMessage && (
+                <FormHelperText error id="contact_number-text">
+                  Enter a valid email address
+                </FormHelperText>
+              )}
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <ReusableSelect
+                title={"Preferred language"}
+                value={client?.home_language}
+                menuItems={contextLanguages?.map(({ id, label }: any) => [id, label])}
+                inputName={"home_language"}
+                setClient={setClient}
+                editClientSelect={editClientSelect}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <ReusableSelect
+                title={"Preferred contact method"}
+                value={client?.preferred_contact_method}
+                menuItems={constants.preferredContactMethods}
+                inputName={"preferred_contact_method"}
+                setClient={setClient}
+                editClientSelect={editClientSelect}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={4}>
-            <ReusableSelect
-              title={"Gender"}
-              value={client?.gender}
-              menuItems={constants.genders}
-              inputName={"gender"}
-              setClient={setClient}
-              editClientSelect={editClientSelect}
-            />
+          <Grid
+            className={classes.pageBar}
+            style={{ marginBottom: 5 }}
+            container
+            direction="row"
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={12}>
+              <Typography variant="h6" color="primary">
+                Additional information
+              </Typography>
+              <Divider sx={{ marginTop: 1 }} />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <ReusableInput
+                inputName={"address"}
+                title={"Physical address"}
+                value={client?.address!}
+                setClient={setClient}
+                prevValue={props.client?.address!}
+                editClientInput={editClientInput}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <ReusableSelect
+                title={"Marital status"}
+                value={client?.marital_status}
+                menuItems={constants.maritalStatuses}
+                inputName={"marital_status"}
+                setClient={setClient}
+                editClientSelect={editClientSelect}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <ReusableInput
+                inputName={"next_of_kin_name"}
+                title={"Next of kin name"}
+                value={client?.next_of_kin_name}
+                setClient={setClient}
+                prevValue={props.client?.next_of_kin_name!}
+                editClientInput={editClientInput}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <ReusableInput
+                inputName={"next_of_kin_contact_number"}
+                title={"Next of kin contact number"}
+                value={client?.next_of_kin_contact_number}
+                setClient={setClient}
+                prevValue={props.client?.next_of_kin_contact_number!}
+                editClientInput={editClientInput}
+              />
+              {kinPhoneErrorMessage && (
+                <FormHelperText error id="contact_number-text">
+                  Enter a valid phone number
+                </FormHelperText>
+              )}
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <ReusableInput
+                inputName={"dependents"}
+                title={"Number of dependants"}
+                value={client?.dependents}
+                setClient={setClient}
+                prevValue={props.client?.dependents!}
+                editClientInput={editClientInput}
+                type={"number"}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <FormControl fullWidth size="small">
+                <InputLabel
+                  className={classes.clientDetailLabel}
+                  htmlFor="date"
+                  shrink={true}
+                >
+                  {i18n.t("Client added")}:
+                </InputLabel>
+                <Input
+                  id="date"
+                  disableUnderline={true}
+                  disabled={true}
+                  className={classes.clientDetailInput}
+                  aria-describedby="date input"
+                  value={format(new Date(client?.created_at!), "MMM dd, yyyy")}
+                  endAdornment={
+                    <InputAdornment position="start">
+                      <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={4}>
-            <ReusableSelect
-              title={"Preferred language"}
-              value={client?.home_language}
-              menuItems={constants.homeLanguages}
-              inputName={"home_language"}
-              setClient={setClient}
-              editClientSelect={editClientSelect}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <ReusableSelect
-              title={"Marital status"}
-              value={client?.marital_status}
-              menuItems={constants.maritalStatuses}
-              inputName={"marital_status"}
-              setClient={setClient}
-              editClientSelect={editClientSelect}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <ReusableInput
-              inputName={"next_of_kin_name"}
-              title={"Next of kin"}
-              value={client?.next_of_kin_name}
-              setClient={setClient}
-              prevValue={props.client?.next_of_kin_name!}
-              editClientInput={editClientInput}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <ReusableInput
-              inputName={"next_of_kin_contact_number"}
-              title={"Next of kin contact number"}
-              value={client?.next_of_kin_contact_number}
-              setClient={setClient}
-              prevValue={props.client?.next_of_kin_contact_number!}
-              editClientInput={editClientInput}
-            />
-            {kinPhoneErrorMessage && (
-              <FormHelperText error id="contact_number-text">
-                Enter a valid phone number
-              </FormHelperText>
-            )}
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <ReusableInput
-              inputName={"dependents"}
-              title={"Number of dependants"}
-              value={client?.dependents}
-              setClient={setClient}
-              prevValue={props.client?.dependents!}
-              editClientInput={editClientInput}
-              type={"number"}
-            />
-          </Grid>
-        </Grid>
+        </>
       ) : (
         ""
       )}

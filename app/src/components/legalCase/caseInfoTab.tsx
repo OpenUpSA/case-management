@@ -363,7 +363,7 @@ export default function CaseInfoTab(props: Props) {
                         />
                         <Box className={classes.caseHistoryBox}>
                           <BlackTooltip
-                            title={item.extra ? item.extra.user.name : ""} 
+                            title={item.extra ? item.extra.user.name : ""}
                             arrow
                             placement="top"
                           >

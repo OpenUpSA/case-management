@@ -4,24 +4,6 @@ from django.db import migrations, models
 from case_management.models import Client
 
 
-def split_names(full_name):
-    names = full_name.split()
-    last_name = names[-1]
-    first_names = " ".join(names[:-1])
-    if len(names) == 1:
-        first_names = names[-1]
-    return first_names, last_name
-
-
-def split_client_names(apps, schema_editor):
-    for client in Client.objects.all():
-        name = client.name
-        first_names, last_name = split_names(name)
-        client.first_names = first_names
-        client.last_name = last_name
-        client.save()
-
-
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -38,6 +20,5 @@ class Migration(migrations.Migration):
             model_name='client',
             name='last_name',
             field=models.CharField(max_length=255, null=True),
-        ),
-        migrations.RunPython(split_client_names),
+        )
     ]

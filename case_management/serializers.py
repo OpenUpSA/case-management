@@ -12,6 +12,7 @@ from case_management.models import (
     User,
     Log,
     LogChange,
+    Language,
 )
 from case_management.enums import MaritalStatuses
 
@@ -32,7 +33,8 @@ class LogSerializer(serializers.ModelSerializer):
 
 
 class ChildModelSerializer(serializers.ModelSerializer):
-    case_offices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    case_offices = serializers.PrimaryKeyRelatedField(
+        many=True, read_only=True)
 
 
 class CaseTypeSerializer(serializers.ModelSerializer):
@@ -62,7 +64,8 @@ class LegalCaseSerializer(serializers.ModelSerializer):
 class ClientSerializer(CountryFieldMixin, serializers.ModelSerializer):
     legal_cases = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     updates = LogSerializer(many=True, read_only=True)
-    case_offices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    case_offices = serializers.PrimaryKeyRelatedField(
+        many=True, read_only=True)
 
     def validate(self, data):
         if data.get('official_identifier') and not data.get('official_identifier_type'):
@@ -206,6 +209,18 @@ class UserListSerializer(serializers.ModelSerializer):
             'case_office',
             'permission_group'
         ]
+
+
+class LanguageListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
+        fields = [
+            'id',
+            'label',
+            'created_at',
+            'updated_at',
+        ]
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

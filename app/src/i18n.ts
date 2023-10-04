@@ -15,7 +15,7 @@ const resources = {
       "Lost message": "We can't find what you are looking for.",
       "Legal Cases": "Cases",
       "New legal case": "New case",
-      "New client": "New client",
+      "New client": "Add new client",
       "Legal Case": "Case",
       "Case Number": "Case Number",
       "Welcome to CaseFile": "Welcome to CaseFile.",

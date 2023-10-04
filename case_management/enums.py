@@ -7,6 +7,7 @@ class PermissionGroups(models.TextChoices):
     ADVICE_OFFICE_ADMIN = 'AdviceOfficeAdmin', 'Advice Office Admin'
     CASE_WORKER = 'CaseWorker', 'Case Worker'
 
+
 class LogChangeTypes(models.TextChoices):
     CHANGE = 'Change'
     ADD = 'Add'
@@ -70,23 +71,6 @@ class CivilMarriageTypes(models.TextChoices):
         'Out Of Community Of Propery No Accrual',
     )
 
-
-class Languages(models.TextChoices):
-    AFRIKAANS = 'Afrikaans'
-    ENGLISH = 'English'
-    FRENCH = 'French'
-    ISINDEBELE = 'isiNdebele'
-    ISIXHOSA = 'isiXhosa'
-    ISIZULU = 'isiZulu'
-    SEPEDI = 'Sepedi'
-    SESOTHO = 'Sesotho'
-    SETSWANA = 'Setswana'
-    SISWATI = 'siSwati'
-    TSHIVENDA = 'Tshivenda'
-    XITSONGA = 'Xitsonga'
-    OTHER = 'Other'
-
-
 class Provinces(models.TextChoices):
     EC = 'EasternCape', 'Eastern Cape'
     FS = 'Freestate'
@@ -97,3 +81,10 @@ class Provinces(models.TextChoices):
     NC = 'NorthernCape', 'Northern Cape'
     NW = 'NorthWest', 'North West'
     WC = 'WesternCape', 'Western Cape'
+
+
+class ContactMethods(models.TextChoices):
+    Call = 'Call', 'Phone Call'
+    SMS = 'SMS', 'SMS'
+    WhatsApp = 'WhatsApp', 'WhatsApp/messenger'
+    Email = 'Email', 'Email'

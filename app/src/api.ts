@@ -10,6 +10,7 @@ import {
   ICredentials,
   ILog,
   ILegalCaseFile,
+  ILanguage
 } from "./types";
 import { UserInfo } from "./auth";
 
@@ -178,6 +179,10 @@ export const deleteClient = async (id: number) => {
 
 export const getCaseTypes = async () => {
   return await httpGet<ICaseType[]>(`/case-types/`);
+};
+
+export const getLanguages = async () => {
+  return await httpGet<ILanguage[]>(`/languages/`);
 };
 
 export const getCaseOffices = async () => {
