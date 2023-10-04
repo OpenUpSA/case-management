@@ -4,6 +4,7 @@ from case_management.models import (
     CaseOffice,
     CaseType,
     Client,
+    ClientDependent,
     LegalCase,
     CaseUpdate,
     File,
@@ -96,6 +97,22 @@ class ClientSerializer(CountryFieldMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Client
+        fields = '__all__'
+
+class ClientDependentSerializer(CountryFieldMixin, serializers.ModelSerializer):
+    updates = LogSerializer(many=True, read_only=True)
+
+    def validate(self, data):
+        if data.get('official_identifier') and not data.get('official_identifier_type'):
+            raise serializers.ValidationError(
+                {
+                    'official_identifier_type': 'official_identifier_type is mandatory if official_identifier is provided'
+                }
+            )
+        return data
+
+    class Meta:
+        model = ClientDependent
         fields = '__all__'
 
 

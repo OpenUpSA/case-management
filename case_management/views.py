@@ -34,6 +34,7 @@ from case_management.serializers import (
     CaseOfficeSerializer,
     CaseTypeSerializer,
     ClientSerializer,
+    ClientDependentSerializer,
     LegalCaseSerializer,
     CaseUpdateSerializer,
     FileSerializer,
@@ -48,6 +49,7 @@ from case_management.models import (
     CaseOffice,
     CaseType,
     Client,
+    ClientDependent,
     LegalCase,
     CaseUpdate,
     File,
@@ -181,6 +183,20 @@ class ClientViewSet(LoggedModelViewSet):
             queryset = queryset.filter(
                 users__id=user
             ).distinct('id')
+        return queryset
+
+
+class ClientDependentViewSet(LoggedModelViewSet):
+    queryset = ClientDependent.objects.all()
+    serializer_class = ClientDependentSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['client']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        client = self.request.query_params.get('client')
+        if client is not None:
+            queryset = queryset.filter(client__id=client)
         return queryset
 
 
