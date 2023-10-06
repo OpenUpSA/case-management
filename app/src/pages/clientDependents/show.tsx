@@ -92,7 +92,7 @@ const Page = () => {
       setDeleteLoader(true);
       if (
         window.confirm(
-          i18n.t("Are you sure you want to delete this client dependent?")
+          i18n.t("Are you sure you want to delete this dependent?")
         )
       ) {
         await deleteClientDependent(clientDependentId);
@@ -100,7 +100,7 @@ const Page = () => {
           pathname: `/clients/${client?.id}/cases`,
           state: {
             open: true,
-            message: "Client dependent delete successful",
+            message: "Dependent delete successful",
             severity: "success",
           },
         });
@@ -110,7 +110,7 @@ const Page = () => {
       setDeleteLoader(false);
       setShowSnackbar({
         open: true,
-        message: "Client dependent delete failed",
+        message: "Dependent delete failed",
         severity: "error",
       });
     }
@@ -161,7 +161,7 @@ const Page = () => {
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>{i18n.t("Delete client dependent")}</ListItemText>
+                <ListItemText>{i18n.t("Delete dependent")}</ListItemText>
                 {deleteLoader && (
                   <CircularProgress
                     size={24}

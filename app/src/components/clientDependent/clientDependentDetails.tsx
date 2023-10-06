@@ -157,7 +157,7 @@ const Component = (props: Props) => {
       if (id) {
         setShowSnackbar({
           open: true,
-          message: "Client dependent edit successful",
+          message: "Dependent edit successful",
           severity: "success",
         });
         setClientDependent(await getClientDependent(id));
@@ -166,7 +166,7 @@ const Component = (props: Props) => {
       setIsLoading(false);
       setShowSnackbar({
         open: true,
-        message: "Client dependent edit failed",
+        message: "Dependent edit failed",
         severity: "error",
       });
     }
@@ -443,7 +443,7 @@ const Component = (props: Props) => {
                 htmlFor="date"
                 shrink={true}
               >
-                {i18n.t("Client dependent added")}:
+                {i18n.t("Dependent added")}:
               </InputLabel>
               <Input
                 id="date"

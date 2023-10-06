@@ -18,7 +18,7 @@ import {
 } from "@material-ui/core";
 
 import { useStyles } from "../../utils";
-import PersonIcon from "@material-ui/icons/Person";
+import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import ListItemText from "@material-ui/core/ListItemText";
 import CloseIcon from "@material-ui/icons/Close";
@@ -140,7 +140,7 @@ const Page = () => {
           pathname: `/dependents/${id}`,
           state: {
             open: true,
-            message: "New client dependent created",
+            message: "New dependent created",
             severity: "success",
           },
         });
@@ -203,7 +203,7 @@ const Page = () => {
             alignItems="center"
           >
             <Grid item>
-              <PersonIcon color="primary" style={{ display: "flex" }} />
+              <EscalatorWarningIcon color="primary" style={{ display: "flex" }} />
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
               <Typography variant="h6">
@@ -275,7 +275,7 @@ const Page = () => {
       {showSnackbar && (
         <SnackbarAlert
           open={showSnackbar}
-          message={"New client dependent failed"}
+          message={"New dependent failed"}
           severity={"error"}
         />
       )}
