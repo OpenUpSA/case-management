@@ -343,6 +343,10 @@ export const getClientDependents = async () => {
   return await httpGet<IClientDependent[]>(`/client-dependents/`);
 };
 
+export const getClientDependentsForClient = async (id: number) => {
+  return await httpGet<IClientDependent[]>(`/client-dependents/?client=${id}`);
+};
+
 export const getClientDependent = async (id: number) => {
   return await httpGet<IClientDependent>(`/client-dependents/${id}/`);
 };
