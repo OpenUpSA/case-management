@@ -2,31 +2,21 @@ import React, { useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Grid,
-  Hidden,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
-  InputLabel,
-  Select,
-  Input,
-  InputAdornment,
-  IconButton,
-  MenuItem,
 } from "@material-ui/core";
 
-import SearchIcon from "@material-ui/icons/Search";
 import CircularProgress from "@mui/material/CircularProgress";
 import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
+import AddIcon from "@mui/icons-material/Add";
 
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
-import { format } from "date-fns";
 import { getClientDependentsForClient } from "../../api";
 import { IClientDependent } from "../../types";
-import { CaseTypesContext } from "../../contexts/caseTypesContext";
 
 type Props = {
   clientId: number;
@@ -45,7 +35,9 @@ const Component = (props: Props) => {
     setIsLoading(true);
     async function fetchData() {
       try {
-        const dataClientDependents = await getClientDependentsForClient(props.clientId);
+        const dataClientDependents = await getClientDependentsForClient(
+          props.clientId
+        );
         setClientDependents(dataClientDependents);
         setIsLoading(false);
       } catch (e: any) {
@@ -78,14 +70,24 @@ const Component = (props: Props) => {
               ))}
             </TableBody>
           ) : (
-            <TableBody>
-              <TableRow
-                className={`${classes.tableBodyRow} ${classes.tableBodyRowEmpty}`}
-              >
-                <TableCell className={classes.tableBodyCell}></TableCell>
-              </TableRow>
-            </TableBody>
+            <></>
           )}
+
+          <TableBody>
+            <TableRow
+              className={`${classes.tableBodyRow}`}
+              onClick={() =>
+                history.push(`/clients/${props.clientId}/dependents/new`)
+              }
+            >
+              <TableCell className={classes.tableBodyCell}>
+                {i18n.t("Add dependent details")}
+              </TableCell>
+              <TableCell className={classes.tableBodyCell} align="right">
+                <AddIcon />
+              </TableCell>
+            </TableRow>
+          </TableBody>
         </Table>
       </TableContainer>
       {isLoading && (
