@@ -14,6 +14,7 @@ import LegalCasePage from "./pages/legalCases/show";
 
 import ClientDependentsPage from "./pages/clientDependents/list";
 import ClientDependentPage from "./pages/clientDependents/show";
+import ClientDependentNewPage from "./pages/clientDependents/new";
 
 import MeetingsPage from "./pages/meetings/list";
 import MeetingPage from "./pages/meetings/show";
@@ -78,6 +79,12 @@ function Routes() {
           exact
           path="/clients/:id/cases"
           component={ClientLegalCasesPage}
+        />
+
+        <Route
+          exact
+          path="/clients/:id/dependents/new"
+          component={ClientDependentNewPage}
         />
 
         <Route exact path="/cases" component={LegalCasesPage} />

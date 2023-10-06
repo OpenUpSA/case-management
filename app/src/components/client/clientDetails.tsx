@@ -586,6 +586,7 @@ const Component = (props: Props) => {
               <ClientDependentsTable
                 clientDependents={clientDependents ? clientDependents : []}
                 standalone={false}
+                clientId={clientId}
               />
             </Grid>
           </Grid>

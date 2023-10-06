@@ -24,11 +24,12 @@ import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
 import { format } from "date-fns";
-import { getClientDependents } from "../../api";
+import { getClientDependentsForClient } from "../../api";
 import { IClientDependent } from "../../types";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
 
 type Props = {
+  clientId: number;
   clientDependents: IClientDependent[];
   standalone: boolean;
 };
@@ -36,7 +37,6 @@ type Props = {
 const Component = (props: Props) => {
   const history = useHistory();
   const classes = useStyles();
-  const [contextCaseTypes] = useContext(CaseTypesContext);
   const [clientDependents, setClientDependents] =
     React.useState<IClientDependent[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -45,7 +45,7 @@ const Component = (props: Props) => {
     setIsLoading(true);
     async function fetchData() {
       try {
-        const dataClientDependents = await getClientDependents();
+        const dataClientDependents = await getClientDependentsForClient(props.clientId);
         setClientDependents(dataClientDependents);
         setIsLoading(false);
       } catch (e: any) {

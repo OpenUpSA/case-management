@@ -15,6 +15,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
+import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 
 import Layout from "../../components/layout";
 import {
@@ -31,6 +32,7 @@ import ClientDetails from "../../components/client/clientDetails";
 import LegalCasesTable from "../../components/legalCase/table";
 import MoreMenu from "../../components/moreMenu";
 import SnackbarAlert from "../../components/general/snackBar";
+import { add } from "date-fns";
 
 type RouteParams = { id: string };
 
@@ -204,6 +206,16 @@ const Page = () => {
                     }}
                   />
                 )}
+              </MenuItem>
+              <MenuItem
+                style={{ position: "relative" }}
+                onClick={() => history.push(`/clients/${clientId}/dependents/new`)}
+                disabled={deleteLoader}
+              >
+                <ListItemIcon>
+                  <EscalatorWarningIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>{i18n.t("Add dependent")}</ListItemText>
               </MenuItem>
             </MoreMenu>
           </Grid>

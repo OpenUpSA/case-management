@@ -358,3 +358,7 @@ export const deleteClientDependent = async (id: number) => {
 export const updateClientDependent = async (clientDependent: IClientDependent) => {
   return await httpPatch<IClientDependent, IClientDependent>(`/client-dependents/${clientDependent.id}/`, clientDependent);
 };
+
+export const createClientDependent = async (clientDependent: IClientDependent) => {
+  return await httpPost<IClientDependent, IClientDependent>(`/client-dependents/`, clientDependent);
+};

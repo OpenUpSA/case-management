@@ -16,6 +16,7 @@ const resources = {
       "Legal Cases": "Cases",
       "New legal case": "New case",
       "New client": "Add new client",
+      "New client dependent": "Add new dependent",
       "Legal Case": "Case",
       "Case Number": "Case Number",
       "Welcome to CaseFile": "Welcome to CaseFile.",
