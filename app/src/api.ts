@@ -339,10 +339,6 @@ export const renameLegalCaseFile = async (legalCaseFile: any) => {
   return response.data;
 };
 
-export const getClientDependents = async () => {
-  return await httpGet<IClientDependent[]>(`/client-dependents/`);
-};
-
 export const getClientDependentsForClient = async (id: number) => {
   return await httpGet<IClientDependent[]>(`/client-dependents/?client=${id}`);
 };
