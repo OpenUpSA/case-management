@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   ILegalCase,
   IClient,
+  IClientDependent,
   ICaseType,
   ICaseOffice,
   IMeeting,
@@ -336,4 +337,20 @@ export const renameLegalCaseFile = async (legalCaseFile: any) => {
     renameOptions
   );
   return response.data;
+};
+
+export const getClientDependents = async () => {
+  return await httpGet<IClientDependent[]>(`/client-dependents/`);
+};
+
+export const getClientDependent = async (id: number) => {
+  return await httpGet<IClientDependent>(`/client-dependents/${id}/`);
+};
+
+export const deleteClientDependent = async (id: number) => {
+  return await httpDelete<IClientDependent>(`/client-dependents/${id}/`);
+};
+
+export const updateClientDependent = async (clientDependent: IClientDependent) => {
+  return await httpPatch<IClientDependent, IClientDependent>(`/client-dependents/${clientDependent.id}/`, clientDependent);
 };

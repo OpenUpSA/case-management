@@ -54,6 +54,30 @@ export interface IClient {
   preferred_contact_method?: string;
 }
 
+export interface IClientDependent {
+  id?: number;
+  created_at?: Date;
+  updated_at?: Date;
+  preferred_name: string;
+  official_identifier: string;
+  official_identifier_type: string;
+  contact_number: string;
+  contact_email: string;
+  first_names: string;
+  last_name: string;
+  alternative_contact_email?: string;
+  alternative_contact_number?: string;
+  date_of_birth?: string;
+  gender?: string;
+  home_language?: string;
+  nationality?: string;
+  country_of_birth?: string;
+  client?: number;
+  non_field_errors?: string;
+  details?: string;
+  preferred_contact_method?: string;
+}
+
 //Note: Cannot use Case so internally use LegalCase. User interface refers to Case.
 export interface ILegalCase {
   id?: number;
