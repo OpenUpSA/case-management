@@ -176,6 +176,7 @@ const Page = () => {
               contact_email: { value: string };
               first_names: { value: string };
               last_name: { value: string };
+              relationship_to_client: { value: string };
             };
 
             newClientDependent({
@@ -192,6 +193,7 @@ const Page = () => {
               contact_email: target.contact_email.value,
               first_names: target.first_names.value,
               last_name: target.last_name.value,
+              relationship_to_client: target.relationship_to_client.value,
             } as IClientDependent);
           }}
         >
@@ -203,7 +205,10 @@ const Page = () => {
             alignItems="center"
           >
             <Grid item>
-              <EscalatorWarningIcon color="primary" style={{ display: "flex" }} />
+              <EscalatorWarningIcon
+                color="primary"
+                style={{ display: "flex" }}
+              />
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
               <Typography variant="h6">
