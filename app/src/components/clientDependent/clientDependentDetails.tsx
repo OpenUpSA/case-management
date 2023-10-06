@@ -319,187 +319,153 @@ const Component = (props: Props) => {
           />
         </Grid>
       </Grid>
-
-      {showDetailedInfo ? (
-        ""
-      ) : (
-        <Typography
-          onClick={() => {
-            setShowDetailedInfo(true);
-          }}
-          style={{
-            textDecoration: "underline",
-            cursor: "pointer",
-            marginBottom: 0,
-          }}
+      <>
+        <Grid
+          className={classes.pageBar}
+          style={{ marginBottom: 5 }}
+          container
+          direction="row"
+          spacing={2}
+          alignItems="center"
         >
-          Show detailed client dependent information
-        </Typography>
-      )}
-
-      {showDetailedInfo ? (
-        <>
-          <Grid
-            className={classes.pageBar}
-            style={{ marginBottom: 5 }}
-            container
-            direction="row"
-            spacing={2}
-            alignItems="center"
-          >
-            <Grid item xs={12}>
-              <Stack direction="row" alignItems="center" gap={1}>
-                <PhoneEnabledIcon color="primary" />
-                <Typography variant="h6" color="primary">
-                  Contact information
-                </Typography>
-              </Stack>
-              <Divider sx={{ marginTop: 1 }} />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <ReusableInput
-                inputName={"contact_number"}
-                title={"Contact number"}
-                value={clientDependent?.contact_number}
-                setClientDependent={setClientDependent}
-                prevValue={props.clientDependent?.contact_number!}
-                editClientDependentInput={editClientDependentInput}
-              />
-              {phoneErrorMessage && (
-                <FormHelperText error id="contact_number-text">
-                  Enter a valid phone number
-                </FormHelperText>
-              )}
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <ReusableInput
-                inputName={"contact_email"}
-                title={"Email address"}
-                value={clientDependent?.contact_email}
-                setClientDependent={setClientDependent}
-                prevValue={props.clientDependent?.contact_email!}
-                editClientDependentInput={editClientDependentInput}
-              />
-              {emailErrorMessage && (
-                <FormHelperText error id="contact-email-text">
-                  Enter a valid email address
-                </FormHelperText>
-              )}
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <ReusableInput
-                inputName={"alternative_contact_number"}
-                title={"Alternative contact number"}
-                value={clientDependent?.alternative_contact_number}
-                setClientDependent={setClientDependent}
-                prevValue={props.clientDependent?.alternative_contact_number!}
-                editClientDependentInput={editClientDependentInput}
-              />
-              {altPhoneErrorMessage && (
-                <FormHelperText error id="contact_number-text">
-                  Enter a valid phone number
-                </FormHelperText>
-              )}
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <ReusableInput
-                inputName={"alternative_contact_email"}
-                title={"Alternative email address"}
-                value={clientDependent?.alternative_contact_email}
-                setClientDependent={setClientDependent}
-                prevValue={props.clientDependent?.alternative_contact_email!}
-                editClientDependentInput={editClientDependentInput}
-              />
-              {altEmailErrorMessage && (
-                <FormHelperText error id="contact_number-text">
-                  Enter a valid email address
-                </FormHelperText>
-              )}
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <ReusableSelect
-                title={"Preferred language"}
-                value={clientDependent?.home_language}
-                menuItems={contextLanguages?.map(({ id, label }: any) => [
-                  id,
-                  label,
-                ])}
-                inputName={"home_language"}
-                setClientDependent={setClientDependent}
-                editClientDependentSelect={editClientDependentSelect}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <ReusableSelect
-                title={"Preferred contact method"}
-                value={clientDependent?.preferred_contact_method}
-                menuItems={constants.preferredContactMethods}
-                inputName={"preferred_contact_method"}
-                setClientDependent={setClientDependent}
-                editClientDependentSelect={editClientDependentSelect}
-              />
-            </Grid>
-          </Grid>
-          <Grid
-            className={classes.pageBar}
-            style={{ marginBottom: 5 }}
-            container
-            direction="row"
-            spacing={2}
-            alignItems="center"
-          >
-            <Grid item xs={12}>
+          <Grid item xs={12}>
+            <Stack direction="row" alignItems="center" gap={1}>
+              <PhoneEnabledIcon color="primary" />
               <Typography variant="h6" color="primary">
-                Additional information
+                Contact information
               </Typography>
-              <Divider sx={{ marginTop: 1 }} />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl fullWidth size="small">
-                <InputLabel
-                  className={classes.clientDetailLabel}
-                  htmlFor="date"
-                  shrink={true}
-                >
-                  {i18n.t("Client dependent added")}:
-                </InputLabel>
-                <Input
-                  id="date"
-                  disableUnderline={true}
-                  disabled={true}
-                  className={classes.clientDetailInput}
-                  aria-describedby="date input"
-                  value={format(
-                    new Date(clientDependent?.created_at!),
-                    "MMM dd, yyyy"
-                  )}
-                  endAdornment={
-                    <InputAdornment position="start">
-                      <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
-                    </InputAdornment>
-                  }
-                />
-              </FormControl>
-            </Grid>
+            </Stack>
+            <Divider sx={{ marginTop: 1 }} />
           </Grid>
-        </>
-      ) : (
-        ""
-      )}
+          <Grid item xs={12} md={6}>
+            <ReusableInput
+              inputName={"contact_number"}
+              title={"Contact number"}
+              value={clientDependent?.contact_number}
+              setClientDependent={setClientDependent}
+              prevValue={props.clientDependent?.contact_number!}
+              editClientDependentInput={editClientDependentInput}
+            />
+            {phoneErrorMessage && (
+              <FormHelperText error id="contact_number-text">
+                Enter a valid phone number
+              </FormHelperText>
+            )}
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReusableInput
+              inputName={"contact_email"}
+              title={"Email address"}
+              value={clientDependent?.contact_email}
+              setClientDependent={setClientDependent}
+              prevValue={props.clientDependent?.contact_email!}
+              editClientDependentInput={editClientDependentInput}
+            />
+            {emailErrorMessage && (
+              <FormHelperText error id="contact-email-text">
+                Enter a valid email address
+              </FormHelperText>
+            )}
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReusableInput
+              inputName={"alternative_contact_number"}
+              title={"Alternative contact number"}
+              value={clientDependent?.alternative_contact_number}
+              setClientDependent={setClientDependent}
+              prevValue={props.clientDependent?.alternative_contact_number!}
+              editClientDependentInput={editClientDependentInput}
+            />
+            {altPhoneErrorMessage && (
+              <FormHelperText error id="contact_number-text">
+                Enter a valid phone number
+              </FormHelperText>
+            )}
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReusableInput
+              inputName={"alternative_contact_email"}
+              title={"Alternative email address"}
+              value={clientDependent?.alternative_contact_email}
+              setClientDependent={setClientDependent}
+              prevValue={props.clientDependent?.alternative_contact_email!}
+              editClientDependentInput={editClientDependentInput}
+            />
+            {altEmailErrorMessage && (
+              <FormHelperText error id="contact_number-text">
+                Enter a valid email address
+              </FormHelperText>
+            )}
+          </Grid>
 
-      {showDetailedInfo ? (
-        <Typography
-          style={{ textDecoration: "underline", cursor: "pointer" }}
-          onClick={() => {
-            setShowDetailedInfo(false);
-          }}
+          <Grid item xs={12} md={6}>
+            <ReusableSelect
+              title={"Preferred language"}
+              value={clientDependent?.home_language}
+              menuItems={contextLanguages?.map(({ id, label }: any) => [
+                id,
+                label,
+              ])}
+              inputName={"home_language"}
+              setClientDependent={setClientDependent}
+              editClientDependentSelect={editClientDependentSelect}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <ReusableSelect
+              title={"Preferred contact method"}
+              value={clientDependent?.preferred_contact_method}
+              menuItems={constants.preferredContactMethods}
+              inputName={"preferred_contact_method"}
+              setClientDependent={setClientDependent}
+              editClientDependentSelect={editClientDependentSelect}
+            />
+          </Grid>
+        </Grid>
+        <Grid
+          className={classes.pageBar}
+          style={{ marginBottom: 5 }}
+          container
+          direction="row"
+          spacing={2}
+          alignItems="center"
         >
-          Hide detailed client dependent information
-        </Typography>
-      ) : (
-        ""
-      )}
+          <Grid item xs={12}>
+            <Typography variant="h6" color="primary">
+              Additional information
+            </Typography>
+            <Divider sx={{ marginTop: 1 }} />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <FormControl fullWidth size="small">
+              <InputLabel
+                className={classes.clientDetailLabel}
+                htmlFor="date"
+                shrink={true}
+              >
+                {i18n.t("Client dependent added")}:
+              </InputLabel>
+              <Input
+                id="date"
+                disableUnderline={true}
+                disabled={true}
+                className={classes.clientDetailInput}
+                aria-describedby="date input"
+                value={format(
+                  new Date(clientDependent?.created_at!),
+                  "MMM dd, yyyy"
+                )}
+                endAdornment={
+                  <InputAdornment position="start">
+                    <LockIcon fontSize="small" style={{ color: "#c2c2c2" }} />
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
+          </Grid>
+        </Grid>
+      </>
+
       {showSnackbar.open && (
         <SnackbarAlert
           open={showSnackbar.open}
