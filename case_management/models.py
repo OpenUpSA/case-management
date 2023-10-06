@@ -14,7 +14,8 @@ from case_management.enums import (
     CivilMarriageTypes,
     Provinces,
     LogChangeTypes,
-    ContactMethods
+    ContactMethods,
+    Relationships
 )
 from django_countries.fields import CountryField
 from django.conf import settings
@@ -375,12 +376,15 @@ class ClientDependent(LoggedModel):
     contact_number = PhoneNumberField(null=True, blank=True)
     alternative_contact_number = PhoneNumberField(null=True, blank=True)
     contact_email = models.EmailField(max_length=254, null=True, blank=True)
-    alternative_contact_email = models.EmailField(max_length=254, null=True, blank=True)
+    alternative_contact_email = models.EmailField(
+        max_length=254, null=True, blank=True)
     preferred_contact_method = models.CharField(
         max_length=25, null=True, blank=True, choices=ContactMethods.choices
     )
     gender = models.CharField(
         max_length=20, null=True, blank=True, choices=Genders.choices)
+    relationship_to_client = models.CharField(
+        max_length=20, null=True, blank=True, choices=Relationships.choices, default='Other')
     home_language = models.ForeignKey(
         Language, on_delete=models.CASCADE,
         related_name='dependent_home_language', null=True, blank=True)
@@ -399,7 +403,7 @@ class ClientDependent(LoggedModel):
     def __str__(self):
         return self.preferred_name
 
-    @property
+    @ property
     def updates(self):
         '''TODO: Do this in scalable way e.g. in view using proper join
         The below would not scale, because the request is done for each row
@@ -532,7 +536,7 @@ class File(LoggedChildModel):
         return os.path.basename(self.upload.file.name)
 
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+@ receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)

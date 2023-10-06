@@ -317,6 +317,54 @@ const Component = (props: Props) => {
         ) : (
           ""
         )}
+        <Grid item xs={12} md={4}>
+            <input
+              type="hidden"
+              id="relationship_to_client"
+              value={clientDependent.relationship_to_client}
+            />
+            <FormControl fullWidth size="small">
+              <InputLabel
+                className={classes.inputLabel}
+                htmlFor="relationship_to_client_select"
+                shrink={true}
+              >
+                {i18n.t("Relationship to client")}:
+              </InputLabel>
+              <Select
+                style={{ marginBottom: 25 }}
+                id="relationship_to_client_select"
+                disabled={props.readOnly}
+                className={classes.select}
+                disableUnderline
+                onChange={(e: React.ChangeEvent<{ value: any }>) => {
+                  setClientDependent((clientDependent) => ({
+                    ...clientDependent,
+                    relationship_to_client: e.target.value,
+                  }));
+                  props.setChanged(true);
+                }}
+                input={<Input id="select-multiple-chip" />}
+                aria-describedby="dropdown to select relationship type"
+                value={clientDependent.relationship_to_client}
+                renderValue={() => {
+                  return constants.relationshipToClient
+                    .filter(
+                      (item) => item[0] === clientDependent.relationship_to_client
+                    )
+                    .map((item) => {
+                      return item.length > 1 ? item[1] : item[0];
+                    });
+                }}
+              >
+                {constants.relationshipToClient.map((item) => (
+                  <MenuItem key={item[0]} value={item[0]}>
+                    {item.length > 1 ? item[1] : item[0]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
       </Grid>
     </div>
   );

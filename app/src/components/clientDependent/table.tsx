@@ -63,6 +63,9 @@ const Component = (props: Props) => {
                   <TableCell className={classes.tableBodyCell}>
                     {clientDependent.preferred_name}
                   </TableCell>
+                  <TableCell className={classes.tableBodyCell}>
+                    ({clientDependent.relationship_to_client})
+                  </TableCell>
                   <TableCell className={classes.tableBodyCell} align="right">
                     <ArrowRightAltIcon />
                   </TableCell>

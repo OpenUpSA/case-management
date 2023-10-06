@@ -65,6 +65,7 @@ const Component = (props: Props) => {
     nationality: "",
     details: "",
     created_at: new Date(),
+    relationship_to_client: "",
   });
 
   const [showDetailedInfo, setShowDetailedInfo] = useState<boolean>(false);
@@ -217,6 +218,17 @@ const Component = (props: Props) => {
             />
           </Grid>
         )}
+        <Grid item xs={12} md={4}>
+          <ReusableSelect
+            title={"Relationship to client"}
+            value={clientDependent?.relationship_to_client}
+            menuItems={constants.relationshipToClient}
+            inputName={"relationship_to_client"}
+            setClientDependent={setClientDependent}
+            editClientDependentSelect={editClientDependentSelect}
+          />
+        </Grid>
+
         <Grid item xs={12}>
           <Stack direction="row" alignItems="center" gap={1}>
             <BadgeIcon color="primary" sx={{ marginTop: "-4px" }} />

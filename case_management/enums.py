@@ -88,3 +88,13 @@ class ContactMethods(models.TextChoices):
     SMS = 'SMS', 'SMS'
     WhatsApp = 'WhatsApp', 'WhatsApp/messenger'
     Email = 'Email', 'Email'
+
+class Relationships(models.TextChoices):
+    CHILD = 'Child'
+    DAUGHTER = 'Daughter'
+    SON = 'Son'
+    FATHER = 'Father'
+    MOTHER = 'Mother'
+    SPOUSE = 'Spouse'
+    SIBLING = 'Sibling'
+    OTHER = 'Other'

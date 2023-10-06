@@ -76,6 +76,7 @@ export interface IClientDependent {
   non_field_errors?: string;
   details?: string;
   preferred_contact_method?: string;
+  relationship_to_client?: string;
 }
 
 //Note: Cannot use Case so internally use LegalCase. User interface refers to Case.
