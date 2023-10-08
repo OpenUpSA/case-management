@@ -6,6 +6,7 @@ from case_management.models import (
     CaseOffice,
     CaseType,
     Client,
+    ClientDependent,
     CaseUpdate,
     File,
     Meeting,
@@ -112,6 +113,12 @@ class ClientAdmin(DefaultAdmin):
         return "\n".join([p.name for p in obj.users.all()])
 
 
+class ClientDependentAdmin(DefaultAdmin):
+    model = ClientDependent
+    list_display = ['first_names', 'last_name', 'client', 'created_at']
+    list_filter = ['client', 'created_at']
+
+
 class LegalCaseAdmin(DefaultAdmin):
     model = LegalCase
     list_display = [
@@ -160,6 +167,7 @@ class LogAdmin(DefaultAdmin):
     model = Log
     list_display = ['action', 'target_type']
 
+
 class LanguageAdmin(DefaultAdmin):
     model = Language
     list_display = ['label', ]
@@ -168,6 +176,7 @@ class LanguageAdmin(DefaultAdmin):
 admin.site.register(CaseType, CaseTypeAdmin)
 admin.site.register(CaseOffice, CaseOfficeAdmin)
 admin.site.register(Client, ClientAdmin)
+admin.site.register(ClientDependent, ClientDependentAdmin)
 admin.site.register(LegalCase, LegalCaseAdmin)
 admin.site.register(CaseUpdate, CaseUpdateAdmin)
 admin.site.register(File, FileAdmin)

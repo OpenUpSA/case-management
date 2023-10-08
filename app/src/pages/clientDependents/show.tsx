@@ -12,27 +12,22 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
-import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
-import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 
 import Layout from "../../components/layout";
 import {
-  getLegalCases,
   getClient,
-  deleteClient,
-  createLegalCase,
+  getClientDependent,
+  deleteClientDependent,
 } from "../../api";
-import { ILegalCase, IClient, LocationState } from "../../types";
+import { IClient, IClientDependent, LocationState } from "../../types";
 import { useStyles } from "../../utils";
-import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
+import { RedirectIfNotLoggedIn } from "../../auth";
 
-import ClientDetails from "../../components/client/clientDetails";
-import LegalCasesTable from "../../components/legalCase/table";
+import ClientDependentDetails from "../../components/clientDependent/clientDependentDetails";
 import MoreMenu from "../../components/moreMenu";
 import SnackbarAlert from "../../components/general/snackBar";
-import { add } from "date-fns";
 
 type RouteParams = { id: string };
 
@@ -42,20 +37,15 @@ const Page = () => {
   const location = useLocation<LocationState>();
   const classes = useStyles();
   const params = useParams<RouteParams>();
-  const clientId = parseInt(params.id);
-  const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
+  const clientDependentId = parseInt(params.id);
+  const [clientDependent, setClientDependent] =
+    React.useState<IClientDependent>();
   const [client, setClient] = React.useState<IClient>();
-  const [dataForCase, setDataForCase] = React.useState<any>({
-    client: "",
-    users: "",
-    case_offices: "",
-  });
   const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
     open: location.state?.open!,
     message: location.state?.message!,
     severity: location.state?.severity!,
   });
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
 
   // set location.state?.open! to false on page load
@@ -79,11 +69,12 @@ const Page = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const dataLegalCases = await getLegalCases(clientId);
-        setLegalCases(dataLegalCases);
-
-        if (clientId) {
-          setClient(await getClient(clientId));
+        if (clientDependentId) {
+          setClientDependent(await getClientDependent(clientDependentId));
+          const clientId = (await getClientDependent(clientDependentId)).client;
+          if (clientId) {
+            setClient(await getClient(clientId));
+          }
         }
       } catch (e: any) {
         setShowSnackbar({
@@ -94,28 +85,22 @@ const Page = () => {
       }
     }
     fetchData();
-    const userInfo = UserInfo.getInstance();
-    const userId = Number(userInfo.getUserId());
-    const case_office = Number(userInfo.getCaseOffice());
-    setDataForCase({
-      client: clientId,
-      users: [userId],
-      case_offices: case_office > 0 ? [case_office] : [1],
-    });
-  }, [clientId]);
+  }, [clientDependentId]);
 
-  const destroyClient = async () => {
+  const destroyClientDependent = async () => {
     try {
       setDeleteLoader(true);
       if (
-        window.confirm(i18n.t("Are you sure you want to delete this client?"))
+        window.confirm(
+          i18n.t("Are you sure you want to delete this dependent?")
+        )
       ) {
-        await deleteClient(clientId);
+        await deleteClientDependent(clientDependentId);
         history.push({
-          pathname: "/clients",
+          pathname: `/clients/${client?.id}/cases`,
           state: {
             open: true,
-            message: "Client delete successful",
+            message: "Dependent delete successful",
             severity: "success",
           },
         });
@@ -125,32 +110,7 @@ const Page = () => {
       setDeleteLoader(false);
       setShowSnackbar({
         open: true,
-        message: "Client delete failed",
-        severity: "error",
-      });
-    }
-  };
-
-  const newCaseHandler = async () => {
-    try {
-      setIsLoading(true);
-      const { id } = await createLegalCase(dataForCase);
-      setIsLoading(false);
-      if (id) {
-        history.push({
-          pathname: `/cases/${id}`,
-          state: {
-            open: true,
-            message: "New case created",
-            severity: "success",
-          },
-        });
-      }
-    } catch (e) {
-      setIsLoading(false);
-      setShowSnackbar({
-        open: true,
-        message: "New case failed",
+        message: "Dependent delete failed",
         severity: "error",
       });
     }
@@ -162,7 +122,15 @@ const Page = () => {
         <Button onClick={() => history.push("/clients")}>
           {i18n.t("Client list")}
         </Button>
-        <div>Client: {client ? client.preferred_name : ""}</div>
+        <Button
+          disabled={client ? false : true}
+          onClick={() => history.push(`/clients/${client?.id}/cases`)}
+        >
+          Client: {client ? client.preferred_name : ""}
+        </Button>
+        <div>
+          Dependent: {clientDependent ? clientDependent.preferred_name : ""}
+        </div>
       </Breadcrumbs>
 
       <Container maxWidth="md">
@@ -179,7 +147,7 @@ const Page = () => {
           <Grid item style={{ flexGrow: 1 }}>
             <Typography variant="h6">
               <strong>
-                {client ? client.preferred_name : i18n.t("Case list")}
+                {clientDependent ? clientDependent.preferred_name : ""}
               </strong>
             </Typography>
           </Grid>
@@ -187,13 +155,13 @@ const Page = () => {
             <MoreMenu>
               <MenuItem
                 style={{ position: "relative" }}
-                onClick={destroyClient}
+                onClick={destroyClientDependent}
                 disabled={deleteLoader}
               >
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>{i18n.t("Delete client")}</ListItemText>
+                <ListItemText>{i18n.t("Delete dependent")}</ListItemText>
                 {deleteLoader && (
                   <CircularProgress
                     size={24}
@@ -207,49 +175,12 @@ const Page = () => {
                   />
                 )}
               </MenuItem>
-              <MenuItem
-                style={{ position: "relative" }}
-                onClick={() => history.push(`/clients/${clientId}/dependents/new`)}
-                disabled={deleteLoader}
-              >
-                <ListItemIcon>
-                  <EscalatorWarningIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{i18n.t("Add dependent")}</ListItemText>
-              </MenuItem>
             </MoreMenu>
-          </Grid>
-          <Grid item className={classes.zeroWidthOnMobile}>
-            <Button
-              className={classes.canBeFab}
-              color="primary"
-              variant="contained"
-              startIcon={<CreateNewFolderIcon />}
-              disabled={isLoading || client === undefined}
-              onClick={newCaseHandler}
-            >
-              {i18n.t("New case")}
-              {isLoading && (
-                <CircularProgress
-                  size={24}
-                  sx={{
-                    position: "absolute",
-                    zIndex: 10000,
-                    left: "50%",
-                  }}
-                />
-              )}
-            </Button>
           </Grid>
         </Grid>
 
-        <ClientDetails client={client} />
+        <ClientDependentDetails clientDependent={clientDependent} />
         <hr className={classes.hr} />
-
-        <LegalCasesTable
-          legalCases={legalCases ? legalCases : []}
-          standalone={false}
-        />
       </Container>
       {showSnackbar.open && (
         <SnackbarAlert

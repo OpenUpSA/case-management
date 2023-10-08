@@ -14,7 +14,8 @@ from case_management.enums import (
     CivilMarriageTypes,
     Provinces,
     LogChangeTypes,
-    ContactMethods
+    ContactMethods,
+    Relationships
 )
 from django_countries.fields import CountryField
 from django.conf import settings
@@ -359,6 +360,60 @@ class Client(LoggedModel):
         return updates
 
 
+class ClientDependent(LoggedModel):
+    client = models.ForeignKey(
+        Client, related_name='client_dependents', on_delete=models.CASCADE
+    )
+    first_names = models.CharField(max_length=255, null=True, blank=False)
+    last_name = models.CharField(max_length=255, null=True, blank=False)
+    preferred_name = models.CharField(max_length=128, blank=True)
+    official_identifier = models.CharField(
+        max_length=64, null=True, blank=True)
+    official_identifier_type = models.CharField(
+        max_length=25, choices=OfficialIdentifiers.choices, null=True, blank=True
+    )
+    date_of_birth = models.DateField(null=True, blank=True)
+    contact_number = PhoneNumberField(null=True, blank=True)
+    alternative_contact_number = PhoneNumberField(null=True, blank=True)
+    contact_email = models.EmailField(max_length=254, null=True, blank=True)
+    alternative_contact_email = models.EmailField(
+        max_length=254, null=True, blank=True)
+    preferred_contact_method = models.CharField(
+        max_length=25, null=True, blank=True, choices=ContactMethods.choices
+    )
+    gender = models.CharField(
+        max_length=20, null=True, blank=True, choices=Genders.choices)
+    relationship_to_client = models.CharField(
+        max_length=20, null=True, blank=True, choices=Relationships.choices, default='Other')
+    home_language = models.ForeignKey(
+        Language, on_delete=models.CASCADE,
+        related_name='dependent_home_language', null=True, blank=True)
+    nationality = CountryField(null=True, blank=True)
+    country_of_birth = CountryField(null=True, blank=True)
+    details = models.TextField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.preferred_name == '':
+            self.preferred_name = self.first_names
+        super().save(*args, **kwargs)
+
+    class Meta:
+        unique_together = [['official_identifier', 'official_identifier_type']]
+
+    def __str__(self):
+        return self.preferred_name
+
+    @ property
+    def updates(self):
+        '''TODO: Do this in scalable way e.g. in view using proper join
+        The below would not scale, because the request is done for each row
+        '''
+        updates = Log.objects.filter(target_type='Dependent', target_id=self.id).order_by(
+            '-updated_at'
+        )
+        return updates
+
+
 class LegalCase(LoggedModel):
     case_number = models.CharField(
         max_length=32, null=False, blank=False, unique=True)
@@ -481,7 +536,7 @@ class File(LoggedChildModel):
         return os.path.basename(self.upload.file.name)
 
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+@ receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)

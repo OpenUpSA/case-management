@@ -44,4 +44,14 @@ export const constants = {
     ["WhatsApp", "WhatsApp/messenger"],
     ["Email", "Email"],
   ],
+  relationshipToClient: [
+    ["Child"],
+    ["Daughter"],
+    ["Son"],
+    ["Father"],
+    ["Mother"],
+    ["Spouse"],
+    ["Sibling"],
+    ["Other"],
+  ],
 };

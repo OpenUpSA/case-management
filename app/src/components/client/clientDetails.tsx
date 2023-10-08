@@ -11,20 +11,27 @@ import Divider from "@mui/material/Divider";
 import LockIcon from "@mui/icons-material/Lock";
 import BadgeIcon from "@mui/icons-material/Badge";
 import PhoneEnabledIcon from "@mui/icons-material/PhoneEnabled";
+import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import FormHelperText from "@mui/material/FormHelperText";
 
-import { IClient, LocationState } from "../../types";
+import { IClient, IClientDependent, LocationState } from "../../types";
 import { useStyles } from "../../utils";
 import { format } from "date-fns";
 import i18n from "../../i18n";
 
 import ReusableInput from "./reusableInput";
 import ReusableSelect from "./reusableSelect";
-import { updateClient, getClient } from "../../api";
+import {
+  updateClient,
+  getClient,
+  getClientDependentsForClient,
+} from "../../api";
 import { constants } from "../../contexts/dropDownConstants";
 import { LanguagesContext } from "../../contexts/languagesContext";
 import SnackbarAlert from "../../components/general/snackBar";
 import CircularProgress from "@mui/material/CircularProgress";
+
+import ClientDependentsTable from "../../components/clientDependent/table";
 
 type Props = {
   client?: IClient;
@@ -69,6 +76,9 @@ const Component = (props: Props) => {
     nationality: "",
     created_at: new Date(),
   });
+
+  const [clientDependents, setClientDependents] =
+    useState<IClientDependent[]>();
 
   const [showDetailedInfo, setShowDetailedInfo] = useState<boolean>(false);
   const [phoneErrorMessage, setPhoneErrorMessage] = useState<boolean>(false);
@@ -179,6 +189,7 @@ const Component = (props: Props) => {
           severity: "success",
         });
         setClient(await getClient(id));
+        setClientDependents(await getClientDependentsForClient(id));
       }
     } catch (e) {
       setIsLoading(false);
@@ -439,7 +450,10 @@ const Component = (props: Props) => {
               <ReusableSelect
                 title={"Preferred language"}
                 value={client?.home_language}
-                menuItems={contextLanguages?.map(({ id, label }: any) => [id, label])}
+                menuItems={contextLanguages?.map(({ id, label }: any) => [
+                  id,
+                  label,
+                ])}
                 inputName={"home_language"}
                 setClient={setClient}
                 editClientSelect={editClientSelect}
@@ -549,6 +563,31 @@ const Component = (props: Props) => {
                   }
                 />
               </FormControl>
+            </Grid>
+          </Grid>
+          <Grid
+            className={classes.pageBar}
+            style={{ marginBottom: 5 }}
+            container
+            direction="row"
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={12}>
+              <Stack direction="row" alignItems="center" gap={1}>
+                <EscalatorWarningIcon color="primary" />
+                <Typography variant="h6" color="primary">
+                  Dependents
+                </Typography>
+              </Stack>
+              <Divider sx={{ marginTop: 1 }} />
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <ClientDependentsTable
+                clientDependents={clientDependents ? clientDependents : []}
+                standalone={false}
+                clientId={clientId}
+              />
             </Grid>
           </Grid>
         </>
