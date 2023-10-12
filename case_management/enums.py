@@ -4,7 +4,7 @@ from django.db import models
 class PermissionGroups(models.TextChoices):
     ADMIN = 'Admin'
     REPORTING = 'Reporting',
-    ADVICE_OFFICE_ADMIN = 'AdviceOfficeAdmin', 'Advice Office Admin'
+    ADVICE_OFFICE_ADMIN = 'AdviceOfficeAdmin', 'Office Admin'
     CASE_WORKER = 'CaseWorker', 'Case Worker'
 
 
