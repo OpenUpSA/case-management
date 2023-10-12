@@ -151,6 +151,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
 
 
 class CaseOfficeViewSet(LoggedModelViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = CaseOffice.objects.all()
     serializer_class = CaseOfficeSerializer
 
