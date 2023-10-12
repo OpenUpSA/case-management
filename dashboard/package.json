@@ -1,7 +1,12 @@
 {
-  "name": "dashboard",
-  "version": "0.1.0",
-  "private": true,
+  "name": "case-management-dashboard",
+  "description": "A client-side browser app for the OSF Case Management project built by OpenUp.",
+  "author": "Paul Watson <paul@openup.org.za>",
+  "version": "0.1.1",
+  "license": "MIT",
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
