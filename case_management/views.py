@@ -266,6 +266,7 @@ class UserListViewSet(ListViewSet):
 
 
 class UserViewSet(UpdateRetrieveViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
