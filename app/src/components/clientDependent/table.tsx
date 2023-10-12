@@ -83,7 +83,7 @@ const Component = (props: Props) => {
                 history.push(`/clients/${props.clientId}/dependents/new`)
               }
             >
-              <TableCell className={classes.tableBodyCell}>
+              <TableCell className={classes.tableBodyCell} colSpan={2}>
                 {i18n.t("Add dependent details")}
               </TableCell>
               <TableCell className={classes.tableBodyCell} align="right">
