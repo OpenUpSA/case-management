@@ -1,5 +1,4 @@
-[![codecov](https://codecov.io/gh/paulmwatson/case_management/branch/master/graph/badge.svg)](https://codecov.io/gh/paulmwatson/case_management/)
-[![Build Status](https://travis-ci.org/paulmwatson/case_management.png)](https://travis-ci.org/paulmwatson/case_management)
+case_management)
 
 Case Management
 ===============================
