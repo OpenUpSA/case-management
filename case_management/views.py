@@ -125,8 +125,7 @@ class ListViewSet(
         return [self.request.user.case_office.id]
 
     def get_permissions(self):
-        permission_classes = [InAdminGroup | InReportingGroup |
-                              InAdviceOfficeAdminGroup | InCaseWorkerGroup]
+        permission_classes = [InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup | InCaseWorkerGroup]
         check_scoped_list_permission(self.request, self)
         return [permission() for permission in permission_classes]
 
@@ -163,6 +162,7 @@ class CaseTypeViewSet(LoggedModelViewSet):
 
 
 class LanguageViewSet(ListViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = Language.objects.all()
     serializer_class = LanguageListSerializer
 
