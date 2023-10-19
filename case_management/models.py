@@ -25,7 +25,7 @@ from rest_framework.authtoken.models import Token
 from case_management.managers import UserManager
 from django_lifecycle import LifecycleModel, hook, AFTER_CREATE, AFTER_UPDATE, BEFORE_DELETE
 from django.apps import apps
-
+import ckeditor.fields as ckeditor_fields
 
 LOG_CHANGE_EXCLUDED_FIELDS = ('id', 'created_at', 'updated_at')
 
@@ -534,6 +534,14 @@ class File(LoggedChildModel):
 
     def upload_file_name(self):
         return os.path.basename(self.upload.file.name)
+
+class SiteNotice(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=False)
+    title = models.CharField(max_length=255, null=False, blank=False)
+    message = ckeditor_fields.RichTextField(null=False, blank=False)
 
 
 @ receiver(post_save, sender=settings.AUTH_USER_MODEL)

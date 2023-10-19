@@ -13,7 +13,8 @@ from case_management.models import (
     Note,
     User,
     Log,
-    Language
+    Language,
+    SiteNotice,
 )
 from case_management.forms import UserCreationForm, UserChangeForm
 
@@ -168,9 +169,14 @@ class LogAdmin(DefaultAdmin):
     list_display = ['action', 'target_type']
 
 
+class SiteNoticeAdmin(DefaultAdmin):
+    model = SiteNotice
+    list_display = ['title', 'active', 'created_at']
+
+
 class LanguageAdmin(DefaultAdmin):
     model = Language
-    list_display = ['label', ]
+    list_display = ['label']
 
 
 admin.site.register(CaseType, CaseTypeAdmin)
@@ -185,3 +191,4 @@ admin.site.register(Note, NoteAdmin)
 admin.site.register(Log, LogAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Language, LanguageAdmin)
+admin.site.register(SiteNotice, SiteNoticeAdmin)
