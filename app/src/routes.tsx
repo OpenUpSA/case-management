@@ -25,11 +25,14 @@ import UserEditPage from "./pages/users/edit";
 
 import NotFoundPage from "./pages/notFound";
 import Navigation from "./components/navigation";
+import SiteNoticeDialog from "./components/siteNotice";
 import LogsPage from "./pages/logs/list";
 
 import ReactGA from "react-ga4";
 import { hotjar } from "react-hotjar";
 import { UserInfo } from "./auth";
+
+import {isLoggedIn} from "./auth";
 
 if (process.env.REACT_APP_GA_ID) {
   ReactGA.initialize(process.env.REACT_APP_GA_ID!);
@@ -106,6 +109,7 @@ function Routes() {
 
         <Route component={NotFoundPage} />
       </Switch>
+      {isLoggedIn() ? <SiteNoticeDialog /> : null}
     </div>
   );
 }

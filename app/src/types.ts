@@ -186,3 +186,12 @@ export interface ILanguage {
   updated_at: Date;
   label: string;
 }
+
+export interface ISiteNotice {
+  id: number;
+  created_at: Date;
+  updated_at: Date;
+  title: string;
+  message: string;
+  active: boolean;
+}
