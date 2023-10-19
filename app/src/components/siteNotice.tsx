@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { IconButton, Button } from "@material-ui/core";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -11,7 +12,6 @@ import { useStyles } from "../utils";
 import { getSiteNotices } from "../api";
 import { ISiteNotice, LocationState } from "../types";
 import i18n from "../i18n";
-import SnackbarAlert from "../components/general/snackBar";
 
 const SiteNoticeDialog = () => {
   const classes = useStyles();
@@ -119,13 +119,6 @@ const SiteNoticeDialog = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      {showSnackbar.open && (
-        <SnackbarAlert
-          open={showSnackbar.open}
-          message={showSnackbar.message ? showSnackbar.message : ""}
-          severity={showSnackbar.severity}
-        />
-      )}
     </>
   );
 };
