@@ -172,6 +172,8 @@ class LogAdmin(DefaultAdmin):
 class SiteNoticeAdmin(DefaultAdmin):
     model = SiteNotice
     list_display = ['title', 'active', 'created_at']
+    def get_changeform_initial_data(self, request):
+        return {'title': 'New feature added!', 'message': '<p>Site notice message here...</p><p><a href="https://docs.casefile.org.za/notifications-and-updates/new-features" target="_blank">Click here to see all recent updates</a></p>'}
 
 
 class LanguageAdmin(DefaultAdmin):
