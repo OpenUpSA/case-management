@@ -14,6 +14,7 @@ from case_management.models import (
     Log,
     LogChange,
     Language,
+    SiteNotice
 )
 from case_management.enums import MaritalStatuses
 
@@ -98,6 +99,7 @@ class ClientSerializer(CountryFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = '__all__'
+
 
 class ClientDependentSerializer(CountryFieldMixin, serializers.ModelSerializer):
     updates = LogSerializer(many=True, read_only=True)
@@ -250,3 +252,9 @@ class UserSerializer(serializers.ModelSerializer):
             'membership_number',
             'case_office',
         ]
+
+
+class SiteNoticeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteNotice
+        fields = '__all__'

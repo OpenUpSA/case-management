@@ -27,6 +27,7 @@ from case_management.views import (
     UserViewSet,
     LogViewSet,
     LanguageViewSet,
+    SiteNoticeViewSet,
     range_summary,
     monthly_summary,
     daily_summary,
@@ -53,6 +54,7 @@ router.register(r'api/v1/users', UserListViewSet)
 router.register(r'api/v1/users', UserViewSet)
 router.register(r'api/v1/logs', LogViewSet)
 router.register(r'api/v1/languages', LanguageViewSet)
+router.register(r'api/v1/site-notices', SiteNoticeViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -89,15 +91,15 @@ urlpatterns = [
         view=lambda r: HttpResponse(
             "User-agent: *\nAllow: /\n",
             content_type="text/plain")
-    ),   
+    ),
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
-             
+
          ),
-         name='admin_password_reset'),  
+         name='admin_password_reset'),
 
     path('password-reset/done/',
-         auth_views.PasswordResetDoneView.as_view(),           
+         auth_views.PasswordResetDoneView.as_view(),
          name='password_reset_done'),
 
     path('password-reset-confirm/<uidb64>/<token>/',
@@ -106,12 +108,14 @@ urlpatterns = [
 
     path('password-reset-complete/',
          auth_views.PasswordResetCompleteView.as_view(),
-         name='password_reset_complete'),     
-    
+         name='password_reset_complete'),
+
     path('debug/bnp6tVkWRPhVUd5ieGij-sentry/', trigger_error),
 
 ]
 
-admin.site.site_header = 'CaseFile'                    # default: "Django Administration"
-admin.site.index_title = 'Admin'                 # default: "Site administration"
-admin.site.site_title = 'CaseFile' # default: "Django site admin"
+# default: "Django Administration"
+admin.site.site_header = 'CaseFile'
+# default: "Site administration"
+admin.site.index_title = 'Admin'
+admin.site.site_title = 'CaseFile'  # default: "Django site admin"
