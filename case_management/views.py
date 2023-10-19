@@ -132,6 +132,7 @@ class ListViewSet(
         check_scoped_list_permission(self.request, self)
         return [permission() for permission in permission_classes]
 
+
 class ListRetrieveViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
@@ -371,9 +372,24 @@ def _get_summary_date_range(request):
     end_date = dates['end'].strftime("%Y-%m-%d")
     return start_date, end_date
 
+
 class SiteNoticeViewSet(ListRetrieveViewSet):
-    queryset = SiteNotice.objects.all()
     serializer_class = SiteNoticeSerializer
+    queryset = SiteNotice.objects.all().order_by('-updated_at')
+    filterset_fields = ['active']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        active = self.request.query_params.get('active')
+        if active is not None:
+            if active == 'true':
+                active = True
+            elif active == 'false':
+                active = False
+            queryset = queryset.filter(
+                active=active
+            ).order_by('-updated_at')
+        return queryset
 
 
 @api_view(['GET'])

@@ -54,7 +54,7 @@ router.register(r'api/v1/users', UserListViewSet)
 router.register(r'api/v1/users', UserViewSet)
 router.register(r'api/v1/logs', LogViewSet)
 router.register(r'api/v1/languages', LanguageViewSet)
-router.register(r'api/v1/site-notices', SiteNoticeViewSet)
+router.register(r'api/v1/site-notices', SiteNoticeViewSet, basename='SiteNotice')
 
 schema_view = get_schema_view(
     openapi.Info(
