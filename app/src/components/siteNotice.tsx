@@ -4,6 +4,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import CloseIcon from "@mui/icons-material/Close";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -33,6 +34,8 @@ const SiteNoticeDialog = () => {
         setSiteNotices(siteNoticesData);
         if (siteNoticesData.length > 0) {
           setOpen(true);
+        } else {
+          setOpen(false);
         }
         setIsLoading(false);
       } catch (e: any) {
@@ -43,6 +46,7 @@ const SiteNoticeDialog = () => {
           severity: "error",
         });
       }
+      setTimeout(fetchData, 50000000);
     }
     fetchData();
   }, []);
@@ -66,62 +70,47 @@ const SiteNoticeDialog = () => {
 
   return (
     <>
-      <Dialog
-        open={open}
-        onClose={dialogClose}
-        classes={{ paper: classes.dialogPaper }}
-      >
-        <Box style={{ margin: 20 }}>
-          <Grid
-            container
-            flexDirection={"row"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            <Grid item>
-              <DialogTitle className={classes.dialogTitle}>
-                {siteNotices[0]?.title}
-              </DialogTitle>
-            </Grid>
-            <Grid item className={classes.spaceItems}>
-              <IconButton
-                className={classes.closeButton}
-                size={"medium"}
-                onClick={dialogClose}
-              >
-                <CloseIcon className={classes.closeButtonIcon} />
-              </IconButton>
-            </Grid>
-          </Grid>
+      <Dialog open={open} onClose={dialogClose}>
+        <DialogTitle className={classes.dialogTitle}>
+          {siteNotices[0]?.title}
+        </DialogTitle>
+        <IconButton
+          className={classes.closeButton}
+          size={"medium"}
+          onClick={dialogClose}
+        >
+          <CloseIcon className={classes.closeButtonIcon} />
+        </IconButton>
 
+        <DialogContent className={classes.dialogContent}>
           <div dangerouslySetInnerHTML={{ __html: siteNotices[0]?.message }} />
+        </DialogContent>
 
-          <DialogActions style={{ padding: 0 }}>
-            <Button
-              fullWidth
-              color="primary"
-              variant="contained"
-              className={classes.dialogSubmit}
-              onClick={() => setOpen(false)}
-              disabled={isLoading}
-              style={{ position: "relative" }}
-            >
-              {isLoading && (
-                <CircularProgress
-                  size={24}
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    marginTop: "-12px",
-                    marginLeft: "-12px",
-                  }}
-                />
-              )}
-              {i18n.t("Dismiss")}
-            </Button>
-          </DialogActions>
-        </Box>
+        <DialogActions className={classes.dialogActions}>
+          <Button
+            fullWidth
+            color="primary"
+            variant="contained"
+            className={classes.dialogSubmit}
+            onClick={() => setOpen(false)}
+            disabled={isLoading}
+            style={{ position: "relative" }}
+          >
+            {isLoading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                }}
+              />
+            )}
+            {i18n.t("Dismiss")}
+          </Button>
+        </DialogActions>
       </Dialog>
       {showSnackbar.open && (
         <SnackbarAlert

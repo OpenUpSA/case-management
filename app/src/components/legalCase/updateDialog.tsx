@@ -747,7 +747,6 @@ const UpdateDialog = (props: Props) => {
         onClose={dialogClose}
         fullWidth
         maxWidth="md"
-        classes={{ paper: classes.dialogPaper }}
         PaperProps={{
           sx: {
             height: "90vh",
