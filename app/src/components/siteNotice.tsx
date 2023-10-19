@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { IconButton, Button } from "@material-ui/core";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -25,6 +23,8 @@ const SiteNoticeDialog = () => {
     message: "",
     severity: undefined,
   });
+  const siteNoticesSeen =
+    window.localStorage.getItem("site_notices_seen")?.split(",") || [];
 
   useEffect(() => {
     async function fetchData() {
@@ -32,7 +32,10 @@ const SiteNoticeDialog = () => {
         setIsLoading(true);
         const siteNoticesData = await getSiteNotices(true);
         setSiteNotices(siteNoticesData);
-        if (siteNoticesData.length > 0) {
+        if (
+          siteNoticesData.length > 0 &&
+          !siteNoticesSeen.includes(siteNoticesData[0]?.id.toString())
+        ) {
           setOpen(true);
         } else {
           setOpen(false);
@@ -65,6 +68,10 @@ const SiteNoticeDialog = () => {
   }, [showSnackbar.open]);
 
   const dialogClose = () => {
+    window.localStorage.setItem(
+      "site_notices_seen",
+      Array.from(new Set([...siteNoticesSeen, siteNotices[0]?.id])).join(",")
+    );
     setOpen(false);
   };
 
@@ -92,7 +99,7 @@ const SiteNoticeDialog = () => {
             color="primary"
             variant="contained"
             className={classes.dialogSubmit}
-            onClick={() => setOpen(false)}
+            onClick={dialogClose}
             disabled={isLoading}
             style={{ position: "relative" }}
           >
