@@ -46,7 +46,7 @@ const SiteNoticeDialog = () => {
           severity: "error",
         });
       }
-      setTimeout(fetchData, 50000000);
+      setTimeout(fetchData, 3600000);
     }
     fetchData();
   }, []);
