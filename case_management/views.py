@@ -44,6 +44,7 @@ from case_management.serializers import (
     LanguageListSerializer,
     UserSerializer,
     LogSerializer,
+    SiteNoticeSerializer,
 )
 from case_management.models import (
     CaseOffice,
@@ -58,6 +59,7 @@ from case_management.models import (
     User,
     Log,
     Language,
+    SiteNotice
 )
 from case_management import queries
 
@@ -123,6 +125,22 @@ class ListViewSet(
     @property
     def permission_scope_query_param_values(self):
         return [self.request.user.case_office.id]
+
+    def get_permissions(self):
+        permission_classes = [InAdminGroup | InReportingGroup |
+                              InAdviceOfficeAdminGroup | InCaseWorkerGroup]
+        check_scoped_list_permission(self.request, self)
+        return [permission() for permission in permission_classes]
+
+
+class ListRetrieveViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet
+):
+    """
+    A viewset that provides just the `list` and `retrieve` action.
+    """
 
     def get_permissions(self):
         permission_classes = [InAdminGroup | InReportingGroup |
@@ -353,6 +371,25 @@ def _get_summary_date_range(request):
     start_date = dates['start'].strftime("%Y-%m-%d")
     end_date = dates['end'].strftime("%Y-%m-%d")
     return start_date, end_date
+
+
+class SiteNoticeViewSet(ListRetrieveViewSet):
+    serializer_class = SiteNoticeSerializer
+    queryset = SiteNotice.objects.all().order_by('-updated_at')
+    filterset_fields = ['active']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        active = self.request.query_params.get('active')
+        if active is not None:
+            if active == 'true':
+                active = True
+            elif active == 'false':
+                active = False
+            queryset = queryset.filter(
+                active=active
+            ).order_by('-updated_at')
+        return queryset
 
 
 @api_view(['GET'])

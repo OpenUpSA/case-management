@@ -659,6 +659,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 10,
       width: "38px",
       height: "38px",
+      position: "absolute",
+      right: "28px",
+      top: "28px",
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
       },
@@ -832,12 +835,21 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     dialogTitle: {
-      padding: "5px!important" as any,
+      padding: "28px!important" as any,
       fontWeight: "bold!important" as any,
-      fontSize: "24px!important" as any,
+      fontSize: "23px!important" as any,
       [theme.breakpoints.down("xs")]: {
         fontSize: "16px!important" as any,
       },
+    },
+    dialogContent: {
+      paddingTop: "0!important",
+      paddingBottom: "0!important",
+      paddingLeft: "28px!important",
+      paddingRight: "28px!important",
+    },
+    dialogActions: {
+      padding: "28px!important",
     },
     dialogFileInput: {
       fontSize: "13px",
@@ -883,9 +895,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       height: "33px",
       width: "33px",
       borderRadius: "50%",
-    },
-    dialogPaper: {
-      top: 0,
     },
     dateInput: {
       flexWrap: "wrap",

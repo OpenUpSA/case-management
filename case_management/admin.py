@@ -13,7 +13,8 @@ from case_management.models import (
     Note,
     User,
     Log,
-    Language
+    Language,
+    SiteNotice,
 )
 from case_management.forms import UserCreationForm, UserChangeForm
 
@@ -168,9 +169,17 @@ class LogAdmin(DefaultAdmin):
     list_display = ['action', 'target_type']
 
 
+class SiteNoticeAdmin(DefaultAdmin):
+    model = SiteNotice
+    list_display = ['title', 'active', 'created_at', 'updated_at']
+    ordering = ['-updated_at']
+    def get_changeform_initial_data(self, request):
+        return {'title': 'New feature added!', 'message': '<p>Site notice message here...</p><p><a href="https://docs.casefile.org.za/notifications-and-updates/new-features" target="_blank">Click here to see all recent updates</a></p>'}
+
+
 class LanguageAdmin(DefaultAdmin):
     model = Language
-    list_display = ['label', ]
+    list_display = ['label']
 
 
 admin.site.register(CaseType, CaseTypeAdmin)
@@ -185,3 +194,4 @@ admin.site.register(Note, NoteAdmin)
 admin.site.register(Log, LogAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Language, LanguageAdmin)
+admin.site.register(SiteNotice, SiteNoticeAdmin)

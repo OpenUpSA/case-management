@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "django_countries",
     "django_filters",
+    "ckeditor",
     "drf_yasg",
     "naomi",
 ]

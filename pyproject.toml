@@ -36,6 +36,7 @@ boto3 = "^1.18.61"
 django-storages = "^1.12.1"
 django-countries = "^7.2.1"
 django-naomi = "^0.8"
+django-ckeditor = "6.7.0"
 
 
 [tool.poetry.dev-dependencies]
