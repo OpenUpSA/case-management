@@ -68,7 +68,6 @@ const Component = (props: Props) => {
     relationship_to_client: "",
   });
 
-  const [showDetailedInfo, setShowDetailedInfo] = useState<boolean>(false);
   const [phoneErrorMessage, setPhoneErrorMessage] = useState<boolean>(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState<boolean>(false);
   const [altPhoneErrorMessage, setAltPhoneErrorMessage] =

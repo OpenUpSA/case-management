@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Grid,
@@ -45,7 +45,7 @@ const Component = (props: Props) => {
       }
     }
     fetchData();
-  }, []);
+  }, [props.clientId]);
   return (
     <div>
       <TableContainer>

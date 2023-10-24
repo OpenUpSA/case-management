@@ -61,7 +61,8 @@ CORS_ALLOW_HEADERS = [
     "user-agent",
     "x-csrftoken",
     "x-requested-with",
-    "sentry-trace"
+    "sentry-trace",
+    "baggage",
 ]
 
 # Application definition

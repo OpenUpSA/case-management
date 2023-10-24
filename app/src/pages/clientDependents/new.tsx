@@ -7,7 +7,7 @@ import i18n from "../../i18n";
 import Layout from "../../components/layout";
 import { createClientDependent, getClient } from "../../api";
 import { IClientDependent, IClient } from "../../types";
-import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
+import { RedirectIfNotLoggedIn } from "../../auth";
 import {
   Breadcrumbs,
   Container,
@@ -57,7 +57,6 @@ const Page = () => {
     resetState();
   }, [showSnackbar]);
 
-  const userInfo = UserInfo.getInstance();
   const params = useParams<RouteParams>();
   const clientId = parseInt(params.id);
 
@@ -75,7 +74,7 @@ const Page = () => {
       }
     }
     fetchData();
-  }, []);
+  }, [clientId]);
 
   const newClientDependent = async (clientDependent: IClientDependent) => {
     try {

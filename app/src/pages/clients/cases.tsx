@@ -32,7 +32,6 @@ import ClientDetails from "../../components/client/clientDetails";
 import LegalCasesTable from "../../components/legalCase/table";
 import MoreMenu from "../../components/moreMenu";
 import SnackbarAlert from "../../components/general/snackBar";
-import { add } from "date-fns";
 
 type RouteParams = { id: string };
 
