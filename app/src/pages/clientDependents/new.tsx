@@ -74,7 +74,7 @@ const Page = () => {
       }
     }
     fetchData();
-  }, []);
+  }, [clientId]);
 
   const newClientDependent = async (clientDependent: IClientDependent) => {
     try {

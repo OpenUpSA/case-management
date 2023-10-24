@@ -18,13 +18,12 @@ const SiteNoticeDialog = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [siteNotices, setSiteNotices] = React.useState<ISiteNotice[]>([]);
 
-  const siteNoticesSeen =
-    window.localStorage.getItem("site_notices_seen")?.split(",") || [];
-
   useEffect(() => {
     async function fetchData() {
+      const siteNoticesSeen =
+        window.localStorage.getItem("site_notices_seen")?.split(",") || [];
+      setIsLoading(true);
       try {
-        setIsLoading(true);
         const siteNoticesData = await getSiteNotices(true);
         setSiteNotices(siteNoticesData);
         if (
@@ -35,7 +34,8 @@ const SiteNoticeDialog = () => {
         } else {
           setOpen(false);
         }
-      } catch (e: any) {
+      } catch (error) {
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
@@ -45,6 +45,8 @@ const SiteNoticeDialog = () => {
   }, []);
 
   const dialogClose = () => {
+    const siteNoticesSeen =
+      window.localStorage.getItem("site_notices_seen")?.split(",") || [];
     window.localStorage.setItem(
       "site_notices_seen",
       Array.from(new Set([...siteNoticesSeen, siteNotices[0]?.id])).join(",")

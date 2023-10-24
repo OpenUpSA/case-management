@@ -45,7 +45,7 @@ const Component = (props: Props) => {
       }
     }
     fetchData();
-  }, []);
+  }, [props.clientId]);
   return (
     <div>
       <TableContainer>
