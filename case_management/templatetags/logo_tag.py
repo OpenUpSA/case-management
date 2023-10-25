@@ -8,4 +8,7 @@ register = template.Library()
 
 @register.simple_tag
 def logo_url():
-    return settings.LOGO_URL
+    if settings.LOGO_URL != None:
+        return f'<img src={settings.LOGO_URL} />'
+    else:
+        return ''
