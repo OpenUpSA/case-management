@@ -32,7 +32,6 @@ export class LayoutSimple extends Component<Props> {
                 alignItems: "center",
               }}
             >
-              <img src={logo} alt={i18n.t("CaseFile Logo")} />
               {this.props.children}
             </Box>
           </Grid>

@@ -28,6 +28,10 @@ export const useStyles = makeStyles((theme: Theme) =>
     cursorPointer: {
       cursor: "pointer",
     },
+    logo: {
+      cursor: "pointer",
+      height: "35px",
+    },
     root: {
       paddingTop: "20px",
       paddingLeft: "20px",
