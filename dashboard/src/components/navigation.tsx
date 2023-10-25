@@ -76,7 +76,7 @@ const Component = () => {
           <Toolbar disableGutters={true}>
             <Box display="flex" flexGrow={1}>
               <img
-                className={classes.cursorPointer}
+                className={classes.logo}
                 src={logo}
                 alt={i18n.t("CaseFile Logo")}
                 onClick={() => {
@@ -84,6 +84,16 @@ const Component = () => {
                   closeDrawer();
                 }}
               />
+              {process.env.REACT_APP_LOGO_URL && (
+                <img
+                  className={classes.logoCustom}
+                  src={process.env.REACT_APP_LOGO_URL}
+                  onClick={() => {
+                    history.push("/");
+                    closeDrawer();
+                  }}
+                />
+              )}
             </Box>
             <IconButton
               edge="end"

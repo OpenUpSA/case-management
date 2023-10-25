@@ -277,7 +277,14 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
-
+    logo: {
+      cursor: "pointer",
+      height: "35px",
+    },
+    logoCustom: {
+      height: "35px",
+      marginLeft: "10px"
+    },
     cursorPointer: {
       cursor: "pointer",
     },

@@ -257,3 +257,5 @@ else:
 LOGIN_URL = "/admin/login/"
 LOGIN_REDIRECT_URL = "/admin/"
 LOGOUT_REDIRECT_URL = "/"
+
+LOGO_URL = os.getenv("LOGO_URL", None)
