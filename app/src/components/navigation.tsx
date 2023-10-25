@@ -126,6 +126,7 @@ const Component = () => {
                   className={classes.logoCustom}
                   src={process.env.REACT_APP_LOGO_URL}
                   onClick={goHome}
+                  alt=""
                 />
               )}
             </Box>
