@@ -116,8 +116,8 @@ const Component = () => {
           <Toolbar disableGutters={true}>
             <Box display="flex" flexGrow={1}>
               <img
-                className={classes.cursorPointer}
-                src={logo}
+                className={classes.logo}
+                src={process.env.REACT_APP_LOGO_URL || logo}
                 alt={i18n.t("CaseFile Logo")}
                 onClick={goHome}
               />
