@@ -3,7 +3,6 @@ import { Component, ReactNode } from "react";
 import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Box from "@material-ui/core/Box";
-import logo from "../logo.svg";
 import { Grid } from "@material-ui/core";
 
 type Props = {

@@ -77,13 +77,23 @@ const Component = () => {
             <Box display="flex" flexGrow={1}>
               <img
                 className={classes.logo}
-                src={process.env.REACT_APP_LOGO_URL || logo}
+                src={logo}
                 alt={i18n.t("CaseFile Logo")}
                 onClick={() => {
                   history.push("/");
                   closeDrawer();
                 }}
               />
+              {process.env.REACT_APP_LOGO_URL && (
+                <img
+                  className={classes.logoCustom}
+                  src={process.env.REACT_APP_LOGO_URL}
+                  onClick={() => {
+                    history.push("/");
+                    closeDrawer();
+                  }}
+                />
+              )}
             </Box>
             <IconButton
               edge="end"
