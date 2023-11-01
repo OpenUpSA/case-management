@@ -374,6 +374,7 @@ def _get_summary_date_range(request):
 
 
 class SiteNoticeViewSet(ListRetrieveViewSet):
+    permission_scope_query_param = ''
     serializer_class = SiteNoticeSerializer
     queryset = SiteNotice.objects.all().order_by('-updated_at')
     filterset_fields = ['active']
