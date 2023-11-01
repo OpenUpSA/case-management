@@ -10,8 +10,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.parsers import MultiPartParser, FormParser
 
-from django.core.exceptions import BadRequest, FieldError
-
 from django.views import generic
 
 from django.db import connection
@@ -69,6 +67,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def get_user(request):
     if isinstance(request.user, AnonymousUser):
         return None
@@ -113,7 +112,8 @@ class UpdateRetrieveViewSet(
     To use it, override the class and set the `.queryset` and
     `.serializer_class` attributes.
     """
-    permission_classes = [InAdminGroup]
+    permission_classes = [InAdminGroup |
+                          InAdviceOfficeAdminGroup | InCaseWorkerGroup]
 
 
 class ListViewSet(
@@ -145,7 +145,6 @@ class ListRetrieveViewSet(
     A viewset that provides just the `list` and `retrieve` action.
     """
 
-
     def get_permissions(self):
         permission_classes = [InAdminGroup | InReportingGroup |
                               InAdviceOfficeAdminGroup | InCaseWorkerGroup]
@@ -174,6 +173,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
 
 
 class CaseOfficeViewSet(LoggedModelViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = CaseOffice.objects.all()
     serializer_class = CaseOfficeSerializer
 
@@ -191,6 +191,7 @@ class LanguageViewSet(ListViewSet):
 
 
 class ClientViewSet(LoggedModelViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
@@ -210,6 +211,7 @@ class ClientViewSet(LoggedModelViewSet):
 
 
 class ClientDependentViewSet(LoggedModelViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = ClientDependent.objects.all()
     serializer_class = ClientDependentSerializer
     filter_backends = [DjangoFilterBackend]
@@ -224,6 +226,7 @@ class ClientDependentViewSet(LoggedModelViewSet):
 
 
 class LegalCaseViewSet(LoggedModelViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = LegalCase.objects.all()
     serializer_class = LegalCaseSerializer
     filter_backends = [DjangoFilterBackend]
@@ -254,6 +257,7 @@ class LegalCaseViewSet(LoggedModelViewSet):
 
 
 class CaseUpdateViewSet(LoggedModelViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = CaseUpdate.objects.all()
     serializer_class = CaseUpdateSerializer
     filter_backends = [DjangoFilterBackend]
@@ -261,6 +265,7 @@ class CaseUpdateViewSet(LoggedModelViewSet):
 
 
 class FileViewSet(LoggedModelViewSet):
+    allow_listing_without_case_office_filter = True
     parser_classes = (MultiPartParser, FormParser)
     queryset = File.objects.all()
     serializer_class = FileSerializer
@@ -269,6 +274,7 @@ class FileViewSet(LoggedModelViewSet):
 
 
 class MeetingViewSet(LoggedModelViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
     filter_backends = [DjangoFilterBackend]
@@ -276,6 +282,7 @@ class MeetingViewSet(LoggedModelViewSet):
 
 
 class NoteViewSet(LoggedModelViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
     filter_backends = [DjangoFilterBackend]
@@ -283,11 +290,13 @@ class NoteViewSet(LoggedModelViewSet):
 
 
 class UserListViewSet(ListViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = User.objects.all()
     serializer_class = UserListSerializer
 
 
 class UserViewSet(UpdateRetrieveViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
