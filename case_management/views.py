@@ -65,6 +65,9 @@ from case_management import queries
 
 import time
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_user(request):
     if isinstance(request.user, AnonymousUser):
@@ -142,6 +145,7 @@ class ListRetrieveViewSet(
     A viewset that provides just the `list` and `retrieve` action.
     """
 
+
     def get_permissions(self):
         permission_classes = [InAdminGroup | InReportingGroup |
                               InAdviceOfficeAdminGroup | InCaseWorkerGroup]
@@ -181,6 +185,7 @@ class CaseTypeViewSet(LoggedModelViewSet):
 
 
 class LanguageViewSet(ListViewSet):
+    allow_listing_without_case_office_filter = True
     queryset = Language.objects.all()
     serializer_class = LanguageListSerializer
 
@@ -374,7 +379,7 @@ def _get_summary_date_range(request):
 
 
 class SiteNoticeViewSet(ListRetrieveViewSet):
-    permission_scope_query_param = ''
+    allow_listing_without_case_office_filter = True
     serializer_class = SiteNoticeSerializer
     queryset = SiteNotice.objects.all().order_by('-updated_at')
     filterset_fields = ['active']
