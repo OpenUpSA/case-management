@@ -67,12 +67,6 @@ def get_user(request):
 
 
 class LoggedModelViewSet(viewsets.ModelViewSet):
-    permission_scope_query_param = 'caseOffice'
-
-    @property
-    def permission_scope_query_param_values(self):
-        return [self.request.user.case_office.id]
-
     def perform_create(self, serializer):
         user = get_user(self.request)
         serializer.save(created_by=user, updated_by=user)
@@ -102,11 +96,6 @@ class ListViewSet(
     """
     A viewset that provides just the `list` action.
     """
-    permission_scope_query_param = 'caseOffice'
-
-    @property
-    def permission_scope_query_param_values(self):
-        return [self.request.user.case_office.id]
 
 
 class ListRetrieveViewSet(
@@ -262,19 +251,6 @@ class LogViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = LogSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['parent_id', 'parent_type', 'target_id', 'target_type']
-
-    permission_scope_query_param = 'parent_id'
-
-    @property
-    def permission_scope_query_param_values(self):
-        parent_type = self.request.query_params.get('parent_type')
-        if parent_type != 'LegalCase':
-            raise ValidationError('Must provide parent_type=LegalCase')
-        parent_id = self.request.query_params.get('parent_id')
-        user_case_office = self.request.user.case_office.id
-        legalcase_case_offices = LegalCase.objects.filter(
-            case_offices__id=user_case_office).values_list('id', flat=True)
-        return legalcase_case_offices
 
 
 def _get_summary_months_range(request):
