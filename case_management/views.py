@@ -10,8 +10,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.parsers import MultiPartParser, FormParser
 
-from django.core.exceptions import BadRequest, FieldError
-
 from django.views import generic
 
 from django.db import connection
@@ -23,11 +21,7 @@ from django.http import HttpResponseBadRequest
 from case_management.auth import (
     InAdminGroup,
     InReportingGroup,
-    InAdviceOfficeAdminGroup,
-    InCaseWorkerGroup,
-    check_create_update_permission,
-    check_scoped_list_permission,
-    check_scoped_reporting_permision
+    InAdviceOfficeAdminGroup
 )
 
 from case_management.serializers import (
@@ -79,17 +73,6 @@ class LoggedModelViewSet(viewsets.ModelViewSet):
     def permission_scope_query_param_values(self):
         return [self.request.user.case_office.id]
 
-    def get_permissions(self):
-        permission_classes = [InAdminGroup |
-                              InAdviceOfficeAdminGroup | InCaseWorkerGroup]
-        if self.action == 'list':
-            check_scoped_list_permission(self.request, self)
-        if self.action == 'create':
-            check_create_update_permission(self.request)
-        elif self.action == 'destroy':
-            permission_classes = [InAdminGroup]
-        return [permission() for permission in permission_classes]
-
     def perform_create(self, serializer):
         user = get_user(self.request)
         serializer.save(created_by=user, updated_by=user)
@@ -110,7 +93,6 @@ class UpdateRetrieveViewSet(
     To use it, override the class and set the `.queryset` and
     `.serializer_class` attributes.
     """
-    permission_classes = [InAdminGroup]
 
 
 class ListViewSet(
@@ -126,12 +108,6 @@ class ListViewSet(
     def permission_scope_query_param_values(self):
         return [self.request.user.case_office.id]
 
-    def get_permissions(self):
-        permission_classes = [InAdminGroup | InReportingGroup |
-                              InAdviceOfficeAdminGroup | InCaseWorkerGroup]
-        check_scoped_list_permission(self.request, self)
-        return [permission() for permission in permission_classes]
-
 
 class ListRetrieveViewSet(
     mixins.ListModelMixin,
@@ -141,12 +117,6 @@ class ListRetrieveViewSet(
     """
     A viewset that provides just the `list` and `retrieve` action.
     """
-
-    def get_permissions(self):
-        permission_classes = [InAdminGroup | InReportingGroup |
-                              InAdviceOfficeAdminGroup | InCaseWorkerGroup]
-        check_scoped_list_permission(self.request, self)
-        return [permission() for permission in permission_classes]
 
 
 class Index(generic.TemplateView):
@@ -288,8 +258,6 @@ class UserViewSet(UpdateRetrieveViewSet):
 
 
 class LogViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [InAdminGroup |
-                          InAdviceOfficeAdminGroup | InCaseWorkerGroup]
     queryset = Log.objects.all().order_by('-id')
     serializer_class = LogSerializer
     filter_backends = [DjangoFilterBackend]
@@ -307,11 +275,6 @@ class LogViewSet(viewsets.ReadOnlyModelViewSet):
         legalcase_case_offices = LegalCase.objects.filter(
             case_offices__id=user_case_office).values_list('id', flat=True)
         return legalcase_case_offices
-
-    def get_permissions(self):
-        if self.action == 'list':
-            check_scoped_list_permission(self.request, self)
-        return [permission() for permission in self.permission_classes]
 
 
 def _get_summary_months_range(request):
@@ -395,7 +358,6 @@ class SiteNoticeViewSet(ListRetrieveViewSet):
 @api_view(['GET'])
 @permission_classes([InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup])
 def range_summary(request):
-    check_scoped_reporting_permision(request)
     start_date, end_date = _get_summary_date_range(request)
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
@@ -413,7 +375,6 @@ def range_summary(request):
 @api_view(['GET'])
 @permission_classes([InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup])
 def daily_summary(request):
-    check_scoped_reporting_permision(request)
     start_month, end_month = _get_summary_months_range(request)
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
@@ -431,7 +392,6 @@ def daily_summary(request):
 @api_view(['GET'])
 @permission_classes([InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup])
 def monthly_summary(request):
-    check_scoped_reporting_permision(request)
     start_month, end_month = _get_summary_months_range(request)
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
