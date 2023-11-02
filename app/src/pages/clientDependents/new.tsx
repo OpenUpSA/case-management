@@ -91,47 +91,31 @@ const Page = () => {
         client: clientId,
       });
       setIsLoading(false);
+      setFirstNamesError(false);
+      setLastNameError(false);
+      setEmailErrorMessage(false);
+      setPhoneErrorMessage(false);
+      setNonFieldError(false);
+
       if (typeof first_names === "object") {
         setFirstNamesError(true);
+      }
+
+      if (typeof last_name === "object") {
         setLastNameError(true);
-        setEmailErrorMessage(false);
-        setPhoneErrorMessage(false);
-        setNonFieldError(false);
-        return false;
-      } else if (typeof last_name === "object") {
-        setFirstNamesError(false);
-        setLastNameError(true);
-        setEmailErrorMessage(false);
-        setPhoneErrorMessage(false);
-        setNonFieldError(false);
-        return false;
-      } else if (typeof contact_email === "object") {
+      }
+
+      if (typeof contact_email === "object") {
         setEmailErrorMessage(true);
-        setPhoneErrorMessage(false);
-        setFirstNamesError(true);
-        setLastNameError(true);
-        setNonFieldError(false);
         return false;
-      } else if (typeof contact_number === "object") {
+      }
+
+      if (typeof contact_number === "object") {
         setPhoneErrorMessage(true);
-        setEmailErrorMessage(false);
-        setFirstNamesError(true);
-        setLastNameError(true);
-        setNonFieldError(false);
-        return false;
-      } else if (typeof non_field_errors === "object") {
+      }
+
+      if (typeof non_field_errors === "object") {
         setNonFieldError(true);
-        setPhoneErrorMessage(false);
-        setEmailErrorMessage(false);
-        setFirstNamesError(true);
-        setLastNameError(true);
-        return false;
-      } else {
-        setFirstNamesError(true);
-        setLastNameError(true);
-        setEmailErrorMessage(false);
-        setPhoneErrorMessage(false);
-        setNonFieldError(false);
       }
 
       id &&
