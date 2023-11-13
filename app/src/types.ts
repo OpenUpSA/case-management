@@ -174,6 +174,12 @@ export interface LocationState {
   severity?: "success" | "error" | undefined;
 }
 
+export interface SnackbarState {
+  open?: boolean;
+  message?: string;
+  severity?: "success" | "error" | "info" | undefined;
+}
+
 export interface TabPanelProps {
   children?: React.ReactNode;
   index: number;

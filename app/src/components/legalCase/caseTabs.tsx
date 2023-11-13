@@ -16,7 +16,7 @@ import {
   IUser,
   ILog,
   IClient,
-  LocationState,
+  SnackbarState,
 } from "../../types";
 import { useStyles } from "../../utils";
 import {
@@ -35,7 +35,7 @@ type Props = {
   setLegalCase: (legalCase: ILegalCase) => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
-  setShowSnackbar: (showSnackbar: LocationState) => void;
+  setShowSnackbar: (showSnackbar: SnackbarState) => void;
   caseHistory: ILog[];
   setCaseHistory: (caseHistory: ILog[]) => void;
   setStatus: (status: string) => void;

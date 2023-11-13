@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useStyles } from "../../utils";
 import {
   ILegalCase,
-  LocationState,
+  SnackbarState,
   ILegalCaseFile,
   IUser,
   ILog,
@@ -33,7 +33,7 @@ type Props = {
 const CaseUpdateTab = (props: Props) => {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
-  const [showSnackbar, setShowSnackbar] = useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = useState<SnackbarState>({
     open: false,
     message: "",
     severity: undefined,

@@ -18,7 +18,7 @@ import {
   ILegalCase,
   IClient,
   IMeeting,
-  LocationState,
+  SnackbarState,
   ILegalCaseFile,
 } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
@@ -57,7 +57,7 @@ const Page = () => {
   const [meetingTypeError, setMeetingTypeError] =
     React.useState<boolean>(false);
   const [notesError, setNotesError] = React.useState<boolean>(false);
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = React.useState<SnackbarState>({
     open: false,
     message: "",
     severity: undefined,

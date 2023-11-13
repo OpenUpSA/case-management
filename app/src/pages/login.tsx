@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import SnackbarAlert from "../components/general/snackBar";
-import { LocationState } from "../types";
+import { SnackbarState } from "../types";
 import { getCaseOffices, getCaseTypes, getLanguages } from "../api";
 import { CaseOfficesContext } from "../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../contexts/caseTypesContext";
@@ -24,7 +24,7 @@ const Page = () => {
   const history = useHistory();
   const [loginError, setLoginError] = React.useState<boolean>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = React.useState<SnackbarState>({
     open: false,
     message: "",
     severity: undefined,

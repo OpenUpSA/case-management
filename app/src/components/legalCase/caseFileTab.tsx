@@ -11,7 +11,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import Divider from "@mui/material/Divider";
 import { format } from "date-fns";
 
-import { ILegalCase, ILegalCaseFile, LocationState, ILog } from "../../types";
+import { ILegalCase, ILegalCaseFile, ILog, SnackbarState } from "../../types";
 import UpdateDialog from "./updateDialog";
 
 import Dialog from "@mui/material/Dialog";
@@ -27,6 +27,8 @@ import {
   getLegalCaseFiles,
   deleteLegalCaseFile,
   renameLegalCaseFile,
+  createLegalCaseFile,
+  getCaseUpdates,
 } from "../../api";
 import {
   Grid,
@@ -43,6 +45,19 @@ import {
 } from "@material-ui/core";
 import i18n from "../../i18n";
 import SnackbarAlert from "../general/snackBar";
+import { styled } from "@mui/material/styles";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 type Props = {
   legalCase: ILegalCase;
@@ -65,16 +80,24 @@ export default function CaseFileTab(props: Props) {
     legal_case: 0,
   });
   const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = React.useState<SnackbarState>({
     open: false,
     message: "",
     severity: undefined,
   });
-  const [fileView] = useState<boolean>(true);
   const [triggerClick, setTriggerClick] = React.useState({
     show: false,
     val: 0,
   });
+
+  const refreshUpdates = async () => {
+    const dataLegalCaseFiles = await getLegalCaseFiles(
+      props.legalCase.id as number
+    );
+    props.setLegalCaseFiles(dataLegalCaseFiles);
+    const updates = await getCaseUpdates(props.legalCase.id as number);
+    props.setCaseUpdates(updates);
+  };
 
   useEffect(() => {
     const resetState = async () => {
@@ -88,10 +111,6 @@ export default function CaseFileTab(props: Props) {
     };
     resetState();
   }, [showSnackbar.open]);
-
-  const dialogOpen = () => {
-    setOpen(true);
-  };
 
   const renameFile = async (file: ILegalCaseFile) => {
     renameLegalCaseFile(file)
@@ -184,14 +203,55 @@ export default function CaseFileTab(props: Props) {
       >
         <Grid item xs={12} md={12}>
           <Button
+            component="label"
+            startIcon={<UploadIcon />}
             className={classes.bigCanBeFab}
             fullWidth
             color="primary"
             variant="contained"
-            startIcon={<UploadIcon />}
-            onClick={() => dialogOpen()}
           >
-            {i18n.t("Upload file")}
+            Upload file
+            <VisuallyHiddenInput
+              type="file"
+              onChange={(e: any) => {
+                createLegalCaseFile(
+                  props.legalCase.id,
+                  e.target.files[0],
+                  e.target.files[0].name,
+                  (e: any) => {
+                    const { loaded, total } = e;
+                    const percent = Math.floor((loaded * 100) / total);
+                    setShowSnackbar({
+                      open: true,
+                      message: `Uploading file: ${percent}%`,
+                      severity: "info",
+                    });
+                    if (percent === 100) {
+                      setTimeout(() => {
+                        refreshUpdates();
+                      }, 1000);
+
+                      setShowSnackbar({
+                        open: true,
+                        message: "File update successful",
+                        severity: "success",
+                      });
+                    }
+                  }
+                )
+                  .then((res: any) => {
+                    setIsLoading(false);
+                  })
+                  .catch((err: any) => {
+                    setIsLoading(false);
+                    setShowSnackbar({
+                      open: true,
+                      message: "File upload failed",
+                      severity: "error",
+                    });
+                  });
+              }}
+            />
           </Button>
 
           <UpdateDialog
@@ -202,7 +262,6 @@ export default function CaseFileTab(props: Props) {
             setLegalCase={props.setLegalCase}
             setLegalCaseFiles={props.setLegalCaseFiles}
             setCaseUpdates={props.setCaseUpdates}
-            fileView={fileView}
             setCaseHistory={props.setCaseHistory}
           />
         </Grid>
@@ -324,102 +383,103 @@ export default function CaseFileTab(props: Props) {
                   >
                     <MoreVertIcon />
                   </IconButton>
-                  {triggerClick.show && triggerClick.val === legalCaseFile?.id && (
-                    <ClickAwayListener
-                      onClickAway={() =>
-                        setTriggerClick({ show: false, val: 0 })
-                      }
-                    >
-                      <div className={classes.fileMoreMenu}>
-                        <Button
-                          style={{
-                            position: "relative",
-                            textTransform: "capitalize",
-                          }}
-                          disabled={false}
-                          onClick={() => {
-                            setRenameDialogInput({
-                              description: legalCaseFile!.description!,
-                              id: legalCaseFile!.id!,
-                              legal_case: legalCaseFile!.legal_case!,
-                            });
-                            setRenameDialog(true);
-                          }}
-                        >
-                          <ListItemIcon>
-                            <EditIcon fontSize="small" />
-                          </ListItemIcon>
-                          <ListItemText>{i18n.t("Rename file")}</ListItemText>
-                        </Button>
-                        <Dialog
-                          open={renameDialog}
-                          onClose={() => setRenameDialog(false)}
-                          fullWidth
-                          maxWidth="sm"
-                        >
-                          <DialogTitle>Rename file</DialogTitle>
-                          <DialogContent>
-                            <Input
-                              id="table_search"
-                              fullWidth
-                              disableUnderline={true}
-                              className={classes.textField}
-                              aria-describedby="Rename file"
-                              value={renameDialogInput.description}
-                              onChange={(
-                                e: React.ChangeEvent<{ value: any }>
-                              ) => {
-                                setRenameDialogInput({
-                                  ...renameDialogInput,
-                                  description: e.target.value,
-                                });
-                              }}
-                            />
-                          </DialogContent>
-                          <DialogActions>
-                            <Button onClick={() => setRenameDialog(false)}>
-                              Cancel
-                            </Button>
-                            <Button
-                              color="primary"
-                              variant="contained"
-                              onClick={() => {
-                                renameFile(renameDialogInput);
-                                setRenameDialog(false);
-                              }}
-                            >
-                              {i18n.t("Submit")}
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                        <Button
-                          style={{
-                            position: "relative",
-                            textTransform: "capitalize",
-                          }}
-                          disabled={deleteLoader}
-                          onClick={() => deleteFile(legalCaseFile!.id!)}
-                        >
-                          <ListItemIcon>
-                            <DeleteIcon fontSize="small" />
-                          </ListItemIcon>
-                          <ListItemText>{i18n.t("Delete file")}</ListItemText>
-                          {deleteLoader && (
-                            <CircularProgress
-                              size={24}
-                              sx={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                marginTop: "-12px",
-                                marginLeft: "-12px",
-                              }}
-                            />
-                          )}
-                        </Button>
-                      </div>
-                    </ClickAwayListener>
-                  )}
+                  {triggerClick.show &&
+                    triggerClick.val === legalCaseFile?.id && (
+                      <ClickAwayListener
+                        onClickAway={() =>
+                          setTriggerClick({ show: false, val: 0 })
+                        }
+                      >
+                        <div className={classes.fileMoreMenu}>
+                          <Button
+                            style={{
+                              position: "relative",
+                              textTransform: "capitalize",
+                            }}
+                            disabled={false}
+                            onClick={() => {
+                              setRenameDialogInput({
+                                description: legalCaseFile!.description!,
+                                id: legalCaseFile!.id!,
+                                legal_case: legalCaseFile!.legal_case!,
+                              });
+                              setRenameDialog(true);
+                            }}
+                          >
+                            <ListItemIcon>
+                              <EditIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>{i18n.t("Rename file")}</ListItemText>
+                          </Button>
+                          <Dialog
+                            open={renameDialog}
+                            onClose={() => setRenameDialog(false)}
+                            fullWidth
+                            maxWidth="sm"
+                          >
+                            <DialogTitle>Rename file</DialogTitle>
+                            <DialogContent>
+                              <Input
+                                id="table_search"
+                                fullWidth
+                                disableUnderline={true}
+                                className={classes.textField}
+                                aria-describedby="Rename file"
+                                value={renameDialogInput.description}
+                                onChange={(
+                                  e: React.ChangeEvent<{ value: any }>
+                                ) => {
+                                  setRenameDialogInput({
+                                    ...renameDialogInput,
+                                    description: e.target.value,
+                                  });
+                                }}
+                              />
+                            </DialogContent>
+                            <DialogActions>
+                              <Button onClick={() => setRenameDialog(false)}>
+                                Cancel
+                              </Button>
+                              <Button
+                                color="primary"
+                                variant="contained"
+                                onClick={() => {
+                                  renameFile(renameDialogInput);
+                                  setRenameDialog(false);
+                                }}
+                              >
+                                {i18n.t("Submit")}
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                          <Button
+                            style={{
+                              position: "relative",
+                              textTransform: "capitalize",
+                            }}
+                            disabled={deleteLoader}
+                            onClick={() => deleteFile(legalCaseFile!.id!)}
+                          >
+                            <ListItemIcon>
+                              <DeleteIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>{i18n.t("Delete file")}</ListItemText>
+                            {deleteLoader && (
+                              <CircularProgress
+                                size={24}
+                                sx={{
+                                  position: "absolute",
+                                  top: "50%",
+                                  left: "50%",
+                                  marginTop: "-12px",
+                                  marginLeft: "-12px",
+                                }}
+                              />
+                            )}
+                          </Button>
+                        </div>
+                      </ClickAwayListener>
+                    )}
                 </Grid>
               </Grid>
             ))}
@@ -443,7 +503,7 @@ export default function CaseFileTab(props: Props) {
           <CircularProgress style={{ position: "absolute", left: "50%" }} />
         </Grid>
       )}
-      
+
       {showSnackbar.open && (
         <SnackbarAlert
           open={showSnackbar.open}

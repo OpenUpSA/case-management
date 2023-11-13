@@ -35,7 +35,7 @@ import {
   IClient,
   IUser,
   ILog,
-  LocationState,
+  SnackbarState,
   ILegalCaseFile,
 } from "../../types";
 
@@ -84,7 +84,7 @@ export default function CaseInfoTab(props: Props) {
   >([]);
   const [open, setOpen] = useState(false);
   const [showButton, setShowButton] = useState<boolean>(false);
-  const [showSnackbar, setShowSnackbar] = useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = useState<SnackbarState>({
     open: false,
     message: "",
     severity: undefined,

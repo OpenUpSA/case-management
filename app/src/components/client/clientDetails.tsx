@@ -14,7 +14,7 @@ import PhoneEnabledIcon from "@mui/icons-material/PhoneEnabled";
 import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 import FormHelperText from "@mui/material/FormHelperText";
 
-import { IClient, IClientDependent, LocationState } from "../../types";
+import { IClient, IClientDependent, SnackbarState } from "../../types";
 import { useStyles } from "../../utils";
 import { format } from "date-fns";
 import i18n from "../../i18n";
@@ -90,7 +90,7 @@ const Component = (props: Props) => {
   const [altEmailErrorMessage, setAltEmailErrorMessage] =
     useState<boolean>(false);
 
-  const [showSnackbar, setShowSnackbar] = useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = useState<SnackbarState>({
     open: false,
     message: "",
     severity: undefined,
