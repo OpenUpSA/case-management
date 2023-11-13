@@ -145,7 +145,7 @@ class LegalCaseAdmin(DefaultAdmin):
 
 class CaseUpdateAdmin(DefaultAdmin):
     model = CaseUpdate
-    list_display = ['legal_case', 'files', 'meeting', 'note']
+    list_display = ['legal_case', 'meeting', 'note']
 
 
 class FileAdmin(DefaultAdmin):

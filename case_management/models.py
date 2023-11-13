@@ -237,17 +237,6 @@ class LoggedChildModel(LoggedModel):
             parent_type='LegalCase',
             user=user,
         )
-        # TODO: for now, only logging against legal_case \
-        #   to log against case_update as well, we should probably change the \
-        #   Log -> LogChange model to avoid duplication of LogChange records
-        # if hasattr(self, 'case_update') and self.case_update is not None:
-        #     logIt(
-        #         self,
-        #         action,
-        #         parent_id=self.case_update.id,
-        #         parent_type='CaseUpdate',
-        #         user=user,
-        #     )
 
     @hook(AFTER_CREATE)
     def log_create(self):
