@@ -48,7 +48,11 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = ["*"]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
-    re.compile(x) for x in env.list("CORS_ALLOWED_ORIGIN_REGEXES", default=["https?:\/\/(.+casefile.+.netlify.app|.+casefile.org.za)"])
+    re.compile(x)
+    for x in env.list(
+        "CORS_ALLOWED_ORIGIN_REGEXES",
+        default=["https?:\/\/(.+casefile.+.netlify.app|.+casefile.org.za)"],
+    )
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -95,7 +99,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ]
+    ],
 }
 
 MIDDLEWARE = [
@@ -119,7 +123,7 @@ SWAGGER_SETTINGS = {
             "type": "apiKey",
             "in": "header",
             "name": "Authorization",
-            "description": "Enter value with prefix: 'Bearer {token}'"
+            "description": "Enter value with prefix: 'Bearer {token}'",
         }
     },
 }
@@ -135,6 +139,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "case_management.context_processors.admin_header_processor",
             ],
         },
     },
