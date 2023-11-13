@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useStyles } from "../../utils";
+import React, { useEffect } from "react";
+import { useStyles, VisuallyHiddenInput } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
 import CheckIcon from "@mui/icons-material/Check";
 import UploadIcon from "@mui/icons-material/Upload";
@@ -45,19 +45,6 @@ import {
 } from "@material-ui/core";
 import i18n from "../../i18n";
 import SnackbarAlert from "../general/snackBar";
-import { styled } from "@mui/material/styles";
-
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
 
 type Props = {
   legalCase: ILegalCase;

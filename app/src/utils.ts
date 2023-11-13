@@ -1,4 +1,5 @@
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
+import { styled } from "@mui/material/styles";
 
 //TODO: Find I18n version of this
 export function toSentence(items: string[]): string {
@@ -283,7 +284,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     logoCustom: {
       height: "35px",
-      marginLeft: "10px"
+      marginLeft: "10px",
     },
     cursorPointer: {
       cursor: "pointer",
@@ -879,3 +880,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+export const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
