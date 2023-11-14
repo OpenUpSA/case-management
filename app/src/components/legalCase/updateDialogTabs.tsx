@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
@@ -6,36 +6,19 @@ import Tab from "@mui/material/Tab";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import {
-  IconButton,
-  Input,
-  InputLabel,
-  FormHelperText,
-  Grid,
-} from "@material-ui/core";
+import { Input, InputLabel, FormHelperText, Grid } from "@material-ui/core";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
 import ForumOutlinedIcon from "@mui/icons-material/ForumOutlined";
-import UploadIcon from "@mui/icons-material/Upload";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import AttachmentIcon from "@mui/icons-material/Attachment";
-import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
-import CancelIcon from "@mui/icons-material/Cancel";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import i18n from "../../i18n";
 import { TabPanelProps, ILegalCaseFile } from "../../types";
-import { useStyles } from "../../utils";
+import { VisuallyHiddenInput, useStyles } from "../../utils";
 import { meetingTypes } from "../../contexts/meetingTypeConstants";
-import Dropzone from "react-dropzone";
 import ProgressBar from "../general/progressBar";
-import { BlackTooltip } from "../general/tooltip";
-import { TrashIcon } from "../general/icons";
 
 type Props = {
   onFileChange?: (event: any, fileDescription: string) => Promise<void>;
@@ -44,7 +27,6 @@ type Props = {
   meeting: any;
   setMeeting: (meeting: any) => void;
   progress: number;
-  onDrop: (files: any) => void;
   fileTabFileName: string;
   setFileTabFileName: (fileTabFileName: string) => void;
   selectedFiles: any;
@@ -52,7 +34,6 @@ type Props = {
   tabValue: number;
   setTabValue: (tabValue: number) => void;
   updateError: string;
-  fileView?: boolean;
   editView?: boolean;
   updateFileId: number | null;
   legalCaseFiles: ILegalCaseFile[];
@@ -83,12 +64,8 @@ function a11yProps(index: number) {
 
 const UpdateDialogTabs = (props: Props) => {
   const classes = useStyles();
-  const [value, setValue] = useState<number>(props.fileView ? 2 : 0);
-  const [open, setOpen] = useState<boolean>(false);
-  const uploadFileRef = useRef<HTMLInputElement>(null);
-  const [fileDescription, setFileDescription] = useState<string>("");
+  const [value, setValue] = useState<number>(0);
   const [stagedFileName, setStagedFileName] = useState<string>("");
-  const [showButtons, setShowButtons] = useState<boolean>(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -107,16 +84,6 @@ const UpdateDialogTabs = (props: Props) => {
       title: "",
       content: "",
     });
-  };
-
-  const dialogClose = () => {
-    setOpen(false);
-    setFileDescription("");
-  };
-
-  const showOpenFileDialog = () => {
-    if (!uploadFileRef.current) throw Error("uploadFileRef is not assigned");
-    uploadFileRef.current.click();
   };
 
   const validFileLink = (filePath: string, description: string) => {
@@ -181,14 +148,6 @@ const UpdateDialogTabs = (props: Props) => {
             {...a11yProps(1)}
             disabled={props.editView && value !== 1 ? true : false}
           />
-          <Tab
-            key="caseFiles"
-            className={classes.dialogTabButton}
-            icon={<UploadIcon />}
-            label={<Typography>{i18n.t("File upload")}</Typography>}
-            {...a11yProps(2)}
-            disabled={props.editView && value !== 2 ? true : false}
-          />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -248,11 +207,20 @@ const UpdateDialogTabs = (props: Props) => {
             sx={{ justifyContent: "space-between", marginBottom: "25px" }}
           >
             <Button
+              component="label"
               className={classes.attachmentButton}
               startIcon={<AttachmentIcon className={classes.attachmentIcon} />}
-              onClick={() => setOpen(true)}
             >
-              {i18n.t("Attach files to note")}
+              {i18n.t("Attach file to note")}
+              <VisuallyHiddenInput
+                type="file"
+                onChange={(e: any) => {
+                  setStagedFileName(e.target.files[0].name);
+                  if (props.onFileChange) {
+                    props.onFileChange(e, e.target.files[0].name);
+                  }
+                }}
+              />
             </Button>
             {stagedFileName.length > 0 && (
               <FormHelperText id="file-selected">
@@ -274,59 +242,11 @@ const UpdateDialogTabs = (props: Props) => {
                 .map((caseFile: ILegalCaseFile) =>
                   validFileLink(caseFile.upload, caseFile.description as string)
                 )}
-            <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
-              <DialogContent>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="File description"
-                  type="text"
-                  fullWidth
-                  variant="standard"
-                  value={fileDescription}
-                  onChange={(e: React.ChangeEvent<{ value: any }>) => {
-                    setFileDescription(e.target.value);
-                  }}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={dialogClose}>Cancel</Button>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  startIcon={<UploadIcon />}
-                  onClick={() => {
-                    showOpenFileDialog();
-                    setOpen(false);
-                  }}
-                >
-                  {i18n.t("Choose file")}
-                </Button>
-              </DialogActions>
-            </Dialog>
-            <input
-              ref={uploadFileRef}
-              type="file"
-              hidden
-              onChange={(event) => {
-                if (props.onFileChange) {
-                  props.onFileChange(event, fileDescription);
-                }
-                if (event.target.files) {
-                  setStagedFileName(
-                    fileDescription.length > 0
-                      ? fileDescription
-                      : event.target.files[0].name
-                  );
-                }
-              }}
-            />
             <Typography
               className={classes.dialogLabel}
               style={{ paddingLeft: "10px" }}
             >
-              {i18n.t("Uploaded files will be added to the case file")}
+              {i18n.t("Uploaded file will be added to the case file")}
             </Typography>
           </Box>
         </Box>
@@ -523,11 +443,20 @@ const UpdateDialogTabs = (props: Props) => {
             sx={{ justifyContent: "space-between", marginBottom: "25px" }}
           >
             <Button
+              component="label"
               className={classes.attachmentButton}
               startIcon={<AttachmentIcon className={classes.attachmentIcon} />}
-              onClick={() => setOpen(true)}
             >
-              {i18n.t("Attach files to meeting")}
+              {i18n.t("Attach file to meeting")}
+              <VisuallyHiddenInput
+                type="file"
+                onChange={(e: any) => {
+                  setStagedFileName(e.target.files[0].name);
+                  if (props.onFileChange) {
+                    props.onFileChange(e, e.target.files[0].name);
+                  }
+                }}
+              />
             </Button>
             {stagedFileName.length > 0 && (
               <FormHelperText id="file-selected">
@@ -549,206 +478,13 @@ const UpdateDialogTabs = (props: Props) => {
                 .map((caseFile: ILegalCaseFile) =>
                   validFileLink(caseFile.upload, caseFile.description as string)
                 )}
-            <Dialog open={open} onClose={dialogClose} fullWidth maxWidth="sm">
-              <DialogContent>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="File description"
-                  type="text"
-                  fullWidth
-                  variant="standard"
-                  value={fileDescription}
-                  onChange={(e: React.ChangeEvent<{ value: any }>) => {
-                    setFileDescription(e.target.value);
-                  }}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={dialogClose}>Cancel</Button>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  startIcon={<UploadIcon />}
-                  onClick={() => {
-                    showOpenFileDialog();
-                    setOpen(false);
-                  }}
-                >
-                  {i18n.t("Choose file")}
-                </Button>
-              </DialogActions>
-            </Dialog>
-            <input
-              ref={uploadFileRef}
-              type="file"
-              hidden
-              onChange={(event) => {
-                if (props.onFileChange) {
-                  props.onFileChange(event, fileDescription);
-                }
-                if (event.target.files) {
-                  setStagedFileName(
-                    fileDescription.length > 0
-                      ? fileDescription
-                      : event.target.files[0].name
-                  );
-                }
-              }}
-            />
             <Typography
               className={classes.dialogLabel}
               style={{ paddingLeft: "10px" }}
             >
-              {i18n.t("Uploaded files will be added to the case file")}
+              {i18n.t("Uploaded file will be added to the case file")}
             </Typography>
           </Box>
-        </Box>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <Box className={classes.tabBox}>
-          <Alert
-            severity="info"
-            className={classes.updateAlert}
-            icon={<HelpOutlineOutlinedIcon fontSize="large" />}
-          >
-            {i18n.t(
-              "Upload, label and add descriptions to important files to ensure that they are safely stored and always available to anyone else working on the case. "
-            )}
-          </Alert>
-          {props.updateError === "file_upload" && (
-            <FormHelperText error>
-              {i18n.t("Upload a valid file")}
-            </FormHelperText>
-          )}
-
-          {props.updateFileId !== null &&
-          props.updateFileId > 0 &&
-          props.editView ? (
-            <Typography className={classes.noOverflow}>
-              {props.legalCaseFiles
-                ?.filter(
-                  (caseFile: ILegalCaseFile) =>
-                    [props.updateFileId].indexOf(caseFile.id as number) > -1
-                )
-                .map((caseFile: ILegalCaseFile) =>
-                  validFileLink(caseFile.upload, caseFile.description as string)
-                )}
-            </Typography>
-          ) : (
-            <Dropzone onDrop={props.onDrop} multiple={false}>
-              {({ getRootProps, getInputProps }) => (
-                <div {...getRootProps({ className: classes.dropzone })}>
-                  <input {...getInputProps()} />
-                  {props.selectedFiles && props.fileTabFileName.length > 0 ? (
-                    <Typography
-                      className={classes.noOverflow}
-                      style={{ width: "100%" }}
-                    >
-                      {i18n.t("Submit update to save file")}:{" "}
-                      {props.fileTabFileName}
-                    </Typography>
-                  ) : (
-                    <Stack
-                      direction="column"
-                      justifyContent="center"
-                      alignItems="center"
-                      spacing={1}
-                    >
-                      <FileUploadOutlinedIcon
-                        style={{ fontSize: 36, color: "#b2b2b2" }}
-                      />
-                      <Typography className={classes.dropzoneText}>
-                        {i18n.t("Drag and drop files here or")}
-                      </Typography>
-                      <Button className={classes.dropzoneButton}>
-                        {i18n.t("click to add files from device")}
-                      </Button>
-                    </Stack>
-                  )}
-                </div>
-              )}
-            </Dropzone>
-          )}
-          {props.selectedFiles !== undefined && (
-            <Box style={{ width: "100%" }}>
-              <InputLabel
-                className={classes.dialogLabel}
-                style={{ marginBottom: "20px" }}
-              >
-                {i18n.t("Upload progress")}:
-              </InputLabel>
-              <Box className={classes.uploadProgressBox}>
-                <Box style={{ flexGrow: 1 }}>
-                  <Box
-                    className={classes.centerItems}
-                    style={{ justifyContent: "space-between" }}
-                  >
-                    <Input
-                      id="title"
-                      disableUnderline={true}
-                      fullWidth
-                      disabled={!showButtons}
-                      placeholder={i18n.t("File name")}
-                      value={props.fileTabFileName}
-                      className={classes.dialogFileInput}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        props.setFileTabFileName(e.target.value);
-                      }}
-                    />
-                    {showButtons ? (
-                      <Box style={{ minWidth: 85 }}>
-                        <BlackTooltip title="Cancel" arrow placement="top">
-                          <IconButton
-                            className={classes.renameIcons}
-                            onClick={() => {
-                              props.setFileTabFileName(
-                                props.selectedFiles.name || ""
-                              );
-                              setShowButtons(false);
-                            }}
-                          >
-                            <CancelIcon style={{ fontSize: 30 }} />
-                          </IconButton>
-                        </BlackTooltip>
-                        <BlackTooltip
-                          title="Save changes"
-                          arrow
-                          placement="top"
-                        >
-                          <IconButton
-                            className={classes.renameIcons}
-                            onClick={() => setShowButtons(false)}
-                          >
-                            <CheckCircleIcon style={{ fontSize: 30 }} />
-                          </IconButton>
-                        </BlackTooltip>
-                      </Box>
-                    ) : (
-                      <Typography
-                        className={classes.renameFile}
-                        onClick={() => setShowButtons(true)}
-                      >
-                        {i18n.t("Rename file")}
-                      </Typography>
-                    )}
-                  </Box>
-                  {props.progress
-                    ? props.progress > 0 && <ProgressBar progress={30} />
-                    : null}
-                </Box>
-                <BlackTooltip title="Delete file" arrow placement="top">
-                  <IconButton
-                    className={classes.deleteIcon}
-                    onClick={() => props.setSelectedFiles(undefined)}
-                  >
-                    <TrashIcon />
-                  </IconButton>
-                </BlackTooltip>
-              </Box>
-            </Box>
-          )}
         </Box>
       </TabPanel>
     </DialogContent>

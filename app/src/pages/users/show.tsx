@@ -10,7 +10,7 @@ import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 
 import Layout from "../../components/layout";
 import { getUser } from "../../api";
-import { IUser, LocationState } from "../../types";
+import { IUser, LocationState, SnackbarState } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import UserForm from "../../components/user/form";
@@ -28,7 +28,7 @@ const Page = () => {
 
   const [user, setUser] = React.useState<IUser>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = React.useState<SnackbarState>({
     open: location.state?.open!,
     message: location.state?.message!,
     severity: location.state?.severity!,

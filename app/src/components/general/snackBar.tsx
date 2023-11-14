@@ -1,12 +1,7 @@
 import * as React from "react";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
-
-type Props = {
-  open: boolean;
-  message: string;
-  severity: "success" | "error" | undefined;
-};
+import { SnackbarState } from "../../types";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -15,7 +10,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function SnackbarAlert(props: Props) {
+export default function SnackbarAlert(props: SnackbarState) {
   const [open, setOpen] = React.useState(props.open);
 
   const handleClose = () => {

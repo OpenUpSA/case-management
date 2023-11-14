@@ -31,7 +31,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import Layout from "../../components/layout";
 import { getClientsForCaseOffice, getClientsForUser } from "../../api";
-import { IClient, LocationState } from "../../types";
+import { IClient, LocationState, SnackbarState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 import SnackbarAlert from "../../components/general/snackBar";
@@ -48,7 +48,7 @@ const Page = () => {
   const [filterClientsValue, setFilterClientsValue] =
     React.useState<string>("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = React.useState<SnackbarState>({
     open: location.state?.open!,
     message: location.state?.message!,
     severity: location.state?.severity!,

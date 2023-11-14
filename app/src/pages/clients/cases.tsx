@@ -24,7 +24,7 @@ import {
   deleteClient,
   createLegalCase,
 } from "../../api";
-import { ILegalCase, IClient, LocationState } from "../../types";
+import { ILegalCase, IClient, LocationState, SnackbarState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 
@@ -49,7 +49,7 @@ const Page = () => {
     users: "",
     case_offices: "",
   });
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = React.useState<SnackbarState>({
     open: location.state?.open!,
     message: location.state?.message!,
     severity: location.state?.severity!,
@@ -208,7 +208,9 @@ const Page = () => {
               </MenuItem>
               <MenuItem
                 style={{ position: "relative" }}
-                onClick={() => history.push(`/clients/${clientId}/dependents/new`)}
+                onClick={() =>
+                  history.push(`/clients/${clientId}/dependents/new`)
+                }
                 disabled={deleteLoader}
               >
                 <ListItemIcon>

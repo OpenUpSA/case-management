@@ -8,7 +8,7 @@ import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
 import { getLegalCases } from "../../api";
-import { ILegalCase, LocationState } from "../../types";
+import { ILegalCase, LocationState, SnackbarState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import LegalCasesTable from "../../components/legalCase/table";
@@ -20,7 +20,7 @@ const Page = () => {
   const history = useHistory();
   const location = useLocation<LocationState>();
   const [legalCases, setLegalCases] = React.useState<ILegalCase[]>();
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = React.useState<SnackbarState>({
     open: location.state?.open!,
     message: location.state?.message!,
     severity: location.state?.severity!,

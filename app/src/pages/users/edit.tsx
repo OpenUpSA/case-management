@@ -10,7 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import Layout from "../../components/layout";
 import { getUser, updateUser } from "../../api";
-import { IUser, LocationState } from "../../types";
+import { IUser, SnackbarState } from "../../types";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 import { useStyles } from "../../utils";
 import UserForm from "../../components/user/form";
@@ -26,7 +26,7 @@ const Page = () => {
   const userId = parseInt(params.id);
   const [user, setUser] = React.useState<IUser>();
   const [changed, setChanged] = React.useState<boolean>(false);
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = React.useState<SnackbarState>({
     open: false,
     message: "",
     severity: undefined,

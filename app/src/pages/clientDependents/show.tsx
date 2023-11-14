@@ -21,7 +21,7 @@ import {
   getClientDependent,
   deleteClientDependent,
 } from "../../api";
-import { IClient, IClientDependent, LocationState } from "../../types";
+import { IClient, IClientDependent, LocationState, SnackbarState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
 
@@ -41,7 +41,7 @@ const Page = () => {
   const [clientDependent, setClientDependent] =
     React.useState<IClientDependent>();
   const [client, setClient] = React.useState<IClient>();
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = React.useState<SnackbarState>({
     open: location.state?.open!,
     message: location.state?.message!,
     severity: location.state?.severity!,

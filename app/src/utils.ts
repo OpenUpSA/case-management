@@ -1,4 +1,5 @@
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
+import { styled } from "@mui/material/styles";
 
 //TODO: Find I18n version of this
 export function toSentence(items: string[]): string {
@@ -283,7 +284,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     logoCustom: {
       height: "35px",
-      marginLeft: "10px"
+      marginLeft: "10px",
     },
     cursorPointer: {
       cursor: "pointer",
@@ -784,47 +785,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       minHeight: "200px",
       marginTop: "10px",
     },
-    dropzone: {
-      height: 140,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      flexDirection: "column",
-      textAlign: "center",
-      padding: "30px",
-      border: "5px dotted #b2b2b2",
-      borderRadius: "10px",
-      backgroundColor: "#ffffff",
-      color: "#000000",
-      cursor: "pointer",
-      marginBottom: "20px",
-    },
-    dropzoneText: {
-      [theme.breakpoints.down("xs")]: {
-        fontSize: "14px!important" as any,
-      },
-    },
-    dropzoneButton: {
-      backgroundColor: "#e9f0fe!important" as any,
-      color: "#2b61f0",
-      textTransform: "none!important" as any,
-      fontWeight: "600!important" as any,
-      fontSize: "16px!important" as any,
-      borderRadius: "6px!important" as any,
-      [theme.breakpoints.down("xs")]: {
-        fontSize: "14px!important" as any,
-      },
-    },
-    uploadProgressBox: {
-      height: "64px",
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      backgroundColor: "#f2f2f2",
-      padding: "10px",
-      borderRadius: "6px",
-    },
     deleteIcon: {
       marginRight: 10,
       marginLeft: 20,
@@ -920,3 +880,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+export const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});

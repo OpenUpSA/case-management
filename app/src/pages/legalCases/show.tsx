@@ -30,6 +30,7 @@ import {
   IClient,
   IMeeting,
   LocationState,
+  SnackbarState,
   ILog,
 } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
@@ -57,7 +58,7 @@ const Page = () => {
   const [caseHistory, setCaseHistory] = React.useState<ILog[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [deleteLoader, setDeleteLoader] = React.useState<boolean>(false);
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = React.useState<SnackbarState>({
     open: location.state?.open!,
     message: location.state?.message!,
     severity: location.state?.severity!,

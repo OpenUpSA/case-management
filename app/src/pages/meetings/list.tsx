@@ -7,7 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import Layout from "../../components/layout";
 import { getMeetings } from "../../api";
-import { IMeeting, LocationState } from "../../types";
+import { IMeeting, SnackbarState } from "../../types";
 import i18n from "../../i18n";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn } from "../../auth";
@@ -20,7 +20,7 @@ const Page = () => {
   const classes = useStyles();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [showSnackbar, setShowSnackbar] = React.useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = React.useState<SnackbarState>({
     open: false,
     message: "",
     severity: undefined,

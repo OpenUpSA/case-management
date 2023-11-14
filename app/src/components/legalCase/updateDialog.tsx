@@ -32,7 +32,7 @@ import {
   deleteCaseUpdate,
   getLogs,
 } from "../../api";
-import { ILegalCase, LocationState, ILegalCaseFile, ILog } from "../../types";
+import { ILegalCase, SnackbarState, ILegalCaseFile, ILog } from "../../types";
 import i18n from "../../i18n";
 import UpdateDialogTabs from "./updateDialogTabs";
 import SnackbarAlert from "../general/snackBar";
@@ -47,7 +47,6 @@ type Props = {
   legalCaseFiles?: ILegalCaseFile[];
   setLegalCaseFiles: (legalCaseFiles: ILegalCaseFile[]) => void;
   setCaseUpdates: (caseUpdates: any) => void;
-  fileView?: boolean;
   editView?: boolean;
   selectedUpdate?: any;
   setCaseHistory: (caseHistory: ILog[]) => void;
@@ -77,13 +76,13 @@ const UpdateDialog = (props: Props) => {
   const [selectedFiles, setSelectedFiles] = useState<any>(undefined);
   const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showSnackbar, setShowSnackbar] = useState<LocationState>({
+  const [showSnackbar, setShowSnackbar] = useState<SnackbarState>({
     open: false,
     message: "",
     severity: undefined,
   });
   const [updateError, setUpdateError] = useState<string>("");
-  const [tabValue, setTabValue] = useState<number>(props.fileView ? 2 : 0);
+  const [tabValue, setTabValue] = useState<number>(0);
   const [updateFileId, setUpdateFileId] = useState<null | number>(null);
   const [updateId, setUpdateId] = useState<null | number>(null);
   const [updatePrimaryId, setUpdatePrimaryId] = useState<null | number>(null);
@@ -809,7 +808,6 @@ const UpdateDialog = (props: Props) => {
             meeting={meeting}
             setMeeting={setMeeting}
             progress={progress}
-            onDrop={onDrop}
             selectedFiles={selectedFiles}
             setSelectedFiles={setSelectedFiles}
             fileTabFileName={fileTabFileName}
@@ -817,7 +815,6 @@ const UpdateDialog = (props: Props) => {
             tabValue={tabValue}
             setTabValue={setTabValue}
             updateError={updateError}
-            fileView={props.fileView}
             editView={props.editView}
             legalCaseFiles={props.legalCaseFiles ? props.legalCaseFiles : []}
             updateFileId={updateFileId}
