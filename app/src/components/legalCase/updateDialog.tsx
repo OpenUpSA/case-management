@@ -696,13 +696,6 @@ const UpdateDialog = (props: Props) => {
     }
   };
 
-  const onDrop = (files: any) => {
-    if (files.length > 0) {
-      setSelectedFiles(files[0]);
-      setFileTabFileName(files[0].name);
-    }
-  };
-
   const refreshUpdates = async () => {
     const dataLegalCaseFiles = await getLegalCaseFiles(
       props.legalCase.id as number
