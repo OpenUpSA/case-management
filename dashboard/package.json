@@ -8,35 +8,43 @@
     "node": "18.x"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.4",
-    "@emotion/styled": "^11.10.4",
-    "@fontsource/karla": "^4.5.2",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/karla": "^5.0.17",
     "@material-ui/core": "^4.12.4",
     "@material-ui/data-grid": "^4.0.0-alpha.32",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/styles": "^4.11.5",
-    "@mui/icons-material": "^5.0.1",
-    "@mui/material": "^5.0.2",
-    "@reduxjs/toolkit": "^1.6.0",
-    "@sentry/react": "^6.15.0",
-    "@sentry/tracing": "^6.15.0",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "@types/react-router-dom": "^5.1.7",
+    "@mui/icons-material": "^5.14.14",
+    "@mui/material": "^5.14.14",
+    "@mui/styles": "^5.14.14",
+    "@reduxjs/toolkit": "^1.9.7",
+    "@sentry/react": "^7.75.0",
+    "@sentry/tracing": "^7.75.0",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/jest": "^29.5.6",
+    "@types/node": "^20.8.8",
+    "@types/react": "^17",
+    "@types/react-dom": "^17",
+    "@types/react-router-dom": "^5.3.3",
     "axios": "^1.6.0",
-    "i18next": "^20.3.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "date-fns": "^2.30.0",
+    "i18next": "^23.6.0",
+    "react": "^17",
+    "react-dom": "^17",
+    "react-ga4": "^2.1.0",
+    "react-hotjar": "^6.1.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "5",
-    "typescript": "^4.3.4",
-    "web-vitals": "^1.0.1"
+    "typescript": "^5.2.2",
+    "web-vitals": "^3.5.0"
+  },
+  "resolutions": {
+    "@types/react": "^17.0.38",
+    "nth-check": ">=2.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -65,11 +73,7 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^8.5.0",
-    "cypress-localstorage-commands": "^1.5.0"
-  },
-  "resolutions": {
-    "@types/react": "17.0.38",
-    "nth-check": ">=2.0.1"
+    "cypress": "^13.3.2",
+    "cypress-localstorage-commands": "^2.2.4"
   }
 }
