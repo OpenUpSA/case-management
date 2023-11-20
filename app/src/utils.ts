@@ -84,10 +84,12 @@ export const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up("md")]: {
         marginTop: "66px",
         marginBottom: "46px",
+        top: "65px",
       },
       [theme.breakpoints.down("xs")]: {
         marginTop: "59px",
         marginBottom: "26px",
+        top: "65px",
       },
       paddingTop: "0.45em",
       paddingBottom: "0.55em",
