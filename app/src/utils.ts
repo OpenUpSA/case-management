@@ -62,6 +62,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     customAppBar: {
       zIndex: "2000!important" as any,
+      height: "66px",
     },
     drawer: {
       flexShrink: 0,
@@ -90,7 +91,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       paddingTop: "0.45em",
       paddingBottom: "0.55em",
-      backgroundColor: "rgba(0, 0, 0, 0.02)",
+      backgroundColor: "#fafafa",
+      position: "sticky",
+      top: "66px",
+      zIndex: 1,
+      boxSize: "border-box",
       "& ol": {
         maxWidth: "960px",
         marginLeft: "auto",
