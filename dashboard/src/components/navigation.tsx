@@ -92,6 +92,7 @@ const Component = () => {
                     history.push("/");
                     closeDrawer();
                   }}
+                  alt=""
                 />
               )}
             </Box>
