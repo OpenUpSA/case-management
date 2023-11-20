@@ -3,7 +3,7 @@ import { countries, CountryType } from "../countries";
 const countryLabels: string[][] = countries.map((country: CountryType) => [
   country.code,
   country.label,
-]);
+]).sort((a, b) => (a[1] > b[1] ? 1 : -1));
 
 export const constants = {
   officialIdentifierTypes: [
