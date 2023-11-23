@@ -524,6 +524,29 @@ class File(LoggedChildModel):
     def upload_file_name(self):
         return os.path.basename(self.upload.file.name)
 
+class ClientFile(LoggedModel):
+    client = models.ForeignKey(
+        Client, related_name='client_files', on_delete=models.CASCADE
+    )
+    upload = models.FileField(upload_to='uploads/')
+    description = models.CharField(
+        max_length=255, null=False, blank=True, default='')
+
+    def save(self, *args, **kwargs):
+        if self.description == '':
+            self.description = self.upload_file_name()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        value = self.description if self.description else self.upload_file_name()
+        return value
+
+    def upload_file_extension(self):
+        return os.path.splitext(self.upload.file.name)[1][1:]
+
+    def upload_file_name(self):
+        return os.path.basename(self.upload.file.name)
+
 class SiteNotice(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)

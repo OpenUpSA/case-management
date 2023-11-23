@@ -21,7 +21,7 @@ from django.http import HttpResponseBadRequest
 from case_management.auth import (
     InAdminGroup,
     InReportingGroup,
-    InAdviceOfficeAdminGroup
+    InAdviceOfficeAdminGroup,
 )
 
 from case_management.serializers import (
@@ -32,6 +32,7 @@ from case_management.serializers import (
     LegalCaseSerializer,
     CaseUpdateSerializer,
     FileSerializer,
+    ClientFileSerializer,
     MeetingSerializer,
     NoteSerializer,
     UserListSerializer,
@@ -48,12 +49,13 @@ from case_management.models import (
     LegalCase,
     CaseUpdate,
     File,
+    ClientFile,
     Meeting,
     Note,
     User,
     Log,
     Language,
-    SiteNotice
+    SiteNotice,
 )
 from case_management import queries
 
@@ -79,7 +81,7 @@ class UpdateRetrieveViewSet(
     mixins.ListModelMixin,
     mixins.UpdateModelMixin,
     mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
+    viewsets.GenericViewSet,
 ):
     """
     A viewset that provides just the `update', and `retrieve` actions.
@@ -89,19 +91,14 @@ class UpdateRetrieveViewSet(
     """
 
 
-class ListViewSet(
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet
-):
+class ListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     A viewset that provides just the `list` action.
     """
 
 
 class ListRetrieveViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
     """
     A viewset that provides just the `list` and `retrieve` action.
@@ -157,9 +154,7 @@ class ClientViewSet(LoggedModelViewSet):
                 legal_cases__case_offices__id=case_office
             ).distinct('id')
         if user is not None:
-            queryset = queryset.filter(
-                users__id=user
-            ).distinct('id')
+            queryset = queryset.filter(users__id=user).distinct('id')
         return queryset
 
 
@@ -188,8 +183,7 @@ class LegalCaseViewSet(LoggedModelViewSet):
             next_id = LegalCase.objects.latest('id').id + 1
         except LegalCase.DoesNotExist:
             next_id = 1
-        case_office = CaseOffice.objects.get(
-            pk=self.request.data['case_offices'][0])
+        case_office = CaseOffice.objects.get(pk=self.request.data['case_offices'][0])
         case_office_code = case_office.case_office_code
         generated_case_number = (
             f'{case_office_code}/{time.strftime("%y%m")}/{str(next_id).zfill(4)}'
@@ -201,9 +195,7 @@ class LegalCaseViewSet(LoggedModelViewSet):
         queryset = super().get_queryset()
         case_office = self.request.query_params.get('caseOffice')
         if case_office is not None:
-            queryset = queryset.filter(
-                case_offices__id=case_office
-            ).distinct('id')
+            queryset = queryset.filter(case_offices__id=case_office).distinct('id')
         return queryset
 
 
@@ -220,6 +212,14 @@ class FileViewSet(LoggedModelViewSet):
     serializer_class = FileSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['legal_case']
+
+
+class ClientFileViewSet(LoggedModelViewSet):
+    parser_classes = (MultiPartParser, FormParser)
+    queryset = ClientFile.objects.all()
+    serializer_class = ClientFileSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['client']
 
 
 class MeetingViewSet(LoggedModelViewSet):
@@ -273,11 +273,9 @@ def _get_summary_months_range(request):
         if months['start'] is None:
             months['end'] = date.today()
         else:
-            months['end'] = (months['start'] +
-                             timedelta(days=30 * 11.5)).replace(day=1)
+            months['end'] = (months['start'] + timedelta(days=30 * 11.5)).replace(day=1)
     if months['start'] is None:
-        months['start'] = (
-            months['end'] - timedelta(days=30 * 10.5)).replace(day=1)
+        months['start'] = (months['end'] - timedelta(days=30 * 10.5)).replace(day=1)
     start_month = months['start'].strftime("%Y-%m-%d")
     end_month = months['end'].strftime("%Y-%m-%d")
     return start_month, end_month
@@ -285,8 +283,7 @@ def _get_summary_months_range(request):
 
 def _get_summary_date_range(request):
     dates = {'start': None, 'end': None}
-    date_input_pattern = re.compile(
-        '^([0-9]{4})-(0[1-9]|1[0-2])-([0-2][1-9]|3[0-1])$')
+    date_input_pattern = re.compile('^([0-9]{4})-(0[1-9]|1[0-2])-([0-2][1-9]|3[0-1])$')
     for d in list(dates):
         query_param = f'{d}Date'
         query_param_input = request.query_params.get(query_param, None)
@@ -296,8 +293,7 @@ def _get_summary_date_range(request):
                 year_input = int(match.group(1))
                 month_input = int(match.group(2))
                 day_input = int(match.group(3))
-                dates[d] = date(year=year_input,
-                                month=month_input, day=day_input)
+                dates[d] = date(year=year_input, month=month_input, day=day_input)
             else:
                 return HttpResponseBadRequest(
                     f'{query_param} query param must be in format yyyy-mm-dd'
@@ -325,9 +321,7 @@ class SiteNoticeViewSet(ListRetrieveViewSet):
                 active = True
             elif active == 'false':
                 active = False
-            queryset = queryset.filter(
-                active=active
-            ).order_by('-updated_at')
+            queryset = queryset.filter(active=active).order_by('-updated_at')
         return queryset
 
 
@@ -337,13 +331,12 @@ def range_summary(request):
     start_date, end_date = _get_summary_date_range(request)
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
-        cursor.execute(queries.range_summary(
-            start_date, end_date, case_office))
+        cursor.execute(queries.range_summary(start_date, end_date, case_office))
         row = cursor.fetchone()
     response = {
         'startDate': start_date,
         'endDate': end_date,
-        'dataPerCaseOffice': row[0]
+        'dataPerCaseOffice': row[0],
     }
     return Response(response)
 
@@ -354,13 +347,12 @@ def daily_summary(request):
     start_month, end_month = _get_summary_months_range(request)
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
-        cursor.execute(queries.daily_summary(
-            start_month, end_month, case_office))
+        cursor.execute(queries.daily_summary(start_month, end_month, case_office))
         row = cursor.fetchone()
     response = {
         'startMonth': start_month,
         'endMonth': end_month,
-        'dataPerCaseOffice': row[0]
+        'dataPerCaseOffice': row[0],
     }
     return Response(response)
 
@@ -371,12 +363,11 @@ def monthly_summary(request):
     start_month, end_month = _get_summary_months_range(request)
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
-        cursor.execute(queries.monthly_summary(
-            start_month, end_month, case_office))
+        cursor.execute(queries.monthly_summary(start_month, end_month, case_office))
         row = cursor.fetchone()
     response = {
         'startMonth': start_month,
         'endMonth': end_month,
-        'dataPerCaseOffice': row[0]
+        'dataPerCaseOffice': row[0],
     }
     return Response(response)

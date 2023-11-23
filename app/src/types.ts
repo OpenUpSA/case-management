@@ -136,6 +136,17 @@ export interface ILegalCaseFile {
   description?: string;
 }
 
+export interface IClientFile {
+  id?: number;
+  created_at?: Date;
+  updated_at?: Date;
+  client: number;
+  upload: string;
+  upload_file_name?: string;
+  upload_file_extension?: string;
+  description?: string;
+}
+
 export interface IStorage {
   getItem(key: string): string | null;
   setItem(key: string, value: string): void;

@@ -18,6 +18,7 @@ from case_management.views import (
     CaseTypeViewSet,
     CaseUpdateViewSet,
     FileViewSet,
+    ClientFileViewSet,
     MeetingViewSet,
     NoteViewSet,
     ClientViewSet,
@@ -48,6 +49,7 @@ router.register(r'api/v1/case-offices', CaseOfficeViewSet)
 router.register(r'api/v1/case-types', CaseTypeViewSet)
 router.register(r'api/v1/case-updates', CaseUpdateViewSet)
 router.register(r'api/v1/files', FileViewSet)
+router.register(r'api/v1/client-files', ClientFileViewSet)
 router.register(r'api/v1/meetings', MeetingViewSet)
 router.register(r'api/v1/notes', NoteViewSet)
 router.register(r'api/v1/users', UserListViewSet)

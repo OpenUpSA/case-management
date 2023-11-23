@@ -8,13 +8,14 @@ from case_management.models import (
     LegalCase,
     CaseUpdate,
     File,
+    ClientFile,
     Meeting,
     Note,
     User,
     Log,
     LogChange,
     Language,
-    SiteNotice
+    SiteNotice,
 )
 from case_management.enums import MaritalStatuses
 
@@ -35,8 +36,7 @@ class LogSerializer(serializers.ModelSerializer):
 
 
 class ChildModelSerializer(serializers.ModelSerializer):
-    case_offices = serializers.PrimaryKeyRelatedField(
-        many=True, read_only=True)
+    case_offices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
 
 class CaseTypeSerializer(serializers.ModelSerializer):
@@ -66,8 +66,7 @@ class LegalCaseSerializer(serializers.ModelSerializer):
 class ClientSerializer(CountryFieldMixin, serializers.ModelSerializer):
     legal_cases = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     updates = LogSerializer(many=True, read_only=True)
-    case_offices = serializers.PrimaryKeyRelatedField(
-        many=True, read_only=True)
+    case_offices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     def validate(self, data):
         if data.get('official_identifier') and not data.get('official_identifier_type'):
@@ -141,8 +140,24 @@ class FileSerializer(ChildModelSerializer):
         ]
 
 
-class MeetingSerializer(ChildModelSerializer):
+class ClientFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClientFile
+        fields = [
+            'id',
+            'client',
+            'upload',
+            'upload_file_name',
+            'upload_file_extension',
+            'description',
+            'created_at',
+            'updated_at',
+            'created_by',
+            'updated_by',
+        ]
 
+
+class MeetingSerializer(ChildModelSerializer):
     def validate(self, data):
         if data.get('advice_was_offered') and not data.get('advice_offered'):
             raise serializers.ValidationError(
@@ -226,7 +241,7 @@ class UserListSerializer(serializers.ModelSerializer):
             'email',
             'membership_number',
             'case_office',
-            'permission_group'
+            'permission_group',
         ]
 
 

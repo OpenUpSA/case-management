@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 
 import ClientInfoTab from "./clientInfoTab";
 import ClientCasesTab from "./clientCasesTab";
+import ClientFileTab from "./clientFileTab";
 import { TabPanelProps, SnackbarState } from "../../types";
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
@@ -70,7 +71,7 @@ export default function CaseTabs(props: Props) {
           variant="fullWidth"
         >
           <Tab
-            key="caseInfo"
+            key="cases"
             className={classes.caseTabButton}
             label={
               <Badge badgeContent={props.legalCases.length} color="primary">
@@ -80,9 +81,15 @@ export default function CaseTabs(props: Props) {
             {...a11yProps(0)}
           />
           <Tab
-            key="meetings"
+            key="clientInfo"
             className={classes.caseTabButton}
             label={<Typography>{i18n.t("Client info")}</Typography>}
+            {...a11yProps(1)}
+          />
+          <Tab
+            key="clientFiles"
+            className={classes.caseTabButton}
+            label={<Typography>{i18n.t("All files")}</Typography>}
             {...a11yProps(1)}
           />
         </Tabs>
@@ -92,6 +99,9 @@ export default function CaseTabs(props: Props) {
       </TabPanel>
       <TabPanel value={value} index={1}>
         {props.client && <ClientInfoTab client={props.client} />}
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        {props.client ? <ClientFileTab client={props.client} /> : null}
       </TabPanel>
     </>
   );
