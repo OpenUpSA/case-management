@@ -11,6 +11,9 @@ export function toSentence(items: string[]): string {
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     "@global": {
+      "body": {
+        overflowY: "scroll",
+      },
       ".MuiDialog-root": {
         zIndex: "2147483640!important",
       },
