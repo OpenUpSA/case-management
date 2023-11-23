@@ -28,10 +28,9 @@ import { ILegalCase, IClient, LocationState, SnackbarState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 
-import ClientDetails from "../../components/client/clientDetails";
-import LegalCasesTable from "../../components/legalCase/table";
 import MoreMenu from "../../components/moreMenu";
 import SnackbarAlert from "../../components/general/snackBar";
+import ClientTabs from "../../components/client/clientTabs";
 
 type RouteParams = { id: string };
 
@@ -244,12 +243,12 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        <ClientDetails client={client} />
-        <hr className={classes.hr} />
-
-        <LegalCasesTable
+        <ClientTabs
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          setShowSnackbar={setShowSnackbar}
           legalCases={legalCases ? legalCases : []}
-          standalone={false}
+          client={client}
         />
       </Container>
       {showSnackbar.open && (
