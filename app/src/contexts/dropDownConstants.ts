@@ -1,9 +1,8 @@
 import { countries, CountryType } from "../countries";
 
-const countryLabels: string[][] = countries.map((country: CountryType) => [
-  country.code,
-  country.label,
-]).sort((a, b) => (a[1] > b[1] ? 1 : -1));
+const countryLabels: string[][] = countries
+  .map((country: CountryType) => [country.code, country.label])
+  .sort((a, b) => (a[1] > b[1] ? 1 : -1));
 
 export const constants = {
   officialIdentifierTypes: [
@@ -45,13 +44,36 @@ export const constants = {
     ["Email", "Email"],
   ],
   relationshipToClient: [
+    ["Aunt"],
+    ["Brother"],
     ["Child"],
+    ["Cousin"],
+    ["Daughter In-Law"],
     ["Daughter"],
-    ["Son"],
+    ["Father In-Law"],
     ["Father"],
+    ["Grandchild"],
+    ["Granddaughter"],
+    ["Grandfather"],
+    ["Grandmother"],
+    ["Grandparent"],
+    ["Grandson"],
+    ["Great-Grandfather"],
+    ["Great-Grandmother"],
+    ["Great-Grandparent"],
+    ["Guardian"],
+    ["In-Law"],
+    ["Mother In-Law"],
     ["Mother"],
-    ["Spouse"],
-    ["Sibling"],
+    ["Nephew"],
+    ["Niece"],
     ["Other"],
+    ["Parent"],
+    ["Sibling"],
+    ["Sister"],
+    ["Son In-Law"],
+    ["Son"],
+    ["Spouse"],
+    ["Uncle"],
   ],
 };
