@@ -3,7 +3,7 @@ from django.db import models
 
 class PermissionGroups(models.TextChoices):
     ADMIN = 'Admin'
-    REPORTING = 'Reporting',
+    REPORTING = ('Reporting',)
     ADVICE_OFFICE_ADMIN = 'AdviceOfficeAdmin', 'Office Admin'
     CASE_WORKER = 'CaseWorker', 'Case Worker'
 
@@ -71,6 +71,7 @@ class CivilMarriageTypes(models.TextChoices):
         'Out Of Community Of Propery No Accrual',
     )
 
+
 class Provinces(models.TextChoices):
     EC = 'EasternCape', 'Eastern Cape'
     FS = 'Freestate'
@@ -89,12 +90,36 @@ class ContactMethods(models.TextChoices):
     WhatsApp = 'WhatsApp', 'WhatsApp/messenger'
     Email = 'Email', 'Email'
 
+
 class Relationships(models.TextChoices):
+    AUNT = 'Aunt'
+    BROTHER = 'Brother'
     CHILD = 'Child'
+    COUSIN = 'Cousin'
     DAUGHTER = 'Daughter'
-    SON = 'Son'
+    DAUGHTER_IN_LAW = 'Daughter In-Law'
     FATHER = 'Father'
+    FATHER_IN_LAW = 'Father In-Law'
+    GRANDCHILD = 'Grandchild'
+    GRANDDAUGHTER = 'Granddaughter'
+    GRANDFATHER = 'Grandfather'
+    GRANDMOTHER = 'Grandmother'
+    GRANDPARENT = 'Grandparent'
+    GRANDSON = 'Grandson'
+    GREAT_GRANDFATHER = 'Great-Grandfather'
+    GREAT_GRANDMOTHER = 'Great-Grandmother'
+    GREAT_GRANDPARENT = 'Great-Grandparent'
+    GUARDIAN = 'Guardian'
+    IN_LAW = 'In-Law'
     MOTHER = 'Mother'
-    SPOUSE = 'Spouse'
-    SIBLING = 'Sibling'
+    MOTHER_IN_LAW = 'Mother In-Law'
+    NEPHEW = 'Nephew'
+    NIECE = 'Niece'
     OTHER = 'Other'
+    PARENT = 'Parent'
+    SIBLING = 'Sibling'
+    SISTER = 'Sister'
+    SON = 'Son'
+    SON_IN_LAW = 'Son In-Law'
+    SPOUSE = 'Spouse'
+    UNCLE = 'Uncle'
