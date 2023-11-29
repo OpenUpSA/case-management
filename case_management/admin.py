@@ -13,6 +13,7 @@ from case_management.models import (
     Note,
     User,
     Log,
+    LogChange,
     Language,
     SiteNotice,
 )
@@ -168,6 +169,8 @@ class LogAdmin(DefaultAdmin):
     model = Log
     list_display = ['action', 'target_type']
 
+class LogChangeAdmin(DefaultAdmin):
+    model = LogChange
 
 class SiteNoticeAdmin(DefaultAdmin):
     model = SiteNotice
@@ -192,6 +195,7 @@ admin.site.register(File, FileAdmin)
 admin.site.register(Meeting, MeetingAdmin)
 admin.site.register(Note, NoteAdmin)
 admin.site.register(Log, LogAdmin)
+admin.site.register(LogChange, LogChangeAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Language, LanguageAdmin)
 admin.site.register(SiteNotice, SiteNoticeAdmin)
