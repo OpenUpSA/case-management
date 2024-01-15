@@ -35,6 +35,7 @@ import {
 import { CaseOfficesContext } from "../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../contexts/caseTypesContext";
 import { LanguagesContext } from "../contexts/languagesContext";
+import { InstanceSettingsContext } from "../contexts/instanceSettingsContext";
 
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -45,27 +46,33 @@ import Typography from "@material-ui/core/Typography";
 const Component = () => {
   useEffect(() => {
     async function fetchData() {
-      const dataInstanceSettings = await getInstanceSettings();
       const dataCaseOffices = await getCaseOffices();
       const dataCaseTypes = await getCaseTypes();
       const dataLanguages = await getLanguages();
       setContextOffices(dataCaseOffices);
       setContextCaseTypes(dataCaseTypes);
       setContextLanguages(dataLanguages);
-      setInstanceSettings(dataInstanceSettings);
     }
     const userInfo = UserInfo.getInstance();
     const token = userInfo.getAccessToken();
     if (token) {
       fetchData();
     }
+
+    async function fetchDataNonUser() {
+      const dataInstanceSettings = await getInstanceSettings();
+      setContextInstanceSettings(dataInstanceSettings);
+    }
+    fetchDataNonUser();
     // eslint-disable-next-line
   }, []);
 
   const history = useHistory();
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [instanceSettings, setInstanceSettings] = React.useState<IInstance>();
+  const [contextInstanceSettings, setContextInstanceSettings] = useContext(
+    InstanceSettingsContext
+  );
   // eslint-disable-next-line
   const [contextOffices, setContextOffices] = useContext(CaseOfficesContext);
   // eslint-disable-next-line
@@ -77,7 +84,6 @@ const Component = () => {
   const userId = Number(userInfo.getUserId());
   const name = userInfo.getName();
   const email = userInfo.getEmail();
-  const instanceName = null;
   const case_office = Number(userInfo.getCaseOffice());
 
   const filteredCaseOffice = contextOffices
@@ -96,6 +102,8 @@ const Component = () => {
   };
 
   const logout = () => {
+    const userInfo = UserInfo.getInstance();
+    userInfo.clear();
     closeDrawer();
     history.push("/logout");
   };
@@ -105,13 +113,20 @@ const Component = () => {
     closeDrawer();
   };
 
-  if (userId === -1) {
+  if (
+    userId === -1 &&
+    window.location.pathname !== "/login" &&
+    window.location.pathname !== "/logout" &&
+    window.location.pathname !== "/"
+  ) {
     logout();
   }
 
   const goHome = () => {
-    closeDrawer();
-    history.push("/");
+    if (userId !== -1) {
+      closeDrawer();
+      history.push("/clients");
+    }
   };
 
   return (
@@ -147,51 +162,55 @@ const Component = () => {
                 borderRadius: 0,
               }}
             >
-              {instanceSettings &&
-                typeof instanceSettings.name !== "undefined" && (
+              {contextInstanceSettings &&
+                typeof contextInstanceSettings.name !== "undefined" && (
                   <Box>
                     <img
                       className={classes.logoCustom}
-                      src={instanceSettings.logo_url}
+                      src={contextInstanceSettings.logo_url}
                       onClick={goHome}
-                      alt={instanceSettings.name}
+                      alt={contextInstanceSettings.name}
                     />
                   </Box>
                 )}
-              <Box>
-                <p
-                  className={classes.navbarUserName}
-                  title={name || email || ""}
-                >
-                  {name || email}
-                </p>
-                <p className={classes.navbarInstanceAndOffice}>
-                  <span
-                    className={classes.navbarOfficeName}
-                    title={filteredCaseOffice}
+              {(name || email) && (
+                <Box>
+                  <p
+                    className={classes.navbarUserName}
+                    title={name || email || ""}
                   >
-                    {filteredCaseOffice}
-                  </span>
-                  {instanceSettings &&
-                    typeof instanceSettings.name !== "undefined" && (
-                      <span
-                        className={classes.navbarInstanceName}
-                        title={instanceSettings.name}
-                      >
-                        ({instanceSettings.name})
-                      </span>
-                    )}
-                </p>
-              </Box>
+                    {name || email}
+                  </p>
+                  <p className={classes.navbarInstanceAndOffice}>
+                    <span
+                      className={classes.navbarOfficeName}
+                      title={filteredCaseOffice}
+                    >
+                      {filteredCaseOffice}
+                    </span>
+                    {contextInstanceSettings &&
+                      typeof contextInstanceSettings.name !== "undefined" && (
+                        <span
+                          className={classes.navbarInstanceName}
+                          title={contextInstanceSettings.name}
+                        >
+                          ({contextInstanceSettings.name})
+                        </span>
+                      )}
+                  </p>
+                </Box>
+              )}
             </Box>
-            <IconButton
-              edge="end"
-              color="inherit"
-              aria-label="menu"
-              onClick={toggleDrawer}
-            >
-              {drawerOpen ? <CloseIcon /> : <MenuIcon />}
-            </IconButton>
+            {(name || email) && (
+              <IconButton
+                edge="end"
+                color="inherit"
+                aria-label="menu"
+                onClick={toggleDrawer}
+              >
+                {drawerOpen ? <CloseIcon /> : <MenuIcon />}
+              </IconButton>
+            )}
           </Toolbar>
         </Container>
       </AppBar>

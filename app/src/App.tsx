@@ -1,23 +1,26 @@
 import { Component } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import Routes from "./routes";
 import "@fontsource/karla";
 import { CaseOfficesProvider } from "./contexts/caseOfficesContext";
 import { CaseTypesProvider } from "./contexts/caseTypesContext";
 import { LanguagesProvider } from "./contexts/languagesContext";
+import { InstanceSettingsProvider } from "./contexts/instanceSettingsContext";
 
 class App extends Component {
   render() {
     return (
-      <LanguagesProvider>
-        <CaseTypesProvider>
-          <CaseOfficesProvider>
-            <Router>
-              <Routes />
-            </Router>
-          </CaseOfficesProvider>
-        </CaseTypesProvider>
-      </LanguagesProvider>
+      <InstanceSettingsProvider>
+        <LanguagesProvider>
+          <CaseTypesProvider>
+            <CaseOfficesProvider>
+              <BrowserRouter>
+                <Routes />
+              </BrowserRouter>
+            </CaseOfficesProvider>
+          </CaseTypesProvider>
+        </LanguagesProvider>
+      </InstanceSettingsProvider>
     );
   }
 }
