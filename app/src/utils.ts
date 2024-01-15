@@ -74,7 +74,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     navbarUserName: {
       letterSpacing: "-.03em",
       fontWeight: 700,
-      fontSize: "1em",
+      fontSize: "14px",
       padding: 0,
       margin: 0,
       overflow: "hidden",
@@ -82,12 +82,13 @@ export const useStyles = makeStyles((theme: Theme) =>
       whiteSpace: "nowrap",
       maxWidth: "20em",
       [theme.breakpoints.down("xs")]: {
-        maxWidth: "9em",
+        maxWidth: "10em",
       },
     },
     navbarInstanceAndOffice: {
-      letterSpacing: "-.03em",
-      fontSize: "1em",
+      color: "rgba(0, 0, 0, .5)",
+      letterSpacing: "-0.03em",
+      fontSize: "14px",
       padding: 0,
       margin: 0,
       overflow: "hidden",
@@ -95,7 +96,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       whiteSpace: "nowrap",
       maxWidth: "20em",
       [theme.breakpoints.down("xs")]: {
-        maxWidth: "9em",
+        maxWidth: "10em",
       },
     },
     navbarOfficeName: {},
