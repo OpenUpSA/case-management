@@ -147,16 +147,17 @@ const Component = () => {
                 borderRadius: 0,
               }}
             >
-              {instanceSettings && (
-                <Box>
-                  <img
-                    className={classes.logoCustom}
-                    src={instanceSettings.logo_url}
-                    onClick={goHome}
-                    alt={instanceSettings.name}
-                  />
-                </Box>
-              )}
+              {instanceSettings &&
+                typeof instanceSettings.name !== "undefined" && (
+                  <Box>
+                    <img
+                      className={classes.logoCustom}
+                      src={instanceSettings.logo_url}
+                      onClick={goHome}
+                      alt={instanceSettings.name}
+                    />
+                  </Box>
+                )}
               <Box>
                 <p
                   className={classes.navbarUserName}
@@ -171,14 +172,15 @@ const Component = () => {
                   >
                     {filteredCaseOffice}
                   </span>
-                  {instanceSettings && (
-                    <span
-                      className={classes.navbarInstanceName}
-                      title={instanceSettings.name}
-                    >
-                      ({instanceSettings.name})
-                    </span>
-                  )}
+                  {instanceSettings &&
+                    typeof instanceSettings.name !== "undefined" && (
+                      <span
+                        className={classes.navbarInstanceName}
+                        title={instanceSettings.name}
+                      >
+                        ({instanceSettings.name})
+                      </span>
+                    )}
                 </p>
               </Box>
             </Box>
