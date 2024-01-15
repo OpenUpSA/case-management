@@ -255,7 +255,10 @@ export const getSettings = async (name?: string) => {
 
 export const getInstanceSettings = async () => {
   const data = await httpGet<ISetting[]>(`/settings/?name=instance`);
-  return data[0]['value'];
+  if (data.length === 0) {
+    return null;
+  }
+  return data[0]["value"];
 };
 
 export const createLog = async (log: ILog) => {
