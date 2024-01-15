@@ -25,8 +25,13 @@ import CloseIcon from "@material-ui/icons/Close";
 import i18n from "../i18n";
 import { UserInfo } from "../auth";
 import { useStyles } from "../utils";
-import { ICaseOffice } from "../types";
-import { getCaseOffices, getCaseTypes, getLanguages } from "../api";
+import { ICaseOffice, IInstance } from "../types";
+import {
+  getCaseOffices,
+  getCaseTypes,
+  getLanguages,
+  getInstanceSettings,
+} from "../api";
 import { CaseOfficesContext } from "../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../contexts/caseTypesContext";
 import { LanguagesContext } from "../contexts/languagesContext";
@@ -40,12 +45,14 @@ import Typography from "@material-ui/core/Typography";
 const Component = () => {
   useEffect(() => {
     async function fetchData() {
+      const dataInstanceSettings = await getInstanceSettings();
       const dataCaseOffices = await getCaseOffices();
       const dataCaseTypes = await getCaseTypes();
       const dataLanguages = await getLanguages();
       setContextOffices(dataCaseOffices);
       setContextCaseTypes(dataCaseTypes);
       setContextLanguages(dataLanguages);
+      setInstanceSettings(dataInstanceSettings);
     }
     const userInfo = UserInfo.getInstance();
     const token = userInfo.getAccessToken();
@@ -58,6 +65,8 @@ const Component = () => {
   const history = useHistory();
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [instanceSettings, setInstanceSettings] = React.useState<IInstance>();
+  // eslint-disable-next-line
   const [contextOffices, setContextOffices] = useContext(CaseOfficesContext);
   // eslint-disable-next-line
   const [contextCaseTypes, setContextCaseTypes] = useContext(CaseTypesContext);
@@ -68,6 +77,7 @@ const Component = () => {
   const userId = Number(userInfo.getUserId());
   const name = userInfo.getName();
   const email = userInfo.getEmail();
+  const instanceName = null;
   const case_office = Number(userInfo.getCaseOffice());
 
   const filteredCaseOffice = contextOffices
@@ -121,14 +131,58 @@ const Component = () => {
                 alt={i18n.t("CaseFile Logo")}
                 onClick={goHome}
               />
-              {process.env.REACT_APP_LOGO_URL && (
-                <img
-                  className={classes.logoCustom}
-                  src={process.env.REACT_APP_LOGO_URL}
-                  onClick={goHome}
-                  alt=""
-                />
-              )}
+            </Box>
+            <Box
+              className={classes.navbarUserContext}
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                p: 1,
+                m: 1,
+                pl: 0,
+                pr: 0,
+                ml: 0,
+                mr: 0,
+                bgcolor: "background.paper",
+                borderRadius: 0,
+              }}
+            >
+              {instanceSettings &&
+                typeof instanceSettings.name !== "undefined" && (
+                  <Box>
+                    <img
+                      className={classes.logoCustom}
+                      src={instanceSettings.logo_url}
+                      onClick={goHome}
+                      alt={instanceSettings.name}
+                    />
+                  </Box>
+                )}
+              <Box>
+                <p
+                  className={classes.navbarUserName}
+                  title={name || email || ""}
+                >
+                  {name || email}
+                </p>
+                <p className={classes.navbarInstanceAndOffice}>
+                  <span
+                    className={classes.navbarOfficeName}
+                    title={filteredCaseOffice}
+                  >
+                    {filteredCaseOffice}
+                  </span>
+                  {instanceSettings &&
+                    typeof instanceSettings.name !== "undefined" && (
+                      <span
+                        className={classes.navbarInstanceName}
+                        title={instanceSettings.name}
+                      >
+                        ({instanceSettings.name})
+                      </span>
+                    )}
+                </p>
+              </Box>
             </Box>
             <IconButton
               edge="end"

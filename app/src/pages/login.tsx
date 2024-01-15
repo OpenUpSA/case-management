@@ -70,7 +70,9 @@ const Page = () => {
 
         const newToken = userInfo.getAccessToken();
         if (newToken) {
-          const { name, case_office, email } = await getUser(user_id);
+          const { name, case_office, email } = await getUser(
+            user_id
+          );
           userInfo.setName(name);
           userInfo.setCaseOffice(case_office);
           userInfo.setEmail(email);

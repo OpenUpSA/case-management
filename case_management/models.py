@@ -15,7 +15,7 @@ from case_management.enums import (
     Provinces,
     LogChangeTypes,
     ContactMethods,
-    Relationships
+    Relationships,
 )
 from django_countries.fields import CountryField
 from django.conf import settings
@@ -23,7 +23,13 @@ from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from case_management.managers import UserManager
-from django_lifecycle import LifecycleModel, hook, AFTER_CREATE, AFTER_UPDATE, BEFORE_DELETE
+from django_lifecycle import (
+    LifecycleModel,
+    hook,
+    AFTER_CREATE,
+    AFTER_UPDATE,
+    BEFORE_DELETE,
+)
 from django.apps import apps
 import ckeditor.fields as ckeditor_fields
 
@@ -116,8 +122,7 @@ class Log(models.Model):
 
 class LogChange(models.Model):
     id = models.AutoField(primary_key=True)
-    log = models.ForeignKey(Log, related_name='changes',
-                            on_delete=models.CASCADE)
+    log = models.ForeignKey(Log, related_name='changes', on_delete=models.CASCADE)
 
     field = models.CharField(max_length=255)
     value = models.TextField(null=True)
@@ -125,9 +130,7 @@ class LogChange(models.Model):
 
 
 def _logChange(log, field, value, action):
-    log_change = LogChange(
-        log=log, field=field, value=value, action=action
-    )
+    log_change = LogChange(log=log, field=field, value=value, action=action)
     log_change.save()
 
 
@@ -275,8 +278,7 @@ class Client(LoggedModel):
     first_names = models.CharField(max_length=255, null=True, blank=False)
     last_name = models.CharField(max_length=255, null=True, blank=False)
     preferred_name = models.CharField(max_length=128, blank=True)
-    official_identifier = models.CharField(
-        max_length=64, null=True, blank=True)
+    official_identifier = models.CharField(max_length=64, null=True, blank=True)
     official_identifier_type = models.CharField(
         max_length=25, choices=OfficialIdentifiers.choices, null=True, blank=True
     )
@@ -289,10 +291,8 @@ class Client(LoggedModel):
         max_length=25, blank=True, choices=ContactMethods.choices
     )
     address = models.CharField(max_length=255, blank=True)
-    province = models.CharField(
-        max_length=20, blank=True, choices=Provinces.choices)
-    gender = models.CharField(
-        max_length=20, blank=True, choices=Genders.choices)
+    province = models.CharField(max_length=20, blank=True, choices=Provinces.choices)
+    gender = models.CharField(max_length=20, blank=True, choices=Genders.choices)
     marital_status = models.CharField(
         max_length=20, blank=True, choices=MaritalStatuses.choices
     )
@@ -306,12 +306,20 @@ class Client(LoggedModel):
     next_of_kin_relationship = models.CharField(max_length=255, blank=True)
     next_of_kin_contact_number = PhoneNumberField(blank=True)
     home_language = models.ForeignKey(
-        Language, null=True, on_delete=models.CASCADE,
-        related_name='home_language', blank=True)
+        Language,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name='home_language',
+        blank=True,
+    )
     translator_needed = models.BooleanField(blank=True, null=True)
     translator_language = models.ForeignKey(
-        Language, null=True, on_delete=models.CASCADE,
-        related_name='translator_language', blank=True)
+        Language,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name='translator_language',
+        blank=True,
+    )
     nationality = CountryField(blank=True)
     country_of_birth = CountryField(blank=True)
     employment_status = models.CharField(
@@ -356,8 +364,7 @@ class ClientDependent(LoggedModel):
     first_names = models.CharField(max_length=255, null=True, blank=False)
     last_name = models.CharField(max_length=255, null=True, blank=False)
     preferred_name = models.CharField(max_length=128, blank=True)
-    official_identifier = models.CharField(
-        max_length=64, null=True, blank=True)
+    official_identifier = models.CharField(max_length=64, null=True, blank=True)
     official_identifier_type = models.CharField(
         max_length=25, choices=OfficialIdentifiers.choices, null=True, blank=True
     )
@@ -365,18 +372,27 @@ class ClientDependent(LoggedModel):
     contact_number = PhoneNumberField(null=True, blank=True)
     alternative_contact_number = PhoneNumberField(null=True, blank=True)
     contact_email = models.EmailField(max_length=254, null=True, blank=True)
-    alternative_contact_email = models.EmailField(
-        max_length=254, null=True, blank=True)
+    alternative_contact_email = models.EmailField(max_length=254, null=True, blank=True)
     preferred_contact_method = models.CharField(
         max_length=25, null=True, blank=True, choices=ContactMethods.choices
     )
     gender = models.CharField(
-        max_length=20, null=True, blank=True, choices=Genders.choices)
+        max_length=20, null=True, blank=True, choices=Genders.choices
+    )
     relationship_to_client = models.CharField(
-        max_length=20, null=True, blank=True, choices=Relationships.choices, default='Other')
+        max_length=20,
+        null=True,
+        blank=True,
+        choices=Relationships.choices,
+        default='Other',
+    )
     home_language = models.ForeignKey(
-        Language, on_delete=models.CASCADE,
-        related_name='dependent_home_language', null=True, blank=True)
+        Language,
+        on_delete=models.CASCADE,
+        related_name='dependent_home_language',
+        null=True,
+        blank=True,
+    )
     nationality = CountryField(null=True, blank=True)
     country_of_birth = CountryField(null=True, blank=True)
     details = models.TextField(null=True, blank=True)
@@ -392,20 +408,19 @@ class ClientDependent(LoggedModel):
     def __str__(self):
         return self.preferred_name
 
-    @ property
+    @property
     def updates(self):
         '''TODO: Do this in scalable way e.g. in view using proper join
         The below would not scale, because the request is done for each row
         '''
-        updates = Log.objects.filter(target_type='Dependent', target_id=self.id).order_by(
-            '-updated_at'
-        )
+        updates = Log.objects.filter(
+            target_type='Dependent', target_id=self.id
+        ).order_by('-updated_at')
         return updates
 
 
 class LegalCase(LoggedModel):
-    case_number = models.CharField(
-        max_length=32, null=False, blank=False, unique=True)
+    case_number = models.CharField(max_length=32, null=False, blank=False, unique=True)
     state = models.CharField(
         max_length=10, choices=CaseStates.choices, default=CaseStates.OPENED
     )
@@ -506,8 +521,7 @@ class File(LoggedChildModel):
         LegalCase, related_name='files', on_delete=models.CASCADE, null=True, blank=True
     )
     upload = models.FileField(upload_to='uploads/')
-    description = models.CharField(
-        max_length=255, null=False, blank=True, default='')
+    description = models.CharField(max_length=255, null=False, blank=True, default='')
 
     def save(self, *args, **kwargs):
         if self.description == '':
@@ -524,6 +538,7 @@ class File(LoggedChildModel):
     def upload_file_name(self):
         return os.path.basename(self.upload.file.name)
 
+
 class SiteNotice(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -533,7 +548,23 @@ class SiteNotice(models.Model):
     message = ckeditor_fields.RichTextField(null=False, blank=False)
 
 
-@ receiver(post_save, sender=settings.AUTH_USER_MODEL)
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+class Setting(models.Model):
+    """
+    Model for site-wide settings.
+    """
+
+    name = models.CharField(max_length=200, help_text="Name of site-wide variable", unique=True)
+    value = models.JSONField(
+        null=True,
+        blank=True,
+        help_text="Value of site-wide variable that scripts can reference - must be valid JSON",
+    )
+
+    def __unicode__(self):
+        return self.name
