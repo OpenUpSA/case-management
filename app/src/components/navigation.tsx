@@ -68,6 +68,7 @@ const Component = () => {
   const userId = Number(userInfo.getUserId());
   const name = userInfo.getName();
   const email = userInfo.getEmail();
+  const instanceName = null;
   const case_office = Number(userInfo.getCaseOffice());
 
   const filteredCaseOffice = contextOffices
@@ -121,14 +122,56 @@ const Component = () => {
                 alt={i18n.t("CaseFile Logo")}
                 onClick={goHome}
               />
-              {process.env.REACT_APP_LOGO_URL && (
-                <img
-                  className={classes.logoCustom}
-                  src={process.env.REACT_APP_LOGO_URL}
-                  onClick={goHome}
-                  alt=""
-                />
-              )}
+            </Box>
+            <Box
+              className={classes.navbarUserContext}
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                p: 1,
+                m: 1,
+                pl: 0,
+                pr: 0,
+                ml: 0,
+                mr: 0,
+                bgcolor: "background.paper",
+                borderRadius: 0,
+              }}
+            >
+              <Box>
+                {process.env.REACT_APP_LOGO_URL && (
+                  <img
+                    className={classes.logoCustom}
+                    src={process.env.REACT_APP_LOGO_URL}
+                    onClick={goHome}
+                    alt=""
+                  />
+                )}
+              </Box>
+              <Box>
+                <p
+                  className={classes.navbarUserName}
+                  title={name || email || ""}
+                >
+                  {name || email}
+                </p>
+                <p className={classes.navbarInstanceAndOffice}>
+                  <span
+                    className={classes.navbarOfficeName}
+                    title={filteredCaseOffice}
+                  >
+                    {filteredCaseOffice}
+                  </span>
+                  {instanceName && (
+                    <span
+                      className={classes.navbarInstanceName}
+                      title={instanceName || ""}
+                    >
+                      ({instanceName})
+                    </span>
+                  )}
+                </p>
+              </Box>
             </Box>
             <IconButton
               edge="end"

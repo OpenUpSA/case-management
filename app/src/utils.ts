@@ -11,7 +11,7 @@ export function toSentence(items: string[]): string {
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     "@global": {
-      "body": {
+      body: {
         overflowY: "scroll",
       },
       ".MuiDialog-root": {
@@ -69,6 +69,38 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     drawer: {
       flexShrink: 0,
+    },
+    navbarUserContext: {},
+    navbarUserName: {
+      letterSpacing: "-.03em",
+      fontWeight: 700,
+      fontSize: "1em",
+      padding: 0,
+      margin: 0,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      maxWidth: "20em",
+      [theme.breakpoints.down("xs")]: {
+        maxWidth: "9em",
+      },
+    },
+    navbarInstanceAndOffice: {
+      letterSpacing: "-.03em",
+      fontSize: "1em",
+      padding: 0,
+      margin: 0,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      maxWidth: "20em",
+      [theme.breakpoints.down("xs")]: {
+        maxWidth: "9em",
+      },
+    },
+    navbarOfficeName: {},
+    navbarInstanceName: {
+      paddingLeft: "0.3em",
     },
     drawerPaper: {
       paddingLeft: "2em",
@@ -294,7 +326,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     logoCustom: {
       height: "35px",
-      marginLeft: "10px",
+      width: "35px",
+      marginRight: "5px",
+      borderRadius: "100%",
     },
     cursorPointer: {
       cursor: "pointer",
