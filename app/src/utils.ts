@@ -719,6 +719,18 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
       },
     },
+    closeButtonNoPos: {
+      borderRadius: "50%",
+      backgroundColor: "#f2f2f2",
+      marginLeft: 10,
+      width: "38px",
+      height: "38px",
+      marginTop: "28px",
+      marginRight: "28px",
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
+      },
+    },
     closeButtonIcon: {
       color: "#000",
       fontSize: "20px!important" as any,

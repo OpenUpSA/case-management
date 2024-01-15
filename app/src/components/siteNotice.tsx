@@ -6,6 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import CloseIcon from "@mui/icons-material/Close";
 import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@material-ui/core/Box";
 
 import { useStyles } from "../utils";
 import { getSiteNotices } from "../api";
@@ -56,16 +57,22 @@ const SiteNoticeDialog = () => {
 
   return (
     <Dialog open={open} onClose={dialogClose}>
-      <DialogTitle className={classes.dialogTitle}>
-        {siteNotices[0]?.title}
-      </DialogTitle>
-      <IconButton
-        className={classes.closeButton}
-        size={"medium"}
-        onClick={dialogClose}
-      >
-        <CloseIcon className={classes.closeButtonIcon} />
-      </IconButton>
+      <Box sx={{ display: "flex" }}>
+        <Box sx={{ flexGrow: 1 }}>
+          <DialogTitle className={classes.dialogTitle}>
+            {siteNotices[0]?.title}
+          </DialogTitle>
+        </Box>
+        <Box>
+          <IconButton
+            className={classes.closeButtonNoPos}
+            size={"medium"}
+            onClick={dialogClose}
+          >
+            <CloseIcon className={classes.closeButtonIcon} />
+          </IconButton>
+        </Box>
+      </Box>
 
       <DialogContent className={classes.dialogContent}>
         <div dangerouslySetInnerHTML={{ __html: siteNotices[0]?.message }} />
