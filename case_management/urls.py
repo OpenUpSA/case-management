@@ -28,6 +28,7 @@ from case_management.views import (
     LogViewSet,
     LanguageViewSet,
     SiteNoticeViewSet,
+    SettingViewSet,
     range_summary,
     monthly_summary,
     daily_summary,
@@ -55,6 +56,7 @@ router.register(r'api/v1/users', UserViewSet)
 router.register(r'api/v1/logs', LogViewSet)
 router.register(r'api/v1/languages', LanguageViewSet)
 router.register(r'api/v1/site-notices', SiteNoticeViewSet, basename='SiteNotice')
+router.register(r'api/v1/settings', SettingViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(

@@ -14,7 +14,8 @@ from case_management.models import (
     Log,
     LogChange,
     Language,
-    SiteNotice
+    SiteNotice,
+    Setting,
 )
 from case_management.enums import MaritalStatuses
 
@@ -35,8 +36,7 @@ class LogSerializer(serializers.ModelSerializer):
 
 
 class ChildModelSerializer(serializers.ModelSerializer):
-    case_offices = serializers.PrimaryKeyRelatedField(
-        many=True, read_only=True)
+    case_offices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
 
 class CaseTypeSerializer(serializers.ModelSerializer):
@@ -66,8 +66,7 @@ class LegalCaseSerializer(serializers.ModelSerializer):
 class ClientSerializer(CountryFieldMixin, serializers.ModelSerializer):
     legal_cases = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     updates = LogSerializer(many=True, read_only=True)
-    case_offices = serializers.PrimaryKeyRelatedField(
-        many=True, read_only=True)
+    case_offices = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     def validate(self, data):
         if data.get('official_identifier') and not data.get('official_identifier_type'):
@@ -142,7 +141,6 @@ class FileSerializer(ChildModelSerializer):
 
 
 class MeetingSerializer(ChildModelSerializer):
-
     def validate(self, data):
         if data.get('advice_was_offered') and not data.get('advice_offered'):
             raise serializers.ValidationError(
@@ -226,7 +224,7 @@ class UserListSerializer(serializers.ModelSerializer):
             'email',
             'membership_number',
             'case_office',
-            'permission_group'
+            'permission_group',
         ]
 
 
@@ -257,4 +255,10 @@ class UserSerializer(serializers.ModelSerializer):
 class SiteNoticeSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteNotice
+        fields = '__all__'
+
+
+class SettingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Setting
         fields = '__all__'
