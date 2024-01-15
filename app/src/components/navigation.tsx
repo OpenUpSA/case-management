@@ -25,8 +25,13 @@ import CloseIcon from "@material-ui/icons/Close";
 import i18n from "../i18n";
 import { UserInfo } from "../auth";
 import { useStyles } from "../utils";
-import { ICaseOffice } from "../types";
-import { getCaseOffices, getCaseTypes, getLanguages } from "../api";
+import { ICaseOffice, IInstance } from "../types";
+import {
+  getCaseOffices,
+  getCaseTypes,
+  getLanguages,
+  getInstanceSettings,
+} from "../api";
 import { CaseOfficesContext } from "../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../contexts/caseTypesContext";
 import { LanguagesContext } from "../contexts/languagesContext";
@@ -40,12 +45,14 @@ import Typography from "@material-ui/core/Typography";
 const Component = () => {
   useEffect(() => {
     async function fetchData() {
+      const dataInstanceSettings = await getInstanceSettings();
       const dataCaseOffices = await getCaseOffices();
       const dataCaseTypes = await getCaseTypes();
       const dataLanguages = await getLanguages();
       setContextOffices(dataCaseOffices);
       setContextCaseTypes(dataCaseTypes);
       setContextLanguages(dataLanguages);
+      setInstanceSettings(dataInstanceSettings);
     }
     const userInfo = UserInfo.getInstance();
     const token = userInfo.getAccessToken();
@@ -58,6 +65,8 @@ const Component = () => {
   const history = useHistory();
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [instanceSettings, setInstanceSettings] = React.useState<IInstance>();
+  // eslint-disable-next-line
   const [contextOffices, setContextOffices] = useContext(CaseOfficesContext);
   // eslint-disable-next-line
   const [contextCaseTypes, setContextCaseTypes] = useContext(CaseTypesContext);
@@ -138,16 +147,16 @@ const Component = () => {
                 borderRadius: 0,
               }}
             >
-              <Box>
-                {process.env.REACT_APP_LOGO_URL && (
+              {instanceSettings && (
+                <Box>
                   <img
                     className={classes.logoCustom}
-                    src={process.env.REACT_APP_LOGO_URL}
+                    src={instanceSettings.logo_url}
                     onClick={goHome}
-                    alt=""
+                    alt={instanceSettings.name}
                   />
-                )}
-              </Box>
+                </Box>
+              )}
               <Box>
                 <p
                   className={classes.navbarUserName}
@@ -162,12 +171,12 @@ const Component = () => {
                   >
                     {filteredCaseOffice}
                   </span>
-                  {instanceName && (
+                  {instanceSettings && (
                     <span
                       className={classes.navbarInstanceName}
-                      title={instanceName || ""}
+                      title={instanceSettings.name}
                     >
-                      ({instanceName})
+                      ({instanceSettings.name})
                     </span>
                   )}
                 </p>

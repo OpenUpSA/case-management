@@ -201,3 +201,14 @@ export interface ISiteNotice {
   message: string;
   active: boolean;
 }
+
+export interface ISetting {
+  id: number;
+  name: string;
+  value: any;
+}
+
+export interface IInstance {
+  logo_url: string;
+  name: string;
+}

@@ -13,6 +13,8 @@ import {
   ILegalCaseFile,
   ILanguage,
   ISiteNotice,
+  ISetting,
+  IInstance,
 } from "./types";
 import { UserInfo } from "./auth";
 
@@ -246,6 +248,16 @@ export const getSiteNotices = async (active?: boolean) => {
   return await httpGet<ISiteNotice[]>(`/site-notices/?${activeParam}`);
 };
 
+export const getSettings = async (name?: string) => {
+  const nameParam = name ? `name=${name}` : "";
+  return await httpGet<ISetting[]>(`/settings/?${nameParam}`);
+};
+
+export const getInstanceSettings = async () => {
+  const data = await httpGet<ISetting[]>(`/settings/?name=instance`);
+  return data[0]['value'];
+};
+
 export const createLog = async (log: ILog) => {
   return await httpPost<ILog, ILog>("/logs/", log);
 };
@@ -357,10 +369,20 @@ export const deleteClientDependent = async (id: number) => {
   return await httpDelete<IClientDependent>(`/client-dependents/${id}/`);
 };
 
-export const updateClientDependent = async (clientDependent: IClientDependent) => {
-  return await httpPatch<IClientDependent, IClientDependent>(`/client-dependents/${clientDependent.id}/`, clientDependent);
+export const updateClientDependent = async (
+  clientDependent: IClientDependent
+) => {
+  return await httpPatch<IClientDependent, IClientDependent>(
+    `/client-dependents/${clientDependent.id}/`,
+    clientDependent
+  );
 };
 
-export const createClientDependent = async (clientDependent: IClientDependent) => {
-  return await httpPost<IClientDependent, IClientDependent>(`/client-dependents/`, clientDependent);
+export const createClientDependent = async (
+  clientDependent: IClientDependent
+) => {
+  return await httpPost<IClientDependent, IClientDependent>(
+    `/client-dependents/`,
+    clientDependent
+  );
 };
