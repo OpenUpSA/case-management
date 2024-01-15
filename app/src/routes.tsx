@@ -1,4 +1,4 @@
-import { Switch, Route, useHistory, Redirect } from "react-router-dom";
+import { Switch, Route, useHistory, Redirect, BrowserRouter } from "react-router-dom";
 import React from "react";
 import LoginPage from "./pages/login";
 import LogoutPage from "./pages/logout";
@@ -32,7 +32,8 @@ import ReactGA from "react-ga4";
 import { hotjar } from "react-hotjar";
 import { UserInfo } from "./auth";
 
-import {isLoggedIn} from "./auth";
+import { isLoggedIn } from "./auth";
+import { NavigateBeforeOutlined } from "@material-ui/icons";
 
 if (process.env.REACT_APP_GA_ID) {
   ReactGA.initialize(process.env.REACT_APP_GA_ID!);
@@ -64,7 +65,7 @@ function Routes() {
   }, [id]);
 
   return (
-    <div>
+    <>
       <Navigation />
       <Switch>
         <Route exact path="/">
@@ -109,8 +110,9 @@ function Routes() {
 
         <Route component={NotFoundPage} />
       </Switch>
+
       {isLoggedIn() ? <SiteNoticeDialog /> : null}
-    </div>
+    </>
   );
 }
 

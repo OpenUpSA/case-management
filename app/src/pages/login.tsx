@@ -19,7 +19,9 @@ import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
 import { useStyles } from "../utils";
 
 const Page = () => {
-  RedirectIfLoggedIn();
+  if (window.location.pathname !== "/login") {
+    RedirectIfLoggedIn();
+  }
   const classes = useStyles();
   const history = useHistory();
   const [loginError, setLoginError] = React.useState<boolean>();
@@ -70,9 +72,7 @@ const Page = () => {
 
         const newToken = userInfo.getAccessToken();
         if (newToken) {
-          const { name, case_office, email } = await getUser(
-            user_id
-          );
+          const { name, case_office, email } = await getUser(user_id);
           userInfo.setName(name);
           userInfo.setCaseOffice(case_office);
           userInfo.setEmail(email);
