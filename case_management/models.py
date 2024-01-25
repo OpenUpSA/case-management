@@ -422,7 +422,7 @@ class ClientDependent(LoggedModel):
 class LegalCase(LoggedModel):
     case_number = models.CharField(max_length=32, null=False, blank=False, unique=True)
     state = models.CharField(
-        max_length=10, choices=CaseStates.choices, default=CaseStates.OPENED
+        max_length=20, choices=CaseStates.choices, default=CaseStates.OPENED
     )
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     client = models.ForeignKey(
