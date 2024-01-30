@@ -16,6 +16,7 @@ from case_management.models import (
     LogChange,
     Language,
     SiteNotice,
+    Setting,
 )
 from case_management.enums import MaritalStatuses
 
@@ -272,4 +273,10 @@ class UserSerializer(serializers.ModelSerializer):
 class SiteNoticeSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteNotice
+        fields = '__all__'
+
+
+class SettingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Setting
         fields = '__all__'

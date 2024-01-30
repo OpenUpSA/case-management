@@ -19,7 +19,9 @@ import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
 import { useStyles } from "../utils";
 
 const Page = () => {
-  RedirectIfLoggedIn();
+  if (window.location.pathname !== "/login") {
+    RedirectIfLoggedIn();
+  }
   const classes = useStyles();
   const history = useHistory();
   const [loginError, setLoginError] = React.useState<boolean>();

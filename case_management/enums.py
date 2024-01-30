@@ -30,7 +30,7 @@ class OfficialIdentifiers(models.TextChoices):
 
 class CaseStates(models.TextChoices):
     OPENED = 'Opened', 'Opened'
-    IN_PROGRESS = 'InProgress', 'In Progress'
+    IN_PROGRESS = 'In Progress', 'In Progress'
     HANGING = 'Hanging', 'Hanging'
     PENDING = 'Pending', 'Pending'
     REFERRED = 'Referred', 'Referred'

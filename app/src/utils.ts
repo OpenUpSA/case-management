@@ -11,7 +11,7 @@ export function toSentence(items: string[]): string {
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     "@global": {
-      "body": {
+      body: {
         overflowY: "scroll",
       },
       ".MuiDialog-root": {
@@ -69,6 +69,39 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     drawer: {
       flexShrink: 0,
+    },
+    navbarUserContext: {},
+    navbarUserName: {
+      letterSpacing: "-.03em",
+      fontWeight: 700,
+      fontSize: "14px",
+      padding: 0,
+      margin: 0,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      maxWidth: "20em",
+      [theme.breakpoints.down("xs")]: {
+        maxWidth: "10em",
+      },
+    },
+    navbarInstanceAndOffice: {
+      color: "rgba(0, 0, 0, .5)",
+      letterSpacing: "-0.03em",
+      fontSize: "14px",
+      padding: 0,
+      margin: 0,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      maxWidth: "20em",
+      [theme.breakpoints.down("xs")]: {
+        maxWidth: "10em",
+      },
+    },
+    navbarOfficeName: {},
+    navbarInstanceName: {
+      paddingLeft: "0.3em",
     },
     drawerPaper: {
       paddingLeft: "2em",
@@ -294,7 +327,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     logoCustom: {
       height: "35px",
-      marginLeft: "10px",
+      width: "35px",
+      marginRight: "5px",
+      borderRadius: "100%",
     },
     cursorPointer: {
       cursor: "pointer",
@@ -680,6 +715,18 @@ export const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       right: "28px",
       top: "28px",
+      "&:hover": {
+        backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
+      },
+    },
+    closeButtonNoPos: {
+      borderRadius: "50%",
+      backgroundColor: "#f2f2f2",
+      marginLeft: 10,
+      width: "38px",
+      height: "38px",
+      marginTop: "28px",
+      marginRight: "28px",
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.2)!important" as any,
       },

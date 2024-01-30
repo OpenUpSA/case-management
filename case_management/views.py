@@ -2,7 +2,11 @@ import re
 from datetime import date, timedelta
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import (
+    api_view,
+    permission_classes,
+    authentication_classes,
+)
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
@@ -40,6 +44,7 @@ from case_management.serializers import (
     UserSerializer,
     LogSerializer,
     SiteNoticeSerializer,
+    SettingSerializer,
 )
 from case_management.models import (
     CaseOffice,
@@ -56,6 +61,7 @@ from case_management.models import (
     Log,
     Language,
     SiteNotice,
+    Setting,
 )
 from case_management import queries
 
@@ -274,7 +280,9 @@ def _get_summary_months_range(request):
             months['end'] = date.today()
         else:
             months['end'] = (months['start'] + timedelta(days=30 * 11.5)).replace(day=1)
+            months['end'] = (months['start'] + timedelta(days=30 * 11.5)).replace(day=1)
     if months['start'] is None:
+        months['start'] = (months['end'] - timedelta(days=30 * 10.5)).replace(day=1)
         months['start'] = (months['end'] - timedelta(days=30 * 10.5)).replace(day=1)
     start_month = months['start'].strftime("%Y-%m-%d")
     end_month = months['end'].strftime("%Y-%m-%d")
@@ -283,6 +291,7 @@ def _get_summary_months_range(request):
 
 def _get_summary_date_range(request):
     dates = {'start': None, 'end': None}
+    date_input_pattern = re.compile('^([0-9]{4})-(0[1-9]|1[0-2])-([0-2][1-9]|3[0-1])$')
     date_input_pattern = re.compile('^([0-9]{4})-(0[1-9]|1[0-2])-([0-2][1-9]|3[0-1])$')
     for d in list(dates):
         query_param = f'{d}Date'
@@ -293,6 +302,7 @@ def _get_summary_date_range(request):
                 year_input = int(match.group(1))
                 month_input = int(match.group(2))
                 day_input = int(match.group(3))
+                dates[d] = date(year=year_input, month=month_input, day=day_input)
                 dates[d] = date(year=year_input, month=month_input, day=day_input)
             else:
                 return HttpResponseBadRequest(
@@ -325,6 +335,22 @@ class SiteNoticeViewSet(ListRetrieveViewSet):
         return queryset
 
 
+@authentication_classes([])
+@permission_classes([])
+class SettingViewSet(ListRetrieveViewSet):
+    serializer_class = SettingSerializer
+    queryset = Setting.objects.all()
+
+    filterset_fields = ['name']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        name = self.request.query_params.get('name')
+        if name is not None:
+            queryset = queryset.filter(name=name)
+        return queryset
+
+
 @api_view(['GET'])
 @permission_classes([InAdminGroup | InReportingGroup | InAdviceOfficeAdminGroup])
 def range_summary(request):
@@ -332,10 +358,12 @@ def range_summary(request):
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
         cursor.execute(queries.range_summary(start_date, end_date, case_office))
+        cursor.execute(queries.range_summary(start_date, end_date, case_office))
         row = cursor.fetchone()
     response = {
         'startDate': start_date,
         'endDate': end_date,
+        'dataPerCaseOffice': row[0],
         'dataPerCaseOffice': row[0],
     }
     return Response(response)
@@ -348,10 +376,12 @@ def daily_summary(request):
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
         cursor.execute(queries.daily_summary(start_month, end_month, case_office))
+        cursor.execute(queries.daily_summary(start_month, end_month, case_office))
         row = cursor.fetchone()
     response = {
         'startMonth': start_month,
         'endMonth': end_month,
+        'dataPerCaseOffice': row[0],
         'dataPerCaseOffice': row[0],
     }
     return Response(response)
@@ -364,10 +394,12 @@ def monthly_summary(request):
     case_office = request.query_params.get('caseOffice')
     with connection.cursor() as cursor:
         cursor.execute(queries.monthly_summary(start_month, end_month, case_office))
+        cursor.execute(queries.monthly_summary(start_month, end_month, case_office))
         row = cursor.fetchone()
     response = {
         'startMonth': start_month,
         'endMonth': end_month,
+        'dataPerCaseOffice': row[0],
         'dataPerCaseOffice': row[0],
     }
     return Response(response)

@@ -3,12 +3,15 @@ import i18n from "../i18n";
 import Typography from "@material-ui/core/Typography";
 import { UserInfo } from "../auth";
 import { useHistory } from "react-router-dom";
+import React from "react";
 
 const Page = () => {
   const history = useHistory();
   const userInfo = UserInfo.getInstance();
   userInfo.clear();
-  history.push("/");
+  React.useEffect(() => {
+    history.push("/");
+  }, []);
 
   return (
     <LayoutSimple>

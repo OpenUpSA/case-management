@@ -25,11 +25,17 @@ import CloseIcon from "@material-ui/icons/Close";
 import i18n from "../i18n";
 import { UserInfo } from "../auth";
 import { useStyles } from "../utils";
-import { ICaseOffice } from "../types";
-import { getCaseOffices, getCaseTypes, getLanguages } from "../api";
+import { ICaseOffice, IInstance } from "../types";
+import {
+  getCaseOffices,
+  getCaseTypes,
+  getLanguages,
+  getInstanceSettings,
+} from "../api";
 import { CaseOfficesContext } from "../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../contexts/caseTypesContext";
 import { LanguagesContext } from "../contexts/languagesContext";
+import { InstanceSettingsContext } from "../contexts/instanceSettingsContext";
 
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -52,12 +58,22 @@ const Component = () => {
     if (token) {
       fetchData();
     }
+
+    async function fetchDataNonUser() {
+      const dataInstanceSettings = await getInstanceSettings();
+      setContextInstanceSettings(dataInstanceSettings);
+    }
+    fetchDataNonUser();
     // eslint-disable-next-line
   }, []);
 
   const history = useHistory();
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [contextInstanceSettings, setContextInstanceSettings] = useContext(
+    InstanceSettingsContext
+  );
+  // eslint-disable-next-line
   const [contextOffices, setContextOffices] = useContext(CaseOfficesContext);
   // eslint-disable-next-line
   const [contextCaseTypes, setContextCaseTypes] = useContext(CaseTypesContext);
@@ -86,6 +102,8 @@ const Component = () => {
   };
 
   const logout = () => {
+    const userInfo = UserInfo.getInstance();
+    userInfo.clear();
     closeDrawer();
     history.push("/logout");
   };
@@ -95,13 +113,20 @@ const Component = () => {
     closeDrawer();
   };
 
-  if (userId === -1) {
+  if (
+    userId === -1 &&
+    window.location.pathname !== "/login" &&
+    window.location.pathname !== "/logout" &&
+    window.location.pathname !== "/"
+  ) {
     logout();
   }
 
   const goHome = () => {
-    closeDrawer();
-    history.push("/");
+    if (userId !== -1) {
+      closeDrawer();
+      history.push("/clients");
+    }
   };
 
   return (
@@ -121,23 +146,71 @@ const Component = () => {
                 alt={i18n.t("CaseFile Logo")}
                 onClick={goHome}
               />
-              {process.env.REACT_APP_LOGO_URL && (
-                <img
-                  className={classes.logoCustom}
-                  src={process.env.REACT_APP_LOGO_URL}
-                  onClick={goHome}
-                  alt=""
-                />
+            </Box>
+            <Box
+              className={classes.navbarUserContext}
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                p: 1,
+                m: 1,
+                pl: 0,
+                pr: 0,
+                ml: 0,
+                mr: 0,
+                bgcolor: "background.paper",
+                borderRadius: 0,
+              }}
+            >
+              {contextInstanceSettings &&
+                typeof contextInstanceSettings.name !== "undefined" && (
+                  <Box>
+                    <img
+                      className={classes.logoCustom}
+                      src={contextInstanceSettings.logo_url}
+                      onClick={goHome}
+                      alt={contextInstanceSettings.name}
+                    />
+                  </Box>
+                )}
+              {(name || email) && (
+                <Box>
+                  <p
+                    className={classes.navbarUserName}
+                    title={name || email || ""}
+                  >
+                    {name || email}
+                  </p>
+                  <p className={classes.navbarInstanceAndOffice}>
+                    <span
+                      className={classes.navbarOfficeName}
+                      title={filteredCaseOffice}
+                    >
+                      {filteredCaseOffice}
+                    </span>
+                    {contextInstanceSettings &&
+                      typeof contextInstanceSettings.name !== "undefined" && (
+                        <span
+                          className={classes.navbarInstanceName}
+                          title={contextInstanceSettings.name}
+                        >
+                          ({contextInstanceSettings.name})
+                        </span>
+                      )}
+                  </p>
+                </Box>
               )}
             </Box>
-            <IconButton
-              edge="end"
-              color="inherit"
-              aria-label="menu"
-              onClick={toggleDrawer}
-            >
-              {drawerOpen ? <CloseIcon /> : <MenuIcon />}
-            </IconButton>
+            {(name || email) && (
+              <IconButton
+                edge="end"
+                color="inherit"
+                aria-label="menu"
+                onClick={toggleDrawer}
+              >
+                {drawerOpen ? <CloseIcon /> : <MenuIcon />}
+              </IconButton>
+            )}
           </Toolbar>
         </Container>
       </AppBar>

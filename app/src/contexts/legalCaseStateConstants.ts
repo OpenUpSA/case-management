@@ -1,6 +1,6 @@
 export const LegalCaseStates = [
   "Opened",
-  "InProgress",
+  "In Progress",
   "Hanging",
   "Pending",
   "Referred",

@@ -14,8 +14,10 @@ from case_management.models import (
     Note,
     User,
     Log,
+    LogChange,
     Language,
     SiteNotice,
+    Setting,
 )
 from case_management.forms import UserCreationForm, UserChangeForm
 
@@ -67,8 +69,7 @@ class UserAdmin(UserAdmin, DefaultAdmin):
                 )
             },
         ),
-        ('Permissions', {
-         'fields': ('is_staff', 'is_active', 'permission_group')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active', 'permission_group')}),
     )
     add_fieldsets = (
         (
@@ -107,8 +108,7 @@ class CaseTypeAdmin(DefaultAdmin):
 
 class ClientAdmin(DefaultAdmin):
     model = Client
-    list_display = ['first_names', 'last_name',
-                    'province', 'officers', 'created_at']
+    list_display = ['first_names', 'last_name', 'province', 'officers', 'created_at']
     list_filter = ['province', 'created_at']
 
     def officers(self, obj):
@@ -174,12 +174,20 @@ class LogAdmin(DefaultAdmin):
     list_display = ['action', 'target_type']
 
 
+class LogChangeAdmin(DefaultAdmin):
+    model = LogChange
+
+
 class SiteNoticeAdmin(DefaultAdmin):
     model = SiteNotice
     list_display = ['title', 'active', 'created_at', 'updated_at']
     ordering = ['-updated_at']
+
     def get_changeform_initial_data(self, request):
-        return {'title': 'New feature added!', 'message': '<p>Site notice message here...</p><p><a href="https://docs.casefile.org.za/notifications-and-updates/new-features" target="_blank">Click here to see all recent updates</a></p>'}
+        return {
+            'title': 'New feature added!',
+            'message': '<p>Site notice message here...</p><p><a href="https://docs.casefile.org.za/notifications-and-updates/new-features" target="_blank">Click here to see all recent updates</a></p>',
+        }
 
 
 class LanguageAdmin(DefaultAdmin):
@@ -187,6 +195,11 @@ class LanguageAdmin(DefaultAdmin):
     list_display = ['label']
 
 
+class SettingAdmin(admin.ModelAdmin):
+    list_display = ['name', 'value']
+
+
+admin.site.register(Setting, SettingAdmin)
 admin.site.register(CaseType, CaseTypeAdmin)
 admin.site.register(CaseOffice, CaseOfficeAdmin)
 admin.site.register(Client, ClientAdmin)
@@ -198,6 +211,7 @@ admin.site.register(ClientFile, ClientFileAdmin)
 admin.site.register(Meeting, MeetingAdmin)
 admin.site.register(Note, NoteAdmin)
 admin.site.register(Log, LogAdmin)
+admin.site.register(LogChange, LogChangeAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Language, LanguageAdmin)
 admin.site.register(SiteNotice, SiteNoticeAdmin)

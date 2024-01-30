@@ -13,6 +13,8 @@ import {
   ILegalCaseFile,
   ILanguage,
   ISiteNotice,
+  ISetting,
+  IInstance,
   IClientFile,
 } from "./types";
 import { UserInfo } from "./auth";
@@ -258,6 +260,19 @@ export const getLogs = async (id?: number, parent_type?: string) => {
 export const getSiteNotices = async (active?: boolean) => {
   const activeParam = active ? `active=${active}` : "";
   return await httpGet<ISiteNotice[]>(`/site-notices/?${activeParam}`);
+};
+
+export const getSettings = async (name?: string) => {
+  const nameParam = name ? `name=${name}` : "";
+  return await httpGet<ISetting[]>(`/settings/?${nameParam}`);
+};
+
+export const getInstanceSettings = async () => {
+  const data = await httpGet<ISetting[]>(`/settings/?name=instance`);
+  if (data.length === 0) {
+    return null;
+  }
+  return data[0]["value"];
 };
 
 export const createLog = async (log: ILog) => {
