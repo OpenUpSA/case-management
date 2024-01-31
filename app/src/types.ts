@@ -127,6 +127,7 @@ export interface IUser {
 
 export interface ILegalCaseFile {
   id?: number;
+  combinedId?: string;
   created_at?: Date;
   updated_at?: Date;
   legal_case: number;
@@ -138,6 +139,7 @@ export interface ILegalCaseFile {
 
 export interface IClientFile {
   id?: number;
+  combinedId?: string;
   created_at?: Date;
   updated_at?: Date;
   client: number;
