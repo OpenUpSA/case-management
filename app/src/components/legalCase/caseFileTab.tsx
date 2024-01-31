@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useStyles, VisuallyHiddenInput } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
-import CheckIcon from "@mui/icons-material/Check";
 import UploadIcon from "@mui/icons-material/Upload";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -331,9 +330,6 @@ export default function CaseFileTab(props: Props) {
                       "dd/MM/yyyy"
                     )}
                   </p>
-                </Grid>
-                <Grid item className={classes.caseFilesItem}>
-                  <CheckIcon style={{ color: "#3dd997", marginLeft: 15 }} />
                 </Grid>
                 <Grid
                   item
