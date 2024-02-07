@@ -94,6 +94,7 @@ export default function ClientFileTab(props: Props) {
   });
 
   const refreshUpdates = async () => {
+    setIsLoading(true);
     const clientId = props.client.id;
 
     const dataClientFiles = await getClientFiles(clientId);
@@ -114,6 +115,7 @@ export default function ClientFileTab(props: Props) {
         ("client" in file ? "clientFile-" : "legalCaseFile-") + file.id;
     }
     setAllFiles(dataAllFiles);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -693,18 +695,24 @@ export default function ClientFileTab(props: Props) {
             ))}
         </div>
       ) : (
-        <Grid container className={classes.caseFiles}>
-          <Grid item className={classes.caseFilesItem} style={{ flexGrow: 1 }}>
-            <WorkIcon style={{ margin: "0px 15px 0px 10px" }} />
-            <Typography>{i18n.t("Upload a file above")}</Typography>
+        !isLoading && (
+          <Grid container className={classes.caseFiles}>
+            <Grid
+              item
+              className={classes.caseFilesItem}
+              style={{ flexGrow: 1 }}
+            >
+              <WorkIcon style={{ margin: "0px 15px 0px 10px" }} />
+              <Typography>{i18n.t("Upload a file above")}</Typography>
+            </Grid>
+            <Grid item className={classes.caseFilesItem}>
+              <LinkIcon style={{ visibility: "hidden", color: "#3dd997" }} />
+              <IconButton>
+                <MoreVertIcon sx={{ color: "#000000" }} />
+              </IconButton>
+            </Grid>
           </Grid>
-          <Grid item className={classes.caseFilesItem}>
-            <LinkIcon style={{ visibility: "hidden", color: "#3dd997" }} />
-            <IconButton>
-              <MoreVertIcon sx={{ color: "#000000" }} />
-            </IconButton>
-          </Grid>
-        </Grid>
+        )
       )}
       {isLoading && (
         <Grid container justifyContent="center">
