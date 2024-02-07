@@ -1,4 +1,10 @@
-import { Switch, Route, useHistory, Redirect, BrowserRouter } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  useHistory,
+  Redirect,
+  BrowserRouter,
+} from "react-router-dom";
 import React from "react";
 import LoginPage from "./pages/login";
 import LogoutPage from "./pages/logout";
@@ -29,7 +35,8 @@ import SiteNoticeDialog from "./components/siteNotice";
 import LogsPage from "./pages/logs/list";
 
 import ReactGA from "react-ga4";
-import { hotjar } from "react-hotjar";
+import Hotjar from "@hotjar/browser";
+
 import { UserInfo } from "./auth";
 
 import { isLoggedIn } from "./auth";
@@ -38,11 +45,8 @@ if (process.env.REACT_APP_GA_ID) {
   ReactGA.initialize(process.env.REACT_APP_GA_ID!);
 }
 
-if (process.env.REACT_APP_HOTJAR_ID && process.env.REACT_APP_HOTJAR_SV) {
-  hotjar.initialize(
-    Number(process.env.REACT_APP_HOTJAR_ID),
-    Number(process.env.REACT_APP_HOTJAR_SV)
-  );
+if (process.env.REACT_APP_HOTJAR_ID) {
+  Hotjar.init(Number(process.env.REACT_APP_HOTJAR_ID), 6);
 }
 
 function Routes() {
