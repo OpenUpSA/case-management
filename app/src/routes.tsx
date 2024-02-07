@@ -33,7 +33,6 @@ import { hotjar } from "react-hotjar";
 import { UserInfo } from "./auth";
 
 import { isLoggedIn } from "./auth";
-import { NavigateBeforeOutlined } from "@material-ui/icons";
 
 if (process.env.REACT_APP_GA_ID) {
   ReactGA.initialize(process.env.REACT_APP_GA_ID!);
