@@ -8,6 +8,7 @@ from case_management.models import (
     LegalCase,
     CaseUpdate,
     File,
+    ClientFile,
     Meeting,
     Note,
     User,
@@ -129,6 +130,23 @@ class FileSerializer(ChildModelSerializer):
         fields = [
             'id',
             'legal_case',
+            'upload',
+            'upload_file_name',
+            'upload_file_extension',
+            'description',
+            'created_at',
+            'updated_at',
+            'created_by',
+            'updated_by',
+        ]
+
+
+class ClientFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClientFile
+        fields = [
+            'id',
+            'client',
             'upload',
             'upload_file_name',
             'upload_file_extension',

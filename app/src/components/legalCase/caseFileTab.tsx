@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useStyles, VisuallyHiddenInput } from "../../utils";
 import SearchIcon from "@material-ui/icons/Search";
-import CheckIcon from "@mui/icons-material/Check";
 import UploadIcon from "@mui/icons-material/Upload";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -188,7 +187,12 @@ export default function CaseFileTab(props: Props) {
         alignItems="center"
         className={classes.containerMarginBottom}
       >
-        <Grid item xs={12} md={12}>
+        <Grid item style={{ flexGrow: 1 }}>
+          <strong>
+            {props.legalCaseFiles?.length} {i18n.t("Case files")}
+          </strong>
+        </Grid>
+        <Grid item>
           <Button
             component="label"
             startIcon={<UploadIcon />}
@@ -251,34 +255,6 @@ export default function CaseFileTab(props: Props) {
             setCaseUpdates={props.setCaseUpdates}
             setCaseHistory={props.setCaseHistory}
           />
-        </Grid>
-        <Grid item style={{ flexGrow: 1 }}>
-          <strong>
-            {props.legalCaseFiles?.length} {i18n.t("Case Files")}
-          </strong>
-        </Grid>
-        <Grid item>
-          <InputLabel
-            className={classes.inputLabel}
-            htmlFor="sort_table"
-            shrink={true}
-            style={{ marginRight: "-20px" }}
-          >
-            {i18n.t("Sort")}:
-          </InputLabel>
-        </Grid>
-        <Grid item>
-          <Select
-            id="sort_table"
-            className={classes.select}
-            disableUnderline
-            input={<Input />}
-            value="alphabetical"
-          >
-            <MenuItem key="alphabetical" value="alphabetical">
-              {i18n.t("Alphabetical")}
-            </MenuItem>
-          </Select>
         </Grid>
       </Grid>
       <Grid
@@ -354,9 +330,6 @@ export default function CaseFileTab(props: Props) {
                       "dd/MM/yyyy"
                     )}
                   </p>
-                </Grid>
-                <Grid item className={classes.caseFilesItem}>
-                  <CheckIcon style={{ color: "#3dd997", marginLeft: 15 }} />
                 </Grid>
                 <Grid
                   item

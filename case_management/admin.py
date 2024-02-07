@@ -9,6 +9,7 @@ from case_management.models import (
     ClientDependent,
     CaseUpdate,
     File,
+    ClientFile,
     Meeting,
     Note,
     User,
@@ -152,6 +153,10 @@ class FileAdmin(DefaultAdmin):
     model = File
     list_display = ['legal_case', 'upload']
 
+class ClientFileAdmin(DefaultAdmin):
+    model = ClientFile
+    list_display = ['client', 'upload']
+
 
 class MeetingAdmin(DefaultAdmin):
     model = Meeting
@@ -202,6 +207,7 @@ admin.site.register(ClientDependent, ClientDependentAdmin)
 admin.site.register(LegalCase, LegalCaseAdmin)
 admin.site.register(CaseUpdate, CaseUpdateAdmin)
 admin.site.register(File, FileAdmin)
+admin.site.register(ClientFile, ClientFileAdmin)
 admin.site.register(Meeting, MeetingAdmin)
 admin.site.register(Note, NoteAdmin)
 admin.site.register(Log, LogAdmin)

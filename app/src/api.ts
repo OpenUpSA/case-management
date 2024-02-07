@@ -15,6 +15,7 @@ import {
   ISiteNotice,
   ISetting,
   IInstance,
+  IClientFile,
 } from "./types";
 import { UserInfo } from "./auth";
 
@@ -34,6 +35,19 @@ async function http<T>(path: string, config: RequestInit): Promise<T> {
     console.log(e);
   });
 }
+
+type renameOptionsType = {
+  method: string | any;
+  body: any;
+  headers: any;
+};
+
+type optionsType = {
+  method: string | any;
+  body: any;
+  onUploadProgress: any;
+  headers: any;
+};
 
 export async function httpGet<T>(
   path: string,
@@ -275,13 +289,6 @@ export const getLegalCaseFile = async (file_id: number) => {
   return await httpGet<ILegalCaseFile>(`/files/${file_id}/`);
 };
 
-type optionsType = {
-  method: string | any;
-  body: any;
-  onUploadProgress: any;
-  headers: any;
-};
-
 export const createLegalCaseFile = async (
   legal_case: number | undefined,
   file: any,
@@ -313,6 +320,47 @@ export const createLegalCaseFile = async (
   return response.data;
 };
 
+export const getClientFiles = async (client?: number) => {
+  return await httpGet<IClientFile[]>(
+    `/client-files/${client ? `?client=${client}` : ""}`
+  );
+};
+
+export const getClientFile = async (file_id: number) => {
+  return await httpGet<IClientFile>(`/client-files/${file_id}/`);
+};
+
+export const createClientFile = async (
+  client: number | undefined,
+  file: any,
+  description: string,
+  onUploadProgress: any
+) => {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
+  const formData = new FormData();
+  formData.append("upload", file);
+  if (client) {
+    formData.append("client", client.toString());
+  }
+  if (description) {
+    formData.append("description", description);
+  }
+
+  const options: optionsType = {
+    method: "POST",
+    body: formData,
+    onUploadProgress: onUploadProgress,
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const response = await axios.post(
+    `${API_BASE_URL}/client-files/`,
+    formData,
+    options
+  );
+  return response.data;
+};
+
 export const getCaseUpdates = async (id: number) => {
   return await httpGet<any>(`/case-updates/?legal_case=${id}`);
 };
@@ -333,12 +381,6 @@ export const deleteLegalCaseFile = async (id: number) => {
   return await httpDelete<ILegalCaseFile>(`/files/${id}/`);
 };
 
-type renameOptionsType = {
-  method: string | any;
-  body: any;
-  headers: any;
-};
-
 export const renameLegalCaseFile = async (legalCaseFile: any) => {
   const userInfo = UserInfo.getInstance();
   const token = userInfo.getAccessToken();
@@ -354,6 +396,31 @@ export const renameLegalCaseFile = async (legalCaseFile: any) => {
 
   const response = await axios.patch(
     `${API_BASE_URL}/files/${legalCaseFile.id}/`,
+    formData,
+    renameOptions
+  );
+  return response.data;
+};
+
+export const deleteClientFile = async (id: number) => {
+  return await httpDelete<IClientFile>(`/client-files/${id}/`);
+};
+
+export const renameClientFile = async (clientFile: any) => {
+  const userInfo = UserInfo.getInstance();
+  const token = userInfo.getAccessToken();
+  const formData = new FormData();
+  formData.append("client", clientFile.client);
+  formData.append("description", clientFile.description);
+
+  const renameOptions: renameOptionsType = {
+    method: "PATCH",
+    body: formData,
+    headers: { Authorization: `Bearer ${token}` },
+  };
+
+  const response = await axios.patch(
+    `${API_BASE_URL}/client-files/${clientFile.id}/`,
     formData,
     renameOptions
   );

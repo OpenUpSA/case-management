@@ -3,7 +3,10 @@
 .sass-cache
 __pycache__
 Dockerfile
-node_modules
+node_modules/
 yarn.lock
 app/
 dashboard/
+*.sql
+tmp/
+uploads/

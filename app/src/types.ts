@@ -127,9 +127,22 @@ export interface IUser {
 
 export interface ILegalCaseFile {
   id?: number;
+  combinedId?: string;
   created_at?: Date;
   updated_at?: Date;
   legal_case: number;
+  upload: string;
+  upload_file_name?: string;
+  upload_file_extension?: string;
+  description?: string;
+}
+
+export interface IClientFile {
+  id?: number;
+  combinedId?: string;
+  created_at?: Date;
+  updated_at?: Date;
+  client: number;
   upload: string;
   upload_file_name?: string;
   upload_file_extension?: string;
