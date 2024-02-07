@@ -13,7 +13,7 @@ import { CaseOfficesContext } from "../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../contexts/caseTypesContext";
 import { LanguagesContext } from "../contexts/languagesContext";
 
-import { RedirectIfLoggedIn, UserInfo } from "../auth";
+import { isLoggedIn, RedirectIfLoggedIn, UserInfo } from "../auth";
 import { authenticate, getUser } from "../api";
 import { FormControl, Grid, Input, InputLabel } from "@material-ui/core";
 import { useStyles } from "../utils";
@@ -54,6 +54,10 @@ const Page = () => {
       }, 6000);
     };
     resetState();
+
+    if (isLoggedIn()) {
+      history.push("/clients");
+    }
   }, [showSnackbar.open]);
 
   const validateLogin = async (username: string, password: string) => {
