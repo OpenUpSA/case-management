@@ -3,7 +3,6 @@ import {
   Route,
   useHistory,
   Redirect,
-  BrowserRouter,
 } from "react-router-dom";
 import React from "react";
 import LoginPage from "./pages/login";
@@ -40,6 +39,7 @@ import Hotjar from "@hotjar/browser";
 import { UserInfo } from "./auth";
 
 import { isLoggedIn } from "./auth";
+import RedirectToFile from "./pages/files/redirect";
 
 if (process.env.REACT_APP_GA_ID) {
   ReactGA.initialize(process.env.REACT_APP_GA_ID!);
@@ -110,6 +110,8 @@ function Routes() {
         <Route exact path="/users/:id/edit" component={UserEditPage} />
 
         <Route exact path="/updates" component={LogsPage} />
+
+        <Route exact path="/files/:id" component={RedirectToFile} />
 
         <Route component={NotFoundPage} />
       </Switch>

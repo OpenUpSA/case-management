@@ -115,6 +115,129 @@ export default function CaseInfoTab(props: Props) {
     resetState();
   }, [showSnackbar.open]);
 
+  const userInitials = (item: ILog) => {
+    // Create circle with text initials
+    const name = item.extra ? item.extra.user.name : "";
+    const initials = name
+      .split(" ")
+      .map((n: string) => n[0])
+      .join("");
+    return (
+      <Box
+        sx={{
+          width: 32,
+          height: 32,
+          borderRadius: "50%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginRight: "10px",
+          bgcolor: "#f5f5f5",
+          border: "1px solid #eee",
+        }}
+      >
+        {initials}
+      </Box>
+    );
+  };
+
+  const fileTypeText = (fileType: string | undefined) => {
+    switch (fileType) {
+      case "pdf":
+        return "PDF";
+      case "docx":
+        return "Word document";
+      case "xlsx":
+        return "Excel document";
+      case "pptx":
+        return "PowerPoint document";
+      case "jpg":
+        return "image";
+      case "jpeg":
+        return "image";
+      case "png":
+        return "image";
+      default:
+        return "file";
+    }
+  };
+
+  const caseHistoryUpdateText = (item: ILog) => {
+    let text = <></>;
+
+    switch (true) {
+      case item.target_type === "LegalCase" && item.action === "Create":
+        text = (
+          <>
+            UU1
+            {format(new Date(item.created_at as string), "dd/MM/yyyy (h:ma)")}
+          </>
+        );
+        break;
+
+      case item?.changes?.length > 0 && item.changes?.[0].field === "summary":
+        text = (
+          <>
+            UU2
+            {`Summary changed to "${item.changes?.[0].value}"`}
+          </>
+        );
+        break;
+
+      case item?.changes?.length > 0 && item.changes?.[0].field === "state":
+        text = (
+          <>
+            UU3
+            {`Status changed to "${item.changes?.[0].value}"`}
+          </>
+        );
+        break;
+
+      case item?.changes?.length > 0 &&
+        item.changes?.[0].field === "case_types":
+        text = (
+          <>
+            UU4
+            {`Case type changed to "${contextCaseTypes
+              ?.filter(
+                (caseType: ICaseType) =>
+                  item.changes?.[0].value.indexOf(caseType.id) > -1
+              )
+              .map((caseType: ICaseType) => caseType.title)}"`}
+          </>
+        );
+        break;
+
+      case item?.changes?.length > 0 && item.action === "Update":
+        text = (
+          <>
+            UU5
+            {`${item.note}'s ${item.changes?.[0].field} changed to "${item.changes?.[0].value}"`}
+          </>
+        );
+        break;
+
+      case item.action === "Create" && item.target_type === "File":
+        text = (
+          <>
+            New {fileTypeText(item.note.split(".").pop())} uploaded{" "}
+            <a href={"/files/" + item.target_id} target="_blank">{item.note}</a>.
+          </>
+        );
+        break;
+
+      default:
+        text = (
+          <>
+            UU6
+            {item.note} -{item.action} -{item.target_type}
+          </>
+        );
+        break;
+    }
+    return <Typography variant="caption">{text}</Typography>;
+  };
+
   const discardChange = () => {
     setCaseSummary(props.legalCase?.summary);
     setShowButton(false);
@@ -316,50 +439,7 @@ export default function CaseInfoTab(props: Props) {
                           className={classes.chip}
                         />
                         <ListItemText
-                          primary={
-                            item.target_type === "LegalCase" &&
-                            item.action === "Create" ? (
-                              <Typography variant="caption">
-                                {format(
-                                  new Date(item.created_at as string),
-                                  "dd/MM/yyyy (h:ma)"
-                                )}
-                              </Typography>
-                            ) : item?.changes?.length > 0 &&
-                              item.changes?.[0].field === "summary" ? (
-                              <Typography variant="caption">
-                                {`Summary changed to "${item.changes?.[0].value}"`}
-                              </Typography>
-                            ) : item?.changes?.length > 0 &&
-                              item.changes?.[0].field === "state" ? (
-                              <Typography variant="caption">
-                                {`Status changed to "${item.changes?.[0].value}"`}
-                              </Typography>
-                            ) : item?.changes?.length > 0 &&
-                              item.changes?.[0].field === "case_types" ? (
-                              <Typography variant="caption">
-                                {`Case type changed to "${contextCaseTypes
-                                  ?.filter(
-                                    (caseType: ICaseType) =>
-                                      item.changes?.[0].value.indexOf(
-                                        caseType.id
-                                      ) > -1
-                                  )
-                                  .map(
-                                    (caseType: ICaseType) => caseType.title
-                                  )}"`}
-                              </Typography>
-                            ) : item?.changes?.length > 0 &&
-                              item.action === "Update" ? (
-                              <Typography variant="caption">
-                                {`${item.note}'s ${item.changes?.[0].field} changed to "${item.changes?.[0].value}"`}
-                              </Typography>
-                            ) : (
-                              <Typography variant="caption">
-                                {item.note}
-                              </Typography>
-                            )
-                          }
+                          primary={caseHistoryUpdateText(item)}
                           className={`${classes.caseHistoryText} ${classes.noOverflow}`}
                         />
                         <Box className={classes.caseHistoryBox}>
@@ -368,12 +448,7 @@ export default function CaseInfoTab(props: Props) {
                             arrow
                             placement="top"
                           >
-                            <img
-                              className={classes.updateAvatar}
-                              src={userDefaultAvatar}
-                              alt={"user"}
-                              loading={"lazy"}
-                            />
+                            {userInitials(item)}
                           </BlackTooltip>
 
                           <Typography
