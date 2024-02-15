@@ -450,7 +450,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "5px!important" as any,
       fontSize: "12px!important" as any,
       height: "20px!important" as any,
-      minWidth: "100px!important" as any,
+      minWidth: "69px!important" as any,
     },
     chipGrey: {
       backgroundColor: "#eee!important" as any,

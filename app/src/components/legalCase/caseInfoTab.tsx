@@ -40,16 +40,17 @@ import {
 } from "../../types";
 
 const LogLabels = new Map([
-  ["LegalCase Create", "Case created"],
-  ["LegalCase Update", "Case update"],
-  ["Meeting Create", "New meeting"],
-  ["Meeting Update", "Meeting updated"],
-  ["File Create", "File uploaded"],
-  ["File Update", "File updated"],
-  ["Note Create", "New note"],
-  ["Note Update", "Note updated"],
-  ["CaseUpdate Create", "New update"],
-  ["CaseUpdate Delete", "Update deleted"],
+  ["LegalCase Create", "Admin"],
+  ["LegalCase Update", "Admin"],
+  ["Meeting Create", "Updates"],
+  ["Meeting Update", "Updates"],
+  ["File Create", "Files"],
+  ["File Update", "Files"],
+  ["File Delete", "Files"],
+  ["Note Create", "Updates"],
+  ["Note Update", "Updates"],
+  ["CaseUpdate Create", "Admin"],
+  ["CaseUpdate Delete", "Admin"],
 ]);
 
 const logLabel = (
