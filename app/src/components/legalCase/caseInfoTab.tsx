@@ -242,6 +242,10 @@ export default function CaseInfoTab(props: Props) {
         );
         break;
 
+      case item.action === "Delete" && item.target_type === "File":
+        text = <>File deleted ({item.note})</>;
+        break;
+
       default:
         text = (
           <>
