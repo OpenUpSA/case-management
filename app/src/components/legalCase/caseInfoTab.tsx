@@ -246,6 +246,18 @@ export default function CaseInfoTab(props: Props) {
         text = <>File deleted ({item.note})</>;
         break;
 
+      case item.action === "Create" && item.target_type === "Meeting":
+        // New in-person meeting added (UD01038). “Client has documents required.
+        let zeroPaddedTargetId = item.target_id?.toString().padStart(5, "0");
+        console.log({ item });
+        text = (
+          <>
+            New {item.changes?.[6].value} meeting added (UD{zeroPaddedTargetId}
+            ). "{item.changes?.[4].value}".
+          </>
+        );
+        break;
+
       default:
         text = (
           <>
