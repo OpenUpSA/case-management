@@ -208,10 +208,23 @@ export default function CaseInfoTab(props: Props) {
         );
         break;
 
+      case item?.changes?.length > 0 &&
+        item.action === "Update" &&
+        item.target_type === "File":
+        text = (
+          <>
+            Filename updated (
+            <a href={"/files/" + item.target_id} target="_blank">
+              {item.note}
+            </a>
+            ).
+          </>
+        );
+        break;
+
       case item?.changes?.length > 0 && item.action === "Update":
         text = (
           <>
-            UU5
             {`${item.note}'s ${item.changes?.[0].field} changed to "${item.changes?.[0].value}"`}
           </>
         );
@@ -221,7 +234,10 @@ export default function CaseInfoTab(props: Props) {
         text = (
           <>
             New {fileTypeText(item.note.split(".").pop())} uploaded{" "}
-            <a href={"/files/" + item.target_id} target="_blank">{item.note}</a>.
+            <a href={"/files/" + item.target_id} target="_blank">
+              {item.note}
+            </a>
+            .
           </>
         );
         break;
