@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import { getClientFile } from "../../api";
+import { getLegalCaseFile } from "../../api";
 import { RedirectIfNotLoggedIn } from "../../auth";
 
 import CircularProgress from "@mui/material/CircularProgress";
@@ -14,7 +14,7 @@ const RedirectToFile = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const dataFile = await getClientFile(Number(params.id));
+      const dataFile = await getLegalCaseFile(Number(params.id));
       window.location.assign(dataFile.upload);
     }
     fetchData();
