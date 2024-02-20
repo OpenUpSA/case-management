@@ -1,22 +1,19 @@
+
 import React, { useEffect } from "react";
 import SearchIcon from "@material-ui/icons/Search";
 import { useHistory } from "react-router-dom";
 
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 import {
-  Divider,
   Grid,
   IconButton,
   Input,
   InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  Box,
 } from "@material-ui/core";
 import List from "@mui/material/List";
-import { logLabel, useStyles } from "../../utils";
+import { useStyles } from "../../utils";
 import i18n from "../../i18n";
-import { format } from "date-fns";
 import { ILog, IUser } from "../../types";
 import { caseHistoryUpdateText } from "../../components";
 
@@ -64,38 +61,11 @@ const Component = (props: Props) => {
   return (
     <div>
       <Grid container direction="row" spacing={2} alignItems="center">
-        <Grid item style={{ flexGrow: 1 }}>
-          <strong>
-            {filteredLogs ? filteredLogs.length : "0"} {i18n.t("Logs")}
-          </strong>
-        </Grid>
-        <Grid item>
-          <InputLabel
-            className={classes.inputLabel}
-            htmlFor="sort_table"
-            shrink={true}
-          >
-            {i18n.t("Sort")}:
-          </InputLabel>
-        </Grid>
-        <Grid item>
-          <Select
-            id="sort_table"
-            className={classes.select}
-            disableUnderline
-            input={<Input />}
-            value="alphabetical"
-          >
-            <MenuItem key="alphabetical" value="alphabetical">
-              {i18n.t("Alphabetical")}
-            </MenuItem>
-          </Select>
-        </Grid>
         <Grid item md={12}>
           <Input
             id="table_search"
             fullWidth
-            placeholder={i18n.t("Search updates...")}
+            placeholder={i18n.t("Filter history...")}
             startAdornment={
               <InputAdornment position="start">
                 <IconButton>
@@ -113,6 +83,7 @@ const Component = (props: Props) => {
         </Grid>
       </Grid>
       <List sx={{ width: "100%", marginBottom: "26px" }}>
+        <Divider />
         {filteredLogs
           ? filteredLogs
               ?.slice(0)
@@ -120,6 +91,14 @@ const Component = (props: Props) => {
               .map((item) => caseHistoryUpdateText(item, classes, history))
           : ""}
       </List>
+      <Grid container justifyContent="space-between">
+        <Grid item>
+          <Typography variant="caption">
+            Showing {filteredLogs?.length} of {props.logs?.length}{" "}
+            updates
+          </Typography>
+        </Grid>
+      </Grid>
     </div>
   );
 };

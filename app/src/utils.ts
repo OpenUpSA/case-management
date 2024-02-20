@@ -380,12 +380,14 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    aWithCursorPointer: {
+      cursor: "pointer",
+    },
     caseHistoryList: {
       height: "52px",
       maxHeight: "52px!important" as any,
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.035)!important" as any,
-        cursor: "pointer",
       },
     },
     caseHistoryAvatar: {

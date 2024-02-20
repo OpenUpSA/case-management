@@ -52,9 +52,13 @@ export const caseHistoryUpdateText = (
       text = (
         <>
           Filename updated (
-          <a href={"/files/" + item.target_id} target="_blank">
+          <Link
+            className={classes.aWithCursorPointer}
+            href={"/files/" + item.target_id}
+            target="_blank"
+          >
             {item.note}
-          </a>
+          </Link>
           ).
         </>
       );
@@ -63,17 +67,21 @@ export const caseHistoryUpdateText = (
     case item.action === "Create" && item.target_type === "File":
       text = (
         <>
-          New {fileTypeText(item.note.split(".").pop())} uploaded{" "}
-          <a href={"/files/" + item.target_id} target="_blank">
+          New {fileTypeText(item.note.split(".").pop())} uploaded (
+          <Link
+            className={classes.aWithCursorPointer}
+            href={"/files/" + item.target_id}
+            target="_blank"
+          >
             {item.note}
-          </a>
-          .
+          </Link>
+          ).
         </>
       );
       break;
 
     case item.action === "Delete" && item.target_type === "File":
-      text = <>File deleted ({item.note})</>;
+      text = <>File deleted ({item.note}).</>;
       break;
 
     case item.action === "Create" && item.target_type === "Meeting":
@@ -82,6 +90,7 @@ export const caseHistoryUpdateText = (
           New {item.changes?.find((c) => c.field === "meeting_type")?.value}{" "}
           meeting added (
           <Link
+            className={classes.aWithCursorPointer}
             onClick={() => {
               history.push(`/meetings/${item.target_id}/edit`);
             }}
@@ -98,6 +107,7 @@ export const caseHistoryUpdateText = (
         <>
           New note added (
           <Link
+            className={classes.aWithCursorPointer}
             onClick={() => {
               history.push(`/notes/${item.target_id}/edit`);
             }}
@@ -114,6 +124,7 @@ export const caseHistoryUpdateText = (
         <>
           Meeting updated (
           <Link
+            className={classes.aWithCursorPointer}
             onClick={() => {
               history.push(`/meetings/${item.target_id}/edit`);
             }}
@@ -130,6 +141,7 @@ export const caseHistoryUpdateText = (
         <>
           Note updated (
           <Link
+            className={classes.aWithCursorPointer}
             onClick={() => {
               history.push(`/notes/${item.target_id}/edit`);
             }}
@@ -145,9 +157,12 @@ export const caseHistoryUpdateText = (
       text = (
         <>
           New client added:{" "}
-          <a href={`/clients/${item.target_id}`}>
+          <Link
+            className={classes.aWithCursorPointer}
+            href={`/clients/${item.target_id}`}
+          >
             {item.changes?.find((c) => c.field === "preferred_name")?.value}
-          </a>
+          </Link>
           .
         </>
       );
@@ -176,9 +191,12 @@ export const caseHistoryUpdateText = (
         <>
           Case created for{" "}
           {item.changes?.find((c) => c.field === "client")?.value} (
-          <a href={`/cases/${item.parent_id}`}>
+          <Link
+            className={classes.aWithCursorPointer}
+            href={`/cases/${item.parent_id}`}
+          >
             {item.changes?.find((c) => c.field === "case_number")?.value}
-          </a>
+          </Link>
           ).
         </>
       );
@@ -188,7 +206,12 @@ export const caseHistoryUpdateText = (
       text = (
         <>
           Client {item.changes?.[0].field.replaceAll("_", " ")} changed (
-          <a href={`/clients/${item.target_id}`}>{item.note}</a>
+          <Link
+            className={classes.aWithCursorPointer}
+            href={`/clients/${item.target_id}`}
+          >
+            {item.note}
+          </Link>
           ). "{item.changes?.[0].value}"
         </>
       );
@@ -201,8 +224,13 @@ export const caseHistoryUpdateText = (
         text = (
           <>
             Case {item.changes?.[0].field.replaceAll("_", " ")} changed (
-            <a href={`/cases/${item.parent_id}`}>{item.note}</a>). "
-            {item.changes?.[0].value}"
+            <Link
+              className={classes.aWithCursorPointer}
+              href={`/cases/${item.parent_id}`}
+            >
+              {item.note}
+            </Link>
+            ). "{item.changes?.[0].value}"
           </>
         );
       }

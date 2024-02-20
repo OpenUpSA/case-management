@@ -295,11 +295,6 @@ export default function CaseInfoTab(props: Props) {
                 {props.caseHistory?.length} updates
               </Typography>
             </Grid>
-            <Grid item>
-              <Typography variant="caption">
-                {/* <a href="/#">Show all updates</a> */}
-              </Typography>
-            </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12} md={4}>
