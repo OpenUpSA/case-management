@@ -225,14 +225,6 @@ export default function CaseInfoTab(props: Props) {
         );
         break;
 
-      case item?.changes?.length > 0 && item.action === "Update":
-        text = (
-          <>
-            {`${item.note}'s ${item.changes?.[0].field} changed to "${item.changes?.[0].value}"`}
-          </>
-        );
-        break;
-
       case item.action === "Create" && item.target_type === "File":
         text = (
           <>
@@ -250,21 +242,49 @@ export default function CaseInfoTab(props: Props) {
         break;
 
       case item.action === "Create" && item.target_type === "Meeting":
-        // New in-person meeting added (UD01038). “Client has documents required.
-        let zeroPaddedTargetId = item.target_id?.toString().padStart(5, "0");
         text = (
           <>
             New {item.changes?.[6].value} meeting added (
             <Link
               onClick={() => {
-                history.push(
-                  `/meetings/${item.target_id}/edit`
-                );
+                history.push(`/meetings/${item.target_id}/edit`);
               }}
             >
-              UD{zeroPaddedTargetId}
+              UD{item.target_id?.toString().padStart(5, "0")}
             </Link>
-            ). "{item.changes?.[4].value}".
+            ). "{item.changes?.[4].value}"
+          </>
+        );
+        break;
+
+      case item.action === "Create" && item.target_type === "Note":
+        text = (
+          <>
+            New note added (
+            <Link
+              onClick={() => {
+                history.push(`/notes/${item.target_id}/edit`);
+              }}
+            >
+              UD{item.target_id?.toString().padStart(5, "0")}
+            </Link>
+            ). "{item.note}"
+          </>
+        );
+        break;
+
+      case item.action === "Update" && item.target_type === "Meeting":
+        text = (
+          <>
+            Meeting update (
+            <Link
+              onClick={() => {
+                history.push(`/meetings/${item.target_id}/edit`);
+              }}
+            >
+              UD{item.target_id?.toString().padStart(5, "0")}
+            </Link>
+            ). "{item.changes?.[0].value}"
           </>
         );
         break;

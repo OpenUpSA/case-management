@@ -25,7 +25,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import i18n from "../i18n";
 import { UserInfo } from "../auth";
 import { useStyles } from "../utils";
-import { ICaseOffice, IInstance } from "../types";
+import { ICaseOffice } from "../types";
 import {
   getCaseOffices,
   getCaseTypes,

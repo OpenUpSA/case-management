@@ -33,6 +33,7 @@ import { UserInfo } from "./auth";
 import { isLoggedIn } from "./auth";
 import RedirectToFile from "./pages/files/redirect";
 import RedirectToUpdateFromMeeting from "./pages/meetings/redirectToUpdate";
+import RedirectToUpdateFromNote from "./pages/notes/redirectToUpdate";
 
 if (process.env.REACT_APP_GA_ID) {
   ReactGA.initialize(process.env.REACT_APP_GA_ID!);
@@ -94,6 +95,7 @@ function Routes() {
         <Route exact path="/updates/:id/edit" component={UpdateEditPage} />
 
         <Route exact path="/meetings/:id/edit" component={RedirectToUpdateFromMeeting} />
+        <Route exact path="/notes/:id/edit" component={RedirectToUpdateFromNote} />
 
         <Route exact path="/users/:id" component={UserPage} />
         <Route exact path="/users/:id/edit" component={UserEditPage} />
