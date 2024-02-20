@@ -27,6 +27,7 @@ import {
   getCaseUpdates,
 } from "../../api";
 import i18n from "../../i18n";
+import { NavLink, useLocation } from "react-router-dom";
 
 type Props = {
   meetings: IMeeting[];
@@ -65,8 +66,10 @@ function a11yProps(index: number) {
 }
 
 export default function CaseTabs(props: Props) {
+  const location = useLocation();
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const tabToFocus = location.pathname.indexOf("/updates") > -1 ? 1 : location.pathname.indexOf("/files") > -1 ? 2 : 0;
+  const [value, setValue] = useState(tabToFocus);
   const [legalCaseFiles, setLegalCaseFiles] = useState<ILegalCaseFile[]>([]);
   const [caseWorker, setCaseWorker] = useState<IUser | undefined>();
   const [client, setClient] = useState<IClient | undefined>();
@@ -135,6 +138,8 @@ export default function CaseTabs(props: Props) {
             className={classes.caseTabButton}
             label={<Typography>{i18n.t("Case info")}</Typography>}
             {...a11yProps(0)}
+            component={NavLink}
+            to={`/cases/${props.legalCase?.id}`}
           />
           <Tab
             key="meetings"
@@ -145,6 +150,8 @@ export default function CaseTabs(props: Props) {
               </Badge>
             }
             {...a11yProps(1)}
+            component={NavLink}
+            to={`/cases/${props.legalCase?.id}/updates`}
           />
           <Tab
             key="caseFiles"
@@ -155,6 +162,8 @@ export default function CaseTabs(props: Props) {
               </Badge>
             }
             {...a11yProps(2)}
+            component={NavLink}
+            to={`/cases/${props.legalCase?.id}/files`}
           />
         </Tabs>
       </Box>

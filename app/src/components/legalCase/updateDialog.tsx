@@ -172,7 +172,7 @@ const UpdateDialog = (props: Props) => {
 
   const dialogClose = () => {
     props.setOpen(false);
-    history.push(`/cases/${props.legalCase.id}`);
+    history.push(`/cases/${props.legalCase.id}/updates`);
   };
 
   const onFileChange = async (event: any, fileDescription: string) => {

@@ -80,6 +80,16 @@ function Routes() {
           path="/clients/:id/cases"
           component={ClientLegalCasesPage}
         />
+        <Route
+          exact
+          path="/clients/:id/info"
+          component={ClientLegalCasesPage}
+        />
+        <Route
+          exact
+          path="/clients/:id/files"
+          component={ClientLegalCasesPage}
+        />
 
         <Route exact path="/dependents/:id" component={ClientDependentPage} />
         <Route
@@ -89,8 +99,9 @@ function Routes() {
         />
 
         <Route exact path="/cases" component={LegalCasesPage} />
-        <Route exact path="/cases/:id" component={LegalCasePage} />
-        <Route exact path="/cases/:id" component={LegalCasePage} />
+        <Route exact path="/cases/:id/" component={LegalCasePage} />
+        <Route exact path="/cases/:id/updates" component={LegalCasePage} />
+        <Route exact path="/cases/:id/files" component={LegalCasePage} />
 
         <Route exact path="/updates/:id/edit" component={UpdateEditPage} />
 
