@@ -28,7 +28,6 @@ import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
 import UpdateDialog from "./updateDialog";
 import i18n from "../../i18n";
-import userDefaultAvatar from "../../user-default-avatar.jpeg";
 import { updateLegalCase, getLogs, getLegalCase } from "../../api";
 import {
   ILegalCase,
@@ -118,6 +117,10 @@ export default function CaseInfoTab(props: Props) {
     resetState();
   }, [showSnackbar.open]);
 
+  const paddedUpdateId = (id: number | undefined) => {
+    return `UD${id?.toString().padStart(5, "0")}`;
+  };
+
   const userInitials = (item: ILog) => {
     // Create circle with text initials
     const name = item.extra ? item.extra.user.name : "";
@@ -169,48 +172,6 @@ export default function CaseInfoTab(props: Props) {
     let text = <></>;
 
     switch (true) {
-      case item.target_type === "LegalCase" && item.action === "Create":
-        text = (
-          <>
-            UU1
-            {format(new Date(item.created_at as string), "dd/MM/yyyy (h:ma)")}
-          </>
-        );
-        break;
-
-      case item?.changes?.length > 0 && item.changes?.[0].field === "summary":
-        text = (
-          <>
-            UU2
-            {`Summary changed to "${item.changes?.[0].value}"`}
-          </>
-        );
-        break;
-
-      case item?.changes?.length > 0 && item.changes?.[0].field === "state":
-        text = (
-          <>
-            UU3
-            {`Status changed to "${item.changes?.[0].value}"`}
-          </>
-        );
-        break;
-
-      case item?.changes?.length > 0 &&
-        item.changes?.[0].field === "case_types":
-        text = (
-          <>
-            UU4
-            {`Case type changed to "${contextCaseTypes
-              ?.filter(
-                (caseType: ICaseType) =>
-                  item.changes?.[0].value.indexOf(caseType.id) > -1
-              )
-              .map((caseType: ICaseType) => caseType.title)}"`}
-          </>
-        );
-        break;
-
       case item?.changes?.length > 0 &&
         item.action === "Update" &&
         item.target_type === "File":
@@ -244,15 +205,16 @@ export default function CaseInfoTab(props: Props) {
       case item.action === "Create" && item.target_type === "Meeting":
         text = (
           <>
-            New {item.changes?.[6].value} meeting added (
+            New {item.changes?.find((c) => c.field === "meeting_type")?.value}{" "}
+            meeting added (
             <Link
               onClick={() => {
                 history.push(`/meetings/${item.target_id}/edit`);
               }}
             >
-              UD{item.target_id?.toString().padStart(5, "0")}
+              {paddedUpdateId(item.target_id)}
             </Link>
-            ). "{item.changes?.[4].value}"
+            ). "{item.changes?.find((c) => c.field === "notes")?.value}"
           </>
         );
         break;
@@ -266,7 +228,7 @@ export default function CaseInfoTab(props: Props) {
                 history.push(`/notes/${item.target_id}/edit`);
               }}
             >
-              UD{item.target_id?.toString().padStart(5, "0")}
+              {paddedUpdateId(item.target_id)}
             </Link>
             ). "{item.note}"
           </>
@@ -276,15 +238,52 @@ export default function CaseInfoTab(props: Props) {
       case item.action === "Update" && item.target_type === "Meeting":
         text = (
           <>
-            Meeting update (
+            Meeting updated (
             <Link
               onClick={() => {
                 history.push(`/meetings/${item.target_id}/edit`);
               }}
             >
-              UD{item.target_id?.toString().padStart(5, "0")}
+              {paddedUpdateId(item.target_id)}
             </Link>
-            ). "{item.changes?.[0].value}"
+            ). "{item.changes?.slice(-1)[0].value}"
+          </>
+        );
+        break;
+
+      case item.action === "Update" && item.target_type === "Note":
+        text = (
+          <>
+            Note updated (
+            <Link
+              onClick={() => {
+                history.push(`/notes/${item.target_id}/edit`);
+              }}
+            >
+              {paddedUpdateId(item.target_id)}
+            </Link>
+            ). "{item.changes?.slice(-1)[0].value}"
+          </>
+        );
+        break;
+
+      case item.action === "Create" && item.target_type === "LegalCase":
+        text = (
+          <>
+            Case created for{" "}
+            {item.changes?.find((c) => c.field === "client")?.value} (
+            <a href={`/cases/${item.parent_id}`}>
+              {item.changes?.find((c) => c.field === "case_number")?.value}
+            </a>
+            ).
+          </>
+        );
+        break;
+
+      case item.action === "Update" && item.target_type === "LegalCase":
+        text = (
+          <>
+            Case updated (<a href={`/cases/${item.parent_id}`}>{item.note}</a>). "{item.changes?.[0].value}"
           </>
         );
         break;

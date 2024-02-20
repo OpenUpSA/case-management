@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <LayoutSimple>
       <Typography component="h1" variant="h5" style={{ marginTop: 8 }}>
-        {i18n.t("Lost")}
+        {i18n.t("404")}
       </Typography>
       <p>{i18n.t("Lost message")}</p>
       <Button

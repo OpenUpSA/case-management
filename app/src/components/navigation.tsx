@@ -1,5 +1,4 @@
 import logo from "../logo-small.svg";
-import userDefaultAvatar from "../user-default-avatar.jpeg";
 import React, { useEffect, useContext } from "react";
 import { IconButton } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
@@ -228,11 +227,6 @@ const Component = () => {
         <div className={classes.drawerContainer}>
           <Card onClick={accountSettings}>
             <CardActionArea className={classes.root}>
-              <CardMedia
-                className={classes.media}
-                image={userDefaultAvatar}
-                title={i18n.t("Default user avatar")}
-              />
               <CardContent>
                 <Typography
                   gutterBottom

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { getNote } from "../../api";
 import { RedirectIfNotLoggedIn } from "../../auth";
@@ -10,12 +11,17 @@ type RouteParams = { id: string };
 
 const RedirectToUpdateFromNote = () => {
   RedirectIfNotLoggedIn();
+  const history = useHistory();
   const params = useParams<RouteParams>();
 
   useEffect(() => {
     async function fetchData() {
       const dataNote = await getNote(Number(params.id));
-      window.location.assign(`/updates/${dataNote.case_update}/edit`);  
+      if ("detail" in dataNote) {
+        history.push("/404");
+      } else {
+        history.push(`/updates/${dataNote.case_update}/edit`);
+      }
     }
     fetchData();
   }, []);

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { getMeeting } from "../../api";
 import { RedirectIfNotLoggedIn } from "../../auth";
@@ -10,12 +11,17 @@ type RouteParams = { id: string };
 
 const RedirectToUpdateFromMeeting = () => {
   RedirectIfNotLoggedIn();
+  const history = useHistory();
   const params = useParams<RouteParams>();
 
   useEffect(() => {
     async function fetchData() {
       const dataMeeting = await getMeeting(Number(params.id));
-      window.location.assign(`/updates/${dataMeeting.case_update}/edit`);  
+      if ('detail' in dataMeeting) {
+        history.push("/404");
+      } else {
+        history.push(`/updates/${dataMeeting.case_update}/edit`);
+      }
     }
     fetchData();
   }, []);
