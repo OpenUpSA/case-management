@@ -978,3 +978,28 @@ export const logLabel = (
 ) => {
   return LogLabels.get(`${targetType} ${targetAction}`);
 };
+
+export const paddedUpdateId = (id: number | undefined) => {
+  return `UD${id?.toString().padStart(5, "0")}`;
+};
+
+export const fileTypeText = (fileType: string | undefined) => {
+  switch (fileType) {
+    case "pdf":
+      return "PDF";
+    case "docx":
+      return "Word document";
+    case "xlsx":
+      return "Excel document";
+    case "pptx":
+      return "PowerPoint document";
+    case "jpg":
+      return "image";
+    case "jpeg":
+      return "image";
+    case "png":
+      return "image";
+    default:
+      return "file";
+  }
+};
