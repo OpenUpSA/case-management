@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { getLegalCaseFile } from "../../api";
 import { RedirectIfNotLoggedIn } from "../../auth";
@@ -10,12 +11,17 @@ type RouteParams = { id: string };
 
 const RedirectToFile = () => {
   RedirectIfNotLoggedIn();
+  const history = useHistory();
   const params = useParams<RouteParams>();
 
   useEffect(() => {
     async function fetchData() {
       const dataFile = await getLegalCaseFile(Number(params.id));
-      window.location.assign(dataFile.upload);
+      if ("detail" in dataFile) {
+        history.push("/404");
+      } else {
+        window.location.assign(dataFile.upload);
+      }
     }
     fetchData();
   }, []);
