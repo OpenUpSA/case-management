@@ -170,6 +170,7 @@ export default function CaseInfoTab(props: Props) {
 
   const caseHistoryUpdateText = (item: ILog) => {
     let text = <></>;
+    let display = true;
 
     switch (true) {
       case item?.changes?.length > 0 &&
@@ -262,7 +263,7 @@ export default function CaseInfoTab(props: Props) {
             >
               {paddedUpdateId(item.target_id)}
             </Link>
-            ). "{item.changes?.slice(-1)[0].value}"
+            ). "{item.note}"
           </>
         );
         break;
@@ -283,21 +284,49 @@ export default function CaseInfoTab(props: Props) {
       case item.action === "Update" && item.target_type === "LegalCase":
         text = (
           <>
-            Case updated (<a href={`/cases/${item.parent_id}`}>{item.note}</a>). "{item.changes?.[0].value}"
+            Case updated (<a href={`/cases/${item.parent_id}`}>{item.note}</a>).
+            "{item.changes?.[0].value}"
           </>
         );
         break;
 
       default:
+        display = false;
         text = (
           <>
-            UU6
-            {item.note} -{item.action} -{item.target_type}
+            {item.note} - {item.action} - {item.target_type}
           </>
         );
         break;
     }
-    return <Typography variant="caption">{text}</Typography>;
+    if (display) {
+      return <React.Fragment key={`caseHistory_${item.id}`}>
+        <ListItem className={classes.caseHistoryList}>
+          <Chip
+            label={logLabel(item.action, item.target_type)}
+            className={classes.chip}
+          />
+          <ListItemText
+            primary={<Typography variant="caption">{text}</Typography>}
+            className={`${classes.caseHistoryText} ${classes.noOverflow}`}
+          />
+          <Box className={classes.caseHistoryBox}>
+            <BlackTooltip
+              title={item.extra ? item.extra.user.name : ""}
+              arrow
+              placement="top"
+            >
+              {userInitials(item)}
+            </BlackTooltip>
+
+            <Typography sx={{ fontSize: "11px", color: "#616161" }}>
+              {format(new Date(item?.created_at!), "MMM dd, yyyy")}
+            </Typography>
+          </Box>
+        </ListItem>
+        <Divider />
+      </React.Fragment>;
+    }
   };
 
   const discardChange = () => {
@@ -493,39 +522,7 @@ export default function CaseInfoTab(props: Props) {
               ? props.caseHistory
                   ?.slice(0)
                   .reverse()
-                  .map((item) => (
-                    <React.Fragment key={`caseHistory_${item.id}`}>
-                      <ListItem className={classes.caseHistoryList}>
-                        <Chip
-                          label={logLabel(item.action, item.target_type)}
-                          className={classes.chip}
-                        />
-                        <ListItemText
-                          primary={caseHistoryUpdateText(item)}
-                          className={`${classes.caseHistoryText} ${classes.noOverflow}`}
-                        />
-                        <Box className={classes.caseHistoryBox}>
-                          <BlackTooltip
-                            title={item.extra ? item.extra.user.name : ""}
-                            arrow
-                            placement="top"
-                          >
-                            {userInitials(item)}
-                          </BlackTooltip>
-
-                          <Typography
-                            sx={{ fontSize: "11px", color: "#616161" }}
-                          >
-                            {format(
-                              new Date(item?.created_at!),
-                              "MMM dd, yyyy"
-                            )}
-                          </Typography>
-                        </Box>
-                      </ListItem>
-                      <Divider />
-                    </React.Fragment>
-                  ))
+                  .map((item) => caseHistoryUpdateText(item))
               : ""}
           </List>
           <Grid container justifyContent="space-between">

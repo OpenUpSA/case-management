@@ -67,7 +67,7 @@
       "updated_at": "2022-09-21T10:09:08.621Z",
       "created_by": null,
       "updated_by": null,
-      "name": "Test Case Office 1",
+      "name": "Johannesburg Office",
       "description": "Test Case Office 1",
       "case_office_code": "D01"
     }
@@ -80,7 +80,7 @@
       "updated_at": "2022-09-21T10:09:20.791Z",
       "created_by": null,
       "updated_by": null,
-      "name": "Test Case Office 2",
+      "name": "Cape Town Office",
       "description": "Test Case Office 2",
       "case_office_code": "D02"
     }
@@ -93,7 +93,7 @@
       "updated_at": "2022-09-21T10:09:30.149Z",
       "created_by": null,
       "updated_by": null,
-      "title": "Test Case Type 1",
+      "title": "Eviction",
       "description": "Test Case Type 1"
     }
   },
@@ -105,7 +105,7 @@
       "updated_at": "2022-09-21T10:09:35.360Z",
       "created_by": null,
       "updated_by": null,
-      "title": "Test Case Type 2",
+      "title": "Witchcraft",
       "description": "Test Case Type 2"
     }
   },
