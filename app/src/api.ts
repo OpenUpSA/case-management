@@ -365,6 +365,10 @@ export const getCaseUpdates = async (id: number) => {
   return await httpGet<any>(`/case-updates/?legal_case=${id}`);
 };
 
+export const getCaseUpdate = async (id: number) => {
+  return await httpGet<any>(`/case-updates/${id}`);
+};
+
 export const createCaseUpdate = async (caseUpdate: any) => {
   return await httpPost<any, any>(`/case-updates/`, caseUpdate);
 };

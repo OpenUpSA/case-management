@@ -284,19 +284,7 @@ const Component = () => {
               </ListItemIcon>
               <ListItemText primary={i18n.t("Case list")} />
             </ListItem>
-            <ListItem
-              button
-              key="meetings"
-              onClick={() => {
-                history.push("/meetings");
-                closeDrawer();
-              }}
-            >
-              <ListItemIcon>
-                <ForumIcon style={{ color: "black" }} />
-              </ListItemIcon>
-              <ListItemText primary={i18n.t("All meetings")} />
-            </ListItem>
+            
           </List>
           <List className={classes.drawerListFooter}>
             <ListItem button key="accountSettings" onClick={accountSettings}>

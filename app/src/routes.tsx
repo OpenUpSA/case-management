@@ -1,9 +1,4 @@
-import {
-  Switch,
-  Route,
-  useHistory,
-  Redirect,
-} from "react-router-dom";
+import { Switch, Route, useHistory, Redirect } from "react-router-dom";
 import React from "react";
 import LoginPage from "./pages/login";
 import LogoutPage from "./pages/logout";
@@ -20,10 +15,7 @@ import LegalCasePage from "./pages/legalCases/show";
 import ClientDependentPage from "./pages/clientDependents/show";
 import ClientDependentNewPage from "./pages/clientDependents/new";
 
-import MeetingsPage from "./pages/meetings/list";
-import MeetingPage from "./pages/meetings/show";
-import MeetingEditPage from "./pages/meetings/edit";
-import MeetingNewPage from "./pages/meetings/new";
+import UpdateEditPage from "./pages/updates/edit";
 
 import UserPage from "./pages/users/show";
 import UserEditPage from "./pages/users/edit";
@@ -40,6 +32,7 @@ import { UserInfo } from "./auth";
 
 import { isLoggedIn } from "./auth";
 import RedirectToFile from "./pages/files/redirect";
+import RedirectToUpdateFromMeeting from "./pages/meetings/redirectToUpdate";
 
 if (process.env.REACT_APP_GA_ID) {
   ReactGA.initialize(process.env.REACT_APP_GA_ID!);
@@ -96,15 +89,11 @@ function Routes() {
 
         <Route exact path="/cases" component={LegalCasesPage} />
         <Route exact path="/cases/:id" component={LegalCasePage} />
+        <Route exact path="/cases/:id" component={LegalCasePage} />
 
-        <Route exact path="/meetings" component={MeetingsPage} />
-        <Route exact path="/meetings/:id" component={MeetingPage} />
-        <Route exact path="/meetings/:id/edit" component={MeetingEditPage} />
-        <Route
-          exact
-          path="/cases/:id/meetings/new"
-          component={MeetingNewPage}
-        />
+        <Route exact path="/updates/:id/edit" component={UpdateEditPage} />
+
+        <Route exact path="/meetings/:id/edit" component={RedirectToUpdateFromMeeting} />
 
         <Route exact path="/users/:id" component={UserPage} />
         <Route exact path="/users/:id/edit" component={UserEditPage} />

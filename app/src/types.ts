@@ -104,6 +104,7 @@ export interface IMeeting {
   notes: string;
   name?: string | null;
   file?: number | null;
+  case_update?: number;
 }
 
 export interface IUserInfo {

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
 import {
@@ -39,6 +40,7 @@ type Props = {
 };
 
 const UpdateTable = (props: Props) => {
+  const history = useHistory();
   const classes = useStyles();
   const [caseUpdates, setCaseUpdates] = useState<any>([]);
   const [legalCaseFiles, setLegalCaseFiles] = useState<ILegalCaseFile[]>([]);
@@ -108,8 +110,8 @@ const UpdateTable = (props: Props) => {
     }
   };
 
-  const dialogOpen = () => {
-    setOpen(true);
+  const editUpdate = (update: any) => {
+    history.push(`/updates/${update.id}/edit`);
   };
 
   return (
@@ -148,11 +150,7 @@ const UpdateTable = (props: Props) => {
                   <TableRow
                     key={update.id}
                     className={classes.caseHistoryList}
-                    onClick={() => {
-                      props.setEditView(true);
-                      setSelectedUpdate(update);
-                      dialogOpen();
-                    }}
+                    onClick={() => editUpdate(update)}
                   >
                     <TableCell
                       className={classes.updateTableBodyCell}

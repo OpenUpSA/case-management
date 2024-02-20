@@ -1,4 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
+import Link from "@material-ui/core/Link";
+import { useHistory } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
@@ -73,6 +75,7 @@ type Props = {
 };
 
 export default function CaseInfoTab(props: Props) {
+  const history = useHistory();
   const classes = useStyles();
   const [contextOffices] = useContext(CaseOfficesContext);
   const [contextCaseTypes] = useContext(CaseTypesContext);
@@ -249,10 +252,18 @@ export default function CaseInfoTab(props: Props) {
       case item.action === "Create" && item.target_type === "Meeting":
         // New in-person meeting added (UD01038). “Client has documents required.
         let zeroPaddedTargetId = item.target_id?.toString().padStart(5, "0");
-        console.log({ item });
         text = (
           <>
-            New {item.changes?.[6].value} meeting added (UD{zeroPaddedTargetId}
+            New {item.changes?.[6].value} meeting added (
+            <Link
+              onClick={() => {
+                history.push(
+                  `/meetings/${item.target_id}/edit`
+                );
+              }}
+            >
+              UD{zeroPaddedTargetId}
+            </Link>
             ). "{item.changes?.[4].value}".
           </>
         );

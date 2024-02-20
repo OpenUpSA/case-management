@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import {
   IconButton,
   Input,
@@ -53,6 +54,7 @@ type Props = {
 };
 
 const UpdateDialog = (props: Props) => {
+  const history = useHistory();
   const classes = useStyles();
   const [status, setStatus] = useState<string>(props.legalCase.state);
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
@@ -170,20 +172,7 @@ const UpdateDialog = (props: Props) => {
 
   const dialogClose = () => {
     props.setOpen(false);
-    if (!props.editView) {
-      setNote({ title: "", content: "" });
-      setMeeting({
-        meeting_type: "",
-        location: "",
-        notes: "",
-        meeting_date: new Date().toISOString().slice(0, 16),
-        advice_was_offered: "",
-        advice_offered: "",
-      });
-    }
-    setAttachedFileData({ file: null, description: "" });
-    setUpdateError("");
-    setTabValue(0);
+    history.push(`/cases/${props.legalCase.id}`);
   };
 
   const onFileChange = async (event: any, fileDescription: string) => {
@@ -742,9 +731,8 @@ const UpdateDialog = (props: Props) => {
         PaperProps={{
           sx: {
             height: "90vh",
-          }
+          },
         }}
-
       >
         <Box style={{ margin: 20 }}>
           <Grid
