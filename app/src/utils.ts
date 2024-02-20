@@ -949,3 +949,32 @@ export const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
+
+export const LogLabels = new Map([
+  ["CaseOffice Create", "Admin"],
+  ["CaseType Create", "Admin"],
+  ["CaseUpdate Create", "Admin"],
+  ["CaseUpdate Delete", "Admin"],
+  ["Client Create", "Admin"],
+  ["Client Delete", "Admin"],
+  ["Client Update", "Admin"],
+  ["File Create", "Files"],
+  ["File Delete", "Files"],
+  ["File Update", "Files"],
+  ["LegalCase Create", "Admin"],
+  ["LegalCase Delete", "Admin"],
+  ["LegalCase Update", "Admin"],
+  ["Meeting Create", "Updates"],
+  ["Meeting Delete", "Updates"],
+  ["Meeting Update", "Updates"],
+  ["Note Create", "Updates"],
+  ["Note Delete", "Updates"],
+  ["Note Update", "Updates"],
+]);
+
+export const logLabel = (
+  targetAction: string | undefined,
+  targetType: string | undefined
+) => {
+  return LogLabels.get(`${targetType} ${targetAction}`);
+};

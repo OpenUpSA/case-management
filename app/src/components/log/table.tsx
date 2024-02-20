@@ -20,39 +20,10 @@ import {
   Box,
 } from "@material-ui/core";
 import List from "@mui/material/List";
-import { useStyles } from "../../utils";
+import { logLabel, useStyles } from "../../utils";
 import i18n from "../../i18n";
 import { format } from "date-fns";
 import { ILog, IUser } from "../../types";
-
-const LogLabels = new Map([
-  ["LegalCase Create", "Case created"],
-  ["LegalCase Update", "Case update"],
-  ["LegalCase Delete", "Case deleted"],
-  ["Meeting Create", "New meeting"],
-  ["Meeting Update", "Meeting updated"],
-  ["Meeting Delete", "Meeting deleted"],
-  ["File Create", "File uploaded"],
-  ["File Update", "File updated"],
-  ["File Delete", "File deleted"],
-  ["Note Create", "New note"],
-  ["Note Update", "Note updated"],
-  ["Note Delete", "Note deleted"],
-  ["CaseOffice Create", "New case office"],
-  ["CaseType Create", "New case type"],
-  ["Client Create", "New client"],
-  ["Client Update", "Client update"],
-  ["Client Delete", "Client deleted"],
-  ["CaseUpdate Create", "New update"],
-  ["CaseUpdate Delete", "Update deleted"],
-]);
-
-const logLabel = (
-  targetAction: string | undefined,
-  targetType: string | undefined
-) => {
-  return LogLabels.get(`${targetType} ${targetAction}`);
-};
 
 type Props = {
   logs: ILog[];

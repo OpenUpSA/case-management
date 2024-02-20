@@ -21,7 +21,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import FormHelperText from "@mui/material/FormHelperText";
 
 import { BlackTooltip } from "../general/tooltip";
-import { useStyles } from "../../utils";
+import { logLabel, useStyles } from "../../utils";
 import SnackbarAlert from "../../components/general/snackBar";
 import { format } from "date-fns";
 import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
@@ -39,27 +39,6 @@ import {
   SnackbarState,
   ILegalCaseFile,
 } from "../../types";
-
-const LogLabels = new Map([
-  ["LegalCase Create", "Admin"],
-  ["LegalCase Update", "Admin"],
-  ["Meeting Create", "Updates"],
-  ["Meeting Update", "Updates"],
-  ["File Create", "Files"],
-  ["File Update", "Files"],
-  ["File Delete", "Files"],
-  ["Note Create", "Updates"],
-  ["Note Update", "Updates"],
-  ["CaseUpdate Create", "Admin"],
-  ["CaseUpdate Delete", "Admin"],
-]);
-
-const logLabel = (
-  targetAction: string | undefined,
-  targetType: string | undefined
-) => {
-  return LogLabels.get(`${targetType} ${targetAction}`);
-};
 
 type Props = {
   legalCase: ILegalCase;
