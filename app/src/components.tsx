@@ -13,7 +13,7 @@ import { BlackTooltip } from "./components/general/tooltip";
 
 export const userInitials = (item: ILog) => {
   // Create circle with text initials
-  const name = item.extra ? item.extra.user.name : "";
+  const name = item.extra ? item.extra.user.name : "@";
   const initials = name
     .split(" ")
     .map((n: string) => n[0])
@@ -37,7 +37,11 @@ export const userInitials = (item: ILog) => {
   );
 };
 
-export const caseHistoryUpdateText = (item: ILog, classes: any, history: any) => {
+export const caseHistoryUpdateText = (
+  item: ILog,
+  classes: any,
+  history: any
+) => {
   let text = <></>;
   let display = true;
 
@@ -137,6 +141,36 @@ export const caseHistoryUpdateText = (item: ILog, classes: any, history: any) =>
       );
       break;
 
+    case item.action === "Create" && item.target_type === "Client":
+      text = (
+        <>
+          New client added:{" "}
+          <a href={`/clients/${item.target_id}`}>
+            {item.changes?.find((c) => c.field === "preferred_name")?.value}
+          </a>
+          .
+        </>
+      );
+      break;
+
+    case item.action === "Create" && item.target_type === "CaseType":
+      text = (
+        <>
+          New case type added:{" "}
+          {item.changes?.find((c) => c.field === "title")?.value}.
+        </>
+      );
+      break;
+
+    case item.action === "Create" && item.target_type === "CaseOffice":
+      text = (
+        <>
+          New case office added:{" "}
+          {item.changes?.find((c) => c.field === "name")?.value}.
+        </>
+      );
+      break;
+
     case item.action === "Create" && item.target_type === "LegalCase":
       text = (
         <>
@@ -150,50 +184,77 @@ export const caseHistoryUpdateText = (item: ILog, classes: any, history: any) =>
       );
       break;
 
-    case item.action === "Update" && item.target_type === "LegalCase":
+    case item.action === "Update" && item.target_type === "Client":
       text = (
         <>
-          Case updated (<a href={`/cases/${item.parent_id}`}>{item.note}</a>).
-          "{item.changes?.[0].value}"
+          Client {item.changes?.[0].field.replaceAll("_", " ")} changed (
+          <a href={`/clients/${item.target_id}`}>{item.note}</a>
+          ). "{item.changes?.[0].value}"
         </>
       );
+      break;
+
+    case item.action === "Update" && item.target_type === "LegalCase":
+      if (item.changes?.[0].field === "case_types") {
+        display = false;
+      } else {
+        text = (
+          <>
+            Case {item.changes?.[0].field.replaceAll("_", " ")} changed (
+            <a href={`/cases/${item.parent_id}`}>{item.note}</a>). "
+            {item.changes?.[0].value}"
+          </>
+        );
+      }
+      break;
+
+    case item.action === "Delete" && item.target_type === "LegalCase":
+      text = <>Case deleted ({item.note}).</>;
+      break;
+
+    case item.action === "Delete" && item.target_type === "Client":
+      text = <>Client deleted ({item.note}).</>;
       break;
 
     default:
       display = false;
       text = (
         <>
-          {item.note} - {item.action} - {item.target_type}
+          <b>
+            {item.note} - {item.action} - {item.target_type}
+          </b>
         </>
       );
       break;
   }
   if (display) {
-    return <React.Fragment key={`caseHistory_${item.id}`}>
-      <ListItem className={classes.caseHistoryList}>
-        <Chip
-          label={logLabel(item.action, item.target_type)}
-          className={classes.chip}
-        />
-        <ListItemText
-          primary={<Typography variant="caption">{text}</Typography>}
-          className={`${classes.caseHistoryText} ${classes.noOverflow}`}
-        />
-        <Box className={classes.caseHistoryBox}>
-          <BlackTooltip
-            title={item.extra ? item.extra.user.name : ""}
-            arrow
-            placement="top"
-          >
-            {userInitials(item)}
-          </BlackTooltip>
+    return (
+      <React.Fragment key={`caseHistory_${item.id}`}>
+        <ListItem className={classes.caseHistoryList}>
+          <Chip
+            label={logLabel(item.action, item.target_type)}
+            className={classes.chip}
+          />
+          <ListItemText
+            primary={<Typography variant="caption">{text}</Typography>}
+            className={`${classes.caseHistoryText} ${classes.noOverflow}`}
+          />
+          <Box className={classes.caseHistoryBox}>
+            <BlackTooltip
+              title={item.extra ? item.extra.user.name : "System"}
+              arrow
+              placement="top"
+            >
+              {userInitials(item)}
+            </BlackTooltip>
 
-          <Typography sx={{ fontSize: "11px", color: "#616161" }}>
-            {format(new Date(item?.created_at!), "MMM dd, yyyy")}
-          </Typography>
-        </Box>
-      </ListItem>
-      <Divider />
-    </React.Fragment>;
+            <Typography sx={{ fontSize: "11px", color: "#616161" }}>
+              {format(new Date(item?.created_at!), "MMM dd, yyyy")}
+            </Typography>
+          </Box>
+        </ListItem>
+        <Divider />
+      </React.Fragment>
+    );
   }
 };
