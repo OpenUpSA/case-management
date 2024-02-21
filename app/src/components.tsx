@@ -119,7 +119,9 @@ export const caseHistoryUpdateText = (
       );
       break;
 
-    case item.action === "Update" && item.target_type === "Meeting":
+    case item?.changes?.length > 0 &&
+      item.action === "Update" &&
+      item.target_type === "Meeting":
       text = (
         <>
           Meeting updated (
@@ -134,6 +136,7 @@ export const caseHistoryUpdateText = (
           ). "{item.changes?.slice(-1)[0].value}"
         </>
       );
+
       break;
 
     case item.action === "Update" && item.target_type === "Note":
@@ -202,7 +205,9 @@ export const caseHistoryUpdateText = (
       );
       break;
 
-    case item.action === "Update" && item.target_type === "Client":
+    case item?.changes?.length > 0 &&
+      item.action === "Update" &&
+      item.target_type === "Client":
       text = (
         <>
           Client {item.changes?.[0].field.replaceAll("_", " ")} changed (
@@ -218,7 +223,10 @@ export const caseHistoryUpdateText = (
       break;
 
     case item.action === "Update" && item.target_type === "LegalCase":
-      if ((item.changes?.[0]?.field === "case_types") || (item.changes?.[0]?.field === "users")) {
+      if (
+        item.changes?.[0]?.field === "case_types" ||
+        item.changes?.[0]?.field === "users"
+      ) {
         display = false;
       } else {
         text = (
