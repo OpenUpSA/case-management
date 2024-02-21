@@ -218,12 +218,12 @@ export const caseHistoryUpdateText = (
       break;
 
     case item.action === "Update" && item.target_type === "LegalCase":
-      if (item.changes?.[0].field === "case_types") {
+      if ((item.changes?.[0]?.field === "case_types") || (item.changes?.[0]?.field === "users")) {
         display = false;
       } else {
         text = (
           <>
-            Case {item.changes?.[0].field.replaceAll("_", " ")} changed (
+            Case {item.changes?.[0]?.field.replaceAll("_", " ")} changed (
             <Link
               className={classes.aWithCursorPointer}
               href={`/cases/${item.parent_id}`}
