@@ -84,7 +84,9 @@ export const caseHistoryUpdateText = (
       text = <>File deleted ({item.note}).</>;
       break;
 
-    case item.action === "Create" && item.target_type === "Meeting":
+    case item.changes?.length > 0 &&
+      item.action === "Create" &&
+      item.target_type === "Meeting":
       text = (
         <>
           New {item.changes?.find((c) => c.field === "meeting_type")?.value}{" "}
@@ -156,7 +158,10 @@ export const caseHistoryUpdateText = (
       );
       break;
 
-    case item.action === "Create" && item.target_type === "Client":
+    case item.changes?.length > 0 &&
+      item.action === "Create" &&
+      item.target_type === "Client" &&
+      typeof item.changes?.find((c) => c.field === "preferred_name") !== "undefined":
       text = (
         <>
           New client added:{" "}
@@ -171,7 +176,9 @@ export const caseHistoryUpdateText = (
       );
       break;
 
-    case item.action === "Create" && item.target_type === "CaseType":
+    case item.changes?.length > 0 &&
+      item.action === "Create" &&
+      item.target_type === "CaseType":
       text = (
         <>
           New case type added:{" "}
@@ -180,7 +187,9 @@ export const caseHistoryUpdateText = (
       );
       break;
 
-    case item.action === "Create" && item.target_type === "CaseOffice":
+    case item.changes?.length > 0 &&
+      item.action === "Create" &&
+      item.target_type === "CaseOffice":
       text = (
         <>
           New case office added:{" "}
@@ -189,7 +198,10 @@ export const caseHistoryUpdateText = (
       );
       break;
 
-    case item.action === "Create" && item.target_type === "LegalCase":
+    case item.changes?.length > 0 &&
+      item.action === "Create" &&
+      item.target_type === "LegalCase" &&
+      typeof item.changes?.find((c) => c.field === "client") !== "undefined":
       text = (
         <>
           Case created for{" "}
@@ -207,7 +219,9 @@ export const caseHistoryUpdateText = (
 
     case item?.changes?.length > 0 &&
       item.action === "Update" &&
-      item.target_type === "Client":
+      item.target_type === "Client" &&
+      item.changes?.[0]?.field !== "users" &&
+      item.changes?.[0]?.field !== "dependents":
       text = (
         <>
           Client {item.changes?.[0].field.replaceAll("_", " ")} changed (
@@ -222,26 +236,24 @@ export const caseHistoryUpdateText = (
       );
       break;
 
-    case item.action === "Update" && item.target_type === "LegalCase":
-      if (
-        item.changes?.[0]?.field === "case_types" ||
-        item.changes?.[0]?.field === "users"
-      ) {
-        display = false;
-      } else {
-        text = (
-          <>
-            Case {item.changes?.[0]?.field.replaceAll("_", " ")} changed (
-            <Link
-              className={classes.aWithCursorPointer}
-              href={`/cases/${item.parent_id}`}
-            >
-              {item.note}
-            </Link>
-            ). "{item.changes?.[0]?.value}"
-          </>
-        );
-      }
+    case item?.changes?.length > 0 &&
+      item.action === "Update" &&
+      item.target_type === "LegalCase" &&
+      item.changes?.[0]?.field !== "case_types" &&
+      item.changes?.[0]?.field !== "users" &&
+      item.changes?.[0]?.value !== "":
+      text = (
+        <>
+          Case {item.changes?.[0]?.field.replaceAll("_", " ")} changed (
+          <Link
+            className={classes.aWithCursorPointer}
+            href={`/cases/${item.parent_id}`}
+          >
+            {item.note}
+          </Link>
+          ). "{item.changes?.[0]?.value}"
+        </>
+      );
       break;
 
     case item.action === "Delete" && item.target_type === "LegalCase":
