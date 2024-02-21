@@ -230,7 +230,7 @@ export const caseHistoryUpdateText = (
             >
               {item.note}
             </Link>
-            ). "{item.changes?.[0].value}"
+            ). "{item.changes?.[0]?.value}"
           </>
         );
       }
