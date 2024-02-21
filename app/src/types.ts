@@ -93,6 +93,17 @@ export interface ILegalCase {
   summary?: string;
 }
 
+export interface INote {
+  id?: number;
+  created_at?: Date;
+  updated_at?: Date;
+  title: string;
+  content: string;
+  legal_case: number;
+  file?: number | null;
+  case_update?: number;
+}
+
 export interface IMeeting {
   id?: number;
   created_at?: Date;
@@ -104,6 +115,7 @@ export interface IMeeting {
   notes: string;
   name?: string | null;
   file?: number | null;
+  case_update?: number;
 }
 
 export interface IUserInfo {
@@ -219,9 +231,4 @@ export interface ISetting {
   id: number;
   name: string;
   value: any;
-}
-
-export interface IInstance {
-  logo_url: string;
-  name: string;
 }

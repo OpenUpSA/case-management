@@ -12,6 +12,7 @@ import { TabPanelProps, SnackbarState } from "../../types";
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
 import { ILegalCase, IClient } from "../../types";
+import { NavLink, useLocation } from "react-router-dom";
 
 type Props = {
   isLoading: boolean;
@@ -45,8 +46,10 @@ function a11yProps(index: number) {
 }
 
 export default function CaseTabs(props: Props) {
+  const location = useLocation();
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const tabToFocus = location.pathname.indexOf("/info") > -1 ? 1 : location.pathname.indexOf("/files") > -1 ? 2 : 0;
+  const [value, setValue] = useState(tabToFocus);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -79,18 +82,24 @@ export default function CaseTabs(props: Props) {
               </Badge>
             }
             {...a11yProps(0)}
+            component={NavLink}
+            to={`/clients/${props.client?.id}/cases`}
           />
           <Tab
             key="clientInfo"
             className={classes.caseTabButton}
             label={<Typography>{i18n.t("Client info")}</Typography>}
             {...a11yProps(1)}
+            component={NavLink}
+            to={`/clients/${props.client?.id}/info`}
           />
           <Tab
             key="clientFiles"
             className={classes.caseTabButton}
             label={<Typography>{i18n.t("All files")}</Typography>}
             {...a11yProps(1)}
+            component={NavLink}
+            to={`/clients/${props.client?.id}/files`}
           />
         </Tabs>
       </Box>

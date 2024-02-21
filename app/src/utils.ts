@@ -380,12 +380,14 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    aWithCursorPointer: {
+      cursor: "pointer",
+    },
     caseHistoryList: {
       height: "52px",
       maxHeight: "52px!important" as any,
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.035)!important" as any,
-        cursor: "pointer",
       },
     },
     caseHistoryAvatar: {
@@ -450,7 +452,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginRight: "5px!important" as any,
       fontSize: "12px!important" as any,
       height: "20px!important" as any,
-      minWidth: "100px!important" as any,
+      minWidth: "69px!important" as any,
     },
     chipGrey: {
       backgroundColor: "#eee!important" as any,
@@ -949,3 +951,57 @@ export const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
+
+export const LogLabels = new Map([
+  ["CaseOffice Create", "Admin"],
+  ["CaseType Create", "Admin"],
+  ["CaseUpdate Create", "Admin"],
+  ["CaseUpdate Delete", "Admin"],
+  ["Client Create", "Admin"],
+  ["Client Delete", "Admin"],
+  ["Client Update", "Admin"],
+  ["File Create", "Files"],
+  ["File Delete", "Files"],
+  ["File Update", "Files"],
+  ["LegalCase Create", "Admin"],
+  ["LegalCase Delete", "Admin"],
+  ["LegalCase Update", "Admin"],
+  ["Meeting Create", "Updates"],
+  ["Meeting Delete", "Updates"],
+  ["Meeting Update", "Updates"],
+  ["Note Create", "Updates"],
+  ["Note Delete", "Updates"],
+  ["Note Update", "Updates"],
+]);
+
+export const logLabel = (
+  targetAction: string | undefined,
+  targetType: string | undefined
+) => {
+  return LogLabels.get(`${targetType} ${targetAction}`);
+};
+
+export const paddedUpdateId = (id: number | undefined) => {
+  return `UD${id?.toString().padStart(5, "0")}`;
+};
+
+export const fileTypeText = (fileType: string | undefined) => {
+  switch (fileType) {
+    case "pdf":
+      return "PDF";
+    case "docx":
+      return "Word document";
+    case "xlsx":
+      return "Excel document";
+    case "pptx":
+      return "PowerPoint document";
+    case "jpg":
+      return "image";
+    case "jpeg":
+      return "image";
+    case "png":
+      return "image";
+    default:
+      return "file";
+  }
+};

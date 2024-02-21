@@ -1,5 +1,4 @@
 import logo from "../logo-small.svg";
-import userDefaultAvatar from "../user-default-avatar.jpeg";
 import React, { useEffect, useContext } from "react";
 import { IconButton } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
@@ -25,7 +24,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import i18n from "../i18n";
 import { UserInfo } from "../auth";
 import { useStyles } from "../utils";
-import { ICaseOffice, IInstance } from "../types";
+import { ICaseOffice } from "../types";
 import {
   getCaseOffices,
   getCaseTypes,
@@ -228,11 +227,6 @@ const Component = () => {
         <div className={classes.drawerContainer}>
           <Card onClick={accountSettings}>
             <CardActionArea className={classes.root}>
-              <CardMedia
-                className={classes.media}
-                image={userDefaultAvatar}
-                title={i18n.t("Default user avatar")}
-              />
               <CardContent>
                 <Typography
                   gutterBottom
@@ -284,19 +278,7 @@ const Component = () => {
               </ListItemIcon>
               <ListItemText primary={i18n.t("Case list")} />
             </ListItem>
-            <ListItem
-              button
-              key="meetings"
-              onClick={() => {
-                history.push("/meetings");
-                closeDrawer();
-              }}
-            >
-              <ListItemIcon>
-                <ForumIcon style={{ color: "black" }} />
-              </ListItemIcon>
-              <ListItemText primary={i18n.t("All meetings")} />
-            </ListItem>
+            
           </List>
           <List className={classes.drawerListFooter}>
             <ListItem button key="accountSettings" onClick={accountSettings}>

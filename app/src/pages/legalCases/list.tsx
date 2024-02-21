@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
-import { Breadcrumbs, Container, Button, Grid } from "@material-ui/core";
+import { Breadcrumbs, Container, Grid } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
-import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
 import i18n from "../../i18n";
 import Layout from "../../components/layout";
@@ -81,16 +80,6 @@ const Page = () => {
             <Typography variant="h6">
               <strong>{i18n.t("Case list")}</strong>
             </Typography>
-          </Grid>
-          <Grid item className={classes.zeroWidthOnMobile}>
-            <Button
-              className={classes.canBeFab}
-              color="primary"
-              variant="contained"
-              startIcon={<CreateNewFolderIcon />}
-            >
-              {i18n.t("New case")}
-            </Button>
           </Grid>
         </Grid>
         <LegalCasesTable legalCases={legalCases ? legalCases : []} />

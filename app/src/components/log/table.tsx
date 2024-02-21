@@ -1,58 +1,21 @@
+
 import React, { useEffect } from "react";
 import SearchIcon from "@material-ui/icons/Search";
+import { useHistory } from "react-router-dom";
 
 import Typography from "@mui/material/Typography";
-import Chip from "@mui/material/Chip";
-import userDefaultAvatar from "../../user-default-avatar.jpeg";
-import { BlackTooltip } from "../general/tooltip";
-
+import Divider from "@mui/material/Divider";
 import {
-  Divider,
   Grid,
   IconButton,
   Input,
   InputAdornment,
-  InputLabel,
-  ListItem,
-  ListItemText,
-  MenuItem,
-  Select,
-  Box,
 } from "@material-ui/core";
 import List from "@mui/material/List";
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
-import { format } from "date-fns";
 import { ILog, IUser } from "../../types";
-
-const LogLabels = new Map([
-  ["LegalCase Create", "Case created"],
-  ["LegalCase Update", "Case update"],
-  ["LegalCase Delete", "Case deleted"],
-  ["Meeting Create", "New meeting"],
-  ["Meeting Update", "Meeting updated"],
-  ["Meeting Delete", "Meeting deleted"],
-  ["File Create", "File uploaded"],
-  ["File Update", "File updated"],
-  ["File Delete", "File deleted"],
-  ["Note Create", "New note"],
-  ["Note Update", "Note updated"],
-  ["Note Delete", "Note deleted"],
-  ["CaseOffice Create", "New case office"],
-  ["CaseType Create", "New case type"],
-  ["Client Create", "New client"],
-  ["Client Update", "Client update"],
-  ["Client Delete", "Client deleted"],
-  ["CaseUpdate Create", "New update"],
-  ["CaseUpdate Delete", "Update deleted"],
-]);
-
-const logLabel = (
-  targetAction: string | undefined,
-  targetType: string | undefined
-) => {
-  return LogLabels.get(`${targetType} ${targetAction}`);
-};
+import { caseHistoryUpdateText } from "../../components";
 
 type Props = {
   logs: ILog[];
@@ -61,6 +24,7 @@ type Props = {
 };
 
 const Component = (props: Props) => {
+  const history = useHistory();
   const classes = useStyles();
   const [filteredLogs, setfilteredLogs] = React.useState<ILog[]>();
   const [filterLogsValue, setfilterLogsValue] = React.useState<string>();
@@ -97,38 +61,11 @@ const Component = (props: Props) => {
   return (
     <div>
       <Grid container direction="row" spacing={2} alignItems="center">
-        <Grid item style={{ flexGrow: 1 }}>
-          <strong>
-            {filteredLogs ? filteredLogs.length : "0"} {i18n.t("Logs")}
-          </strong>
-        </Grid>
-        <Grid item>
-          <InputLabel
-            className={classes.inputLabel}
-            htmlFor="sort_table"
-            shrink={true}
-          >
-            {i18n.t("Sort")}:
-          </InputLabel>
-        </Grid>
-        <Grid item>
-          <Select
-            id="sort_table"
-            className={classes.select}
-            disableUnderline
-            input={<Input />}
-            value="alphabetical"
-          >
-            <MenuItem key="alphabetical" value="alphabetical">
-              {i18n.t("Alphabetical")}
-            </MenuItem>
-          </Select>
-        </Grid>
         <Grid item md={12}>
           <Input
             id="table_search"
             fullWidth
-            placeholder={i18n.t("Search updates...")}
+            placeholder={i18n.t("Filter history...")}
             startAdornment={
               <InputAdornment position="start">
                 <IconButton>
@@ -151,48 +88,17 @@ const Component = (props: Props) => {
           ? filteredLogs
               ?.slice(0)
               .reverse()
-              .map((item) => (
-                <>
-                  <ListItem className={classes.caseHistoryList}>
-                    <Chip
-                      label={logLabel(item.action, item.target_type)}
-                      className={classes.chip}
-                    />
-                    <ListItemText
-                      primary={
-                        <Typography variant="caption">{item.note}</Typography>
-                      }
-                      style={{ flexGrow: 1 }}
-                      className={`${classes.caseHistoryText} ${classes.noOverflow}`}
-                    />
-                    <Box className={classes.caseHistoryBox}>
-                      <BlackTooltip
-                        title={props.users
-                          ?.filter(
-                            (user: IUser) =>
-                              [item.user].indexOf(user.id as number) > -1
-                          )
-                          .map((user: IUser) => user.name)}
-                        arrow
-                        placement="top"
-                      >
-                        <img
-                          className={classes.updateAvatar}
-                          src={userDefaultAvatar}
-                          alt={"user"}
-                          loading={"lazy"}
-                        />
-                      </BlackTooltip>
-                      <Typography sx={{ fontSize: "11px", color: "#616161" }}>
-                        {format(new Date(item?.created_at!), "MMM dd, yyyy")}
-                      </Typography>
-                    </Box>
-                  </ListItem>
-                  <Divider />
-                </>
-              ))
+              .map((item) => caseHistoryUpdateText(item, classes, history))
           : ""}
       </List>
+      <Grid container justifyContent="space-between">
+        <Grid item>
+          <Typography variant="caption">
+            Showing {filteredLogs?.length} of {props.logs?.length}{" "}
+            updates
+          </Typography>
+        </Grid>
+      </Grid>
     </div>
   );
 };

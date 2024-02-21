@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import Box from "@material-ui/core/Box";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -7,16 +6,14 @@ import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
-import Chip from "@mui/material/Chip";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Input, MenuItem } from "@material-ui/core";
 import LockIcon from "@mui/icons-material/Lock";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormHelperText from "@mui/material/FormHelperText";
+import { useHistory } from "react-router-dom";
 
 import { BlackTooltip } from "../general/tooltip";
 import { useStyles } from "../../utils";
@@ -26,7 +23,6 @@ import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
 import UpdateDialog from "./updateDialog";
 import i18n from "../../i18n";
-import userDefaultAvatar from "../../user-default-avatar.jpeg";
 import { updateLegalCase, getLogs, getLegalCase } from "../../api";
 import {
   ILegalCase,
@@ -38,26 +34,7 @@ import {
   SnackbarState,
   ILegalCaseFile,
 } from "../../types";
-
-const LogLabels = new Map([
-  ["LegalCase Create", "Case created"],
-  ["LegalCase Update", "Case update"],
-  ["Meeting Create", "New meeting"],
-  ["Meeting Update", "Meeting updated"],
-  ["File Create", "File uploaded"],
-  ["File Update", "File updated"],
-  ["Note Create", "New note"],
-  ["Note Update", "Note updated"],
-  ["CaseUpdate Create", "New update"],
-  ["CaseUpdate Delete", "Update deleted"],
-]);
-
-const logLabel = (
-  targetAction: string | undefined,
-  targetType: string | undefined
-) => {
-  return LogLabels.get(`${targetType} ${targetAction}`);
-};
+import { caseHistoryUpdateText } from "../../components";
 
 type Props = {
   legalCase: ILegalCase;
@@ -72,6 +49,7 @@ type Props = {
 };
 
 export default function CaseInfoTab(props: Props) {
+  const history = useHistory();
   const classes = useStyles();
   const [contextOffices] = useContext(CaseOfficesContext);
   const [contextCaseTypes] = useContext(CaseTypesContext);
@@ -307,87 +285,7 @@ export default function CaseInfoTab(props: Props) {
               ? props.caseHistory
                   ?.slice(0)
                   .reverse()
-                  .map((item) => (
-                    <React.Fragment key={`caseHistory_${item.id}`}>
-                      <ListItem className={classes.caseHistoryList}>
-                        <Chip
-                          label={logLabel(item.action, item.target_type)}
-                          className={classes.chip}
-                        />
-                        <ListItemText
-                          primary={
-                            item.target_type === "LegalCase" &&
-                            item.action === "Create" ? (
-                              <Typography variant="caption">
-                                {format(
-                                  new Date(item.created_at as string),
-                                  "dd/MM/yyyy (h:ma)"
-                                )}
-                              </Typography>
-                            ) : item?.changes?.length > 0 &&
-                              item.changes?.[0].field === "summary" ? (
-                              <Typography variant="caption">
-                                {`Summary changed to "${item.changes?.[0].value}"`}
-                              </Typography>
-                            ) : item?.changes?.length > 0 &&
-                              item.changes?.[0].field === "state" ? (
-                              <Typography variant="caption">
-                                {`Status changed to "${item.changes?.[0].value}"`}
-                              </Typography>
-                            ) : item?.changes?.length > 0 &&
-                              item.changes?.[0].field === "case_types" ? (
-                              <Typography variant="caption">
-                                {`Case type changed to "${contextCaseTypes
-                                  ?.filter(
-                                    (caseType: ICaseType) =>
-                                      item.changes?.[0].value.indexOf(
-                                        caseType.id
-                                      ) > -1
-                                  )
-                                  .map(
-                                    (caseType: ICaseType) => caseType.title
-                                  )}"`}
-                              </Typography>
-                            ) : item?.changes?.length > 0 &&
-                              item.action === "Update" ? (
-                              <Typography variant="caption">
-                                {`${item.note}'s ${item.changes?.[0].field} changed to "${item.changes?.[0].value}"`}
-                              </Typography>
-                            ) : (
-                              <Typography variant="caption">
-                                {item.note}
-                              </Typography>
-                            )
-                          }
-                          className={`${classes.caseHistoryText} ${classes.noOverflow}`}
-                        />
-                        <Box className={classes.caseHistoryBox}>
-                          <BlackTooltip
-                            title={item.extra ? item.extra.user.name : ""}
-                            arrow
-                            placement="top"
-                          >
-                            <img
-                              className={classes.updateAvatar}
-                              src={userDefaultAvatar}
-                              alt={"user"}
-                              loading={"lazy"}
-                            />
-                          </BlackTooltip>
-
-                          <Typography
-                            sx={{ fontSize: "11px", color: "#616161" }}
-                          >
-                            {format(
-                              new Date(item?.created_at!),
-                              "MMM dd, yyyy"
-                            )}
-                          </Typography>
-                        </Box>
-                      </ListItem>
-                      <Divider />
-                    </React.Fragment>
-                  ))
+                  .map((item) => caseHistoryUpdateText(item, classes, history))
               : ""}
           </List>
           <Grid container justifyContent="space-between">
@@ -395,11 +293,6 @@ export default function CaseInfoTab(props: Props) {
               <Typography variant="caption">
                 Showing {props.caseHistory?.length} of{" "}
                 {props.caseHistory?.length} updates
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="caption">
-                {/* <a href="/#">Show all updates</a> */}
               </Typography>
             </Grid>
           </Grid>

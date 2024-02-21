@@ -14,8 +14,8 @@ import {
   ILanguage,
   ISiteNotice,
   ISetting,
-  IInstance,
   IClientFile,
+  INote
 } from "./types";
 import { UserInfo } from "./auth";
 
@@ -365,6 +365,10 @@ export const getCaseUpdates = async (id: number) => {
   return await httpGet<any>(`/case-updates/?legal_case=${id}`);
 };
 
+export const getCaseUpdate = async (id: number) => {
+  return await httpGet<any>(`/case-updates/${id}`);
+};
+
 export const createCaseUpdate = async (caseUpdate: any) => {
   return await httpPost<any, any>(`/case-updates/`, caseUpdate);
 };
@@ -373,7 +377,11 @@ export const deleteCaseUpdate = async (id: number) => {
   return await httpDelete<any>(`/case-updates/${id}/`);
 };
 
-export const updateNote = async (note: any) => {
+export const getNote = async (id: number) => {
+  return await httpGet<INote>(`/notes/${id}/`);
+};
+
+export const updateNote = async (note: INote) => {
   return await httpPatch<any, any>(`/notes/${note.id}/`, note);
 };
 
