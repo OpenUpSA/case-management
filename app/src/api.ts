@@ -15,7 +15,7 @@ import {
   ISiteNotice,
   ISetting,
   IClientFile,
-  INote
+  INote,
 } from "./types";
 import { UserInfo } from "./auth";
 
@@ -31,9 +31,14 @@ async function http<T>(path: string, config: RequestInit): Promise<T> {
     userInfo.clear();
     window.location.href = "/login";
   }
-  return response.json().catch((e) => {
-    console.log(e);
-  });
+  // If response OK then return it otherwise return empty JSON
+  if (response.ok) {
+    return response.json().catch((e) => {
+      console.log(e);
+    });
+  } else {
+    return Promise.reject(new Error("Failed to fetch"));
+  }
 }
 
 type renameOptionsType = {

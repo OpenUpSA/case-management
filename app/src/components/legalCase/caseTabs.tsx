@@ -100,11 +100,6 @@ export default function CaseTabs(props: Props) {
         }
       } catch (e: any) {
         props.setIsLoading(false);
-        props.setShowSnackbar({
-          open: true,
-          message: e.message,
-          severity: "error",
-        });
       }
     }
     fetchData();
