@@ -11,6 +11,7 @@ import {
   ICredentials,
   ILog,
   ILegalCaseFile,
+  ILegalCaseReferral,
   ILanguage,
   ISiteNotice,
   ISetting,
@@ -468,4 +469,36 @@ export const createClientDependent = async (
     `/client-dependents/`,
     clientDependent
   );
+};
+
+export const getLegalCaseReferrals = async (legal_case?: number) => {
+  return await httpGet<ILegalCaseReferral[]>(
+    `/referrals/${legal_case ? `?legal_case=${legal_case}` : ""}`
+  );
+};
+
+export const getLegalCaseReferral = async (id: number) => {
+  return await httpGet<ILegalCaseReferral>(`/referrals/${id}/`);
+};
+
+export const createLegalCaseReferral = async (
+  legalCaseReferral: ILegalCaseReferral
+) => {
+  return await httpPost<ILegalCaseReferral, ILegalCaseReferral>(
+    `/referrals/`,
+    legalCaseReferral
+  );
+};
+
+export const updateLegalCaseReferral = async (
+  legalCaseReferral: ILegalCaseReferral
+) => {
+  return await httpPatch<ILegalCaseReferral, ILegalCaseReferral>(
+    `/referrals/${legalCaseReferral.id}/`,
+    legalCaseReferral
+  );
+};
+
+export const deleteLegalCaseReferral = async (id: number) => {
+  return await httpDelete<ILegalCaseReferral>(`/referrals/${id}/`);
 };

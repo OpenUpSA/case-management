@@ -232,3 +232,14 @@ export interface ISetting {
   name: string;
   value: any;
 }
+
+export interface ILegalCaseReferral {
+  id: number;
+  created_at: Date;
+  updated_at: Date;
+  legal_case: number;
+  referred_to: number;
+  referral_date: Date;
+  reference_number: string;
+  details: string;
+}

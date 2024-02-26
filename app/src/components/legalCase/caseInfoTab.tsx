@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Input, MenuItem } from "@material-ui/core";
 import LockIcon from "@mui/icons-material/Lock";
+import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormHelperText from "@mui/material/FormHelperText";
 import { useHistory } from "react-router-dom";
@@ -18,12 +19,17 @@ import { useHistory } from "react-router-dom";
 import { BlackTooltip } from "../general/tooltip";
 import { useStyles } from "../../utils";
 import SnackbarAlert from "../../components/general/snackBar";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
 import UpdateDialog from "./updateDialog";
 import i18n from "../../i18n";
-import { updateLegalCase, getLogs, getLegalCase } from "../../api";
+import {
+  updateLegalCase,
+  getLogs,
+  getLegalCase,
+  getLegalCaseReferrals,
+} from "../../api";
 import {
   ILegalCase,
   ICaseType,
@@ -33,6 +39,7 @@ import {
   ILog,
   SnackbarState,
   ILegalCaseFile,
+  ILegalCaseReferral,
 } from "../../types";
 import { caseHistoryUpdateText } from "../../components";
 
@@ -69,9 +76,20 @@ export default function CaseInfoTab(props: Props) {
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [summaryLoader, setSummaryLoader] = useState<boolean>(false);
+  const [legalCaseReferrals, setLegalCaseReferrals] =
+    React.useState<ILegalCaseReferral[]>();
 
   useEffect(() => {
     setIsLoading(true);
+
+    async function fetchData() {
+      const dataLegalCaseReferrals = await getLegalCaseReferrals(
+        props.legalCase?.id!
+      );
+      setLegalCaseReferrals(dataLegalCaseReferrals);
+    }
+    fetchData();
+
     setSelectCaseOffice(props.legalCase?.case_offices);
     setCaseSummary(props.legalCase?.summary);
     setSelectCaseType(props.legalCase?.case_types);
@@ -442,6 +460,33 @@ export default function CaseInfoTab(props: Props) {
               ),
             }}
           />
+
+          {legalCaseReferrals && (
+            <>
+              <InputLabel htmlFor="put-later" className={classes.plainLabel}>
+                {i18n.t("Case referrals")}:
+              </InputLabel>
+              <TextField
+                variant="standard"
+                value={legalCaseReferrals.length}
+                fullWidth
+                className={classes.smallTextField}
+                InputProps={{
+                  readOnly: true,
+                  disableUnderline: true,
+                  style: { fontSize: 13 },
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <OpenInNewIcon
+                        fontSize="small"
+                        style={{ color: "#c2c2c2" }}
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </>
+          )}
         </Grid>
       </Grid>
       {showSnackbar.open && (

@@ -18,6 +18,7 @@ from case_management.models import (
     Language,
     SiteNotice,
     Setting,
+    LegalCaseReferral,
 )
 from case_management.forms import UserCreationForm, UserChangeForm
 
@@ -153,6 +154,7 @@ class FileAdmin(DefaultAdmin):
     model = File
     list_display = ['legal_case', 'upload']
 
+
 class ClientFileAdmin(DefaultAdmin):
     model = ClientFile
     list_display = ['client', 'upload']
@@ -199,6 +201,11 @@ class SettingAdmin(admin.ModelAdmin):
     list_display = ['name', 'value']
 
 
+class LegalCaseReferralAdmin(admin.ModelAdmin):
+    list_display = ['legal_case', 'reference_number', 'referred_to']
+    list_filter = ['legal_case', 'reference_number', 'referred_to']
+
+
 admin.site.register(Setting, SettingAdmin)
 admin.site.register(CaseType, CaseTypeAdmin)
 admin.site.register(CaseOffice, CaseOfficeAdmin)
@@ -215,3 +222,4 @@ admin.site.register(LogChange, LogChangeAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Language, LanguageAdmin)
 admin.site.register(SiteNotice, SiteNoticeAdmin)
+admin.site.register(LegalCaseReferral, LegalCaseReferralAdmin)

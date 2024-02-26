@@ -45,6 +45,7 @@ from case_management.serializers import (
     LogSerializer,
     SiteNoticeSerializer,
     SettingSerializer,
+    LegalCaseReferralSerializer,
 )
 from case_management.models import (
     CaseOffice,
@@ -62,6 +63,7 @@ from case_management.models import (
     Language,
     SiteNotice,
     Setting,
+    LegalCaseReferral,
 )
 from case_management import queries
 
@@ -245,6 +247,13 @@ class NoteViewSet(LoggedModelViewSet):
 class UserListViewSet(ListViewSet):
     queryset = User.objects.all()
     serializer_class = UserListSerializer
+
+
+class LegalCaseReferralViewSet(LoggedModelViewSet):
+    queryset = LegalCaseReferral.objects.all()
+    serializer_class = LegalCaseReferralSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['legal_case']
 
 
 class UserViewSet(UpdateRetrieveViewSet):
