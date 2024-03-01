@@ -15,6 +15,7 @@ import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormHelperText from "@mui/material/FormHelperText";
 import { useHistory } from "react-router-dom";
+import Link from "@material-ui/core/Link";
 
 import { BlackTooltip } from "../general/tooltip";
 import { useStyles } from "../../utils";
@@ -467,6 +468,9 @@ export default function CaseInfoTab(props: Props) {
                 {i18n.t("Case referrals")}:
               </InputLabel>
               <TextField
+                onClick={() =>
+                  history.push(`/cases/${props.legalCase.id}/referrals`)
+                }
                 variant="standard"
                 value={legalCaseReferrals.length}
                 fullWidth
