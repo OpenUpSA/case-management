@@ -1,12 +1,6 @@
-import { useHistory } from "react-router-dom";
+import { useState } from "react";
 import {
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   IconButton,
 } from "@material-ui/core";
 
@@ -18,20 +12,29 @@ import CloseIcon from "@material-ui/icons/Close";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 
-import { ILegalCase, ILegalCaseReferral } from "../../types";
+import { ILegalCaseReferral } from "../../types";
 import { useStyles } from "../../utils";
 
 import LegalCaseReferralForm from "../../components/legalCaseReferral/form";
+import { updateLegalCaseReferral } from "../../api";
 
 type Props = {
   open: boolean;
   dialogClose: () => void;
   legalCaseReferral: ILegalCaseReferral;
+  setLegalCaseReferral: (legalCaseReferral: ILegalCaseReferral) => void;
+  updateListHandler: () => void;
 };
 
 const Component = (props: Props) => {
   const classes = useStyles();
-  const history = useHistory();
+
+  const updateExisting = () => {
+    updateLegalCaseReferral(props.legalCaseReferral).then((response) => {
+      props.dialogClose();
+      props.updateListHandler();
+    });
+  };
 
   return (
     <Dialog open={props.open} onClose={props.dialogClose} fullWidth maxWidth="sm">
@@ -54,6 +57,7 @@ const Component = (props: Props) => {
         <Divider />
         <LegalCaseReferralForm
           legalCaseReferral={props.legalCaseReferral}
+          setLegalCaseReferral={props.setLegalCaseReferral}
         ></LegalCaseReferralForm>
       </DialogContent>
 
@@ -72,6 +76,7 @@ const Component = (props: Props) => {
           color="primary"
           variant="contained"
           className={classes.dialogSubmit}
+          onClick={updateExisting}
         >
           Upate referral
         </Button>

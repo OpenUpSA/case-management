@@ -15,12 +15,11 @@ import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormHelperText from "@mui/material/FormHelperText";
 import { useHistory } from "react-router-dom";
-import Link from "@material-ui/core/Link";
 
 import { BlackTooltip } from "../general/tooltip";
 import { useStyles } from "../../utils";
 import SnackbarAlert from "../../components/general/snackBar";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
 import UpdateDialog from "./updateDialog";
@@ -43,6 +42,8 @@ import {
   ILegalCaseReferral,
 } from "../../types";
 import { caseHistoryUpdateText } from "../../components";
+import LegalCaseReferralList from "../../components/legalCaseReferral/list";
+import LegalCaseReferralNew from "../../components/legalCaseReferral/new";
 
 type Props = {
   legalCase: ILegalCase;
@@ -69,6 +70,11 @@ export default function CaseInfoTab(props: Props) {
     number[] | undefined
   >([]);
   const [open, setOpen] = useState(false);
+  const [dialogLegalCaseReferralsNewOpen, setDialogLegalCaseReferralsNewOpen] =
+    useState(false);
+  const [dialogLegalCaseReferralsOpen, setDialogLegalCaseReferralsOpen] =
+    useState(false);
+
   const [showButton, setShowButton] = useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = useState<SnackbarState>({
     open: false,
@@ -80,17 +86,16 @@ export default function CaseInfoTab(props: Props) {
   const [legalCaseReferrals, setLegalCaseReferrals] =
     React.useState<ILegalCaseReferral[]>();
 
+  const fetchData = async() => {
+    const dataLegalCaseReferrals = await getLegalCaseReferrals(
+      props.legalCase?.id!
+    );
+    setLegalCaseReferrals(dataLegalCaseReferrals);
+  }
+
   useEffect(() => {
     setIsLoading(true);
-
-    async function fetchData() {
-      const dataLegalCaseReferrals = await getLegalCaseReferrals(
-        props.legalCase?.id!
-      );
-      setLegalCaseReferrals(dataLegalCaseReferrals);
-    }
     fetchData();
-
     setSelectCaseOffice(props.legalCase?.case_offices);
     setCaseSummary(props.legalCase?.summary);
     setSelectCaseType(props.legalCase?.case_types);
@@ -196,6 +201,18 @@ export default function CaseInfoTab(props: Props) {
 
   const dialogOpen = () => {
     setOpen(true);
+  };
+
+  const openDialogLegalCaseReferralsNew = () => {
+    setDialogLegalCaseReferralsNewOpen(true);
+  };
+
+  const closeDialogLegalCaseReferralsNew = () => {
+    setDialogLegalCaseReferralsNewOpen(false);
+  };
+
+  const closeDialogLegalCaseReferrals = () => {
+    setDialogLegalCaseReferralsOpen(false);
   };
 
   return (
@@ -468,13 +485,12 @@ export default function CaseInfoTab(props: Props) {
                 {i18n.t("Case referrals")}:
               </InputLabel>
               <TextField
-                onClick={() =>
-                  history.push(`/cases/${props.legalCase.id}/referrals`)
-                }
+                onClick={() => setDialogLegalCaseReferralsOpen(true)}
                 variant="standard"
                 value={legalCaseReferrals.length}
                 fullWidth
                 className={classes.smallTextField}
+                sx={{ input: { cursor: "pointer" } }}
                 InputProps={{
                   readOnly: true,
                   disableUnderline: true,
@@ -500,6 +516,23 @@ export default function CaseInfoTab(props: Props) {
           severity={showSnackbar.severity}
         />
       )}
+
+      {legalCaseReferrals && (
+        <LegalCaseReferralList
+          open={dialogLegalCaseReferralsOpen}
+          legalCaseReferrals={legalCaseReferrals}
+          dialogNewOpen={openDialogLegalCaseReferralsNew}
+          dialogClose={closeDialogLegalCaseReferrals}
+          updateListHandler={fetchData}
+        ></LegalCaseReferralList>
+      )}
+
+      <LegalCaseReferralNew
+        open={dialogLegalCaseReferralsNewOpen}
+        dialogClose={closeDialogLegalCaseReferralsNew}
+        legalCase={props.legalCase}
+        updateListHandler={fetchData}
+      ></LegalCaseReferralNew>
     </>
   );
 }

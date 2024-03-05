@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
-import Divider from "@mui/material/Divider";
-import { Breadcrumbs, Button, IconButton } from "@material-ui/core";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import CloseIcon from "@material-ui/icons/Close";
-import Box from "@mui/material/Box";
+import { Breadcrumbs, Button } from "@material-ui/core";
 
 import Layout from "../../components/layout";
 import { getClient, getLegalCase, getLegalCaseReferrals } from "../../api";
@@ -35,6 +28,7 @@ const Page = () => {
   const classes = useStyles();
   const params = useParams<RouteParams>();
   const caseId = parseInt(params.id);
+  const [open, setOpen] = useState<boolean>(true);
   const [newOpen, setNewOpen] = useState<boolean>(false);
 
   const [legalCaseReferrals, setLegalCaseReferrals] = useState<
@@ -73,24 +67,25 @@ const Page = () => {
     resetState();
   }, [showSnackbar.open]);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const dataLegalCase = await getLegalCase(caseId);
-        const dataLegalCaseReferrals = await getLegalCaseReferrals(caseId);
-        const dataClient = await getClient(dataLegalCase.client);
+  const fetchData = async () => {
+    try {
+      const dataLegalCase = await getLegalCase(caseId);
+      const dataLegalCaseReferrals = await getLegalCaseReferrals(caseId);
+      const dataClient = await getClient(dataLegalCase.client);
 
-        setLegalCase(dataLegalCase);
-        setLegalCaseReferrals(dataLegalCaseReferrals);
-        setClient(dataClient);
-      } catch (e: any) {
-        setShowSnackbar({
-          open: true,
-          message: e.message,
-          severity: "error",
-        });
-      }
+      setLegalCase(dataLegalCase);
+      setLegalCaseReferrals(dataLegalCaseReferrals);
+      setClient(dataClient);
+    } catch (e: any) {
+      setShowSnackbar({
+        open: true,
+        message: e.message,
+        severity: "error",
+      });
     }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [caseId]);
 
@@ -108,16 +103,21 @@ const Page = () => {
       </Breadcrumbs>
 
       <LegalCaseReferralList
+        open={open}
         legalCaseReferrals={legalCaseReferrals}
         dialogNewOpen={dialogNewOpen}
         dialogClose={dialogClose}
+        updateListHandler={fetchData}
       ></LegalCaseReferralList>
 
-      <LegalCaseReferralNew
-        open={newOpen}
-        dialogClose={dialogNewClose}
-        legalCase={legalCase}
-      ></LegalCaseReferralNew>
+      {legalCase && (
+        <LegalCaseReferralNew
+          open={newOpen}
+          dialogClose={dialogNewClose}
+          legalCase={legalCase}
+          updateListHandler={fetchData}
+        ></LegalCaseReferralNew>
+      )}
 
       {showSnackbar.open && (
         <SnackbarAlert

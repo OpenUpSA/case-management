@@ -33,6 +33,7 @@ const Page = () => {
   const classes = useStyles();
   const params = useParams<RouteParams>();
   const legalCaseReferralId = parseInt(params.id);
+  const [open, setOpen] = useState<boolean>(true);
   const [editOpen, setEditOpen] = useState<boolean>(true);
 
   const [legalCaseReferral, setLegalCaseReferral] =
@@ -73,32 +74,33 @@ const Page = () => {
     resetState();
   }, [showSnackbar.open]);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const dataLegalCaseReferral = await getLegalCaseReferral(
-          legalCaseReferralId
-        );
-        const dataLegalCase = await getLegalCase(
-          dataLegalCaseReferral.legal_case
-        );
-        const dataLegalCaseReferrals = await getLegalCaseReferrals(
-          dataLegalCaseReferral.legal_case
-        );
-        const dataClient = await getClient(dataLegalCase.client);
+  const fetchData = async () => {
+    try {
+      const dataLegalCaseReferral = await getLegalCaseReferral(
+        legalCaseReferralId
+      );
+      const dataLegalCase = await getLegalCase(
+        dataLegalCaseReferral.legal_case
+      );
+      const dataLegalCaseReferrals = await getLegalCaseReferrals(
+        dataLegalCaseReferral.legal_case
+      );
+      const dataClient = await getClient(dataLegalCase.client);
 
-        setLegalCaseReferral(dataLegalCaseReferral);
-        setLegalCase(dataLegalCase);
-        setLegalCaseReferrals(dataLegalCaseReferrals);
-        setClient(dataClient);
-      } catch (e: any) {
-        setShowSnackbar({
-          open: true,
-          message: e.message,
-          severity: "error",
-        });
-      }
+      setLegalCaseReferral(dataLegalCaseReferral);
+      setLegalCase(dataLegalCase);
+      setLegalCaseReferrals(dataLegalCaseReferrals);
+      setClient(dataClient);
+    } catch (e: any) {
+      setShowSnackbar({
+        open: true,
+        message: e.message,
+        severity: "error",
+      });
     }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [legalCaseReferralId]);
 
@@ -116,9 +118,11 @@ const Page = () => {
       </Breadcrumbs>
 
       <LegalCaseReferralList
+        open={open}
         legalCaseReferrals={legalCaseReferrals}
         dialogNewOpen={dialogEditOpen}
         dialogClose={dialogClose}
+        updateListHandler={fetchData}
       ></LegalCaseReferralList>
 
       {legalCaseReferral && (
@@ -126,6 +130,8 @@ const Page = () => {
           open={editOpen}
           dialogClose={dialogEditClose}
           legalCaseReferral={legalCaseReferral}
+          setLegalCaseReferral={setLegalCaseReferral}
+          updateListHandler={fetchData}
         ></LegalCaseReferralEdit>
       )}
 

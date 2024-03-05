@@ -11,25 +11,12 @@ import { ILegalCaseReferral, ILegalCase } from "../../types";
 import { useStyles } from "../../utils";
 
 type Props = {
-  legalCaseReferral?: ILegalCaseReferral;
+  legalCaseReferral: ILegalCaseReferral;
+  setLegalCaseReferral: (legalCaseReferral: ILegalCaseReferral) => void;
 };
 
 const Component = (props: Props) => {
   const classes = useStyles();
-  const [legalCaseReferral, setLegalCaseRefferal] =
-    useState<ILegalCaseReferral>({
-      referred_to: "",
-      referral_date: "",
-      reference_number: "",
-      details: "",
-      legal_case: -1
-    });
-
-  useEffect(() => {
-    if (props.legalCaseReferral) {
-      setLegalCaseRefferal(props.legalCaseReferral);
-    }
-  }, [props.legalCaseReferral]);
 
   return (
     <div>
@@ -55,12 +42,12 @@ const Component = (props: Props) => {
               disableUnderline={true}
               className={classes.textField}
               aria-describedby="Input referred to"
-              value={legalCaseReferral?.referred_to}
+              value={props.legalCaseReferral.referred_to}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setLegalCaseRefferal((legalCaseReferral) => ({
-                  ...legalCaseReferral,
+                props.setLegalCaseReferral({
+                  ...props.legalCaseReferral,
                   referred_to: e.target.value,
-                }));
+                });
               }}
             />
           </FormControl>
@@ -79,12 +66,12 @@ const Component = (props: Props) => {
               disableUnderline={true}
               className={classes.textField}
               aria-describedby="Input the reference number"
-              value={legalCaseReferral.reference_number}
+              value={props.legalCaseReferral.reference_number}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setLegalCaseRefferal((legalCaseReferral) => ({
-                  ...legalCaseReferral,
+                props.setLegalCaseReferral({
+                  ...props.legalCaseReferral,
                   reference_number: e.target.value,
-                }));
+                });
               }}
             />
           </FormControl>
@@ -104,12 +91,12 @@ const Component = (props: Props) => {
               className={classes.textField}
               type={"date"}
               aria-describedby="Input the referral date"
-              value={legalCaseReferral.referral_date}
+              value={props.legalCaseReferral.referral_date}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setLegalCaseRefferal((legalCaseReferral) => ({
-                  ...legalCaseReferral,
+                props.setLegalCaseReferral({
+                  ...props.legalCaseReferral,
                   referral_date: e.target.value,
-                }));
+                });
               }}
             />
           </FormControl>
@@ -130,12 +117,12 @@ const Component = (props: Props) => {
               disableUnderline={true}
               className={classes.textField}
               aria-describedby="input for official identity number"
-              value={legalCaseReferral.details}
+              value={props.legalCaseReferral.details}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setLegalCaseRefferal((legalCaseReferral) => ({
-                  ...legalCaseReferral,
+                props.setLegalCaseReferral({
+                  ...props.legalCaseReferral,
                   details: e.target.value,
-                }));
+                });
               }}
             />
           </FormControl>
