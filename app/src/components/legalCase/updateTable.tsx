@@ -46,7 +46,7 @@ const UpdateTable = (props: Props) => {
   const [legalCaseFiles, setLegalCaseFiles] = useState<ILegalCaseFile[]>([]);
   const [desktop, setDesktop] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedUpdate, setSelectedUpdate] = useState<any>({});
+  const [selectedUpdate] = useState<any>({});
 
   useEffect(() => {
     setCaseUpdates(props.caseUpdates);

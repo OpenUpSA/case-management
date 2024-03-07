@@ -43,9 +43,6 @@ import {
   IconButton,
   Input,
   InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
   Button,
   Typography,
   ListItemIcon,
@@ -62,7 +59,6 @@ type Props = {
 export default function ClientFileTab(props: Props) {
   const [contextCaseTypes] = useContext(CaseTypesContext);
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [clientFileRenameDialog, setClientFileRenameDialog] =
     React.useState<boolean>(false);
@@ -136,7 +132,7 @@ export default function ClientFileTab(props: Props) {
       refreshUpdates();
     }
     fetchData();
-  }, []);
+  });
 
   const clientFileRename = async (file: IClientFile) => {
     renameClientFile(file)

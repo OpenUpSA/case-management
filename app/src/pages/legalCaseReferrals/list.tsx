@@ -28,7 +28,7 @@ const Page = () => {
   const classes = useStyles();
   const params = useParams<RouteParams>();
   const caseId = parseInt(params.id);
-  const [open, setOpen] = useState<boolean>(true);
+  const [open] = useState<boolean>(true);
   const [newOpen, setNewOpen] = useState<boolean>(false);
 
   const [legalCaseReferrals, setLegalCaseReferrals] = useState<

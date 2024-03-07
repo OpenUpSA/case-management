@@ -1,13 +1,10 @@
-import { Grid, MenuItem, Select } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from "@material-ui/core/FormHelperText";
-
-import { useEffect, useState } from "react";
 import i18n from "../../i18n";
-import { ILegalCaseReferral, ILegalCase } from "../../types";
+import { ILegalCaseReferral } from "../../types";
 import { useStyles } from "../../utils";
 
 type Props = {

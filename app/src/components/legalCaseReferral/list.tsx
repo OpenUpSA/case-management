@@ -19,7 +19,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 
-import { ILegalCaseReferral, SnackbarState } from "../../types";
+import { ILegalCaseReferral } from "../../types";
 import { useStyles } from "../../utils";
 
 import { format } from "date-fns";

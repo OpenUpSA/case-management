@@ -1,4 +1,3 @@
-import { red } from "@material-ui/core/colors";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import { styled } from "@mui/material/styles";
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
-import { Breadcrumbs, Button, IconButton } from "@material-ui/core";
+import { Breadcrumbs, Button } from "@material-ui/core";
 
 import Layout from "../../components/layout";
 import {
@@ -33,7 +33,7 @@ const Page = () => {
   const classes = useStyles();
   const params = useParams<RouteParams>();
   const legalCaseReferralId = parseInt(params.id);
-  const [open, setOpen] = useState<boolean>(true);
+  const [open] = useState<boolean>(true);
   const [editOpen, setEditOpen] = useState<boolean>(true);
 
   const [legalCaseReferral, setLegalCaseReferral] =
