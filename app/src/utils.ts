@@ -1029,6 +1029,9 @@ export const LogLabels = new Map([
   ["Note Create", "Updates"],
   ["Note Delete", "Updates"],
   ["Note Update", "Updates"],
+  ["LegalCaseReferral Create", "Updates"],
+  ["LegalCaseReferral Update", "Updates"],
+  ["LegalCaseReferral Delete", "Updates"],
 ]);
 
 export const logLabel = (
