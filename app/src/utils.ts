@@ -1041,7 +1041,7 @@ export const logLabel = (
   return LogLabels.get(`${targetType} ${targetAction}`);
 };
 
-export const paddedUpdateId = (id: number | undefined) => {
+export const paddedUpdateId = (id: number | string | undefined) => {
   return `UD${id?.toString().padStart(5, "0")}`;
 };
 

@@ -97,6 +97,7 @@ const Page = () => {
         message: e.message,
         severity: "error",
       });
+      history.goBack();
     }
   };
 
