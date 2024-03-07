@@ -2,8 +2,6 @@ import { useState } from "react";
 import {
   Button,
   IconButton,
-  ListItemIcon,
-  ListItemText,
 } from "@material-ui/core";
 
 import Table from "@mui/material/Table";
@@ -27,13 +25,6 @@ import { useStyles } from "../../utils";
 import { format } from "date-fns";
 
 import LegalCaseReferralEdit from "../../components/legalCaseReferral/edit";
-import MoreMenu from "../moreMenu";
-import MenuItem from "@mui/material/MenuItem";
-import CircularProgress from "@mui/material/CircularProgress";
-import DeleteIcon from "@mui/icons-material/Delete";
-import i18n from "../../i18n";
-
-import { deleteLegalCaseReferral } from "../../api";
 
 type Props = {
   open: boolean;
@@ -46,43 +37,12 @@ type Props = {
 const Component = (props: Props) => {
   const classes = useStyles();
 
-  const [showSnackbar, setShowSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: "",
-    severity: undefined,
-  });
-  const [deleteLoader, setDeleteLoader] = useState<boolean>(false);
   const [editOpen, setEditOpen] = useState<boolean>(true);
   const [legalCaseReferral, setLegalCaseReferral] =
     useState<ILegalCaseReferral>();
 
   const dialogEditClose = () => {
     setEditOpen(false);
-  };
-
-  const destroyReferral = async (id: number) => {
-    try {
-      setDeleteLoader(true);
-      if (
-        window.confirm(i18n.t("Are you sure you want to delete this referral?"))
-      ) {
-        await deleteLegalCaseReferral(id as number);
-        setShowSnackbar({
-          open: true,
-          message: "Referral deleted",
-          severity: "success",
-        });
-        props.updateListHandler();
-      }
-      setDeleteLoader(false);
-    } catch (e) {
-      setDeleteLoader(false);
-      setShowSnackbar({
-        open: true,
-        message: "Case update delete failed",
-        severity: "error",
-      });
-    }
   };
 
   return (

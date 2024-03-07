@@ -295,7 +295,6 @@ export const caseHistoryUpdateText = (
       break;
 
     case item.action === "Delete" && item.target_type === "LegalCaseReferral":
-      console.log({ item });
       text = <>Referral deleted ({paddedUpdateId(item?.note?.match(/(\d+)/)?.[0])}).</>;
       break;
 

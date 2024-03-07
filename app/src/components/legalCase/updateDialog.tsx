@@ -735,11 +735,11 @@ const UpdateDialog = (props: Props) => {
       >
         <DialogTitle className={classes.dialogTitle}>
           <Box display="flex" alignItems="center">
-            <Box flexGrow={1}>
+          <Box flexGrow="1">
               {props.editView ? i18n.t("Edit update") : i18n.t("New update")}
             </Box>
-            <Box>
-              {props.editView && (
+            {props.editView && (
+              <Box>
                 <MoreMenu>
                   <MenuItem
                     style={{ position: "relative" }}
@@ -764,7 +764,9 @@ const UpdateDialog = (props: Props) => {
                     )}
                   </MenuItem>
                 </MoreMenu>
-              )}
+              </Box>
+            )}
+            <Box sx={{width: "50px"}}>
               <IconButton
                 className={classes.closeButton}
                 size={"medium"}

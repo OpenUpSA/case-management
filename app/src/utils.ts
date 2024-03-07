@@ -262,9 +262,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       display: "block",
     },
     tableBodyRowVariant: {
-      "&:first-child td": {
-        paddingTop: "30px",
-      },
       "&:last-child td": {
         border: "none",
       },
