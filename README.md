@@ -73,6 +73,15 @@ git remote add prod dokku@hetzner1.openup.org.za:osf-case-management-prod
 git push prod master
 ```
 
+Current environments:
+
+```shell
+git push dokku-sandbox master
+git push dokku-prod master
+git push dokku-staging master
+git push dokku-wasafiri master
+```
+
 Migrations are run automatically on deployment.
 
 Other commands can be run on the production server;
