@@ -187,7 +187,7 @@ const Component = (props: Props) => {
               </TableCell>
             </TableRow>
           </TableHead>
-          {filteredLegalCases && filteredLegalCases.length > 0 ? (
+          {filteredLegalCases && (filteredLegalCases.length > 0) && (
             <TableBody>
               {filteredLegalCases.map((legalCase) => (
                 <TableRow
@@ -235,18 +235,7 @@ const Component = (props: Props) => {
                 </TableRow>
               ))}
             </TableBody>
-          ) : (
-            <TableBody>
-              <TableRow
-                className={`${classes.tableBodyRow} ${classes.tableBodyRowEmpty}`}
-              >
-                <TableCell
-                  colSpan={5}
-                  className={classes.tableBodyCell}
-                ></TableCell>
-              </TableRow>
-            </TableBody>
-          )}
+          ) }
         </Table>
       </TableContainer>
       {isLoading && (

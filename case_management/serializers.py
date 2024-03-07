@@ -17,6 +17,7 @@ from case_management.models import (
     Language,
     SiteNotice,
     Setting,
+    LegalCaseReferral,
 )
 from case_management.enums import MaritalStatuses
 
@@ -279,4 +280,10 @@ class SiteNoticeSerializer(serializers.ModelSerializer):
 class SettingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Setting
+        fields = '__all__'
+
+
+class LegalCaseReferralSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LegalCaseReferral
         fields = '__all__'

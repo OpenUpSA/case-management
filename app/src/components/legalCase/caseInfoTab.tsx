@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Input, MenuItem } from "@material-ui/core";
 import LockIcon from "@mui/icons-material/Lock";
+import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormHelperText from "@mui/material/FormHelperText";
 import { useHistory } from "react-router-dom";
@@ -23,7 +24,12 @@ import { CaseOfficesContext } from "../../contexts/caseOfficesContext";
 import { CaseTypesContext } from "../../contexts/caseTypesContext";
 import UpdateDialog from "./updateDialog";
 import i18n from "../../i18n";
-import { updateLegalCase, getLogs, getLegalCase } from "../../api";
+import {
+  updateLegalCase,
+  getLogs,
+  getLegalCase,
+  getLegalCaseReferrals,
+} from "../../api";
 import {
   ILegalCase,
   ICaseType,
@@ -33,8 +39,11 @@ import {
   ILog,
   SnackbarState,
   ILegalCaseFile,
+  ILegalCaseReferral,
 } from "../../types";
 import { caseHistoryUpdateText } from "../../components";
+import LegalCaseReferralList from "../../components/legalCaseReferral/list";
+import LegalCaseReferralNew from "../../components/legalCaseReferral/new";
 
 type Props = {
   legalCase: ILegalCase;
@@ -61,6 +70,11 @@ export default function CaseInfoTab(props: Props) {
     number[] | undefined
   >([]);
   const [open, setOpen] = useState(false);
+  const [dialogLegalCaseReferralsNewOpen, setDialogLegalCaseReferralsNewOpen] =
+    useState(false);
+  const [dialogLegalCaseReferralsOpen, setDialogLegalCaseReferralsOpen] =
+    useState(false);
+
   const [showButton, setShowButton] = useState<boolean>(false);
   const [showSnackbar, setShowSnackbar] = useState<SnackbarState>({
     open: false,
@@ -69,9 +83,19 @@ export default function CaseInfoTab(props: Props) {
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [summaryLoader, setSummaryLoader] = useState<boolean>(false);
+  const [legalCaseReferrals, setLegalCaseReferrals] =
+    React.useState<ILegalCaseReferral[]>();
+
+  const fetchData = async () => {
+    const dataLegalCaseReferrals = await getLegalCaseReferrals(
+      props.legalCase?.id!
+    );
+    setLegalCaseReferrals(dataLegalCaseReferrals);
+  };
 
   useEffect(() => {
     setIsLoading(true);
+    fetchData();
     setSelectCaseOffice(props.legalCase?.case_offices);
     setCaseSummary(props.legalCase?.summary);
     setSelectCaseType(props.legalCase?.case_types);
@@ -179,6 +203,18 @@ export default function CaseInfoTab(props: Props) {
     setOpen(true);
   };
 
+  const openDialogLegalCaseReferralsNew = () => {
+    setDialogLegalCaseReferralsNewOpen(true);
+  };
+
+  const closeDialogLegalCaseReferralsNew = () => {
+    setDialogLegalCaseReferralsNewOpen(false);
+  };
+
+  const closeDialogLegalCaseReferrals = () => {
+    setDialogLegalCaseReferralsOpen(false);
+  };
+
   return (
     <>
       <Grid container spacing={3} className={classes.caseInfoContainer}>
@@ -263,7 +299,11 @@ export default function CaseInfoTab(props: Props) {
               </InputLabel>
             </Grid>
             <Grid item>
-              <Button variant="contained" onClick={() => dialogOpen()}>
+              <Button
+                disableElevation={true}
+                variant="contained"
+                onClick={() => dialogOpen()}
+              >
                 {i18n.t("Add update")}
               </Button>
 
@@ -442,6 +482,35 @@ export default function CaseInfoTab(props: Props) {
               ),
             }}
           />
+
+          {legalCaseReferrals && (
+            <>
+              <InputLabel htmlFor="put-later" className={classes.plainLabel}>
+                {i18n.t("Case referrals")}:
+              </InputLabel>
+              <TextField
+                onClick={() => setDialogLegalCaseReferralsOpen(true)}
+                variant="standard"
+                value={legalCaseReferrals.length}
+                fullWidth
+                className={classes.smallTextField}
+                sx={{ input: { cursor: "pointer" } }}
+                InputProps={{
+                  readOnly: true,
+                  disableUnderline: true,
+                  style: { fontSize: 13 },
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <OpenInNewIcon
+                        fontSize="small"
+                        style={{ color: "#c2c2c2" }}
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </>
+          )}
         </Grid>
       </Grid>
       {showSnackbar.open && (
@@ -451,6 +520,23 @@ export default function CaseInfoTab(props: Props) {
           severity={showSnackbar.severity}
         />
       )}
+
+      {legalCaseReferrals && (
+        <LegalCaseReferralList
+          open={dialogLegalCaseReferralsOpen}
+          legalCaseReferrals={legalCaseReferrals}
+          dialogNewOpen={openDialogLegalCaseReferralsNew}
+          dialogClose={closeDialogLegalCaseReferrals}
+          updateListHandler={fetchData}
+        ></LegalCaseReferralList>
+      )}
+
+      <LegalCaseReferralNew
+        open={dialogLegalCaseReferralsNewOpen}
+        dialogClose={closeDialogLegalCaseReferralsNew}
+        legalCase={props.legalCase}
+        updateListHandler={fetchData}
+      ></LegalCaseReferralNew>
     </>
   );
 }

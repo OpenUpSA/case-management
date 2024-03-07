@@ -538,13 +538,13 @@ class File(LoggedChildModel):
     def upload_file_name(self):
         return os.path.basename(self.upload.file.name)
 
+
 class ClientFile(LoggedModel):
     client = models.ForeignKey(
         Client, related_name='client_files', on_delete=models.CASCADE
     )
     upload = models.FileField(upload_to='uploads/')
-    description = models.CharField(
-        max_length=255, null=False, blank=True, default='')
+    description = models.CharField(max_length=255, null=False, blank=True, default='')
 
     def save(self, *args, **kwargs):
         if self.description == '':
@@ -582,7 +582,9 @@ class Setting(models.Model):
     Model for site-wide settings.
     """
 
-    name = models.CharField(max_length=200, help_text="Name of site-wide variable", unique=True)
+    name = models.CharField(
+        max_length=200, help_text="Name of site-wide variable", unique=True
+    )
     value = models.JSONField(
         null=True,
         blank=True,
@@ -591,3 +593,15 @@ class Setting(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class LegalCaseReferral(LoggedChildModel):
+    legal_case = models.ForeignKey(
+        LegalCase, related_name='legal_case_referral', on_delete=models.CASCADE, null=True, blank=True
+    )
+    referred_to = models.CharField(max_length=100, null=False, blank=False, default='')
+    reference_number = models.CharField(
+        max_length=100, null=False, blank=False, default=''
+    )
+    referral_date = models.DateField(null=False, blank=False)
+    details = models.TextField(null=False, blank=False)

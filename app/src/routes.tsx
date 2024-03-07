@@ -17,6 +17,9 @@ import ClientDependentNewPage from "./pages/clientDependents/new";
 
 import UpdateEditPage from "./pages/updates/edit";
 
+import LegalCaseReferralsPage from "./pages/legalCaseReferrals/list";
+import LegalCaseReferralsEditPage from "./pages/legalCaseReferrals/edit";
+
 import UserPage from "./pages/users/show";
 import UserEditPage from "./pages/users/edit";
 
@@ -102,6 +105,9 @@ function Routes() {
         <Route exact path="/cases/:id/" component={LegalCasePage} />
         <Route exact path="/cases/:id/updates" component={LegalCasePage} />
         <Route exact path="/cases/:id/files" component={LegalCasePage} />
+        <Route exact path="/cases/:id/referrals" component={LegalCaseReferralsPage} />
+
+        <Route exact path="/referrals/:id" component={LegalCaseReferralsEditPage} />
 
         <Route exact path="/updates/:id/edit" component={UpdateEditPage} />
 

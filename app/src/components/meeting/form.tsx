@@ -184,6 +184,7 @@ const Component = (props: Props) => {
               style={{ minHeight: "40px", marginTop: "5px" }}
             >
               <Button
+                disableElevation={true}
                 color="primary"
                 size="small"
                 variant="contained"
@@ -196,6 +197,7 @@ const Component = (props: Props) => {
               </Button>
               {props.meetingFile?.description && (
                 <Button
+                  disableElevation={true}
                   size="small"
                   variant="contained"
                   startIcon={<DeleteIcon />}
@@ -232,6 +234,7 @@ const Component = (props: Props) => {
               <DialogActions>
                 <Button onClick={dialogClose}>Cancel</Button>
                 <Button
+                  disableElevation={true}
                   color="primary"
                   variant="contained"
                   startIcon={<UploadIcon />}

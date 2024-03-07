@@ -8,7 +8,6 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@material-ui/core";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -734,20 +733,13 @@ const UpdateDialog = (props: Props) => {
           },
         }}
       >
-        <Box style={{ margin: 20 }}>
-          <Grid
-            container
-            flexDirection={"row"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            <Grid item>
-              <DialogTitle className={classes.dialogTitle}>
-                {props.editView ? i18n.t("Edit update") : i18n.t("New update")}
-              </DialogTitle>
-            </Grid>
-            <Grid item className={classes.spaceItems}>
-              {props.editView && (
+        <DialogTitle className={classes.dialogTitle}>
+          <Box display="flex" alignItems="center">
+          <Box flexGrow="1">
+              {props.editView ? i18n.t("Edit update") : i18n.t("New update")}
+            </Box>
+            {props.editView && (
+              <Box>
                 <MoreMenu>
                   <MenuItem
                     style={{ position: "relative" }}
@@ -772,7 +764,9 @@ const UpdateDialog = (props: Props) => {
                     )}
                   </MenuItem>
                 </MoreMenu>
-              )}
+              </Box>
+            )}
+            <Box sx={{width: "50px"}}>
               <IconButton
                 className={classes.closeButton}
                 size={"medium"}
@@ -780,8 +774,11 @@ const UpdateDialog = (props: Props) => {
               >
                 <CloseIcon className={classes.closeButtonIcon} />
               </IconButton>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
+        </DialogTitle>
+
+        <Box style={{ margin: 20 }}>
           <UpdateDialogTabs
             onFileChange={onFileChange}
             note={note}
@@ -845,6 +842,7 @@ const UpdateDialog = (props: Props) => {
               {i18n.t("Cancel")}
             </Button>
             <Button
+              disableElevation={true}
               fullWidth
               color="primary"
               variant="contained"

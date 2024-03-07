@@ -13,6 +13,7 @@ from django.conf.urls.static import static
 
 from . import views
 from case_management.views import (
+    LegalCaseReferralViewSet,
     LegalCaseViewSet,
     CaseOfficeViewSet,
     CaseTypeViewSet,
@@ -44,6 +45,7 @@ def trigger_error(request):
 
 router = DefaultRouter()
 router.register(r'api/v1/cases', LegalCaseViewSet)
+router.register(r'api/v1/referrals', LegalCaseReferralViewSet)
 router.register(r'api/v1/clients', ClientViewSet, basename='Client')
 router.register(r'api/v1/client-dependents', ClientDependentViewSet)
 router.register(r'api/v1/case-offices', CaseOfficeViewSet)

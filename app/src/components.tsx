@@ -161,7 +161,8 @@ export const caseHistoryUpdateText = (
     case item.changes?.length > 0 &&
       item.action === "Create" &&
       item.target_type === "Client" &&
-      typeof item.changes?.find((c) => c.field === "preferred_name") !== "undefined":
+      typeof item.changes?.find((c) => c.field === "preferred_name") !==
+        "undefined":
       text = (
         <>
           New client added:{" "}
@@ -262,6 +263,39 @@ export const caseHistoryUpdateText = (
 
     case item.action === "Delete" && item.target_type === "Client":
       text = <>Client deleted ({item.note}).</>;
+      break;
+
+    case item.action === "Create" && item.target_type === "LegalCaseReferral":
+      text = (
+        <>
+          New referral (
+          <Link
+            className={classes.aWithCursorPointer}
+            href={"/referrals/" + item.target_id}
+          >
+            {paddedUpdateId(item.target_id)}
+          </Link>
+          ).
+        </>
+      );
+      break;
+    case item.action === "Update" && item.target_type === "LegalCaseReferral":
+      text = (
+        <>
+          Updated referral (
+          <Link
+            className={classes.aWithCursorPointer}
+            href={"/referrals/" + item.target_id}
+          >
+            {paddedUpdateId(item.target_id)}
+          </Link>
+          ).
+        </>
+      );
+      break;
+
+    case item.action === "Delete" && item.target_type === "LegalCaseReferral":
+      text = <>Referral deleted ({paddedUpdateId(item?.note?.match(/(\d+)/)?.[0])}).</>;
       break;
 
     default:

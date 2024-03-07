@@ -80,6 +80,7 @@ const SiteNoticeDialog = () => {
 
       <DialogActions className={classes.dialogActions}>
         <Button
+          disableElevation={true}
           fullWidth
           color="primary"
           variant="contained"
