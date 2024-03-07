@@ -86,12 +86,12 @@ export default function CaseInfoTab(props: Props) {
   const [legalCaseReferrals, setLegalCaseReferrals] =
     React.useState<ILegalCaseReferral[]>();
 
-  const fetchData = async() => {
+  const fetchData = async () => {
     const dataLegalCaseReferrals = await getLegalCaseReferrals(
       props.legalCase?.id!
     );
     setLegalCaseReferrals(dataLegalCaseReferrals);
-  }
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -299,7 +299,11 @@ export default function CaseInfoTab(props: Props) {
               </InputLabel>
             </Grid>
             <Grid item>
-              <Button variant="contained" onClick={() => dialogOpen()}>
+              <Button
+                disableElevation={true}
+                variant="contained"
+                onClick={() => dialogOpen()}
+              >
                 {i18n.t("Add update")}
               </Button>
 

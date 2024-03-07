@@ -1,15 +1,12 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  IconButton,
-} from "@material-ui/core";
+import { Button, IconButton } from "@material-ui/core";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -21,6 +18,8 @@ import Divider from "@mui/material/Divider";
 
 import { ILegalCaseReferral } from "../../types";
 import { useStyles } from "../../utils";
+
+import { format } from "date-fns";
 
 import LegalCaseReferralEdit from "../../components/legalCaseReferral/edit";
 
@@ -34,7 +33,6 @@ type Props = {
 
 const Component = (props: Props) => {
   const classes = useStyles();
-  const history = useHistory();
 
   const [editOpen, setEditOpen] = useState<boolean>(true);
   const [legalCaseReferral, setLegalCaseReferral] =
@@ -71,16 +69,25 @@ const Component = (props: Props) => {
         <DialogContent>
           <Divider />
           <TableContainer>
-            <Table className={classes.table}>
+            <Table className={classes.tableVariant} aria-label="simple table">
               <TableHead>
-                <TableRow className={classes.tableHeadRow}>
-                  <TableCell className={classes.tableHeadCell}>
-                    Referred to
+                <TableRow className={classes.tableHeadRowVariant}>
+                  <TableCell className={classes.tableHeadCellVariant}>
+                    <span className={classes.tableHeadCellValueWrapperVariant}>
+                      Referred to
+                    </span>
                   </TableCell>
-                  <TableCell className={classes.tableHeadCell}>
-                    Reference/case number
+                  <TableCell className={classes.tableHeadCellVariant}>
+                    <span className={classes.tableHeadCellValueWrapperVariant}>
+                      Reference/case number
+                    </span>
                   </TableCell>
-                  <TableCell className={classes.tableHeadCell}>Date</TableCell>
+                  <TableCell
+                    className={classes.tableHeadCellVariant}
+                    colSpan={2}
+                  >
+                    Date
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -91,10 +98,29 @@ const Component = (props: Props) => {
                       setLegalCaseReferral(row);
                       setEditOpen(true);
                     }}
+                    className={classes.tableBodyRowVariant}
                   >
-                    <TableCell>{row.referred_to}</TableCell>
-                    <TableCell>{row.reference_number}</TableCell>
-                    <TableCell>{row.referral_date}</TableCell>
+                    <TableCell className={classes.tableBodyCellVariant}>
+                      <span
+                        className={classes.tableBodyCellValueWrapperVariant}
+                      >
+                        {row.referred_to}
+                      </span>
+                    </TableCell>
+                    <TableCell className={classes.tableBodyCellVariant}>
+                      <span
+                        className={classes.tableBodyCellValueWrapperVariant}
+                      >
+                        {row.reference_number}
+                      </span>
+                    </TableCell>
+                    <TableCell className={classes.tableBodyCellVariant}>
+                      {format(new Date(row.referral_date!), "MMM dd, yyyy")}
+                    </TableCell>
+                    <TableCell
+                      className={classes.tableBodyCellVariant}
+                      align="right"
+                    ></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -103,6 +129,7 @@ const Component = (props: Props) => {
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
           <Button
+            disableElevation={true}
             onClick={props.dialogClose}
             fullWidth
             variant="contained"
@@ -112,6 +139,7 @@ const Component = (props: Props) => {
           </Button>
 
           <Button
+            disableElevation={true}
             onClick={props.dialogNewOpen}
             fullWidth
             color="primary"

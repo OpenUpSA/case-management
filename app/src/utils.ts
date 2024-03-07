@@ -1,3 +1,4 @@
+import { red } from "@material-ui/core/colors";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import { styled } from "@mui/material/styles";
 
@@ -22,6 +23,16 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       ".MuiSvgIcon-colorPrimary": {
         color: "#2b61f0!important",
+      },
+      ".MuiDivider-root": {
+        borderColor: "rgba(0, 0, 0, 0.05)!important",
+      },
+    },
+    components: {
+      MuiButton: {
+        defaultProps: {
+          disableElevation: true,
+        },
       },
     },
     formError: {
@@ -178,6 +189,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "transparent",
       borderCollapse: "separate!important" as any,
       borderSpacing: "0 10px!important" as any,
+      "& .MuiTableCell-root": {
+        borderBottomColor: "rgba(0, 0, 0, 0.05)",
+      },
     },
     tableHeadRow: {
       backgroundColor: "transparent",
@@ -229,6 +243,49 @@ export const useStyles = makeStyles((theme: Theme) =>
       border: "none",
       borderRight: "solid 1px rgba(0, 0, 0, 0.05)",
     },
+
+    tableVariant: {
+      marginTop: "20px",
+      "& .MuiTableCell-root": {
+        borderBottomColor: "rgba(0, 0, 0, 0.05)",
+      },
+      "& .MuiTableCell-head": {
+        fontWeight: "600",
+      },
+    },
+    tableHeadRowVariant: {
+      boxShadow: "0px 4px 5px 0px rgba(0, 0, 0, 0.05)",
+    },
+    tableHeadCellVariant: {},
+    tableHeadCellValueWrapperVariant: {
+      borderRight: "solid 1px rgba(0, 0, 0, 0.05)",
+      display: "block",
+    },
+    tableBodyRowVariant: {
+      "&:first-child td": {
+        paddingTop: "30px",
+      },
+      "&:last-child td": {
+        border: "none",
+      },
+      "&:hover td": {
+        cursor: "pointer",
+        backgroundColor: "rgba(0, 0, 0, 0.05)",
+      },
+    },
+    tableBodyRowEmptyVariant: {
+      "&:hover td": {
+        cursor: "unset",
+        backgroundColor: "unset",
+        display: "none",
+      },
+    },
+    tableBodyCellVariant: {},
+    tableBodyCellValueWrapperVariant: {
+      borderRight: "solid 1px rgba(0, 0, 0, 0.05)",
+      display: "block",
+    },
+
     hrInvisible: {
       height: "1px",
       border: "none",

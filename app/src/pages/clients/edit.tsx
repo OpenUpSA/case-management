@@ -120,6 +120,7 @@ const Page = () => {
             </Grid>
             <Grid item className={classes.zeroWidthOnMobile}>
               <Button
+                disableElevation={true}
                 className={classes.canBeFab}
                 color="primary"
                 variant="contained"

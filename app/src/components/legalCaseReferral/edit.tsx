@@ -1,8 +1,5 @@
 import { useState } from "react";
-import {
-  Button,
-  IconButton,
-} from "@material-ui/core";
+import { Button, IconButton } from "@material-ui/core";
 
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -37,7 +34,12 @@ const Component = (props: Props) => {
   };
 
   return (
-    <Dialog open={props.open} onClose={props.dialogClose} fullWidth maxWidth="sm">
+    <Dialog
+      open={props.open}
+      onClose={props.dialogClose}
+      fullWidth
+      maxWidth="sm"
+    >
       <DialogTitle className={classes.dialogTitle}>
         <Box display="flex" alignItems="center">
           <Box flexGrow={1}>Add new referral</Box>
@@ -63,6 +65,7 @@ const Component = (props: Props) => {
 
       <DialogActions className={classes.dialogActions}>
         <Button
+          disableElevation={true}
           onClick={props.dialogClose}
           fullWidth
           variant="contained"

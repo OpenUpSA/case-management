@@ -141,7 +141,7 @@ const UpdateTable = (props: Props) => {
             </TableRow>
           </TableHead>
 
-          {caseUpdates && caseUpdates.length > 0 ? (
+          {caseUpdates && caseUpdates.length > 0 && (
             <TableBody>
               {caseUpdates
                 ?.slice(0)
@@ -300,18 +300,6 @@ const UpdateTable = (props: Props) => {
                     </TableCell>
                   </TableRow>
                 ))}
-            </TableBody>
-          ) : (
-            <TableBody>
-              <TableRow
-                className={`${classes.tableBodyRow} ${classes.tableBodyRowEmpty}`}
-              >
-                <TableCell className={classes.tableBodyCell}></TableCell>
-                <TableCell className={classes.tableBodyCell}></TableCell>
-                <TableCell className={classes.tableBodyCell}></TableCell>
-                <TableCell className={classes.tableBodyCell}></TableCell>
-                <TableCell className={classes.tableBodyCell}></TableCell>
-              </TableRow>
             </TableBody>
           )}
         </Table>

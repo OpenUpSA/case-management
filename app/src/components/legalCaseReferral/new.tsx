@@ -76,6 +76,7 @@ const Component = (props: Props) => {
 
       <DialogActions className={classes.dialogActions}>
         <Button
+          disableElevation={true}
           onClick={props.dialogClose}
           fullWidth
           variant="contained"
@@ -85,6 +86,7 @@ const Component = (props: Props) => {
         </Button>
 
         <Button
+          disableElevation={true}
           fullWidth
           color="primary"
           variant="contained"

@@ -136,6 +136,7 @@ const Page = () => {
             </Grid>
             <Grid item className={classes.zeroWidthOnMobile}>
               <Button
+                disableElevation={true}
                 type="submit"
                 className={classes.canBeFab}
                 color="primary"

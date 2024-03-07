@@ -192,6 +192,7 @@ export default function CaseFileTab(props: Props) {
         </Grid>
         <Grid item>
           <Button
+            disableElevation={true}
             component="label"
             startIcon={<UploadIcon />}
             className={classes.bigCanBeFab}

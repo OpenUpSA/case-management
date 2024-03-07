@@ -14,6 +14,7 @@ export default function Page() {
       </Typography>
       <p>{i18n.t("Lost message")}</p>
       <Button
+        disableElevation={true}
         variant="contained"
         color="primary"
         onClick={() => history.push("/")}

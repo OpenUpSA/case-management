@@ -840,6 +840,7 @@ const UpdateDialog = (props: Props) => {
               {i18n.t("Cancel")}
             </Button>
             <Button
+              disableElevation={true}
               fullWidth
               color="primary"
               variant="contained"

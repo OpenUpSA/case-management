@@ -68,6 +68,7 @@ const CaseUpdateTab = (props: Props) => {
       >
         <Grid item xs={12} md={12}>
           <Button
+            disableElevation={true}
             className={classes.bigCanBeFab}
             fullWidth
             color="primary"

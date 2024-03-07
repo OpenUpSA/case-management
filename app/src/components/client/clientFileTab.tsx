@@ -314,6 +314,7 @@ export default function ClientFileTab(props: Props) {
         </Grid>
         <Grid item>
           <Button
+            disableElevation={true}
             component="label"
             startIcon={<UploadIcon />}
             className={classes.bigCanBeFab}
@@ -541,6 +542,7 @@ export default function ClientFileTab(props: Props) {
                                     Cancel
                                   </Button>
                                   <Button
+                                    disableElevation={true}
                                     color="primary"
                                     variant="contained"
                                     onClick={() => {
@@ -645,6 +647,7 @@ export default function ClientFileTab(props: Props) {
                                     Cancel
                                   </Button>
                                   <Button
+                                    disableElevation={true}
                                     color="primary"
                                     variant="contained"
                                     onClick={() => {

@@ -2,12 +2,14 @@ import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
 } from "@material-ui/core";
+
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
+
 
 import CircularProgress from "@mui/material/CircularProgress";
 import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
