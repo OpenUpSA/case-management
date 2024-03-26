@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
-import { Breadcrumbs, Button } from "@material-ui/core";
+import { Breadcrumbs, Button, Container } from "@material-ui/core";
 
 import Layout from "../../components/layout";
 import { getClient, getLegalCase, getLegalCaseReferrals } from "../../api";
@@ -91,7 +91,13 @@ const Page = () => {
 
   return (
     <Layout>
-      <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
+      <header className={classes.breadCrumbHeader}>
+        <Container maxWidth="md">
+          <Breadcrumbs
+            className={classes.breadcrumbs}
+            aria-label="breadcrumb"
+            separator="&#9656;"
+          >
         <Button onClick={dialogClose}>{i18n.t("Client list")}</Button>
         <Button
           disabled={client ? false : true}
@@ -101,6 +107,8 @@ const Page = () => {
         </Button>
         <div>Case: {legalCase?.case_number}</div>
       </Breadcrumbs>
+        </Container>
+      </header>
 
       <LegalCaseReferralList
         open={open}

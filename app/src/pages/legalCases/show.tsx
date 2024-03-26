@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FolderIcon from "@material-ui/icons/Folder";
+import PersonIcon from "@material-ui/icons/Person";
 import MoreMenu from "../../components/moreMenu";
 
 import Layout from "../../components/layout";
@@ -181,105 +182,129 @@ const Page = () => {
 
   return (
     <Layout>
-      <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
-        <Button onClick={() => history.push("/clients")}>
-          {i18n.t("Client list")}
-        </Button>
-        <Button
-          disabled={client ? false : true}
-          onClick={() => history.push(`/clients/${client?.id}/cases`)}
-        >
-          Client: {client ? client.preferred_name : ""}
-        </Button>
-        <div>Case: {legalCase?.case_number}</div>
-      </Breadcrumbs>
-      <Container maxWidth="md" style={{ position: "relative" }}>
-        <Grid
-          className={classes.pageBar}
-          container
-          direction="row"
-          spacing={2}
-          alignItems="center"
-        >
-          <Grid item>
-            <FolderIcon color="primary" style={{ display: "flex" }} />
-          </Grid>
-          <Grid item style={{ flexGrow: 1 }}>
-            <Typography variant="h6">
-              <strong>{legalCase?.case_number}</strong>
-            </Typography>
-          </Grid>
-          <Grid item className={classes.selectStatus}>
-            <p>Case status:</p>
-            <Select
-              id="demo-simple-select"
-              disableUnderline
-              className={classes.select}
-              input={<Input />}
-              value={status}
-              onChange={(event: SelectChangeEvent<string>) => {
-                setStatus(event.target.value as any);
-                statusPatch(event.target.value as any);
-              }}
-              style={{ width: "200px", fontSize: "13px" }}
-              renderValue={() => status}
+      <header className={classes.breadCrumbHeader}>
+        <Container maxWidth="md">
+          <Breadcrumbs
+            className={classes.breadcrumbs}
+            aria-label="breadcrumb"
+            separator="&#9656;"
+          >
+            <Button onClick={() => history.push("/clients")}>
+              {i18n.t("Client list")}
+            </Button>
+            <Button
+              disabled={client ? false : true}
+              onClick={() => history.push(`/clients/${client?.id}/cases`)}
             >
-              {LegalCaseStates?.map((value) => (
-                <MenuItem key={value} value={value}>
-                  {value}
-                </MenuItem>
-              ))}
-            </Select>
-          </Grid>
-          <Grid item>
-            <MoreMenu>
-              <MenuItem
-                style={{ position: "relative" }}
-                disabled={deleteLoader}
-                onClick={destroyLegalCase}
+              Client: {client ? client.preferred_name : ""}
+            </Button>
+            <div>Case: {legalCase?.case_number}</div>
+          </Breadcrumbs>
+        </Container>
+      </header>
+      <header className={classes.underBreadCrumbHeader}>
+        <Container maxWidth="md">
+          <PersonIcon className={classes.underBreadCrumbHeaderIcon} />
+          <span>
+            <a
+              className={classes.underBreadCrumbHeaderLink}
+              onClick={() => history.push(`/clients/${client?.id}/cases`)}
+            >
+              {client ? client.preferred_name : ""}
+            </a>
+          </span>
+        </Container>
+      </header>
+      <header className={classes.pageBarHead}>
+        <Container maxWidth="md" style={{ position: "relative" }}>
+          <Grid
+            className={classes.pageBarTemp}
+            container
+            direction="row"
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item>
+              <FolderIcon color="primary" style={{ display: "flex" }} />
+            </Grid>
+            <Grid item style={{ flexGrow: 1 }}>
+              <Typography variant="h6">
+                <strong>{legalCase?.case_number}</strong>
+              </Typography>
+            </Grid>
+            <Grid item className={classes.selectStatus}>
+              <p>Case status:&nbsp;</p>
+              <Select
+                id="demo-simple-select"
+                disableUnderline
+                className={classes.select}
+                input={<Input />}
+                value={status}
+                onChange={(event: SelectChangeEvent<string>) => {
+                  setStatus(event.target.value as any);
+                  statusPatch(event.target.value as any);
+                }}
+                style={{ width: "200px", fontSize: "13px" }}
+                renderValue={() => status}
               >
-                <ListItemIcon>
-                  <DeleteIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{i18n.t("Delete case")}</ListItemText>
-                {deleteLoader && (
-                  <CircularProgress
-                    size={24}
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      marginTop: "-12px",
-                      marginLeft: "-12px",
-                    }}
-                  />
-                )}
-              </MenuItem>
-            </MoreMenu>
+                {LegalCaseStates?.map((value) => (
+                  <MenuItem key={value} value={value}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item>
+              <MoreMenu>
+                <MenuItem
+                  style={{ position: "relative" }}
+                  disabled={deleteLoader}
+                  onClick={destroyLegalCase}
+                >
+                  <ListItemIcon>
+                    <DeleteIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{i18n.t("Delete case")}</ListItemText>
+                  {deleteLoader && (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        marginTop: "-12px",
+                        marginLeft: "-12px",
+                      }}
+                    />
+                  )}
+                </MenuItem>
+              </MoreMenu>
+            </Grid>
           </Grid>
-        </Grid>
+        </Container>
+      </header>
+        <Container maxWidth="md">
+          <CaseTabs
+            legalCase={legalCase!}
+            setLegalCase={setLegalCase}
+            meetings={meetings ? meetings : []}
+            standalone={false}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            setShowSnackbar={setShowSnackbar}
+            caseHistory={caseHistory ? caseHistory : []}
+            setCaseHistory={setCaseHistory}
+            setStatus={setStatus}
+          />
 
-        <CaseTabs
-          legalCase={legalCase!}
-          setLegalCase={setLegalCase}
-          meetings={meetings ? meetings : []}
-          standalone={false}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          setShowSnackbar={setShowSnackbar}
-          caseHistory={caseHistory ? caseHistory : []}
-          setCaseHistory={setCaseHistory}
-          setStatus={setStatus}
-        />
-
-        {isLoading && (
-          <Grid container justifyContent="center">
-            <CircularProgress
-              sx={{ position: "absolute", top: 10, left: "50%", zIndex: 100 }}
-            />
-          </Grid>
-        )}
-      </Container>
+          {isLoading && (
+            <Grid container justifyContent="center">
+              <CircularProgress
+                sx={{ position: "absolute", top: 10, left: "50%", zIndex: 100 }}
+              />
+            </Grid>
+          )}
+        </Container>
       {showSnackbar.open && (
         <SnackbarAlert
           open={showSnackbar.open}

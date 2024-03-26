@@ -51,16 +51,20 @@ const Page = () => {
 
   return (
     <Layout>
-      <Breadcrumbs
-        className={classes.breadcrumbs}
-        separator="›"
-        aria-label="breadcrumb"
-      >
-        <Button onClick={() => history.push("/clients")}>
-          {i18n.t("Client list")}
-        </Button>
-        <div>Client: {client ? client.preferred_name : ""}</div>
-      </Breadcrumbs>
+      <header className={classes.breadCrumbHeader}>
+        <Container maxWidth="md">
+          <Breadcrumbs
+            className={classes.breadcrumbs}
+            aria-label="breadcrumb"
+            separator="&#9656;"
+          >
+            <Button onClick={() => history.push("/clients")}>
+              {i18n.t("Client list")}
+            </Button>
+            <div>Client: {client ? client.preferred_name : ""}</div>
+          </Breadcrumbs>
+        </Container>
+      </header>
       <Container maxWidth="md">
         <Grid
           className={classes.pageBar}

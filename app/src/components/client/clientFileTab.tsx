@@ -370,7 +370,7 @@ export default function ClientFileTab(props: Props) {
         style={{ display: "none" }}
       >
         <Input
-          id="table_search"
+          id="table_search11111111"
           fullWidth
           placeholder={i18n.t("Enter a meeting location, type, or note...")}
           startAdornment={
@@ -511,8 +511,7 @@ export default function ClientFileTab(props: Props) {
                                 <DialogTitle>Rename file</DialogTitle>
                                 <DialogContent>
                                   <Input
-                                    id="table_search"
-                                    fullWidth
+                                                            fullWidth
                                     disableUnderline={true}
                                     className={classes.textField}
                                     aria-describedby="Rename file"
@@ -616,8 +615,7 @@ export default function ClientFileTab(props: Props) {
                                 <DialogTitle>Rename file</DialogTitle>
                                 <DialogContent>
                                   <Input
-                                    id="table_search"
-                                    fullWidth
+                                                            fullWidth
                                     disableUnderline={true}
                                     className={classes.textField}
                                     aria-describedby="Rename file"

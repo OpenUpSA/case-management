@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
-import { Breadcrumbs, Container, Grid } from "@material-ui/core";
+import { Breadcrumbs, Button, Container, Grid } from "@material-ui/core";
 
 import ForumIcon from "@material-ui/icons/Forum";
 
@@ -13,6 +14,7 @@ import { RedirectIfNotLoggedIn } from "../../auth";
 import LogsTable from "../../components/log/table";
 
 const Page = () => {
+  const history = useHistory();
   RedirectIfNotLoggedIn();
   const classes = useStyles();
   const [logs, setLogs] = useState<ILog[]>();
@@ -30,9 +32,19 @@ const Page = () => {
 
   return (
     <Layout>
-      <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
-        <div>{i18n.t("Logs list")}</div>
-      </Breadcrumbs>
+      <header className={classes.breadCrumbHeader}>
+        <Container maxWidth="md">
+          <Breadcrumbs
+            className={classes.breadcrumbs}
+            aria-label="breadcrumb"
+            separator="&#9656;"
+          >
+            <Button onClick={() => history.push("/updates")}>
+              {i18n.t("Logs list")}
+            </Button>
+          </Breadcrumbs>
+        </Container>
+      </header>
       <Container maxWidth="md">
         <Grid
           className={classes.pageBar}

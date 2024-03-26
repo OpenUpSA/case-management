@@ -20,6 +20,7 @@ type Props = {
   setShowSnackbar: (showSnackbar: SnackbarState) => void;
   legalCases: ILegalCase[];
   client?: IClient;
+  newCaseHandler: () => void;
 };
 
 function TabPanel(props: TabPanelProps) {
@@ -104,7 +105,7 @@ export default function CaseTabs(props: Props) {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <ClientCasesTab legalCases={props.legalCases} />
+        <ClientCasesTab legalCases={props.legalCases} newCaseHandler={props.newCaseHandler} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         {props.client && <ClientInfoTab client={props.client} />}

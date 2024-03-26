@@ -114,7 +114,6 @@ const Component = (props: Props) => {
         </Grid>
         <Grid item xs={12} md={12}>
           <Input
-            id="table_search"
             fullWidth
             placeholder={i18n.t("Enter a meeting location, type, or note...")}
             startAdornment={

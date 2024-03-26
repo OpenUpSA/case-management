@@ -12,7 +12,7 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
-import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
+
 import DeleteIcon from "@material-ui/icons/Delete";
 import CircularProgress from "@mui/material/CircularProgress";
 import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
@@ -156,100 +156,41 @@ const Page = () => {
 
   return (
     <Layout>
-      <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
-        <Button onClick={() => history.push("/clients")}>
-          {i18n.t("Client list")}
-        </Button>
-        <div>Client: {client ? client.preferred_name : ""}</div>
-      </Breadcrumbs>
-
-      <Container maxWidth="md">
-        <Grid
-          className={classes.pageBar}
-          container
-          direction="row"
-          spacing={2}
-          alignItems="center"
-        >
-          <Grid item>
-            <PersonIcon color="primary" style={{ display: "flex" }} />
-          </Grid>
-          <Grid item style={{ flexGrow: 1 }}>
-            <Typography variant="h6">
-              <strong>
-                {client ? client.preferred_name : i18n.t("Case list")}
-              </strong>
-            </Typography>
-          </Grid>
-          <Grid item>
-            <MoreMenu>
-              <MenuItem
-                style={{ position: "relative" }}
-                onClick={destroyClient}
-                disabled={deleteLoader}
-              >
-                <ListItemIcon>
-                  <DeleteIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{i18n.t("Delete client")}</ListItemText>
-                {deleteLoader && (
-                  <CircularProgress
-                    size={24}
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      marginTop: "-12px",
-                      marginLeft: "-12px",
-                    }}
-                  />
-                )}
-              </MenuItem>
-              <MenuItem
-                style={{ position: "relative" }}
-                onClick={() =>
-                  history.push(`/clients/${clientId}/dependents/new`)
-                }
-                disabled={deleteLoader}
-              >
-                <ListItemIcon>
-                  <EscalatorWarningIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{i18n.t("Add dependent")}</ListItemText>
-              </MenuItem>
-            </MoreMenu>
-          </Grid>
-          <Grid item className={classes.zeroWidthOnMobile}>
-            <Button
-              disableElevation={true}
-              className={classes.canBeFab}
-              color="primary"
-              variant="contained"
-              startIcon={<CreateNewFolderIcon />}
-              disabled={isLoading || client === undefined}
-              onClick={newCaseHandler}
-            >
-              {i18n.t("New case")}
-              {isLoading && (
-                <CircularProgress
-                  size={24}
-                  sx={{
-                    position: "absolute",
-                    zIndex: 10000,
-                    left: "50%",
-                  }}
-                />
-              )}
+      <header className={classes.breadCrumbHeader}>
+        <Container maxWidth="md">
+          <Breadcrumbs
+            className={classes.breadcrumbs}
+            aria-label="breadcrumb"
+            separator="&#9656;"
+          >
+            <Button onClick={() => history.push("/clients")}>
+              {i18n.t("Client list")}
             </Button>
-          </Grid>
-        </Grid>
-
+            <div>Client: {client ? client.preferred_name : ""}</div>
+          </Breadcrumbs>
+        </Container>
+      </header>
+      <header className={classes.underBreadCrumbHeader}>
+        <Container maxWidth="md">
+          <PersonIcon className={classes.underBreadCrumbHeaderIcon} />
+          <span>
+            <a
+              className={classes.underBreadCrumbHeaderLink}
+              onClick={() => history.push(`/clients/${client?.id}/cases`)}
+            >
+              {client ? client.preferred_name : ""}
+            </a>
+          </span>
+        </Container>
+      </header>
+      <Container maxWidth="md">
         <ClientTabs
           isLoading={isLoading}
           setIsLoading={setIsLoading}
           setShowSnackbar={setShowSnackbar}
           legalCases={legalCases ? legalCases : []}
           client={client}
+          newCaseHandler={newCaseHandler}
         />
       </Container>
       {showSnackbar.open && (

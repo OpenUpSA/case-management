@@ -39,7 +39,6 @@ import { InstanceSettingsContext } from "../contexts/instanceSettingsContext";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 
 const Component = () => {
@@ -131,7 +130,7 @@ const Component = () => {
   return (
     <div>
       <AppBar
-        position="fixed"
+        position="sticky"
         color="secondary"
         elevation={1}
         className={classes.customAppBar}

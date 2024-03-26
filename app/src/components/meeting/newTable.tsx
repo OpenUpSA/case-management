@@ -137,7 +137,7 @@ const Component = (props: Props) => {
       </Grid>
       <Grid md={12} className={classes.containerMarginBottom}>
         <Input
-          id="table_search"
+          id="table_search11111111"
           fullWidth
           placeholder={i18n.t(
             "Enter a meeting description, location, type, or note..."

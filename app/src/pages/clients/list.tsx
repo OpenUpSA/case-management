@@ -149,9 +149,19 @@ const Page = () => {
 
   return (
     <Layout>
-      <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
-        <div>{i18n.t("Client list")}</div>
-      </Breadcrumbs>
+      <header className={classes.breadCrumbHeader}>
+        <Container maxWidth="md">
+          <Breadcrumbs
+            className={classes.breadcrumbs}
+            aria-label="breadcrumb"
+            separator="&#9656;"
+          >
+            <Button onClick={() => history.push("/clients")}>
+              {i18n.t("Client list")}
+            </Button>
+          </Breadcrumbs>
+        </Container>
+      </header>
       <Container maxWidth="md">
         <Grid
           className={classes.pageBar}
@@ -243,8 +253,7 @@ const Page = () => {
           </Grid>
           <Grid item xs={12} md={12}>
             <Input
-              id="table_search"
-              fullWidth
+                fullWidth
               placeholder={i18n.t("Enter a name, email, phone number...")}
               startAdornment={
                 <InputAdornment position="start">
