@@ -3,6 +3,7 @@ import { ILegalCase } from "../../types";
 
 type Props = {
   legalCases: ILegalCase[];
+  newCaseHandler: () => void;
 };
 
 const ClientCasesTab = (props: Props) => {
@@ -10,6 +11,7 @@ const ClientCasesTab = (props: Props) => {
     <LegalCasesTable
       legalCases={props.legalCases ? props.legalCases : []}
       standalone={false}
+      newCaseHandler={props.newCaseHandler}
     />
   );
 };

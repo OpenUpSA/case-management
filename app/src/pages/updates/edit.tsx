@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
-import {
-  Breadcrumbs,
-  Button,
-} from "@material-ui/core";
+import { Breadcrumbs, Button, Container } from "@material-ui/core";
 
 import Layout from "../../components/layout";
 import {
@@ -12,7 +9,7 @@ import {
   getLegalCase,
   getLogs,
   getMeetings,
-  getCaseUpdate
+  getCaseUpdate,
 } from "../../api";
 import {
   ILegalCase,
@@ -27,8 +24,6 @@ import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
 import SnackbarAlert from "../../components/general/snackBar";
 import UpdateDialog from "../../components/legalCase/updateDialog";
-import React from "react";
-
 
 type RouteParams = { id: string };
 
@@ -79,7 +74,10 @@ const Page = () => {
         const dataCaseUpdate = await getCaseUpdate(caseUpdateId);
         const dataLegalCase = await getLegalCase(dataCaseUpdate.legal_case);
         const dataMeetings = await getMeetings(dataCaseUpdate.legal_case);
-        const historyData = await getLogs(dataCaseUpdate.legal_case, "LegalCase");
+        const historyData = await getLogs(
+          dataCaseUpdate.legal_case,
+          "LegalCase"
+        );
         const dataClient = await getClient(dataLegalCase.client);
 
         setCaseUpdate(dataCaseUpdate);
@@ -101,18 +99,26 @@ const Page = () => {
 
   return (
     <Layout>
-      <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
-        <Button onClick={() => history.push("/clients")}>
-          {i18n.t("Client list")}
-        </Button>
-        <Button
-          disabled={client ? false : true}
-          onClick={() => history.push(`/clients/${client?.id}/cases`)}
-        >
-          Client: {client ? client.preferred_name : ""}
-        </Button>
-        <div>Case: {legalCase?.case_number}</div>
-      </Breadcrumbs>
+      <header className={classes.breadCrumbHeader}>
+        <Container maxWidth="md">
+          <Breadcrumbs
+            className={classes.breadcrumbs}
+            aria-label="breadcrumb"
+            separator="&#9656;"
+          >
+            <Button onClick={() => history.push("/clients")}>
+              {i18n.t("Client list")}
+            </Button>
+            <Button
+              disabled={client ? false : true}
+              onClick={() => history.push(`/clients/${client?.id}/cases`)}
+            >
+              Client: {client ? client.preferred_name : ""}
+            </Button>
+            <div>Case: {legalCase?.case_number}</div>
+          </Breadcrumbs>
+        </Container>
+      </header>
       {legalCase && (
         <UpdateDialog
           open={open}
