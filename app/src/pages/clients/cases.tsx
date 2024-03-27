@@ -1,21 +1,8 @@
 import React, { useEffect } from "react";
 import { useHistory, useParams, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
-import Typography from "@material-ui/core/Typography";
-import {
-  Breadcrumbs,
-  Container,
-  Button,
-  Grid,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from "@material-ui/core";
+import { Breadcrumbs, Container, Button } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
-
-import DeleteIcon from "@material-ui/icons/Delete";
-import CircularProgress from "@mui/material/CircularProgress";
-import EscalatorWarningIcon from "@mui/icons-material/EscalatorWarning";
 
 import Layout from "../../components/layout";
 import {
@@ -28,7 +15,6 @@ import { ILegalCase, IClient, LocationState, SnackbarState } from "../../types";
 import { useStyles } from "../../utils";
 import { RedirectIfNotLoggedIn, UserInfo } from "../../auth";
 
-import MoreMenu from "../../components/moreMenu";
 import SnackbarAlert from "../../components/general/snackBar";
 import ClientTabs from "../../components/client/clientTabs";
 
@@ -173,9 +159,7 @@ const Page = () => {
       <header className={classes.underBreadCrumbHeader}>
         <Container maxWidth="md">
           <PersonIcon className={classes.underBreadCrumbHeaderIcon} />
-          <span>
-              {client ? client.preferred_name : ""}
-          </span>
+          <span>{client ? client.preferred_name : ""}</span>
         </Container>
       </header>
       <Container maxWidth="md">
