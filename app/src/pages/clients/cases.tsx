@@ -174,12 +174,7 @@ const Page = () => {
         <Container maxWidth="md">
           <PersonIcon className={classes.underBreadCrumbHeaderIcon} />
           <span>
-            <a
-              className={classes.underBreadCrumbHeaderLink}
-              onClick={() => history.push(`/clients/${client?.id}/cases`)}
-            >
               {client ? client.preferred_name : ""}
-            </a>
           </span>
         </Container>
       </header>
