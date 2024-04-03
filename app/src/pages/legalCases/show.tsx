@@ -237,17 +237,18 @@ const Page = () => {
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
               <Typography variant="h5" className={classes.lineHeightSmall}>
-                <strong>
-                  {legalCase &&
-                    contextCaseTypes
+                {legalCase && (
+                  <strong>
+                    {contextCaseTypes
                       ?.filter(
                         (caseType: ICaseType) =>
                           legalCase.case_types.indexOf(caseType.id) > -1
                       )
                       .map((caseType: ICaseType) => caseType.title)
                       .join(", ")}{" "}
-                  case
-                </strong>
+                    case
+                  </strong>
+                )}
                 <br />
                 <small>{legalCase?.case_number}</small>
               </Typography>
