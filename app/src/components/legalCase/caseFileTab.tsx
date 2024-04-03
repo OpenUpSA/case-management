@@ -256,28 +256,6 @@ export default function CaseFileTab(props: Props) {
           />
         </Grid>
       </Grid>
-      <Grid
-        xs={12}
-        className={classes.containerMarginBottom}
-        style={{ display: "none" }}
-      >
-        <Input
-          id="table_search"
-          fullWidth
-          placeholder={i18n.t("Enter a meeting location, type, or note...")}
-          startAdornment={
-            <InputAdornment position="start">
-              <IconButton>
-                <SearchIcon color="primary" />
-              </IconButton>
-            </InputAdornment>
-          }
-          disableUnderline={true}
-          className={classes.textField}
-          aria-describedby="my-helper-text"
-          value={"Enter a meeting location, type, or note..."}
-        />
-      </Grid>
       <InputLabel
         className={classes.caseFileLabel}
         style={{ paddingTop: "20px" }}
