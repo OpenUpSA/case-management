@@ -63,7 +63,6 @@ const Component = (props: Props) => {
       <Grid container direction="row" spacing={2} alignItems="center">
         <Grid item md={12}>
           <Input
-            id="table_search"
             fullWidth
             placeholder={i18n.t("Filter history...")}
             startAdornment={

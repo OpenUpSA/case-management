@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
@@ -13,7 +13,8 @@ import {
   Input,
 } from "@material-ui/core";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import FolderIcon from "@material-ui/icons/Folder";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import PersonIcon from "@material-ui/icons/Person";
 import MoreMenu from "../../components/moreMenu";
 
 import Layout from "../../components/layout";
@@ -32,6 +33,7 @@ import {
   LocationState,
   SnackbarState,
   ILog,
+  ICaseType,
 } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
@@ -40,6 +42,7 @@ import CaseTabs from "../../components/legalCase/caseTabs";
 import SnackbarAlert from "../../components/general/snackBar";
 import CircularProgress from "@mui/material/CircularProgress";
 import { LegalCaseStates } from "../../contexts/legalCaseStateConstants";
+import { CaseTypesContext } from "../../contexts/caseTypesContext";
 
 type RouteParams = { id: string };
 
@@ -51,6 +54,7 @@ const Page = () => {
   const params = useParams<RouteParams>();
   const caseId = parseInt(params.id);
 
+  const [contextCaseTypes] = useContext(CaseTypesContext);
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
@@ -181,84 +185,126 @@ const Page = () => {
 
   return (
     <Layout>
-      <Breadcrumbs className={classes.breadcrumbs} aria-label="breadcrumb">
-        <Button onClick={() => history.push("/clients")}>
-          {i18n.t("Client list")}
-        </Button>
-        <Button
-          disabled={client ? false : true}
-          onClick={() => history.push(`/clients/${client?.id}/cases`)}
-        >
-          Client: {client ? client.preferred_name : ""}
-        </Button>
-        <div>Case: {legalCase?.case_number}</div>
-      </Breadcrumbs>
-      <Container maxWidth="md" style={{ position: "relative" }}>
-        <Grid
-          className={classes.pageBar}
-          container
-          direction="row"
-          spacing={2}
-          alignItems="center"
-        >
-          <Grid item>
-            <FolderIcon color="primary" style={{ display: "flex" }} />
-          </Grid>
-          <Grid item style={{ flexGrow: 1 }}>
-            <Typography variant="h6">
-              <strong>{legalCase?.case_number}</strong>
-            </Typography>
-          </Grid>
-          <Grid item className={classes.selectStatus}>
-            <p>Case status:</p>
-            <Select
-              id="demo-simple-select"
-              disableUnderline
-              className={classes.select}
-              input={<Input />}
-              value={status}
-              onChange={(event: SelectChangeEvent<string>) => {
-                setStatus(event.target.value as any);
-                statusPatch(event.target.value as any);
-              }}
-              style={{ width: "200px", fontSize: "13px" }}
-              renderValue={() => status}
+      <header className={classes.breadCrumbHeader}>
+        <Container maxWidth="md">
+          <Breadcrumbs
+            className={classes.breadcrumbs}
+            aria-label="breadcrumb"
+            separator="&#9656;"
+          >
+            <Button onClick={() => history.push("/clients")}>
+              {i18n.t("Client list")}
+            </Button>
+            <Button
+              disabled={client ? false : true}
+              onClick={() => history.push(`/clients/${client?.id}/cases`)}
             >
-              {LegalCaseStates?.map((value) => (
-                <MenuItem key={value} value={value}>
-                  {value}
-                </MenuItem>
-              ))}
-            </Select>
-          </Grid>
-          <Grid item>
-            <MoreMenu>
-              <MenuItem
-                style={{ position: "relative" }}
-                disabled={deleteLoader}
-                onClick={destroyLegalCase}
+              Client: {client ? client.preferred_name : ""}
+            </Button>
+            <div>Case: {legalCase?.case_number}</div>
+          </Breadcrumbs>
+        </Container>
+      </header>
+      <header className={classes.underBreadCrumbHeader}>
+        <Container maxWidth="md">
+          <PersonIcon className={classes.underBreadCrumbHeaderIcon} />
+          <span>
+            <a
+              className={classes.underBreadCrumbHeaderLink}
+              onClick={() => history.push(`/clients/${client?.id}/cases`)}
+            >
+              {client ? client.preferred_name : ""}
+            </a>
+          </span>
+        </Container>
+      </header>
+      <header className={classes.pageBarHead}>
+        <Container maxWidth="md" style={{ position: "relative" }}>
+          <Grid
+            className={classes.pageBarTemp}
+            container
+            direction="row"
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item>
+              <Button
+                onClick={() => history.push(`/clients/${client?.id}/cases`)}
+                className={classes.fullHeightContainedButton}
               >
-                <ListItemIcon>
-                  <DeleteIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>{i18n.t("Delete case")}</ListItemText>
-                {deleteLoader && (
-                  <CircularProgress
-                    size={24}
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      marginTop: "-12px",
-                      marginLeft: "-12px",
-                    }}
-                  />
+                <ArrowBackIcon />
+              </Button>
+            </Grid>
+            <Grid item style={{ flexGrow: 1 }}>
+              <Typography variant="h5" className={classes.lineHeightSmall}>
+                {legalCase && (
+                  <strong>
+                    {contextCaseTypes
+                      ?.filter(
+                        (caseType: ICaseType) =>
+                          legalCase.case_types.indexOf(caseType.id) > -1
+                      )
+                      .map((caseType: ICaseType) => caseType.title)
+                      .join(", ")}{" "}
+                    case
+                  </strong>
                 )}
-              </MenuItem>
-            </MoreMenu>
+                <br />
+                <small>{legalCase?.case_number}</small>
+              </Typography>
+            </Grid>
+            <Grid item className={classes.selectStatus}>
+              <p>Case status:&nbsp;</p>
+              <Select
+                id="demo-simple-select"
+                disableUnderline
+                className={classes.select}
+                input={<Input />}
+                value={status}
+                onChange={(event: SelectChangeEvent<string>) => {
+                  setStatus(event.target.value as any);
+                  statusPatch(event.target.value as any);
+                }}
+                style={{ width: "200px", fontSize: "13px" }}
+                renderValue={() => status}
+              >
+                {LegalCaseStates?.map((value) => (
+                  <MenuItem key={value} value={value}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item>
+              <MoreMenu>
+                <MenuItem
+                  style={{ position: "relative" }}
+                  disabled={deleteLoader}
+                  onClick={destroyLegalCase}
+                >
+                  <ListItemIcon>
+                    <DeleteIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{i18n.t("Delete case")}</ListItemText>
+                  {deleteLoader && (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        marginTop: "-12px",
+                        marginLeft: "-12px",
+                      }}
+                    />
+                  )}
+                </MenuItem>
+              </MoreMenu>
+            </Grid>
           </Grid>
-        </Grid>
-
+        </Container>
+      </header>
+      <Container maxWidth="md">
         <CaseTabs
           legalCase={legalCase!}
           setLegalCase={setLegalCase}

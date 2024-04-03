@@ -26,6 +26,36 @@ export const useStyles = makeStyles((theme: Theme) =>
       ".MuiDivider-root": {
         borderColor: "rgba(0, 0, 0, 0.05)!important",
       },
+      ".MuiBreadcrumbs-separator": {
+        fontSize: "1em",
+        color: "#000"
+      },
+    },
+    underBreadCrumbHeader: {
+      position: "sticky",
+      top: "50px",
+      backgroundColor: "#666666",
+      color: "#fff",
+      fontWeight: 700,
+      minHeight: "3rem",
+      display: "flex",
+      alignItems: "center",
+      fontSize: "18.2px",
+      zIndex: 11,
+      marginBottom: "25px"
+    },
+    underBreadCrumbHeaderIcon: {
+      marginRight: "10px",
+      verticalAlign: "-3px",
+      fontSize: "18px!important",
+    },
+    underBreadCrumbHeaderLink: {
+      color: "#fff",
+      cursor: "pointer",
+      "&:hover": {
+        color: "#fff",
+        textDecoration: "underline",
+      },
     },
     components: {
       MuiButton: {
@@ -40,7 +70,6 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     body: {
       paddingBottom: "10em",
-      marginTop: "60px!important" as any,
       [theme.breakpoints.down("xs")]: {
         paddingBottom: "4em",
       },
@@ -53,7 +82,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     canBeFab: {
       [theme.breakpoints.down("xs")]: {
-        margin: "0px",
+        margin: "0",
         right: "16px",
         bottom: "20px",
         position: "fixed",
@@ -66,7 +95,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       textTransform: "none",
       [theme.breakpoints.down("xs")]: {
         width: "90%",
-        margin: "0px",
+        margin: "0",
         right: "16px",
         bottom: "20px",
         position: "fixed",
@@ -127,38 +156,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       bottom: "1em",
     },
     breadcrumbs: {
-      [theme.breakpoints.up("md")]: {
-        marginTop: "66px",
-        marginBottom: "46px",
-        top: "65px",
-      },
-      [theme.breakpoints.down("xs")]: {
-        marginTop: "59px",
-        marginBottom: "26px",
-        top: "65px",
-      },
-      paddingTop: "0.45em",
-      paddingBottom: "0.55em",
-      backgroundColor: "#fafafa",
-      position: "sticky",
-      top: "66px",
-      zIndex: 1,
-      boxSize: "border-box",
       "& ol": {
-        maxWidth: "960px",
-        marginLeft: "auto",
-        marginRight: "auto",
-        [theme.breakpoints.up("md")]: {
-          paddingLeft: "24px",
-          paddingRight: "24px",
-        },
-        [theme.breakpoints.down("xs")]: {
-          paddingLeft: "14px",
-          paddingRight: "14px",
-        },
         "& li": {
           "& div": {
-            padding: "6px 8px",
+            padding: "6px 0px",
             lineHeight: "1.75",
             fontWeight: "500",
             letterSpacing: "0.02857em",
@@ -175,15 +176,28 @@ export const useStyles = makeStyles((theme: Theme) =>
           },
           "& button": {
             fontSize: "0.75em",
-            backgroundColor: "rgba(0, 0, 0, 0.03)",
+            backgroundColor: "#e6e6e6",
             textTransform: "none",
             color: "black",
             minHeight: "2.5em",
             minWidth: "7em",
+            "&:hover": {
+              backgroundColor: "#d9d9d9",
+            },
           },
         },
       },
     },
+    breadCrumbHeader: {
+      position: "sticky",
+      top: "0",
+      zIndex: 11,
+      backgroundColor: "#f2f2f2",
+      minHeight: "50px",
+      display: "flex",
+      alignItems: "center",
+    },
+
     table: {
       backgroundColor: "transparent",
       borderCollapse: "separate!important" as any,
@@ -194,7 +208,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     tableHeadRow: {
       backgroundColor: "transparent",
-      boxShadow: "0px 4px 5px 0px rgba(0, 0, 0, 0.05)",
+      boxShadow: "0 4px 5px 0 rgba(0, 0, 0, 0.05)",
       marginBottom: "20px!important" as any,
       "&>:last-child": {
         borderRight: "none",
@@ -253,7 +267,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     tableHeadRowVariant: {
-      boxShadow: "0px 4px 5px 0px rgba(0, 0, 0, 0.05)",
+      boxShadow: "0 4px 5px 0 rgba(0, 0, 0, 0.05)",
     },
     tableHeadCellVariant: {},
     tableHeadCellValueWrapperVariant: {
@@ -333,14 +347,12 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "rgba(0, 0, 0, 0.035)",
       border: "solid 1px rgba(0, 0, 0, 0)",
       borderRadius: "4px",
-      padding: "8px 8px 4px 8px",
+      padding: "2px",
       "&.Mui-disabled": {
         backgroundColor: "rgba(0, 0, 0, 0.05)",
         color: "#000000",
       },
-      "&.Mui-focused": {
-        backgroundColor: "rgba(0, 0, 0, 0.01)",
-        borderColor: "rgba(0, 0, 0, 0.1)",
+      "&.Mui-focused": {      
       },
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.1)",
@@ -348,9 +360,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       "& textarea": {
         paddingTop: "8px",
         paddingBottom: "8px",
-      },
-      "&.MuiInputBase-root": {
-        marginBottom: "25px",
       },
     },
     inputLabel: {
@@ -374,6 +383,33 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    pageBarHead: {
+      boxShadow: "0 4px 5px 0 rgba(0, 0, 0, 0.05)",
+    },
+    lineHeightSmall: {
+      lineHeight: "1",
+    },
+    pageBarTemp: {
+      marginTop: "-24px",
+      marginBottom: "20px",
+      display: "flex",
+      [theme.breakpoints.down("xs")]: {
+        "&>:nth-child(3)": {
+          order: 4,
+        },
+        "&>:nth-child(4)": {
+          order: 3,
+        },
+      },
+    },
+    fullHeightContainedButton:
+    { 
+      height: "52px",
+      width: "53px",
+      minWidth: "53px",
+      backgroundColor: "#e5e5e5",
+    },
+    
     logo: {
       cursor: "pointer",
       height: "35px",
@@ -472,7 +508,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       minHeight: "36px!important" as any,
       backgroundColor: "#f2f2f2",
       borderRadius: "5px!important" as any,
-      padding: "8px 0px 0px 10px!important" as any,
+      padding: "8px 0 0 10px!important" as any,
       "&:hover": {
         backgroundColor: "rgba(0, 0, 0, 0.1)",
       },
@@ -579,7 +615,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     caseTabButton: {
       "& p": {
-        padding: "4px 12px 4px 0px!important" as any,
+        padding: "4px 12px 4px 0!important" as any,
         textTransform: "none",
         color: "black",
         fontWeight: 700,
@@ -595,15 +631,15 @@ export const useStyles = makeStyles((theme: Theme) =>
       flexDirection: "row!important" as any,
       alignItems: "center!important" as any,
       justifyContent: "space-around!important" as any,
-      margin: "0px 8px 16px 8px!important" as any,
+      margin: "0 8px 16px 8px!important" as any,
       borderRadius: "6px!important" as any,
       backgroundColor: "#e5e5e5!important" as any,
       [theme.breakpoints.down("xs")]: {
-        padding: "0px!important" as any,
+        padding: "0!important" as any,
         maxWidth: "70px!important" as any,
         minWidth: "70px!important" as any,
         flexDirection: "column!important" as any,
-        margin: "0px 4px 16px 4px!important" as any,
+        margin: "0 4px 16px 4px!important" as any,
       },
       "& p": {
         padding: "2px 4px!important" as any,
@@ -613,14 +649,14 @@ export const useStyles = makeStyles((theme: Theme) =>
         fontWeight: 700,
         lineHeight: "1.2!important" as any,
         [theme.breakpoints.down("xs")]: {
-          padding: "0px!important" as any,
+          padding: "0!important" as any,
         },
       },
       "&>.MuiSvgIcon-root": {
-        marginBottom: "0px!important" as any,
+        marginBottom: "0!important" as any,
         color: "#000!important" as any,
         [theme.breakpoints.down("xs")]: {
-          padding: "0px!important" as any,
+          padding: "0!important" as any,
         },
       },
       "&.Mui-selected": {
@@ -718,7 +754,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       transition:
         "opacity 214ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 143ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;",
       boxShadow:
-        "0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%);",
+        "0 5px 5px -3px rgb(0 0 0 / 20%), 0 8px 10px 1px rgb(0 0 0 / 14%), 0 3px 14px 2px rgb(0 0 0 / 12%);",
       fontSize: 16,
     },
     meetingFileButton: {
@@ -811,7 +847,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     updateAlert: {
       height: "67px",
-      margin: "20px 0px",
+      margin: "20px 0",
       borderRadius: "6px!important" as any,
       backgroundColor: "#e9f0fe!important" as any,
       "&>.MuiAlert-icon": {

@@ -15,11 +15,13 @@ import {
   InputAdornment,
   IconButton,
   MenuItem,
+  Button,
 } from "@material-ui/core";
 
 import SearchIcon from "@material-ui/icons/Search";
 import CircularProgress from "@mui/material/CircularProgress";
 import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
+import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 
 import { useStyles } from "../../utils";
 import i18n from "../../i18n";
@@ -31,6 +33,7 @@ import { CaseTypesContext } from "../../contexts/caseTypesContext";
 type Props = {
   legalCases: ILegalCase[];
   standalone: boolean;
+  newCaseHandler: () => void;
 };
 
 const Component = (props: Props) => {
@@ -122,29 +125,10 @@ const Component = (props: Props) => {
             {i18n.t("Cases")}
           </strong>
         </Grid>
-        <Grid item>
-          <InputLabel className={classes.plainLabel} htmlFor="sort_table">
-            {i18n.t("Sort")}:
-          </InputLabel>
-        </Grid>
-        <Grid item>
-          <Select
-            id="sort_table"
-            className={classes.select}
-            disableUnderline
-            input={<Input />}
-            value="alphabetical"
-          >
-            <MenuItem key="alphabetical" value="alphabetical">
-              {i18n.t("Alphabetical")}
-            </MenuItem>
-          </Select>
-        </Grid>
-        <Grid item xs={12} md={12}>
+        <Grid item md={4}>
           <Input
-            id="table_search"
             fullWidth
-            placeholder={i18n.t("Enter a case number, status, or type...")}
+            placeholder={i18n.t("Search all cases...")}
             startAdornment={
               <InputAdornment position="start">
                 <IconButton>
@@ -159,6 +143,29 @@ const Component = (props: Props) => {
             onChange={(e) => setFilterLegalCasesValue(e.target.value)}
             onKeyUp={filterKeyUp}
           />
+        </Grid>
+        <Grid item>
+          <Button
+            disableElevation={true}
+            className={classes.canBeFab}
+            color="primary"
+            variant="contained"
+            startIcon={<CreateNewFolderIcon />}
+            disabled={isLoading}
+            onClick={props.newCaseHandler}
+          >
+            {i18n.t("New case")}
+            {isLoading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: "absolute",
+                  zIndex: 10000,
+                  left: "50%",
+                }}
+              />
+            )}
+          </Button>
         </Grid>
       </Grid>
 
@@ -187,7 +194,7 @@ const Component = (props: Props) => {
               </TableCell>
             </TableRow>
           </TableHead>
-          {filteredLegalCases && (filteredLegalCases.length > 0) && (
+          {filteredLegalCases && filteredLegalCases.length > 0 && (
             <TableBody>
               {filteredLegalCases.map((legalCase) => (
                 <TableRow
@@ -235,7 +242,7 @@ const Component = (props: Props) => {
                 </TableRow>
               ))}
             </TableBody>
-          ) }
+          )}
         </Table>
       </TableContainer>
       {isLoading && (

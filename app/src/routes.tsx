@@ -9,7 +9,6 @@ import ClientEditPage from "./pages/clients/edit";
 import ClientNewPage from "./pages/clients/new";
 import ClientLegalCasesPage from "./pages/clients/cases";
 
-import LegalCasesPage from "./pages/legalCases/list";
 import LegalCasePage from "./pages/legalCases/show";
 
 import ClientDependentPage from "./pages/clientDependents/show";
@@ -101,7 +100,6 @@ function Routes() {
           component={ClientDependentNewPage}
         />
 
-        <Route exact path="/cases" component={LegalCasesPage} />
         <Route exact path="/cases/:id/" component={LegalCasePage} />
         <Route exact path="/cases/:id/updates" component={LegalCasePage} />
         <Route exact path="/cases/:id/files" component={LegalCasePage} />

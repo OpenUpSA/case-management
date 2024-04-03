@@ -72,13 +72,19 @@ const Page = () => {
 
   return (
     <Layout>
-      <Breadcrumbs
-        className={classes.breadcrumbs}
-        separator="›"
-        aria-label="breadcrumb"
-      >
-        <div>{i18n.t("Your account")}</div>
-      </Breadcrumbs>
+      <header className={classes.breadCrumbHeader}>
+        <Container maxWidth="md">
+          <Breadcrumbs
+            className={classes.breadcrumbs}
+            aria-label="breadcrumb"
+            separator="&#9656;"
+          >
+            <Button onClick={() => history.push(`/users/${userId}`)}>
+              {i18n.t("Your account")}
+            </Button>
+          </Breadcrumbs>
+        </Container>
+      </header>
       <Container maxWidth="md">
         <Grid
           className={classes.pageBar}
