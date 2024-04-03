@@ -395,12 +395,14 @@ export const deleteLegalCaseFile = async (id: number) => {
   return await httpDelete<ILegalCaseFile>(`/files/${id}/`);
 };
 
-export const renameLegalCaseFile = async (legalCaseFile: any) => {
+export const updateLegalCaseFile = async (legalCaseFile: any) => {
   const userInfo = UserInfo.getInstance();
   const token = userInfo.getAccessToken();
   const formData = new FormData();
   formData.append("legal_case", legalCaseFile.legal_case);
   formData.append("description", legalCaseFile.description);
+  // NOTE: Turns out it is trick to change the file name of the Django FileField so won't do it for now
+  //formData.append("upload_file_name", legalCaseFile.upload_file_name);
 
   const renameOptions: renameOptionsType = {
     method: "PATCH",

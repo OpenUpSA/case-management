@@ -33,7 +33,7 @@ import {
   deleteClientFile,
   deleteLegalCaseFile,
   renameClientFile,
-  renameLegalCaseFile,
+  updateLegalCaseFile,
   createClientFile,
   getLegalCases,
   getLegalCaseFiles,
@@ -215,7 +215,7 @@ export default function ClientFileTab(props: Props) {
   };
 
   const legalCaseFileRename = async (file: ILegalCaseFile) => {
-    renameLegalCaseFile(file)
+    updateLegalCaseFile(file)
       .then((res: any) => {
         if (res.id) {
           setShowSnackbar({

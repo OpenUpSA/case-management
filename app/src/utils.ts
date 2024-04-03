@@ -38,6 +38,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       color: "#990000",
       textAlign: "center",
     },
+    hugUp: 
+    { 
+      marginTop: "-1.6em",
+    },
     body: {
       paddingBottom: "10em",
       marginTop: "60px!important" as any,

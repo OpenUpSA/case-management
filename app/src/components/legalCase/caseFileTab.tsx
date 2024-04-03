@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useStyles, VisuallyHiddenInput } from "../../utils";
-import SearchIcon from "@material-ui/icons/Search";
 import UploadIcon from "@mui/icons-material/Upload";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -13,19 +12,16 @@ import { format } from "date-fns";
 import { ILegalCase, ILegalCaseFile, ILog, SnackbarState } from "../../types";
 import UpdateDialog from "./updateDialog";
 
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CircularProgress from "@mui/material/CircularProgress";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 
+import LegalCaseFileEdit from "../../components/legalCaseFile/edit";
+
 import {
   getLegalCaseFiles,
   deleteLegalCaseFile,
-  renameLegalCaseFile,
   createLegalCaseFile,
   getCaseUpdates,
 } from "../../api";
@@ -39,6 +35,8 @@ import {
   Typography,
   ListItemIcon,
   ListItemText,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import i18n from "../../i18n";
 import SnackbarAlert from "../general/snackBar";
@@ -57,9 +55,15 @@ export default function CaseFileTab(props: Props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [legalCaseFileEditOpen, setLegalCaseFileEditOpen] =
+    React.useState(false);
+  const [legalCaseFile, setLegalCaseFile] = React.useState<ILegalCaseFile>();
+
   const [renameDialog, setRenameDialog] = React.useState<boolean>(false);
   const [renameDialogInput, setRenameDialogInput] = React.useState<any>({
+    file_name: "",
     description: "",
+    document_type: "",
     id: 0,
     legal_case: 0,
   });
@@ -75,12 +79,17 @@ export default function CaseFileTab(props: Props) {
   });
 
   const refreshUpdates = async () => {
+    console.log("2");
     const dataLegalCaseFiles = await getLegalCaseFiles(
       props.legalCase.id as number
     );
     props.setLegalCaseFiles(dataLegalCaseFiles);
     const updates = await getCaseUpdates(props.legalCase.id as number);
     props.setCaseUpdates(updates);
+  };
+
+  const legalCaseFileDialogEditClose = () => {
+    setLegalCaseFileEditOpen(false);
   };
 
   useEffect(() => {
@@ -95,47 +104,6 @@ export default function CaseFileTab(props: Props) {
     };
     resetState();
   }, [showSnackbar.open]);
-
-  const renameFile = async (file: ILegalCaseFile) => {
-    renameLegalCaseFile(file)
-      .then((res: any) => {
-        if (res.id) {
-          setShowSnackbar({
-            open: true,
-            message: "File renamed successfully",
-            severity: "success",
-          });
-          setTriggerClick({ show: false, val: 0 });
-          setIsLoading(true);
-          getLegalCaseFiles(res.legal_case)
-            .then((res) => {
-              setIsLoading(false);
-              props.setLegalCaseFiles(res);
-            })
-            .catch((e) => {
-              setIsLoading(false);
-              setShowSnackbar({
-                open: true,
-                message: e.message,
-                severity: "error",
-              });
-            });
-        } else {
-          setShowSnackbar({
-            open: true,
-            message: "File rename failed",
-            severity: "error",
-          });
-        }
-      })
-      .catch(() => {
-        setShowSnackbar({
-          open: true,
-          message: "File rename failed",
-          severity: "error",
-        });
-      });
-  };
 
   const deleteFile = async (id: number) => {
     if (window.confirm("Are you sure you want to delete this file?")) {
@@ -335,60 +303,18 @@ export default function CaseFileTab(props: Props) {
                             }}
                             disabled={false}
                             onClick={() => {
-                              setRenameDialogInput({
-                                description: legalCaseFile!.description!,
-                                id: legalCaseFile!.id!,
-                                legal_case: legalCaseFile!.legal_case!,
-                              });
-                              setRenameDialog(true);
+                              setLegalCaseFile(legalCaseFile);
+                              setLegalCaseFileEditOpen(true);
                             }}
                           >
                             <ListItemIcon>
                               <EditIcon fontSize="small" />
                             </ListItemIcon>
-                            <ListItemText>{i18n.t("Rename file")}</ListItemText>
+                            <ListItemText>
+                              {i18n.t("Edit file details")}
+                            </ListItemText>
                           </Button>
-                          <Dialog
-                            open={renameDialog}
-                            onClose={() => setRenameDialog(false)}
-                            fullWidth
-                            maxWidth="sm"
-                          >
-                            <DialogTitle>Rename file</DialogTitle>
-                            <DialogContent>
-                              <Input
-                                id="table_search"
-                                fullWidth
-                                disableUnderline={true}
-                                className={classes.textField}
-                                aria-describedby="Rename file"
-                                value={renameDialogInput.description}
-                                onChange={(
-                                  e: React.ChangeEvent<{ value: any }>
-                                ) => {
-                                  setRenameDialogInput({
-                                    ...renameDialogInput,
-                                    description: e.target.value,
-                                  });
-                                }}
-                              />
-                            </DialogContent>
-                            <DialogActions>
-                              <Button onClick={() => setRenameDialog(false)}>
-                                Cancel
-                              </Button>
-                              <Button
-                                color="primary"
-                                variant="contained"
-                                onClick={() => {
-                                  renameFile(renameDialogInput);
-                                  setRenameDialog(false);
-                                }}
-                              >
-                                {i18n.t("Submit")}
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
+
                           <Button
                             style={{
                               position: "relative",
@@ -447,6 +373,16 @@ export default function CaseFileTab(props: Props) {
           message={showSnackbar.message ? showSnackbar.message : ""}
           severity={showSnackbar.severity}
         />
+      )}
+
+      {legalCaseFile && (
+        <LegalCaseFileEdit
+          open={legalCaseFileEditOpen}
+          dialogClose={legalCaseFileDialogEditClose}
+          legalCaseFile={legalCaseFile}
+          setLegalCaseFile={setLegalCaseFile}
+          updateListHandler={refreshUpdates}
+        ></LegalCaseFileEdit>
       )}
     </>
   );
