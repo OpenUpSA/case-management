@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import i18n from "../../i18n";
 import Typography from "@material-ui/core/Typography";
@@ -13,7 +13,7 @@ import {
   Input,
 } from "@material-ui/core";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import FolderIcon from "@material-ui/icons/Folder";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PersonIcon from "@material-ui/icons/Person";
 import MoreMenu from "../../components/moreMenu";
 
@@ -33,6 +33,7 @@ import {
   LocationState,
   SnackbarState,
   ILog,
+  ICaseType,
 } from "../../types";
 import { RedirectIfNotLoggedIn } from "../../auth";
 import { useStyles } from "../../utils";
@@ -41,6 +42,7 @@ import CaseTabs from "../../components/legalCase/caseTabs";
 import SnackbarAlert from "../../components/general/snackBar";
 import CircularProgress from "@mui/material/CircularProgress";
 import { LegalCaseStates } from "../../contexts/legalCaseStateConstants";
+import { CaseTypesContext } from "../../contexts/caseTypesContext";
 
 type RouteParams = { id: string };
 
@@ -52,6 +54,7 @@ const Page = () => {
   const params = useParams<RouteParams>();
   const caseId = parseInt(params.id);
 
+  const [contextCaseTypes] = useContext(CaseTypesContext);
   const [legalCase, setLegalCase] = React.useState<ILegalCase>();
   const [client, setClient] = React.useState<IClient>();
   const [meetings, setMeetings] = React.useState<IMeeting[]>();
@@ -225,11 +228,28 @@ const Page = () => {
             alignItems="center"
           >
             <Grid item>
-              <FolderIcon color="primary" style={{ display: "flex" }} />
+              <Button
+                onClick={() => history.push(`/clients/${client?.id}/cases`)}
+                className={classes.fullHeightContainedButton}
+              >
+                <ArrowBackIcon />
+              </Button>
             </Grid>
             <Grid item style={{ flexGrow: 1 }}>
-              <Typography variant="h6">
-                <strong>{legalCase?.case_number}</strong>
+              <Typography variant="h5" className={classes.lineHeightSmall}>
+                <strong>
+                  {legalCase &&
+                    contextCaseTypes
+                      ?.filter(
+                        (caseType: ICaseType) =>
+                          legalCase.case_types.indexOf(caseType.id) > -1
+                      )
+                      .map((caseType: ICaseType) => caseType.title)
+                      .join(", ")}{" "}
+                  case
+                </strong>
+                <br />
+                <small>{legalCase?.case_number}</small>
               </Typography>
             </Grid>
             <Grid item className={classes.selectStatus}>
@@ -283,28 +303,28 @@ const Page = () => {
           </Grid>
         </Container>
       </header>
-        <Container maxWidth="md">
-          <CaseTabs
-            legalCase={legalCase!}
-            setLegalCase={setLegalCase}
-            meetings={meetings ? meetings : []}
-            standalone={false}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            setShowSnackbar={setShowSnackbar}
-            caseHistory={caseHistory ? caseHistory : []}
-            setCaseHistory={setCaseHistory}
-            setStatus={setStatus}
-          />
+      <Container maxWidth="md">
+        <CaseTabs
+          legalCase={legalCase!}
+          setLegalCase={setLegalCase}
+          meetings={meetings ? meetings : []}
+          standalone={false}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          setShowSnackbar={setShowSnackbar}
+          caseHistory={caseHistory ? caseHistory : []}
+          setCaseHistory={setCaseHistory}
+          setStatus={setStatus}
+        />
 
-          {isLoading && (
-            <Grid container justifyContent="center">
-              <CircularProgress
-                sx={{ position: "absolute", top: 10, left: "50%", zIndex: 100 }}
-              />
-            </Grid>
-          )}
-        </Container>
+        {isLoading && (
+          <Grid container justifyContent="center">
+            <CircularProgress
+              sx={{ position: "absolute", top: 10, left: "50%", zIndex: 100 }}
+            />
+          </Grid>
+        )}
+      </Container>
       {showSnackbar.open && (
         <SnackbarAlert
           open={showSnackbar.open}

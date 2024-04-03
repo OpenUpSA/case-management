@@ -49,7 +49,12 @@ function a11yProps(index: number) {
 export default function CaseTabs(props: Props) {
   const location = useLocation();
   const classes = useStyles();
-  const tabToFocus = location.pathname.indexOf("/info") > -1 ? 1 : location.pathname.indexOf("/files") > -1 ? 2 : 0;
+  const tabToFocus =
+    location.pathname.indexOf("/info") > -1
+      ? 1
+      : location.pathname.indexOf("/files") > -1
+      ? 2
+      : 0;
   const [value, setValue] = useState(tabToFocus);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -105,7 +110,10 @@ export default function CaseTabs(props: Props) {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <ClientCasesTab legalCases={props.legalCases} newCaseHandler={props.newCaseHandler} />
+        <ClientCasesTab
+          legalCases={props.legalCases}
+          newCaseHandler={props.newCaseHandler}
+        />
       </TabPanel>
       <TabPanel value={value} index={1}>
         {props.client && <ClientInfoTab client={props.client} />}

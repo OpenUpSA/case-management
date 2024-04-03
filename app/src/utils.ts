@@ -386,6 +386,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     pageBarHead: {
       boxShadow: "0 4px 5px 0 rgba(0, 0, 0, 0.05)",
     },
+    lineHeightSmall: {
+      lineHeight: "1",
+    },
     pageBarTemp: {
       marginTop: "-24px",
       marginBottom: "20px",
@@ -399,6 +402,14 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    fullHeightContainedButton:
+    { 
+      height: "52px",
+      width: "53px",
+      minWidth: "53px",
+      backgroundColor: "#e5e5e5",
+    },
+    
     logo: {
       cursor: "pointer",
       height: "35px",
